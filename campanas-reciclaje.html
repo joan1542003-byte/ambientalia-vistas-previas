@@ -794,10 +794,10 @@ button,a,summary{touch-action:manipulation}
 >
   <div class="rep-picker">
     <div class="rep-picker-head">
-      <h2 id="materiales-title">Empecemos por lo que quieres recolectar.</h2>
+      <h2 id="materiales-title">Conoce los productos prioritarios de tu campaña.</h2>
       <p>
-        Selecciona un producto prioritario de la Ley REP. Luego podrás precisar
-        su tipo para preparar una consulta de campaña con mejores antecedentes.
+        Explora sus categorías y antecedentes básicos para planificar una
+        campaña informada antes de solicitar orientación.
       </p>
     </div>
     <fieldset class="rep-products">
@@ -1129,7 +1129,7 @@ button,a,summary{touch-action:manipulation}
       const select = panel.querySelector("select"),
         link = panel.querySelector(".rep-contact"),
         product = panel.dataset.product;
-      const message = `Hola, quiero consultar una campaña de recolección.\nProducto prioritario: ${product}.\nTipo seleccionado: ${select.value}.\nOrganización o municipalidad: \nComuna: \nCantidad estimada: \nFecha o periodo propuesto: `;
+      const message = `*Consulta: campaña de recolección*\n\n*Producto prioritario:* ${product}\n*Tipo seleccionado:* ${select.value}\n\n*Datos de la campaña*\n• Organización o municipalidad:\n• Comuna:\n• Cantidad estimada:\n• Fecha o período propuesto:`;
       link.href =
         "https://wa.me/56986067930?text=" + encodeURIComponent(message);
     }
