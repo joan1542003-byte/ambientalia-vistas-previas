@@ -582,6 +582,24 @@ button,a,summary{touch-action:manipulation}
 <a class="waste-route waste-hazard" href="https://wa.me/56986067930?text=Hola%2C%20necesito%20ayuda%20para%20coordinar%20el%20retiro%20de%20residuos%20peligrosos.%20%C2%BFMe%20pueden%20orientar%3F" target="_blank" rel="noopener noreferrer" data-whatsapp="peligrosos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 10 18H2Z"/><path d="M12 9v5m0 3v1"/></svg><strong>Residuos<br>peligrosos</strong><span>Solicitar ayuda <b aria-hidden="true">↗</b></span></a>
 </div><button class="unsure" id="unsure" type="button" aria-pressed="false">No estoy seguro de su clasificación</button></fieldset><p id="waste-feedback" class="waste-feedback morph-target" aria-live="polite">Cuéntanos qué tienes para orientar el retiro.</p><div class="actions"><a class="button" href="#contacto" data-request="retiro">Consultar retiro ↗</a><a class="text-link" href="#residuos">Elegir mi residuo</a></div></div><div class="transport-visual"><svg viewBox="0 0 520 300" role="img" aria-label="Ilustración de un camión de carga cerrado"><path d="M20 263h480" stroke="#aab7e8" stroke-width="3"/><rect x="48" y="58" width="268" height="174" rx="15" fill="#315fc7"/><path d="M326 124h67c10 0 17 5 23 14l48 65v29H326z" fill="#ff785a"/><path d="M343 139h44l34 47h-78z" fill="#f7f7fb"/><path d="M343 199h24" stroke="#202451" stroke-width="5" stroke-linecap="round"/><rect x="42" y="225" width="431" height="17" rx="6" fill="#202451"/><circle cx="116" cy="244" r="30" fill="#202451"/><circle cx="116" cy="244" r="13" fill="#f7f7fb"/><circle cx="399" cy="244" r="30" fill="#202451"/><circle cx="399" cy="244" r="13" fill="#f7f7fb"/><path d="M83 88h198M83 103h198" stroke="#7990e8" stroke-width="3" stroke-linecap="round"/></svg><h2>El residuo define cómo preparar el traslado.</h2><p>Origen, cantidad, embalaje y destino: los antecedentes para coordinar tu servicio.</p></div></section>
 <style>
+  .classification-statement {
+    padding-block: clamp(3rem, 6vw, 5.5rem);
+  }
+  .classification-statement p {
+    max-inline-size: 28ch;
+    margin: 0 auto;
+    color: #7b211c;
+    font-size: clamp(1.75rem, 3.5vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 1.04;
+    text-align: center;
+  }
+</style>
+<section class="wrap classification-statement" aria-label="Recordatorio sobre clasificación de residuos">
+  <p>4 de cada 10 empresas gestionan sus residuos como no peligrosos aunque no lo sean.</p>
+</section>
+<style>
   .residue-finder {
     background: #fff;
     border: 1px solid var(--line);
@@ -597,34 +615,6 @@ button,a,summary{touch-action:manipulation}
   .residue-finder-head p {
     color: var(--muted);
     line-height: 1.6;
-  }
-  .classification-note {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 18px;
-    background: #fff2f0;
-    border: 1px solid #f1c3be;
-    border-radius: 20px;
-    padding: 15px 18px;
-    color: #6f2520;
-  }
-  .classification-note strong {
-    display: block;
-    margin-bottom: 3px;
-    font-size: 1.0625rem;
-  }
-  .classification-note p {
-    max-inline-size: 58ch;
-    margin: 0;
-  }
-  .classification-note .button {
-    background: #7b211c;
-    white-space: nowrap;
-  }
-  .classification-note .button:hover {
-    background: #5f1815;
   }
   .finder-steps {
     display: grid;
@@ -741,13 +731,6 @@ button,a,summary{touch-action:manipulation}
     .category-choices {
       grid-template-columns: 1fr;
     }
-    .classification-note {
-      grid-template-columns: 1fr;
-      align-items: start;
-    }
-    .classification-note .button {
-      inline-size: 100%;
-    }
   }
   .category-choice input:focus-visible + label {
     outline: 3px solid color-mix(in srgb, var(--violet) 38%, transparent);
@@ -764,25 +747,6 @@ button,a,summary{touch-action:manipulation}
         confirma al revisar los antecedentes.
       </p>
     </div>
-    <aside class="classification-note">
-      <div>
-        <strong
-          >4 de cada 10 empresas gestionan sus residuos como no peligrosos
-          aunque no lo sean.</strong
-        >
-        <p>
-          Una revisión previa puede evitar un retiro mal coordinado. Pincha para
-          saber si tu residuo no es peligroso.
-        </p>
-      </div>
-      <a
-        class="button"
-        href="https://wa.me/56986067930?text=Hola%2C%20quiero%20revisar%20si%20mi%20residuo%20es%20no%20peligroso.%20Residuo%3A%20___.%20Origen%20o%20proceso%3A%20___."
-        target="_blank"
-        rel="noopener noreferrer"
-        >Revisar mi residuo <span aria-hidden="true">↗</span></a
-      >
-    </aside>
     <div class="finder-steps">
       <fieldset class="finder-step">
         <legend>Tipo de residuo</legend>
@@ -889,7 +853,7 @@ button,a,summary{touch-action:manipulation}
         label = type === "hazard" ? "peligroso" : "no peligroso",
         detailText = detailWrap.hidden ? "" : detail.value;
       status.textContent = `Seleccionaste ${select.value}${detailText ? ` — ${detailText}` : ""}. Indica comuna, cantidad y embalaje en la consulta.`;
-      const message = `Hola, necesito consultar el retiro de ${select.value}.${detailText ? `\nCategoría o subtipo: ${detailText}.` : ""}\nClasificación inicial: residuo ${label}.\nComuna: \nCantidad aproximada: \nEmbalaje: \nOrigen o proceso: `;
+      const message = `*Consulta de retiro de residuos*\n\n*Residuo:* ${select.value}\n*Clasificación inicial:* ${label}${detailText ? `\n*Categoría o subtipo:* ${detailText}` : ""}\n\n*Datos para coordinar*\n• Comuna:\n• Cantidad aproximada:\n• Embalaje:\n• Origen o proceso:`;
       link.href =
         "https://wa.me/56986067930?text=" + encodeURIComponent(message);
     }
@@ -925,7 +889,7 @@ button,a,summary{touch-action:manipulation}
 <style>
 .priority-section{background:linear-gradient(145deg,#f2f0ff,#eef7ff);border-radius:30px;padding:clamp(24px,4vw,40px)}.priority-layout{display:grid;grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);gap:clamp(22px,4vw,44px)}.priority-layout>div>p{color:var(--muted);line-height:1.6}.priority-list{display:grid;grid-template-columns:1fr 1fr;gap:9px}.priority-list details{background:rgba(255,255,255,.78);border:1px solid rgba(62,70,126,.12);border-radius:18px;padding:0 16px}.priority-list summary{min-height:54px;display:flex;align-items:center;justify-content:space-between;font-weight:900;cursor:pointer}.priority-list summary::after{content:'+';font-size:21px}.priority-list details[open] summary::after{content:'−'}.priority-list p{padding:0 0 16px;color:var(--muted);line-height:1.5}.priority-foot{margin-top:16px;font-size:13px;color:var(--muted)}@media(max-width:780px){.priority-layout,.priority-list{grid-template-columns:1fr}}
 </style>
-<section class="wrap section" id="productos-prioritarios" aria-labelledby="prioritarios-title"><div class="priority-section"><div class="priority-layout"><div><h2 id="prioritarios-title">Empecemos por lo que quieres recolectar.</h2><p>Estos son productos prioritarios informados bajo la Ley REP. La aceptación del residuo y las condiciones del retiro dependen de su estado, contaminación, cantidad y destino.</p><a class="text-link" href="#residuos">Seleccionar mi residuo ↖</a></div><div><div class="priority-list"><details><summary>Neumáticos</summary><p>De vehículos livianos, buses, camiones, maquinaria, bicicletas o sillas de ruedas. Las categorías reglamentarias y las metas REP no son iguales para todos los neumáticos.</p></details><details><summary>Envases y embalajes</summary><p>Papel y cartón, plástico, metal, vidrio y cartón para bebidas; de origen domiciliario o no domiciliario. Deben revisarse limpieza, contenido residual y segregación.</p></details><details><summary>Aceites lubricantes</summary><p>Aceites de base mineral, sintética o vegetal y sus residuos. Los aceites usados pueden ser peligrosos y requieren evaluación antes del retiro.</p></details><details><summary>Aparatos eléctricos y electrónicos</summary><p>Equipos que necesitan corriente o campos electromagnéticos para funcionar, junto con sus componentes. Se revisan baterías, pantallas y otras partes sensibles.</p></details><details><summary>Pilas y baterías</summary><p>Pilas portátiles y baterías de distintos usos y tecnologías. El embalaje y manejo dependen de su química, estado y riesgo de derrame o cortocircuito.</p></details><details><summary>Textiles</summary><p>Prendas, telas y otros productos textiles. Se revisan contaminación, humedad, mezcla de fibras y destino disponible.</p></details></div><p class="priority-foot">Clasificación orientativa basada en información del Ministerio del Medio Ambiente. Diarios, periódicos y revistas también están incluidos en requerimientos de información vigentes.</p></div></div></div></section>
+<section class="wrap section" id="productos-prioritarios" aria-labelledby="prioritarios-title"><div class="priority-section"><div class="priority-layout"><div><h2 id="prioritarios-title">Conoce los productos prioritarios del sistema REP.</h2><p>Esta es una guía para entender qué materiales pueden requerir una gestión diferenciada. La aceptación y coordinación del retiro se revisan después, según su estado, contaminación, cantidad y destino.</p><a class="text-link" href="#residuos">Quiero solicitar un retiro ↖</a></div><div><div class="priority-list"><details><summary>Neumáticos</summary><p>De vehículos livianos, buses, camiones, maquinaria, bicicletas o sillas de ruedas. Las categorías reglamentarias y las metas REP no son iguales para todos los neumáticos.</p></details><details><summary>Envases y embalajes</summary><p>Papel y cartón, plástico, metal, vidrio y cartón para bebidas; de origen domiciliario o no domiciliario. Deben revisarse limpieza, contenido residual y segregación.</p></details><details><summary>Aceites lubricantes</summary><p>Aceites de base mineral, sintética o vegetal y sus residuos. Los aceites usados pueden ser peligrosos y requieren evaluación antes del retiro.</p></details><details><summary>Aparatos eléctricos y electrónicos</summary><p>Equipos que necesitan corriente o campos electromagnéticos para funcionar, junto con sus componentes. Se revisan baterías, pantallas y otras partes sensibles.</p></details><details><summary>Pilas y baterías</summary><p>Pilas portátiles y baterías de distintos usos y tecnologías. El embalaje y manejo dependen de su química, estado y riesgo de derrame o cortocircuito.</p></details><details><summary>Textiles</summary><p>Prendas, telas y otros productos textiles. Se revisan contaminación, humedad, mezcla de fibras y destino disponible.</p></details></div><p class="priority-foot">Clasificación orientativa basada en información del Ministerio del Medio Ambiente. Diarios, periódicos y revistas también están incluidos en requerimientos de información vigentes.</p></div></div></div></section>
 <section class="wrap section" id="proceso" aria-labelledby="proceso-title"><div class="section-heading"><h2 id="proceso-title">Primero los antecedentes. Después, el retiro.</h2><p>Una coordinación clara desde la consulta hasta el cierre del servicio.</p></div><div class="process-visual-layout"><figure class="process-motion" aria-label="Ilustración animada del proceso"><svg viewBox="0 0 700 490" role="img" aria-labelledby="process-art-title"><title id="process-art-title">El vehículo avanza sobre una ruta que se dibuja. Al llegar, el marcador cambia de círculo a una forma redondeada.</title><path d="M125 365 H580" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="3" stroke-linecap="round" pathLength="1" stroke-dasharray="1"><animate attributeName="stroke-dashoffset" values="1;0" begin="0s" dur="2.5s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".4 0 .2 1"/></path><g><animateTransform attributeName="transform" type="translate" values="-65 0;35 0" dur="3s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".4 0 .2 1"/><rect x="175" y="195" width="220" height="118" rx="16" fill="white" stroke="currentColor" stroke-width="3"/><path d="M395 229 H443 Q451 229 457 240 L488 281 V315 H395 Z" fill="currentColor"/><path d="M410 243 H441 L462 276 H410 Z" fill="#dceafa"/><path d="M175 315 H488" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><g><circle cx="229" cy="331" r="28" fill="#27364c"/><circle cx="229" cy="331" r="15" fill="#e6eefb"/><g><animateTransform attributeName="transform" type="rotate" values="0 229 331;180 229 331" dur="3s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".4 0 .2 1"/><path d="M219 331 H239 M229 321 V341" stroke="#8298b5" stroke-width="3"/></g></g><g><circle cx="438" cy="331" r="28" fill="#27364c"/><circle cx="438" cy="331" r="15" fill="#e6eefb"/><g><animateTransform attributeName="transform" type="rotate" values="0 438 331;180 438 331" dur="3s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".4 0 .2 1"/><path d="M428 331 H448 M438 321 V341" stroke="#8298b5" stroke-width="3"/></g></g></g><rect x="531" y="159" width="54" height="54" rx="27" fill="currentColor"><animate attributeName="rx" values="27;16" begin="2s" dur="1s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".4 0 .2 1"/></rect><path d="M545 186 L555 196 L573 176" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1"><animate attributeName="stroke-dashoffset" values="1;0" begin="2s" dur="1s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".4 0 .2 1"/></path></svg></figure><div class="flow-steps"><article><h3>Cuéntanos tu caso</h3><p>Describe el residuo, cuánto tienes, dónde está y cómo se encuentra embalado.</p></article><article><h3>Revisamos la operación</h3><p>Evaluamos condiciones de carga, documentación y destino para definir la propuesta.</p></article><article><h3>Coordinamos el servicio</h3><p>Confirmamos el alcance acordado, las condiciones del retiro y los respaldos correspondientes.</p></article></div></div></section>
 <section class="wrap section" id="documentacion" aria-labelledby="documentacion-title"><div class="section-heading"><h2 id="documentacion-title">La documentación acompaña al traslado.</h2><p>Los requisitos se revisan según el tipo de residuo y la operación.</p></div><div class="materials"><h3>¿Necesitas revisar la hoja del residuo?</h3><p>HDS puede ayudarte a revisar sus antecedentes y la documentación de seguridad correspondiente.</p><p class="note">En los casos sujetos al Título V del D.S. 148, se debe portar el Documento de Declaración y la Hoja de Seguridad de Transporte de Residuos Peligrosos. El artículo 42 contempla una excepción específica; revisamos la aplicabilidad al caso.</p><div class="actions" style="margin-top:24px"><a class="button" href="./hds.html" target="_blank" rel="noopener">Consultar en HDS ↗</a><a class="text-link" href="https://www.bcn.cl/leychile/navegar?idNorma=226458" target="_blank" rel="noopener">D.S. 148 · artículos 39 y 42</a></div></div></section>
 <style>
@@ -990,7 +954,7 @@ function morphContent(target,update){
  kind.addEventListener('change',()=>chooseKind(kind.value));service.addEventListener('change',()=>{result.hidden=true});
  document.querySelectorAll('[data-request]').forEach(a=>a.addEventListener('click',()=>chooseService(a.dataset.request)));
  form.addEventListener('input',()=>{result.hidden=true});form.addEventListener('change',()=>{result.hidden=true});
- form.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(form);brief.textContent=['Consulta — Transporte Autorizado','','Servicio: '+service.selectedOptions[0].textContent,'Tipo de residuo: '+kind.selectedOptions[0].textContent,'Residuo o material: '+data.get('material').trim(),'Empresa o nombre: '+data.get('empresa').trim(),'Correo: '+data.get('correo').trim(),'Comuna: '+data.get('comuna').trim(),'Cantidad: '+data.get('cantidad').trim(),'Embalaje: '+(data.get('embalaje').trim()||'Por definir'),'Estado: '+data.get('estado'),'Fecha estimada: '+(data.get('fecha')||'Por definir'),'Documentación: '+data.get('documentacion'),'','Origen y condiciones:',data.get('contexto').trim()].join('\n');send.href='https://wa.me/56986067930?text='+encodeURIComponent(brief.textContent);result.hidden=false;status.textContent='Resumen listo. La consulta aún no se ha enviado.';result.focus({preventScroll:true});result.scrollIntoView({behavior:reduced.matches?'auto':'smooth',block:'center'});animate(result)});
+ form.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(form);brief.textContent=['*Consulta — Transporte Autorizado*','','*Servicio:* '+service.selectedOptions[0].textContent,'*Tipo de residuo:* '+kind.selectedOptions[0].textContent,'*Residuo o material:* '+data.get('material').trim(),'','*Datos de contacto*','• Empresa o nombre: '+data.get('empresa').trim(),'• Correo: '+data.get('correo').trim(),'• Comuna: '+data.get('comuna').trim(),'','*Coordinación del retiro*','• Cantidad: '+data.get('cantidad').trim(),'• Embalaje: '+(data.get('embalaje').trim()||'Por definir'),'• Estado: '+data.get('estado'),'• Fecha estimada: '+(data.get('fecha')||'Por definir'),'• Documentación: '+data.get('documentacion'),'','*Origen y condiciones*',data.get('contexto').trim()].join('\n');send.href='https://wa.me/56986067930?text='+encodeURIComponent(brief.textContent);result.hidden=false;status.textContent='Resumen listo. La consulta aún no se ha enviado.';result.focus({preventScroll:true});result.scrollIntoView({behavior:reduced.matches?'auto':'smooth',block:'center'});animate(result)});
  document.querySelector('#copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(brief.textContent);status.textContent='Consulta copiada.'}catch{status.textContent='Selecciona el resumen para copiarlo o usa Descargar.'}});
  document.querySelector('#download').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([brief.textContent],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='consulta-transporte.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Consulta descargada.'});
  document.querySelector('#year').textContent=new Date().getFullYear();
