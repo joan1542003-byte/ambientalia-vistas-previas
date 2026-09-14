@@ -479,6 +479,11 @@ h1,h2,h3,.ecosystem-action{overflow-wrap:anywhere}
 .no-script-contact{margin-top:24px}.no-script-contact a{text-decoration:underline}
 button,a,summary{touch-action:manipulation}
 </style>
+<style>
+/* Los encabezados de sección mantienen un único eje de lectura. */
+.section-heading{display:grid;grid-template-columns:minmax(0,1fr);justify-content:start;align-items:start;gap:.75rem}
+.section-heading h2,.section-heading p{max-inline-size:62ch}
+</style>
 
 <style>
 .process-motion{margin:28px 0 0;border:1px solid var(--line);border-radius:28px;overflow:hidden;background:linear-gradient(135deg,var(--paper),var(--mint));color:var(--green)}
