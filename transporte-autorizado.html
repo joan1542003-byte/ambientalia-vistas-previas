@@ -1972,7 +1972,7 @@ function morphContent(target,update){
   const normalize = value => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es-CL').replace(/[^a-z0-9]+/g, ' ').trim();
   const state = { step: 'need', need: '', kind: '', material: '*', location: '*', quantity: 'unknown' };
   const labels = {
-    need: ['Paso 1 de 3', '¿Qué necesitas resolver?', 'Elige una ruta para comenzar. Solo pediremos los datos necesarios.'],
+    need: ['Paso 1 de 3', '¿Qué necesitas resolver?', 'Cada opción abre un siguiente paso distinto.'],
     kind: ['Paso 2 de 3', '¿Cómo se clasifica el residuo?', 'Esta elección cambia la revisión y las alternativas disponibles.'],
     details: ['Paso 3 de 3', 'Completa lo esencial', 'Con comuna y cantidad podemos ordenar mejor la búsqueda.'],
     result: ['Listo', 'Tu siguiente paso', 'Revisa la recomendación y decide cómo continuar.']
