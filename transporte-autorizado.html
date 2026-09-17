@@ -1981,11 +1981,11 @@ function morphContent(target,update){
     const materialText = state.material === '*' ? 'el residuo' : display(material, state.material).toLowerCase();
     const locationText = state.location === '*' ? 'la comuna indicada' : display(location, state.location);
     if (state.kind === 'hazard') {
-      resultTitle.textContent = 'Revisa el retiro de un residuo peligroso.';
+      resultTitle.textContent = state.need === 'clasificacion' ? 'La ruta requiere una revisión de peligrosidad.' : 'Revisa el retiro de un residuo peligroso.';
       resultText.textContent = `Para ${materialText}, revisa antecedentes y condiciones de acopio antes de coordinar en ${locationText}.`;
       searchLink.hidden = false;
     } else if (state.kind === 'safe') {
-      resultTitle.textContent = 'Busca una alternativa de retiro no peligroso.';
+      resultTitle.textContent = state.need === 'clasificacion' ? 'Tienes una clasificación inicial no peligrosa.' : 'Busca una alternativa de retiro no peligroso.';
       resultText.textContent = `Podemos mostrarte registros por residuo y comuna${state.location === '*' ? '' : ` para ${locationText}`}.`;
       searchLink.hidden = false;
     } else {
