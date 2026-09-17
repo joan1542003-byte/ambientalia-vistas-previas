@@ -779,6 +779,37 @@ p,li{font-size:.96rem;line-height:1.58}
   .contact{padding:1.25rem!important}
   .nav{border-radius:1rem!important}
 }
+
+/* Segunda pasada: lectura estándar, superficies neutras y servicios compactos. */
+:root{
+  --paper:#fafbfe;
+  --line:#dfe3ee;
+  --mint:#f1f4fb;
+}
+body{background:var(--paper)!important;font-size:1.0625rem!important;line-height:1.62!important}
+p,li{font-size:1.03rem!important;line-height:1.62!important}
+.hero-copy>p,.section-heading p{font-size:1.03rem!important}
+h1{font-size:clamp(2.2rem,3.9vw,3.25rem)!important;line-height:1.07!important}
+h2{font-size:clamp(1.8rem,2.45vw,2.25rem)!important;line-height:1.15!important}
+h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
+.section-heading{margin-block-end:1.25rem!important}
+.classification-statement,.transport-law,.materials,.network a,.service-card,.support-service-card,.ecosystem-card{background:#fff!important;box-shadow:none!important}
+.classification-statement,.transport-law,.materials,.network a{border:1px solid var(--line)!important}
+.transport-services .service-card{padding:.9rem!important;border-radius:1.1rem!important}
+.transport-services .service-image{aspect-ratio:2.25!important;margin-block-end:.7rem!important;border-radius:.8rem!important}
+.transport-services .service-card h3{font-size:1.15rem!important;line-height:1.2!important}
+.transport-services .service-card>p,.transport-services .service-more p{font-size:.96rem!important;line-height:1.5!important;min-block-size:0!important}
+.transport-services .service-card>p{margin-block:.5rem .65rem!important}
+.support-service-card{padding:1rem!important}
+.support-service-card p{font-size:.96rem!important;line-height:1.5!important}
+.carrier-search-form{background:#fff!important;border:1px solid var(--line)!important;box-shadow:none!important}
+.carrier-search-helper{font-size:.9rem!important}
+.carrier-reset{font-size:.9rem!important}
+@media(max-width:720px){
+  p,li{font-size:1rem!important}
+  .hero-copy>p,.section-heading p{font-size:1rem!important}
+  .transport-services .service-card h3{font-size:1.12rem!important}
+}
 </style>
 </head>
 <body>
@@ -1227,10 +1258,20 @@ p,li{font-size:.96rem;line-height:1.58}
     outline: 3px solid color-mix(in srgb, var(--green) 42%, transparent);
     outline-offset: 3px;
   }
-  .carrier-search-button {
-    min-block-size: 3.05rem;
-    white-space: nowrap;
+  .carrier-reset {
+    grid-column: 1 / -1;
+    justify-self: start;
+    min-block-size: 2.5rem;
+    padding: .35rem 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font-size: .88rem;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: .22em;
   }
+  .carrier-reset:hover { color: var(--green); }
   .carrier-search-helper {
     grid-column: 1 / -1;
     margin: 0;
@@ -1392,12 +1433,6 @@ p,li{font-size:.96rem;line-height:1.58}
     background: var(--mint);
     color: var(--ink);
   }
-  .carrier-source-note {
-    margin-block-start: 1.1rem;
-    color: var(--muted);
-    font-size: .78rem;
-    line-height: 1.5;
-  }
   @media (hover: hover) {
     .carrier-kind-option:hover {
       transform: translateY(-2px);
@@ -1411,9 +1446,6 @@ p,li{font-size:.96rem;line-height:1.58}
   @media (max-width: 1040px) {
     .carrier-search-form {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .carrier-search-button {
-      inline-size: 100%;
     }
     .carrier-results-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1481,8 +1513,8 @@ p,li{font-size:.96rem;line-height:1.58}
         <option value="2000-plus">Más de 2.000 kg o L</option>
       </select>
     </div>
-    <button class="button carrier-search-button" type="submit">Actualizar resultados <span aria-hidden="true">↗</span></button>
-    <p class="carrier-search-helper">Los resultados se actualizan al cambiar un filtro. La comuna orienta la búsqueda; los archivos no informan distancia ni disponibilidad en tiempo real.</p>
+    <button class="carrier-reset" type="reset">Limpiar selección</button>
+    <p class="carrier-search-helper">Los resultados se actualizan automáticamente al cambiar cualquier filtro.</p>
   </form>
   <p class="carrier-search-status" id="carrier-search-status" role="status" aria-live="polite">Selecciona un tipo de residuo o una comuna para mostrar resultados automáticamente.</p>
   <div class="carrier-results" id="carrier-results" aria-live="polite">
@@ -1492,7 +1524,6 @@ p,li{font-size:.96rem;line-height:1.58}
     </div>
     <div class="carrier-results-grid" id="carrier-results-grid"></div>
     <button class="button carrier-more" id="carrier-more" type="button" hidden>Mostrar más resultados</button>
-    <p class="carrier-source-note">Fuente: pestañas “Filtro por residuo” de los listados entregados, con corte 31-12-2025. La ubicación, resolución, patentes y página PDF se muestran según cada registro. El rango de cantidad se incorpora a la consulta, porque la fuente no publica capacidad máxima por transportista.</p>
   </div>
 </section>
 <script>
@@ -1728,6 +1759,12 @@ p,li{font-size:.96rem;line-height:1.58}
       renderResults();
     }));
     [typeSelect, locationSelect, quantitySelect].forEach((control) => control.addEventListener("change", renderResults));
+    form.addEventListener("reset", () => {
+      requestAnimationFrame(() => {
+        updateFilterOptions();
+        renderResults();
+      });
+    });
     updateFilterOptions();
   })();
 </script>
