@@ -691,16 +691,104 @@ p,li{max-inline-size:var(--measure)}
   .footer{flex-direction:column;align-items:flex-start;gap:.75rem}
 }
 @media (prefers-reduced-motion:reduce){.service-card,.network a,.ecosystem-card,.waste-route,.carrier-card{transform:none!important}}
+
+/* Pasada editorial: escala sobria, lectura estable y acciones visibles. */
+:root{
+  --content-max:68rem;
+  --gutter:clamp(1rem,2.5vw,1.8rem);
+  --section-space:clamp(3.25rem,5vw,4.75rem);
+  --danger:#c23b35;
+  --danger-soft:#f7dfdc;
+}
+body{font-size:.98rem;line-height:1.58}
+.wrap{inline-size:min(var(--content-max),calc(100% - (var(--gutter) * 2)))}
+h1,h2,h3,h4{font-weight:700!important}
+h1{font-size:clamp(2.2rem,4.2vw,3.45rem)!important;line-height:1.05!important;letter-spacing:-.055em!important;max-inline-size:16ch!important}
+h2{font-size:clamp(1.7rem,2.55vw,2.35rem)!important;line-height:1.12!important;letter-spacing:-.04em!important;max-inline-size:30ch!important}
+h3{font-size:clamp(1.1rem,1.45vw,1.32rem)!important;line-height:1.22!important;letter-spacing:-.02em!important}
+h4{font-size:1rem!important;line-height:1.3!important}
+p,li{font-size:.96rem;line-height:1.58}
+.section{padding-block:var(--section-space)!important}
+.section-heading{gap:.55rem!important;margin-block-end:1.5rem!important}
+.section-heading h2{max-inline-size:30ch!important}
+.section-heading p{max-inline-size:58ch!important;margin-block-start:.4rem!important;font-size:.94rem!important}
+.header{padding-block:.6rem!important}
+.header-inner{min-block-size:2.8rem!important}
+.brand{padding:.35rem .75rem .35rem .4rem!important;font-size:.8rem!important}
+.brand svg{inline-size:1.8rem!important;block-size:1.8rem!important}
+.nav{padding:.22rem!important;gap:.1rem!important}
+.nav a{padding:.48rem .72rem!important;font-size:.75rem!important}
+.nav .nav-cta{padding-inline:.85rem!important}
+.hero{min-block-size:min(36rem,calc(100svh - 5.5rem))!important;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr)!important;gap:clamp(1.5rem,3vw,2.75rem)!important;padding-block:1.2rem 3.25rem!important}
+.hero h1{max-inline-size:14ch!important}
+.hero-copy>p{max-inline-size:46ch!important;margin-block:.85rem 1.1rem!important;font-size:.96rem!important}
+.waste-choice legend{font-size:.9rem!important;font-weight:700!important}
+.hero-routes{gap:.6rem!important}
+.waste-route{min-block-size:7.6rem!important;padding:.82rem .9rem!important;border:1px solid color-mix(in srgb,var(--ink) 12%,transparent)!important;border-radius:1.15rem!important}
+.waste-route::after{display:none!important}
+.waste-route>svg{inline-size:1.2rem!important;block-size:1.2rem!important;margin-block-end:.5rem!important}
+.waste-route>strong{font-size:1.02rem!important;line-height:1.16!important}
+.waste-route>span{font-size:.76rem!important;padding-block-start:.4rem!important}
+.waste-safe{background:#cbeed4!important;color:#164b2b!important}
+.waste-hazard{background:var(--danger)!important;color:#fff!important}
+.waste-feedback{font-size:.78rem!important;margin-block:.55rem .8rem!important;min-block-size:1.25rem!important}
+.actions{gap:.75rem!important}
+.button{min-block-size:2.65rem!important;padding:.62rem 1rem!important;border-radius:.85rem!important;font-size:.86rem!important;font-weight:700!important;box-shadow:none!important;gap:.65rem!important}
+.text-link{font-size:.84rem!important;font-weight:700!important}
+.transport-visual{aspect-ratio:1.2!important;min-block-size:0!important;max-block-size:29rem!important;border-radius:1.35rem!important;padding:1.4rem!important}
+.transport-visual svg{max-block-size:12rem!important}
+.transport-visual h2{font-size:1.1rem!important}.transport-visual p{font-size:.85rem!important}
+.service-grid{gap:1rem!important}
+.service-card{padding:1rem!important;border-radius:1.2rem!important;box-shadow:0 1px 2px rgba(18,62,50,.06)!important}
+.service-image{aspect-ratio:1.85!important;border-radius:.9rem!important;margin-block-end:.8rem!important}
+.service-card h3{min-block-size:0!important;max-inline-size:25ch!important}
+.service-card>p{font-size:.88rem!important;margin-block:.6rem .85rem!important;min-block-size:0!important}
+.service-card .service-open{min-block-size:2.5rem!important;font-size:.82rem!important}
+.classification-statement,.transport-law,.materials,.contact{padding:clamp(1.35rem,3vw,2rem)!important;border-radius:1.25rem!important}
+.classification-statement p{max-inline-size:34ch!important;font-size:clamp(1.7rem,2.7vw,2.4rem)!important;font-weight:700!important;letter-spacing:-.045em!important;line-height:1.08!important}
+.carrier-search-form{gap:.65rem!important;padding:1rem!important;border-radius:1.2rem!important}
+.carrier-results-grid,.support-services-grid{gap:1rem!important}
+.carrier-card,.support-service-card{padding:1rem!important;border-radius:1.1rem!important}
+.priority-layout{gap:clamp(1.5rem,3vw,2.5rem)!important}
+.process,.faq{gap:clamp(1.75rem,4vw,3.5rem)!important}
+.process summary,.faq summary{font-size:.98rem!important;line-height:1.4!important}
+.network,.ecosystem-grid{gap:1rem!important}
+.network a,.ecosystem-card{padding:1.15rem!important;border-radius:1.15rem!important}
+.network h3,.ecosystem-card h3{font-size:1.2rem!important;margin-block-end:.55rem!important}
+.contact{gap:clamp(1.5rem,3vw,2.5rem)!important}
+.field input,.field select,.field textarea{min-block-size:2.75rem!important;font-size:.9rem!important}
+.footer{padding-block:1.75rem!important;font-size:.78rem!important}
+.reveal-pending{transition-duration:.48s!important;transition-timing-function:cubic-bezier(.22,.61,.36,1)!important}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .waste-route,.service-card,.carrier-card,.network a,.ecosystem-card{transition:transform .24s cubic-bezier(.22,.61,.36,1),box-shadow .24s ease!important}
+  .waste-route:hover,.service-card:hover,.carrier-card:hover,.network a:hover,.ecosystem-card:hover{transform:translateY(-2px)!important;box-shadow:0 8px 20px rgba(18,62,50,.08)!important}
+}
+@media (max-width:720px){
+  :root{--gutter:1rem;--section-space:3.25rem}
+  .wrap{inline-size:calc(100% - 2rem)}
+  .hero{grid-template-columns:1fr!important;min-block-size:0!important;padding-block:1rem 2.75rem!important;gap:1.5rem!important}
+  h1{font-size:clamp(2rem,8.7vw,2.75rem)!important;max-inline-size:17ch!important}
+  h2{font-size:clamp(1.55rem,6.6vw,2rem)!important}
+  .transport-visual{aspect-ratio:1.34!important;max-block-size:none!important}
+  .waste-options{grid-template-columns:1fr!important}
+  .waste-route{min-block-size:6.6rem!important}
+  .service-grid,.network,.ecosystem-grid,.process,.faq,.contact,.classification-statement,.transport-law,.materials{grid-template-columns:1fr!important}
+  .carrier-search-form{grid-template-columns:1fr!important}
+  .carrier-kind-field,.carrier-search-helper{grid-column:auto!important}
+  .carrier-results-grid,.support-services-grid{grid-template-columns:1fr!important}
+  .contact{padding:1.25rem!important}
+  .nav{border-radius:1rem!important}
+}
 </style>
 </head>
 <body>
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <header class="header"><div class="wrap header-inner"><a class="brand" href="#contenido" aria-label="Transporte Autorizado, inicio"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="20" fill="#315fc7"/><path d="M8 13h15v13H8zm15 5h5l5 5v3H23M12 29a3 3 0 1 0 0-6 3 3 0 0 0 0 6m16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6" fill="none" stroke="#202451" stroke-width="2" stroke-linejoin="round"/></svg><span>Transporte<br>Autorizado</span></a><button class="menu" type="button" aria-expanded="false" aria-controls="nav">Menú</button><nav class="nav" id="nav" aria-label="Principal"><a href="#servicios">Servicios</a><a href="#residuos">Identifica tu residuo</a><a href="#buscar-transportistas">Buscar transportista</a><a href="#proceso">Cómo funciona</a><a class="nav-cta" href="#contacto">Consultar ↗</a></nav></div></header>
 <main id="contenido" tabindex="-1">
-<section class="wrap hero" aria-labelledby="hero-title"><div class="hero-copy"><h1 id="hero-title">Gestiona tu residuo. <span>Coordinamos el retiro.</span></h1><p>Busca apoyo para gestionar un residuo. Revisamos si es peligroso o no peligroso y ordenamos los antecedentes para coordinar el retiro.</p><fieldset class="waste-choice"><legend>¿Qué deseas retirar?</legend><div class="waste-options hero-routes">
+<section class="wrap hero" aria-labelledby="hero-title"><div class="hero-copy"><h1 id="hero-title">Encuentra cómo <span>retirar tu residuo.</span></h1><p>Selecciona su condición, indica dónde está y busca la alternativa de retiro que mejor se ajusta a tu operación.</p><fieldset class="waste-choice"><legend>¿Qué deseas retirar?</legend><div class="waste-options hero-routes">
 <a class="waste-route waste-safe" href="https://wa.me/56986067930?text=%2AConsulta%20de%20retiro%20de%20residuos%20no%20peligrosos%2A%0A%0A%2AClasificaci%C3%B3n%20inicial%3A%2A%20No%20peligroso%0A%2AResiduo%20o%20material%3A%2A%20%0A%0A%2APara%20revisar%2A%0A%E2%80%A2%20Comuna%3A%0A%E2%80%A2%20Cantidad%20aproximada%3A%0A%E2%80%A2%20Embalaje%20o%20acopio%3A%0A%0A%2AFoto%2A%0AAdjuntar%C3%A9%20una%20foto%20del%20residuo%2C%20su%20envase%20y%20el%20lugar%20de%20acopio." target="_blank" rel="noopener noreferrer" data-whatsapp="no-peligrosos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8 4-5 4 5M12 3v7M5 13l-3 5 6 1m-6-1 7-4m10-1 3 5-6 1m6-1-7-4"/></svg><strong>Residuos<br>no peligrosos</strong><span>Solicitar ayuda <b aria-hidden="true">↗</b></span></a>
 <a class="waste-route waste-hazard" href="https://wa.me/56986067930?text=%2AConsulta%20de%20retiro%20de%20residuos%20peligrosos%2A%0A%0A%2AClasificaci%C3%B3n%20inicial%3A%2A%20Peligroso%0A%2AResiduo%20o%20material%3A%2A%20%0A%0A%2APara%20revisar%2A%0A%E2%80%A2%20Comuna%3A%0A%E2%80%A2%20Cantidad%20aproximada%3A%0A%E2%80%A2%20Embalaje%20o%20acopio%3A%0A%E2%80%A2%20Documentaci%C3%B3n%20disponible%3A%0A%0A%2AFoto%2A%0AAdjuntar%C3%A9%20una%20foto%20del%20residuo%2C%20su%20envase%20y%20el%20lugar%20de%20acopio." target="_blank" rel="noopener noreferrer" data-whatsapp="peligrosos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 10 18H2Z"/><path d="M12 9v5m0 3v1"/></svg><strong>Residuos<br>peligrosos</strong><span>Solicitar ayuda <b aria-hidden="true">↗</b></span></a>
-</div><button class="unsure" id="unsure" type="button" aria-pressed="false">No estoy seguro de su clasificación</button></fieldset><p id="waste-feedback" class="waste-feedback morph-target" aria-live="polite">Cuéntanos qué tienes para orientar el retiro.</p><div class="actions"><a class="button" href="#contacto" data-request="retiro">Consultar retiro ↗</a><a class="text-link" href="#residuos">Elegir mi residuo</a></div></div><div class="transport-visual"><svg viewBox="0 0 520 300" role="img" aria-label="Ilustración de un camión de carga cerrado"><path d="M20 263h480" stroke="#aab7e8" stroke-width="3"/><rect x="48" y="58" width="268" height="174" rx="15" fill="#315fc7"/><path d="M326 124h67c10 0 17 5 23 14l48 65v29H326z" fill="#ff785a"/><path d="M343 139h44l34 47h-78z" fill="#f7f7fb"/><path d="M343 199h24" stroke="#202451" stroke-width="5" stroke-linecap="round"/><rect x="42" y="225" width="431" height="17" rx="6" fill="#202451"/><circle cx="116" cy="244" r="30" fill="#202451"/><circle cx="116" cy="244" r="13" fill="#f7f7fb"/><circle cx="399" cy="244" r="30" fill="#202451"/><circle cx="399" cy="244" r="13" fill="#f7f7fb"/><path d="M83 88h198M83 103h198" stroke="#7990e8" stroke-width="3" stroke-linecap="round"/></svg><h2>El residuo define cómo preparar el traslado.</h2><p>Origen, cantidad, embalaje y destino: los antecedentes para coordinar tu servicio.</p></div></section>
+</div><button class="unsure" id="unsure" type="button" aria-pressed="false">No estoy seguro de su clasificación</button></fieldset><p id="waste-feedback" class="waste-feedback morph-target" aria-live="polite">Cuéntanos qué tienes para orientar el retiro.</p><div class="actions"><a class="button" href="#buscar-transportistas" data-request="retiro">Buscar transportista ↘</a><a class="text-link" href="#residuos">Identificar mi residuo</a></div></div><div class="transport-visual"><svg viewBox="0 0 520 300" role="img" aria-label="Ilustración de un camión de carga cerrado"><path d="M20 263h480" stroke="#aab7e8" stroke-width="3"/><rect x="48" y="58" width="268" height="174" rx="15" fill="#315fc7"/><path d="M326 124h67c10 0 17 5 23 14l48 65v29H326z" fill="#ff785a"/><path d="M343 139h44l34 47h-78z" fill="#f7f7fb"/><path d="M343 199h24" stroke="#202451" stroke-width="5" stroke-linecap="round"/><rect x="42" y="225" width="431" height="17" rx="6" fill="#202451"/><circle cx="116" cy="244" r="30" fill="#202451"/><circle cx="116" cy="244" r="13" fill="#f7f7fb"/><circle cx="399" cy="244" r="30" fill="#202451"/><circle cx="399" cy="244" r="13" fill="#f7f7fb"/><path d="M83 88h198M83 103h198" stroke="#7990e8" stroke-width="3" stroke-linecap="round"/></svg><h2>El residuo define cómo preparar el traslado.</h2><p>Origen, cantidad, embalaje y destino: los antecedentes para coordinar tu servicio.</p></div></section>
 <style>
   .classification-statement {
     padding-block: clamp(3rem, 6vw, 5.5rem);
