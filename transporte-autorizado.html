@@ -911,6 +911,44 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
 .assistant-option{text-decoration:none!important}
 .assistant-option>.material-symbols-outlined:first-child{font-size:1.55rem;line-height:1;color:currentColor;margin-block-end:.15rem}
 .assistant-option>b.material-symbols-outlined{font-size:1.12rem}
+
+/* QA del asistente: el panel conserva la selección y nunca fuerza un ancho/alto al hero. */
+.hero,.hero-copy,.hero-assistant,.assistant-panel,.assistant-panel>*,.assistant-options,.assistant-option,.assistant-details,.assistant-result{min-inline-size:0}
+.hero{min-block-size:0!important;overflow:visible}
+.hero-copy{inline-size:100%;max-inline-size:100%}
+.hero-photo{min-height:0!important;min-block-size:0!important;block-size:auto}
+.hero-assistant{inline-size:100%;max-inline-size:100%;overflow:visible;overflow-anchor:none;scroll-margin-block-start:6.5rem}
+.assistant-panel{inline-size:100%;max-inline-size:100%}
+.assistant-option{overflow-wrap:anywhere;word-break:normal}
+.assistant-option strong,.assistant-option span{max-inline-size:100%}
+.assistant-details label,.assistant-details select{min-inline-size:0}
+.assistant-result{grid-template-columns:minmax(0,1fr)!important;overflow-wrap:anywhere}
+.assistant-result-copy{min-inline-size:0;max-inline-size:100%}
+.assistant-result-actions{min-inline-size:0;inline-size:100%;justify-content:flex-start}
+.assistant-result-actions .button{min-inline-size:0;max-inline-size:100%;white-space:normal;text-align:center}
+.assistant-selection{display:grid;gap:.45rem;margin-block:.75rem .85rem;padding-block-start:.7rem;border-block-start:1px solid color-mix(in srgb,var(--ink) 10%,var(--line))}
+.assistant-selection-label{color:var(--muted);font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.assistant-selection-list{display:flex;flex-wrap:wrap;gap:.35rem}
+.assistant-chip{display:inline-flex;align-items:center;min-inline-size:0;max-inline-size:100%;padding:.35rem .55rem;border:1px solid color-mix(in srgb,var(--green) 18%,var(--line));border-radius:999px;background:#fff;color:var(--ink);font-size:.74rem;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+@media (max-width:60rem){
+  .hero{grid-template-columns:1fr!important;min-block-size:0!important}
+  .hero-copy{max-inline-size:44rem}
+  .hero-photo{inline-size:100%;max-inline-size:48rem;justify-self:start;aspect-ratio:1.5;max-block-size:32rem}
+}
+@media (max-width:45rem){
+  .hero-assistant{padding:.85rem}
+  .assistant-top{align-items:flex-start;flex-wrap:wrap}
+  .assistant-options-two,.assistant-details{grid-template-columns:1fr}
+  .assistant-selection-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .assistant-chip{border-radius:.7rem}
+  .assistant-result-actions{display:grid;grid-template-columns:1fr;justify-content:stretch}
+  .assistant-result-actions .button{inline-size:100%}
+}
+@media (max-width:24rem){
+  .assistant-selection-list{grid-template-columns:1fr}
+  .assistant-option{padding:.8rem}
+  .assistant-option strong{font-size:.94rem}
+}
 </style>
 </head>
 <body>
@@ -926,6 +964,16 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       <div class="assistant-top"><p class="assistant-progress" id="assistant-progress" role="status" aria-live="polite">Paso 1 de 3</p><button class="assistant-reset" id="assistant-reset" type="button" hidden>Volver al inicio</button></div>
       <h2 id="assistant-title">¿Qué necesitas resolver?</h2>
       <p class="assistant-intro" id="assistant-intro">Cada opción abre un siguiente paso distinto.</p>
+      <div class="assistant-selection" id="assistant-selection" aria-live="polite" hidden>
+        <span class="assistant-selection-label">Tu selección</span>
+        <div class="assistant-selection-list" role="list">
+          <span class="assistant-chip" id="assistant-choice-need" role="listitem" hidden></span>
+          <span class="assistant-chip" id="assistant-choice-kind" role="listitem" hidden></span>
+          <span class="assistant-chip" id="assistant-choice-material" role="listitem" hidden></span>
+          <span class="assistant-chip" id="assistant-choice-location" role="listitem" hidden></span>
+          <span class="assistant-chip" id="assistant-choice-quantity" role="listitem" hidden></span>
+        </div>
+      </div>
       <div class="assistant-panel" data-assistant-panel="need">
         <div class="assistant-options assistant-options-three">
           <button class="assistant-option" type="button" data-assistant-need="retiro"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><strong>Coordinar un retiro</strong><span>Busca una alternativa según residuo, comuna y cantidad.</span><b class="material-symbols-outlined" aria-hidden="true">arrow_outward</b></button>
@@ -1964,6 +2012,12 @@ function morphContent(target,update){
   const resultText = assistant.querySelector('#assistant-result-text');
   const searchLink = assistant.querySelector('#assistant-search');
   const contactLink = assistant.querySelector('#assistant-contact');
+  const selection = assistant.querySelector('#assistant-selection');
+  const choiceNeed = assistant.querySelector('#assistant-choice-need');
+  const choiceKind = assistant.querySelector('#assistant-choice-kind');
+  const choiceMaterial = assistant.querySelector('#assistant-choice-material');
+  const choiceLocation = assistant.querySelector('#assistant-choice-location');
+  const choiceQuantity = assistant.querySelector('#assistant-choice-quantity');
   const feedback = document.querySelector('#waste-feedback');
   const carrierForm = document.querySelector('#carrier-search-form');
   const carrierType = document.querySelector('#carrier-type');
@@ -1973,12 +2027,15 @@ function morphContent(target,update){
   const hazardRows = (source.hazard || []).map(row => ({ kind: 'hazard', type: row[0] || '', location: row[1] || '' }));
   const normalize = value => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es-CL').replace(/[^a-z0-9]+/g, ' ').trim();
   const state = { step: 'need', need: '', kind: '', material: '*', location: '*', quantity: 'unknown' };
+  let panelMotion = null;
   const labels = {
     need: ['Paso 1 de 3', '¿Qué necesitas resolver?', 'Cada opción abre un siguiente paso distinto.'],
     kind: ['Paso 2 de 3', '¿Cómo se clasifica el residuo?', 'Esta elección cambia la revisión y las alternativas disponibles.'],
     details: ['Paso 3 de 3', 'Completa lo esencial', 'Con comuna y cantidad podemos ordenar mejor la búsqueda.'],
     result: ['Listo', 'Tu siguiente paso', 'Revisa la recomendación y decide cómo continuar.']
   };
+  const needText = need => need === 'retiro' ? 'Coordinar un retiro' : need === 'orientacion' ? 'Necesito orientación' : '';
+  const kindText = kind => kind === 'hazard' ? 'Peligroso' : kind === 'safe' ? 'No peligroso' : kind === 'unknown' ? 'Clasificación por confirmar' : '';
   const panelFor = step => assistant.querySelector(`[data-assistant-panel="${step}"]`);
   const animatePanel = panel => {
     if (reduced.matches || !panel?.animate) return;
@@ -1994,11 +2051,56 @@ function morphContent(target,update){
     intro.textContent = meta[2];
     reset.hidden = step === 'need';
   };
+  const setChoice = (element, text) => {
+    if (!element) return;
+    element.hidden = !text;
+    element.textContent = text || '';
+  };
+  const updateSelection = () => {
+    if (!selection) return;
+    const isResult = state.step === 'result';
+    const materialValue = state.material === '*' ? (isResult ? 'Por definir' : '') : display(material, state.material);
+    const locationValue = state.location === '*' ? (isResult ? 'Por definir' : '') : display(location, state.location);
+    const quantityValue = state.quantity === 'unknown' ? (isResult ? 'Por definir' : '') : display(quantity, state.quantity);
+    setChoice(choiceNeed, state.need ? `Ruta: ${needText(state.need)}` : '');
+    setChoice(choiceKind, state.kind ? `Clasificación: ${kindText(state.kind)}` : '');
+    setChoice(choiceMaterial, materialValue ? `Residuo: ${materialValue}` : '');
+    setChoice(choiceLocation, locationValue ? `Comuna: ${locationValue}` : '');
+    setChoice(choiceQuantity, quantityValue ? `Cantidad: ${quantityValue}` : '');
+    selection.hidden = !state.need || state.step === 'need';
+  };
   const show = step => {
+    const previousHeight = assistant.getBoundingClientRect().height;
+    panelMotion?.cancel();
+    panelMotion = null;
+    assistant.style.height = '';
+    assistant.style.overflow = '';
     state.step = step;
+    assistant.dataset.step = step;
     panels.forEach(panel => { panel.hidden = panel !== panelFor(step); });
     setMeta(step);
+    updateSelection();
     animatePanel(panelFor(step));
+    requestAnimationFrame(() => {
+      const nextHeight = assistant.getBoundingClientRect().height;
+      const rect = assistant.getBoundingClientRect();
+      if (step !== 'need' && rect.top < 96) {
+        assistant.scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth', block: 'start' });
+      }
+      if (reduced.matches || !previousHeight || Math.abs(previousHeight - nextHeight) < 2 || !assistant.animate) return;
+      assistant.style.overflow = 'hidden';
+      panelMotion = assistant.animate(
+        [{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }],
+        { duration: 420, easing: 'cubic-bezier(.22,1,.36,1)' }
+      );
+      const finish = () => {
+        if (!panelMotion) return;
+        assistant.style.height = '';
+        assistant.style.overflow = '';
+        panelMotion = null;
+      };
+      panelMotion.finished.then(finish, finish);
+    });
     if (feedback) feedback.textContent = step === 'result' ? 'Puedes editar tus datos o continuar con la alternativa sugerida.' : 'Te guiaremos en menos de un minuto.';
     const focusTarget = panelFor(step)?.querySelector('button,select,a');
     if (focusTarget && step !== 'need') requestAnimationFrame(() => focusTarget.focus({ preventScroll: true }));
@@ -2019,7 +2121,6 @@ function morphContent(target,update){
     material.value = state.material !== '*' && [...material.options].some(option => option.value === state.material) ? state.material : '*';
     location.value = state.location !== '*' && [...location.options].some(option => option.value === state.location) ? state.location : '*';
   };
-  const kindText = kind => kind === 'hazard' ? 'Peligroso' : kind === 'safe' ? 'No peligroso' : 'Por confirmar';
   const display = (select, fallback) => select?.selectedOptions?.[0]?.textContent || fallback;
   const makeMessage = () => {
     const type = state.kind ? kindText(state.kind) : 'Por confirmar';
@@ -2084,6 +2185,7 @@ function morphContent(target,update){
   });
   [material, location, quantity].forEach(control => control.addEventListener('change', () => {
     state.material = material.value; state.location = location.value; state.quantity = quantity.value;
+    updateSelection();
   }));
   continueButton.addEventListener('click', () => { updateResult(); show('result'); });
   assistant.querySelector('#assistant-edit')?.addEventListener('click', () => show('details'));
