@@ -975,6 +975,9 @@ function morphContent(target,update){
 })();
 </script>
 <script>
+(()=>{const icons={'↗':'north_east','↘':'south_east','↖':'north_west','→':'arrow_forward'};const convert=root=>{const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;if(!p||/^(SCRIPT|STYLE|NOSCRIPT)$/.test(p.tagName)||!Object.keys(icons).some(mark=>node.nodeValue.includes(mark)))return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}});const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(node=>{const fragment=document.createDocumentFragment();node.nodeValue.split(/(↗|↘|↖|→)/).forEach(part=>{if(icons[part]){const icon=document.createElement('span');icon.className='material-symbols-outlined';icon.setAttribute('aria-hidden','true');icon.textContent=icons[part];fragment.append(icon)}else fragment.append(document.createTextNode(part))});node.replaceWith(fragment)})};convert(document.body);new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===Node.TEXT_NODE)convert(node.parentElement||document.body);else if(node.nodeType===Node.ELEMENT_NODE)convert(node)}))).observe(document.body,{subtree:true,childList:true,characterData:true})})();
+</script>
+<script>
 (() => {
   const dialog=document.createElement('dialog');
   dialog.className='service-dialog';
