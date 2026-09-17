@@ -596,6 +596,102 @@ button,a,summary{touch-action:manipulation}
 .service-grid .service-image{aspect-ratio:3 / 2}
 .service-grid .service-image img{object-fit:contain;object-position:center;background:linear-gradient(145deg,#f0efff,#eef7ff)}
 </style>
+<style id="transporte-design-system">
+/* Transporte Autorizado · sistema de lectura compacto */
+:root{
+  --content-max:72rem;
+  --gutter:clamp(1rem,3.4vw,2.25rem);
+  --section-space:clamp(3.75rem,6vw,5.5rem);
+  --measure:65ch;
+  --surface-soft:#e8eefc;
+  --surface-quiet:#fbfcff;
+  --danger:#d5463d;
+  --danger-soft:#fde2de;
+}
+html{scroll-padding-top:6.75rem}
+body{font-size:1rem;line-height:1.58;letter-spacing:-.005em}
+.wrap{inline-size:min(var(--content-max),calc(100% - (var(--gutter) * 2)))}
+h1,h2,h3{ text-wrap:balance;overflow-wrap:normal}
+h1{font-size:clamp(2.75rem,5.5vw,4.3rem);line-height:1.02;letter-spacing:-.075em;max-inline-size:14ch}
+h2{font-size:clamp(2rem,3.25vw,2.8rem);line-height:1.08;letter-spacing:-.055em}
+h3{font-size:clamp(1.25rem,1.8vw,1.55rem);line-height:1.2;letter-spacing:-.025em}
+p,li{max-inline-size:var(--measure)}
+.section{padding-block:var(--section-space)}
+.section-heading{display:block;max-inline-size:var(--measure);margin-block-end:2rem}
+.section-heading h2{max-inline-size:24ch}
+.section-heading p{max-inline-size:58ch;margin-block-start:.75rem;line-height:1.6}
+.header{padding-block:.75rem}
+.header-inner{min-block-size:3rem}
+.brand{padding:.45rem .85rem .45rem .5rem;font-size:.875rem}
+.brand svg{inline-size:2rem;block-size:2rem}
+.nav{padding:.3rem;gap:.15rem}
+.nav a{padding:.55rem .85rem;font-size:.8125rem}
+.nav .nav-cta{padding-inline:1rem}
+.hero{min-block-size:min(42rem,calc(100svh - 5.75rem));grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr);gap:clamp(1.5rem,4vw,3.5rem);padding-block:1.5rem 4rem}
+.hero h1{max-inline-size:13ch}
+.hero-copy>p{max-inline-size:44ch;margin-block:1rem 1.25rem;font-size:1rem;line-height:1.6}
+.hero-photo,.transport-visual{align-self:center;min-block-size:0;aspect-ratio:4 / 3;border-radius:1.75rem}
+.hero-photo>img{object-fit:cover}
+.hero-routes{gap:.75rem}
+.waste-route{min-block-size:10.5rem;padding:1.1rem 1rem;border-radius:1.4rem}
+.waste-route>strong{font-size:1.2rem}
+.waste-hazard{background:var(--danger);color:#fff}
+.service-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.service-card{min-inline-size:0;padding:1.15rem;border-radius:1.5rem}
+.service-card h3{min-block-size:0;max-inline-size:24ch}
+.service-card>p{min-block-size:0;max-inline-size:48ch;margin-block:.8rem 1.1rem;font-size:.9375rem;line-height:1.58}
+.service-image{aspect-ratio:1.65;margin-block-end:1rem;border-radius:1rem}
+.service-card .service-open{min-block-size:3rem;padding:.6rem .35rem .2rem}
+.classification-statement,.transport-law,.materials,.contact{gap:clamp(1.5rem,4vw,3rem);padding:clamp(1.5rem,4vw,2.75rem);border-radius:1.75rem}
+.residue-finder-head{max-inline-size:var(--measure)}
+.residue-finder-head p{margin-block-start:.75rem}
+.finder-steps,.flow-steps{gap:.8rem}
+.finder-step{min-inline-size:0;padding:1rem;border-radius:1.25rem}
+.carrier-search-form{grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;padding:1rem;border-radius:1.5rem}
+.carrier-kind-field,.carrier-search-helper{grid-column:1 / -1}
+.carrier-results-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.carrier-card{min-inline-size:0;padding:1rem;border-radius:1.25rem}
+.carrier-card h4{font-size:1rem}
+.carrier-card dl{font-size:.8125rem}
+.support-services-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.support-service-card{min-inline-size:0;padding:1.25rem;border-radius:1.35rem}
+.priority-layout{grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:clamp(1.5rem,4vw,3rem)}
+.priority-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
+.process-visual-layout,.process{gap:clamp(2rem,6vw,5rem)}
+.process summary,.faq summary{font-size:1.05rem;line-height:1.35}
+.process details,.faq details{padding-block:1rem}
+.network,.ecosystem-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.network a,.ecosystem-card{min-inline-size:0;padding:1.5rem;border-radius:1.5rem}
+.network h3,.ecosystem-card h3{font-size:1.45rem;max-inline-size:22ch}
+.faq{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(2rem,6vw,5rem)}
+.contact{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+.contact h2{max-inline-size:15ch}
+.contact form{gap:.85rem}
+.field input,.field select,.field textarea{min-block-size:3rem;font-size:.9375rem}
+.footer{padding-block:2.25rem;font-size:.8125rem}
+@media (max-width:1050px){.support-services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.priority-layout{grid-template-columns:1fr}}
+@media (max-width:900px){.hero{min-block-size:0}.process,.faq{gap:2.5rem}.carrier-search-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){
+  :root{--gutter:1rem;--section-space:3.25rem}
+  .wrap{inline-size:calc(100% - 2rem)}
+  .hero{grid-template-columns:1fr;gap:1.75rem;padding-block:1.25rem 3rem}
+  .hero h1{font-size:clamp(2.5rem,11vw,3.5rem);max-inline-size:15ch}
+  .hero-photo,.transport-visual{aspect-ratio:1.25;max-block-size:28rem}
+  .hero-routes{gap:.6rem}
+  .waste-route{min-block-size:9.5rem;padding:.9rem .8rem}
+  .service-grid,.network,.ecosystem-grid,.process,.faq,.contact,.classification-statement,.transport-law,.materials{grid-template-columns:1fr}
+  .support-services-grid,.priority-list{grid-template-columns:1fr}
+  .section-heading{margin-block-end:1.5rem}
+  .service-card{padding:1rem}
+  .service-grid .service-image{aspect-ratio:1.8}
+  .carrier-search-form{grid-template-columns:1fr}
+  .carrier-kind-field,.carrier-search-helper{grid-column:auto}
+  .carrier-results-grid{grid-template-columns:1fr}
+  .contact{padding:1.35rem;border-radius:1.5rem}
+  .footer{flex-direction:column;align-items:flex-start;gap:.75rem}
+}
+@media (prefers-reduced-motion:reduce){.service-card,.network a,.ecosystem-card,.waste-route,.carrier-card{transform:none!important}}
+</style>
 </head>
 <body>
 <a class="skip" href="#contenido">Saltar al contenido</a>
