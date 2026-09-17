@@ -2131,6 +2131,17 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 .experience-help-result{margin-top:1.25rem;padding:1.25rem;border-radius:1rem;background:#f0f4fa}
 .experience-help-summary{white-space:pre-line;margin:1rem 0}
 .experience-help-result .button{margin-top:1rem}
+.transport-experience{--experience-ease:cubic-bezier(.22,1,.36,1)}
+.experience-routes button{transition:background 180ms ease,border-color 180ms ease,transform 220ms var(--experience-ease);cursor:pointer}
+.experience-routes button>span:last-child{transition:transform 240ms var(--experience-ease)}
+@media(hover:hover){.experience-routes button:hover{background:#f9fbff}.experience-routes button:hover>span:last-child{transform:translateX(3px)}}
+.experience-routes button:active,.experience-carousel-controls button:active{transform:scale(.985)}
+.experience-back,.experience-carousel-controls button{transition:background 180ms ease,opacity 180ms ease,transform 180ms var(--experience-ease)}
+.experience-back:hover{color:#315a9f}
+.transport-experience :is(button,a,input,select,textarea):focus-visible{outline:3px solid #789be0;outline-offset:3px}
+.transport-experience h2[tabindex="-1"]:focus{outline:none}
+.transport-experience .carrier-card{box-shadow:none!important;border:1px solid #e0e5ed!important;transform:none!important}
+.transport-experience .carrier-card h3{line-height:1.35;letter-spacing:-.015em}
 @media(max-width:800px){.experience-routes{grid-template-columns:1fr}.experience-routes button{min-height:72px}.experience-intro{grid-template-columns:minmax(0,1fr) minmax(0,.5fr);gap:1rem}}
 @media(max-width:560px){.transport-experience{border-radius:1.25rem}.experience-intro{grid-template-columns:1fr}.experience-intro img{max-height:155px;object-position:center 55%}.transport-experience .carrier-search-form,#experience-help-form,.transport-experience .finder-steps{grid-template-columns:1fr!important}.transport-experience .carrier-kind-options{grid-template-columns:1fr}.experience-workspace{padding:1rem}.transport-experience .carrier-card{flex-basis:100%}.transport-experience .carrier-results-head{display:block}}
 @media(prefers-reduced-motion:reduce){.experience-routes button{transition:none}}
@@ -2143,20 +2154,39 @@ hero.querySelector('.experience-search-slot').append(search);
 hero.querySelector('#experience-residue').append(residue);
 [search,residue].forEach(el=>{el.classList.remove('reveal-pending');el.classList.add('is-visible')});
 const workspace=hero.querySelector('.experience-workspace'),buttons=[...hero.querySelectorAll('[data-experience-route]')],panels=[...hero.querySelectorAll('.experience-panel')],status=hero.querySelector('.experience-status');
-let current='',motion;
+let current='',motion,heightMotion;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+// Measure before and after a state change. Never scale text or keep a fixed height.
+const transition=(change,target)=>{
+ const from=hero.getBoundingClientRect().height;
+ heightMotion?.cancel();motion?.cancel();hero.style.overflow='';
+ change();
+ const to=hero.getBoundingClientRect().height;
+ if(reduced.matches)return;
+ if(Math.abs(to-from)>1){
+  hero.style.overflow='clip';
+  const animation=hero.animate([{height:from+'px'},{height:to+'px'}],{duration:420,easing:'cubic-bezier(.22,1,.36,1)'});
+  heightMotion=animation;
+  animation.finished.then(()=>{if(heightMotion===animation){hero.style.overflow='';heightMotion=null}},()=>{});
+ }
+ if(target)motion=target.animate([{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:300,delay:45,fill:'backwards',easing:'cubic-bezier(.22,1,.36,1)'});
+};
+reduced.addEventListener('change',()=>{if(reduced.matches){heightMotion?.cancel();motion?.cancel();hero.style.overflow=''}});
+window.addEventListener('resize',()=>{heightMotion?.cancel();hero.style.overflow=''}, {passive:true});
 const open=(route,focus=false)=>{
+ const panel=hero.querySelector('#experience-'+route);
+ if(!panel)return;
+ transition(()=>{
  current=route;workspace.hidden=false;hero.dataset.route=route;
  buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.experienceRoute===route)));
  panels.forEach(p=>p.hidden=p.id!=='experience-'+route);
  status.textContent={search:'Búsqueda de transportistas',residue:'Revisión del residuo',help:'Orientación'}[route];
- const panel=hero.querySelector('#experience-'+route);
- motion?.cancel();
- if(!matchMedia('(prefers-reduced-motion: reduce)').matches)motion=panel.animate([{opacity:.35,transform:'translateX(8px)'},{opacity:1,transform:'none'}],{duration:260,easing:'cubic-bezier(.22,1,.36,1)'});
+ },panel);
  const heading=panel.querySelector('h2');heading.tabIndex=-1;heading.focus({preventScroll:true});
  requestAnimationFrame(()=>{const top=hero.getBoundingClientRect().top;if(top<80)window.scrollTo({top:window.scrollY+top-90,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 };
 buttons.forEach(b=>b.addEventListener('click',()=>open(b.dataset.experienceRoute)));
-hero.querySelector('.experience-back').addEventListener('click',()=>{workspace.hidden=true;buttons.forEach(b=>b.setAttribute('aria-pressed','false'));buttons.find(b=>b.dataset.experienceRoute===current)?.focus({preventScroll:true});delete hero.dataset.route});
+hero.querySelector('.experience-back').addEventListener('click',()=>{transition(()=>{workspace.hidden=true;buttons.forEach(b=>b.setAttribute('aria-pressed','false'));delete hero.dataset.route},hero.querySelector('.experience-routes'));buttons.find(b=>b.dataset.experienceRoute===current)?.focus({preventScroll:true})});
 const routes={'#buscar-transportistas':'search','#residuos':'residue'};
 document.addEventListener('click',e=>{const a=e.target.closest('a[href]');const route=routes[a?.getAttribute('href')];if(!route)return;e.preventDefault();open(route,true);hero.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})});
 if(routes[location.hash])open(routes[location.hash]);
@@ -2168,7 +2198,7 @@ const [prev,next]=controls.children;
 const update=()=>{const overflow=grid.scrollWidth>grid.clientWidth+2;controls.hidden=!overflow;prev.disabled=grid.scrollLeft<2;next.disabled=grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-2};
 [prev,next].forEach((b,i)=>b.addEventListener('click',()=>grid.scrollBy({left:(i?1:-1)*(grid.clientWidth*.9),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})));
 grid.addEventListener('scroll',update,{passive:true});new ResizeObserver(update).observe(grid);
-new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update)}).observe(grid,{childList:true});
+new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.35},{opacity:1}],{duration:220,easing:'ease-out'})}}).observe(grid,{childList:true});
 const form=hero.querySelector('#experience-help-form'),result=hero.querySelector('.experience-help-result');
 form.addEventListener('input',e=>{result.hidden=true;e.target.setCustomValidity?.('')});
 form.addEventListener('submit',e=>{e.preventDefault();const fields=[...form.querySelectorAll('input,textarea')];for(const f of fields){f.setCustomValidity(f.value.trim()?'':'Completa este dato.')}if(!form.reportValidity())return;const data=new FormData(form);const message=['*Consulta de orientación*','','*Residuo:* '+data.get('material').trim(),'*Comuna:* '+data.get('comuna').trim(),'','*Mi consulta*',data.get('contexto').trim(),'','Adjuntaré una foto del residuo y de su lugar de acopio.'].join('\n');result.querySelector('.experience-help-summary').textContent=message.replaceAll('*','');result.querySelector('a').href='https://wa.me/56986067930?text='+encodeURIComponent(message);result.hidden=false});
