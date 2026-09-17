@@ -761,6 +761,24 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
   .services-section .service-grid{grid-template-columns:1fr!important}
   .services-section .service-card h3{min-block-size:0!important}
 }
+
+/* Hero común: lectura cómoda, imagen protagonista y acciones rápidas. */
+.hero{min-block-size:min(42rem,calc(100svh - 5.5rem))!important;gap:clamp(2rem,4vw,3.75rem)!important;padding-block:2rem 4.25rem!important}
+.hero h1{font-size:clamp(2.5rem,4.35vw,3.75rem)!important;line-height:1.04!important}
+.hero-copy>p{font-size:1.0625rem!important;line-height:1.62!important;max-inline-size:48ch!important}
+.hero-photo{aspect-ratio:4 / 3!important;max-block-size:34rem!important;min-block-size:0!important}
+.hero .waste-route{min-block-size:8.75rem!important;padding:1rem!important}
+.hero .waste-route>strong{font-size:1.1rem!important}
+.hero .actions .button{min-block-size:3rem!important;font-size:.95rem!important}
+.button-secondary{background:transparent!important;color:var(--ink)!important;border:1px solid var(--line)!important}
+.button-secondary:hover{background:var(--mint)!important}
+@media(max-width:720px){
+  .hero{min-block-size:0!important;padding-block:1.5rem 3.25rem!important;gap:2rem!important}
+  .hero h1{font-size:clamp(2.3rem,9.5vw,3.15rem)!important}
+  .hero-copy>p{font-size:1rem!important}
+  .hero-photo{aspect-ratio:1.25!important;max-block-size:32rem!important}
+  .hero .waste-route{min-block-size:8rem!important}
+}
 </style>
 </head>
 <body>
