@@ -1176,6 +1176,31 @@ button,a,summary{touch-action:manipulation}
     border-radius: 1.35rem;
     background: color-mix(in srgb, var(--mint) 24%, var(--paper));
     color: var(--muted);
+    line-height: 1.55;
+  }
+  .carrier-empty p {
+    margin: 0;
+  }
+  .carrier-empty p + p {
+    margin-block-start: .65rem;
+  }
+  .carrier-empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-block-start: 1rem;
+  }
+  .carrier-suggest {
+    min-block-size: 2.6rem;
+    padding: .55rem .8rem;
+    border: 1px solid color-mix(in srgb, var(--green) 30%, var(--line));
+    background: var(--paper);
+    color: var(--ink);
+    font-size: .8rem;
+  }
+  .carrier-suggest:hover {
+    border-color: var(--green);
+    background: var(--mint);
   }
   .carrier-more {
     display: block;
@@ -1272,10 +1297,10 @@ button,a,summary{touch-action:manipulation}
         <option value="2000-plus">Más de 2.000 kg o L</option>
       </select>
     </div>
-    <button class="button carrier-search-button" type="submit">Buscar resultados <span aria-hidden="true">↗</span></button>
-    <p class="carrier-search-helper">La comuna aproxima la cercanía al establecimiento. Los archivos no informan distancia ni disponibilidad en tiempo real.</p>
+    <button class="button carrier-search-button" type="submit">Actualizar resultados <span aria-hidden="true">↗</span></button>
+    <p class="carrier-search-helper">Los resultados se actualizan al cambiar un filtro. La comuna orienta la búsqueda; los archivos no informan distancia ni disponibilidad en tiempo real.</p>
   </form>
-  <p class="carrier-search-status" id="carrier-search-status" role="status" aria-live="polite">Selecciona los filtros para consultar el listado.</p>
+  <p class="carrier-search-status" id="carrier-search-status" role="status" aria-live="polite">Selecciona un tipo de residuo o una comuna para mostrar resultados automáticamente.</p>
   <div class="carrier-results" id="carrier-results" aria-live="polite">
     <div class="carrier-results-head">
       <h3>Resultados del listado</h3>
@@ -1374,11 +1399,67 @@ button,a,summary{touch-action:manipulation}
       fillSelect(locationSelect, [...locations.entries()].sort((a, b) => a[1].localeCompare(b[1], "es")).map(([value, label]) => ({ value, label })), "Todas las comunas");
       const start = document.createElement("p");
       start.className = "carrier-empty";
-      start.textContent = "Elige una comuna o un tipo de residuo y pulsa “Buscar resultados” para mostrar transportistas del listado.";
+      start.textContent = "Elige una comuna o un tipo de residuo para mostrar transportistas del listado automáticamente.";
       resultGrid.replaceChildren(start);
       resultCount.textContent = "";
       more.hidden = true;
       status.textContent = `Listado listo: ${filtered.length.toLocaleString("es-CL")} registros para residuos ${kindLabel(kind).toLocaleLowerCase("es-CL")}.`;
+    }
+    function relaxedMatches(kind, type, location) {
+      const currentRows = rows.filter((item) => item.kind === kind);
+      return {
+        sameType: type !== "*" && location !== "*"
+          ? currentRows.filter((item) => item.type === type).length
+          : 0,
+        sameLocation: type !== "*" && location !== "*"
+          ? currentRows.filter((item) => item.locationKey === location).length
+          : 0,
+      };
+    }
+    function createEmptyState(kind, type, location) {
+      const empty = document.createElement("div");
+      empty.className = "carrier-empty";
+      const title = document.createElement("p");
+      title.textContent = "No encontramos esa combinación exacta.";
+      empty.append(title);
+      const { sameType, sameLocation } = relaxedMatches(kind, type, location);
+      if (!sameType && !sameLocation) {
+        const note = document.createElement("p");
+        note.textContent = "Prueba otra comuna o deja el tipo de residuo en “Todos los residuos”.";
+        empty.append(note);
+        return empty;
+      }
+      const note = document.createElement("p");
+      note.textContent = "Estas alternativas amplían el listado sin asumir distancias entre comunas.";
+      empty.append(note);
+      const actions = document.createElement("div");
+      actions.className = "carrier-empty-actions";
+      if (sameType) {
+        const typeLabel = typeSelect.selectedOptions[0]?.textContent || "este residuo";
+        const action = document.createElement("button");
+        action.type = "button";
+        action.className = "button carrier-suggest";
+        action.textContent = `Ver ${sameType.toLocaleString("es-CL")} registros de «${typeLabel}» en todas las comunas`;
+        action.addEventListener("click", () => {
+          locationSelect.value = "*";
+          renderResults();
+        });
+        actions.append(action);
+      }
+      if (sameLocation) {
+        const locationLabel = locationSelect.selectedOptions[0]?.textContent || "esta comuna";
+        const action = document.createElement("button");
+        action.type = "button";
+        action.className = "button carrier-suggest";
+        action.textContent = `Ver ${sameLocation.toLocaleString("es-CL")} registros de otros residuos en ${locationLabel}`;
+        action.addEventListener("click", () => {
+          typeSelect.value = "*";
+          renderResults();
+        });
+        actions.append(action);
+      }
+      empty.append(actions);
+      return empty;
     }
     function addDetail(dl, label, value) {
       const dt = document.createElement("dt");
@@ -1434,15 +1515,19 @@ button,a,summary{touch-action:manipulation}
       if (state.matches.length) {
         resultGrid.replaceChildren(...state.matches.slice(0, state.visible).map(createCard));
       } else {
-        const empty = document.createElement("p");
-        empty.className = "carrier-empty";
-        empty.textContent = "No encontramos registros con esa combinación. Prueba otra comuna o deja el tipo en “Todos los residuos”.";
-        resultGrid.replaceChildren(empty);
+        resultGrid.replaceChildren(createEmptyState(kind, type, location));
       }
       resultCount.textContent = `${state.matches.length.toLocaleString("es-CL")} coincidencia${state.matches.length === 1 ? "" : "s"}`;
       more.hidden = state.matches.length <= state.visible;
       const quantityMessage = quantity === "unknown" ? "Indica la cantidad al contactar." : `Rango seleccionado: ${quantitySelect.selectedOptions[0].textContent}.`;
-      status.textContent = state.matches.length ? `${quantityMessage} Revisa los antecedentes del registro antes de coordinar.` : "No encontramos registros con esa combinación. Prueba otra comuna o deja el tipo en “Todos los residuos”.";
+      if (state.matches.length) {
+        status.textContent = `${quantityMessage} Revisa los antecedentes del registro antes de coordinar.`;
+      } else {
+        const alternatives = relaxedMatches(kind, type, location);
+        status.textContent = alternatives.sameType || alternatives.sameLocation
+          ? "No encontramos esa combinación exacta. Puedes ampliar la búsqueda desde las alternativas bajo los resultados."
+          : "No encontramos esa combinación. Prueba otra comuna o deja el tipo en “Todos los residuos”.";
+      }
     }
     form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -1454,7 +1539,11 @@ button,a,summary{touch-action:manipulation}
       resultGrid.append(...state.matches.slice(state.visible - 12, state.visible).map(createCard));
       more.hidden = state.matches.length <= state.visible;
     });
-    form.querySelectorAll("[name='carrier-kind']").forEach((input) => input.addEventListener("change", updateFilterOptions));
+    form.querySelectorAll("[name='carrier-kind']").forEach((input) => input.addEventListener("change", () => {
+      updateFilterOptions();
+      renderResults();
+    }));
+    [typeSelect, locationSelect, quantitySelect].forEach((control) => control.addEventListener("change", renderResults));
     updateFilterOptions();
   })();
 </script>
