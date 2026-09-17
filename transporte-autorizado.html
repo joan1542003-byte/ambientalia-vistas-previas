@@ -881,6 +881,31 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
 @media(max-width:980px){.assistant-options-three{grid-template-columns:1fr}.assistant-option{min-block-size:0}.assistant-option b{position:absolute;right:1rem;top:1rem}.assistant-result{grid-template-columns:1fr}.assistant-result-actions{justify-content:flex-start}}
 @media(max-width:720px){.hero-assistant{padding:.85rem;border-radius:1.1rem}.assistant-options-two,.assistant-details{grid-template-columns:1fr}.assistant-option{padding:.9rem}.assistant-details select{min-block-size:3rem}.assistant-result-actions{display:grid;grid-template-columns:1fr;width:100%}.assistant-result-actions .button{width:100%;justify-content:center}.assistant-edit{justify-self:start}}
 @media(prefers-reduced-motion:reduce){.assistant-option,.assistant-option b{transition:none!important;transform:none!important}.hero-assistant{box-shadow:none}}
+
+/* Final visual pass: keep the guided hero calm at tablet widths and remove the card pile. */
+.hero{align-items:start}
+.hero-proof{display:flex;align-items:center;gap:.8rem;margin-block:1rem 1.15rem;padding:.7rem .85rem;border:1px solid color-mix(in srgb,var(--danger) 18%,var(--line));border-radius:.9rem;background:color-mix(in srgb,#fff 90%,var(--danger-soft));box-shadow:none}
+.hero-proof::before{content:"";inline-size:.45rem;block-size:.45rem;flex:none;border-radius:50%;background:var(--danger)}
+.hero-proof p{flex:1;max-inline-size:none;font-size:.86rem;font-weight:700;line-height:1.35}
+.hero-proof a{font-size:.8rem}
+.assistant-options-three{grid-template-columns:repeat(2,minmax(0,1fr))}
+.assistant-options-three .assistant-option:last-child{grid-column:1/-1;min-block-size:0;flex-direction:row;align-items:center;gap:.35rem;padding:.35rem .2rem 0;border:0;border-radius:0;background:transparent;color:var(--muted);box-shadow:none;transform:none}
+.assistant-options-three .assistant-option:last-child strong{font-size:.8rem;text-decoration:underline;text-underline-offset:.18em}
+.assistant-options-three .assistant-option:last-child span{font-size:.76rem}
+.assistant-options-three .assistant-option:last-child b{margin-inline-start:auto;font-size:.95rem}
+.assistant-options-three .assistant-option:last-child:hover{border-radius:0;background:transparent;box-shadow:none;color:var(--ink);transform:none}
+.assistant-options-three .assistant-option:last-child:hover b{transform:translate(2px,-1px)}
+@media (width < 60rem){
+  .hero{grid-template-columns:1fr!important;min-block-size:0!important}
+  .hero-copy{max-inline-size:44rem}
+  .hero-photo{inline-size:100%;max-inline-size:48rem;justify-self:start}
+}
+@media (width < 45rem){
+  .hero-proof{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.55rem .65rem}
+  .hero-proof a{grid-column:2;justify-self:start}
+  .assistant-options-three{grid-template-columns:1fr}
+  .assistant-options-three .assistant-option:last-child{grid-column:auto;flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
