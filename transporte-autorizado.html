@@ -845,9 +845,9 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
 <header class="header"><div class="wrap header-inner"><a class="brand" href="#contenido" aria-label="Transporte Autorizado, inicio"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="20" fill="#315fc7"/><path d="M8 13h15v13H8zm15 5h5l5 5v3H23M12 29a3 3 0 1 0 0-6 3 3 0 0 0 0 6m16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6" fill="none" stroke="#202451" stroke-width="2" stroke-linejoin="round"/></svg><span>Transporte<br>Autorizado</span></a><button class="menu" type="button" aria-expanded="false" aria-controls="nav">Menú</button><nav class="nav" id="nav" aria-label="Principal"><a href="#servicios">Servicios</a><a href="#residuos">Identifica tu residuo</a><a href="#buscar-transportistas">Buscar transportista</a><a href="#proceso">Cómo funciona</a><a class="nav-cta" href="#contacto">Consultar ↗</a></nav></div></header>
 <main id="contenido" tabindex="-1">
 <section class="wrap transport-experience" id="hero-experience" aria-labelledby="hero-title">
+  <img class="experience-cover" src="assets/transporte/transporte-hero-panorama.webp" width="1672" height="941" alt="" fetchpriority="high" decoding="async">
   <div class="experience-intro">
     <div><h1 id="hero-title">¿Qué necesitas hacer con tu residuo?</h1><p>Encuentra un transportista, revisa tu material o prepara una consulta.</p></div>
-    <img src="assets/transporte/transporte-retiro-studio.webp" width="960" height="640" alt="Camión de transporte de carga" fetchpriority="high">
   </div>
   <div class="experience-routes" role="group" aria-label="Elige cómo continuar">
     <button type="button" data-experience-route="search" aria-pressed="false" aria-controls="experience-search"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><span><strong>Buscar un transportista</strong><small>Por residuo y comuna</small></span><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
@@ -2098,26 +2098,30 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 </script>
 <style>
 /* One bounded workspace for each visitor intent. */
-.transport-experience{margin-block:1.5rem 2rem;padding:clamp(1.1rem,3.2vw,2.5rem);border:1px solid #dfe5ef;border-radius:2rem;background:#f7f9fc;min-width:0;overflow-anchor:none;height:clamp(680px,calc(100dvh - 120px),850px);display:flex;flex-direction:column}
-.experience-intro{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.6fr);gap:2rem;align-items:center;margin-bottom:1.75rem}
+.transport-experience{margin-block:1.5rem 2rem;padding:clamp(1.1rem,3.2vw,2.5rem);border:1px solid #dfe5ef;border-radius:2rem;background:#102943;min-width:0;overflow-anchor:none;height:clamp(680px,calc(100dvh - 120px),850px);display:flex;flex-direction:column;position:relative;isolation:isolate;overflow:hidden}
+.experience-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:-2}
+.transport-experience::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgb(9 24 43 / .88) 0%,rgb(9 24 43 / .61) 46%,rgb(9 24 43 / .22) 100%),linear-gradient(0deg,rgb(9 24 43 / .68),transparent 43%);z-index:-1;pointer-events:none}
+.experience-intro{display:flex;align-items:flex-start;margin-bottom:1.75rem}
 .transport-experience h1{font-size:clamp(2rem,3.4vw,3.25rem)!important;max-width:20ch!important;letter-spacing:-.045em!important}
-.experience-intro p{margin-top:1rem;max-width:48ch;color:var(--muted)}
-.experience-intro img{display:block;width:100%;height:auto;aspect-ratio:1.6;object-fit:cover;border-radius:1.25rem}
-.transport-experience:not([data-route]) .experience-intro{flex:1;min-height:0;align-items:stretch}
-.transport-experience:not([data-route]) .experience-intro img{height:100%;min-height:0;aspect-ratio:auto}
+.experience-intro p{margin-top:1rem;max-width:48ch;color:rgb(255 255 255 / .9)}
+.transport-experience:not([data-route]) .experience-intro{flex:1;min-height:0}
+.transport-experience h1{color:#fff;text-shadow:0 2px 18px rgb(0 0 0 / .12)}
 .experience-routes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
-.experience-routes button{display:flex;align-items:center;gap:.75rem;min-width:0;min-height:88px;padding:1rem;border:1px solid #d6deec;border-radius:1rem;text-align:left;color:var(--ink);background:#fff;transition:background .2s,border-color .2s}
+.experience-routes button{display:flex;align-items:center;gap:.75rem;min-width:0;min-height:96px;padding:1.1rem 1.2rem;border:1px solid rgb(255 255 255 / .34);border-radius:1.15rem;text-align:left;color:#fff;background:#315db1;transition:transform .28s cubic-bezier(.22,1,.36,1),filter .28s ease}
 .experience-routes button>span:nth-child(2){flex:1;min-width:0}
 .experience-routes strong,.experience-routes small{display:block}
 .experience-routes strong{font-size:1rem;line-height:1.35}
-.experience-routes small{font-size:.85rem;line-height:1.4;margin-top:.3rem;color:var(--muted)}
-.experience-routes button:hover{border-color:#6485c8}
+.experience-routes small{font-size:.85rem;line-height:1.4;margin-top:.3rem;color:rgb(255 255 255 / .84)}
+.experience-routes [data-experience-route="residue"]{background:#237758}
+.experience-routes [data-experience-route="help"]{background:#f2c87a;color:#173044;border-color:#f2c87a}
+.experience-routes [data-experience-route="help"] small{color:#405262}
+.experience-routes button:hover{border-color:#fff}
 .experience-routes button[aria-pressed=true]{background:#e2ebfc;border-color:#3d64b9}
 .experience-workspace{margin-top:1.25rem;background:white;border:1px solid #dfe5ef;border-radius:1.25rem;padding:clamp(1rem,2.5vw,1.75rem);min-width:0;min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 .experience-workspace[hidden]{display:none!important}
 .transport-experience[data-route] .experience-routes{display:none}
 .transport-experience[data-route] .experience-intro{display:block;margin-bottom:1rem}
-.transport-experience[data-route] .experience-intro img,.transport-experience[data-route] .experience-intro p{display:none}
+.transport-experience[data-route] .experience-intro p{display:none}
 .transport-experience[data-route] h1{font-size:clamp(1.5rem,2.5vw,2rem)!important;max-width:none!important}
 .transport-experience[data-route] .experience-workspace{margin-top:0}
 .experience-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.25rem}
@@ -2157,9 +2161,9 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 .experience-help-summary{white-space:pre-line;margin:1rem 0}
 .experience-help-result .button{margin-top:1rem}
 .transport-experience{--experience-ease:cubic-bezier(.22,1,.36,1)}
-.experience-routes button{transition:background 180ms ease,border-color 180ms ease,transform 220ms var(--experience-ease);cursor:pointer}
+.experience-routes button{cursor:pointer}
 .experience-routes button>span:last-child{transition:transform 240ms var(--experience-ease)}
-@media(hover:hover){.experience-routes button:hover{background:#f9fbff}.experience-routes button:hover>span:last-child{transform:translateX(3px)}}
+@media(hover:hover){.experience-routes button:hover{filter:brightness(1.08);transform:translateY(-3px)}.experience-routes button:hover>span:last-child{transform:translateX(3px)}}
 .experience-routes button:active,.experience-carousel-controls button:active{transform:scale(.985)}
 .experience-back,.experience-carousel-controls button{transition:background 180ms ease,opacity 180ms ease,transform 180ms var(--experience-ease)}
 .experience-back:hover{color:#315a9f}
@@ -2174,8 +2178,8 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
   #experience-search .carrier-results{grid-column:2;grid-row:1/3;min-width:0}
   #experience-search .carrier-card{flex-basis:min(100%,320px)}
 }
-@media(max-width:800px){.experience-routes{grid-template-columns:1fr}.experience-routes button{min-height:72px}.experience-intro{grid-template-columns:minmax(0,1fr) minmax(0,.5fr);gap:1rem}}
-@media(max-width:560px){.transport-experience{border-radius:1.25rem;height:clamp(680px,calc(100dvh - 100px),780px)}.experience-intro{grid-template-columns:1fr}.transport-experience:not([data-route]) .experience-intro{grid-template-rows:auto minmax(0,1fr)}.experience-intro img{max-height:none;object-position:center 55%}.transport-experience .carrier-search-form,#experience-help-form,.transport-experience .finder-steps{grid-template-columns:1fr!important}.transport-experience .carrier-kind-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.4rem}.transport-experience .carrier-kind-option{padding:.45rem!important;min-height:44px;font-size:.82rem}.transport-experience .carrier-search-form{gap:.55rem!important;padding:.75rem!important}.transport-experience .carrier-search-helper{display:none}.transport-experience .carrier-field select{min-height:44px}.transport-experience .experience-toolbar{margin-bottom:.5rem}.transport-experience .carrier-results-head{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem}.transport-experience .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.experience-workspace{padding:1rem}.transport-experience .carrier-card{flex-basis:100%}}
+@media(max-width:800px){.experience-routes{grid-template-columns:1fr}.experience-routes button{min-height:72px}.experience-cover{object-position:60% center}}
+@media(max-width:560px){.transport-experience{border-radius:1.25rem;height:clamp(680px,calc(100dvh - 100px),780px)}.transport-experience::before{background:linear-gradient(180deg,rgb(9 24 43 / .78),rgb(9 24 43 / .2) 48%,rgb(9 24 43 / .82))}.experience-routes button{min-height:70px}.transport-experience .carrier-search-form,#experience-help-form,.transport-experience .finder-steps{grid-template-columns:1fr!important}.transport-experience .carrier-kind-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.4rem}.transport-experience .carrier-kind-option{padding:.45rem!important;min-height:44px;font-size:.82rem}.transport-experience .carrier-search-form{gap:.55rem!important;padding:.75rem!important}.transport-experience .carrier-search-helper{display:none}.transport-experience .carrier-field select{min-height:44px}.transport-experience .experience-toolbar{margin-bottom:.5rem}.transport-experience .carrier-results-head{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem}.transport-experience .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.experience-workspace{padding:1rem}.transport-experience .carrier-card{flex-basis:100%}}
 @media(prefers-reduced-motion:reduce){.experience-routes button{transition:none}}
 </style>
 <script>
@@ -2193,7 +2197,7 @@ const transition=(change,target)=>{
  motion?.cancel();
  change();
  if(reduced.matches)return;
- if(target)motion=target.animate([{opacity:.78,transform:'translateY(3px)'},{opacity:1,transform:'translateY(0)'}],{duration:160,easing:'ease-out'});
+ if(target)motion=target.animate([{opacity:.84,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:280,easing:'cubic-bezier(.22,1,.36,1)'});
 };
 reduced.addEventListener('change',()=>{if(reduced.matches)motion?.cancel()});
 const open=(route,focus=false)=>{
@@ -2222,7 +2226,7 @@ const [prev,next]=controls.children;
 const update=()=>{const overflow=grid.scrollWidth>grid.clientWidth+2;controls.hidden=!overflow;prev.disabled=grid.scrollLeft<2;next.disabled=grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-2};
 [prev,next].forEach((b,i)=>b.addEventListener('click',()=>grid.scrollBy({left:(i?1:-1)*(grid.clientWidth*.9),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})));
 grid.addEventListener('scroll',update,{passive:true});new ResizeObserver(update).observe(grid);
-new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.35},{opacity:1}],{duration:220,easing:'ease-out'})}}).observe(grid,{childList:true});
+new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.82,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:260,easing:'cubic-bezier(.22,1,.36,1)'})}}).observe(grid,{childList:true});
 const form=hero.querySelector('#experience-help-form'),result=hero.querySelector('.experience-help-result');
 form.addEventListener('input',e=>{result.hidden=true;e.target.setCustomValidity?.('')});
 form.addEventListener('submit',e=>{e.preventDefault();const fields=[...form.querySelectorAll('input,textarea')];for(const f of fields){f.setCustomValidity(f.value.trim()?'':'Completa este dato.')}if(!form.reportValidity())return;const data=new FormData(form);const message=['*Consulta de orientación*','','*Residuo:* '+data.get('material').trim(),'*Comuna:* '+data.get('comuna').trim(),'','*Mi consulta*',data.get('contexto').trim(),'','Adjuntaré una foto del residuo y de su lugar de acopio.'].join('\n');result.querySelector('.experience-help-summary').textContent=message.replaceAll('*','');result.querySelector('a').href='https://wa.me/56986067930?text='+encodeURIComponent(message);result.hidden=false});
