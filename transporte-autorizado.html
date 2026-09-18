@@ -1380,13 +1380,27 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
   }
   .carrier-card dl {
     display: grid;
-    grid-template-columns: minmax(5.5rem, auto) 1fr;
-    gap: .35rem .7rem;
+    grid-template-columns: minmax(5rem, auto) 1fr;
+    gap: .28rem .65rem;
     margin: 0;
-    padding-block-start: .75rem;
-    border-block-start: 1px solid var(--line);
-    font-size: .82rem;
+    font-size: .84rem;
     line-height: 1.45;
+  }
+  .carrier-record-list {
+    display: grid;
+    gap: .8rem;
+    padding-block: .8rem;
+    border-block: 1px solid var(--line);
+  }
+  .carrier-record-list > section + section {
+    padding-block-start: .8rem;
+    border-block-start: 1px solid var(--line);
+  }
+  .carrier-record-list h5 {
+    margin: 0 0 .55rem;
+    font-size: .82rem;
+    font-weight: 800;
+    color: var(--ink);
   }
   .carrier-card dt {
     color: var(--muted);
@@ -1397,30 +1411,25 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
     overflow-wrap: anywhere;
   }
   .carrier-card-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: .75rem;
+    display: block;
     margin-block-start: auto;
-    padding-block-start: .35rem;
   }
   .carrier-card-actions a {
+    display: block;
+    width: 100%;
     min-block-size: 2.65rem;
     padding: .55rem .8rem;
     border-radius: 999px;
     background: var(--ink);
     color: var(--paper);
-    font-size: .78rem;
-    font-weight: 900;
+    font-size: .86rem;
+    font-weight: 800;
+    text-align: center;
     transition: transform 240ms var(--feedback-ease), background-color 180ms ease;
   }
   .carrier-card-actions a:hover {
     background: var(--green);
     transform: translateY(-2px);
-  }
-  .carrier-card-page {
-    color: var(--muted);
-    font-size: .76rem;
   }
   .carrier-empty {
     padding: 1.5rem;
@@ -1740,35 +1749,35 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       chip.textContent = kindLabel(item.kind);
       top.append(titleWrap, chip);
       const details = document.createElement("div");
-      group.records.forEach((record) => {
+      details.className = "carrier-record-list";
+      group.records.forEach((record, index) => {
+        const entry = document.createElement("section");
+        if (group.records.length > 1) {
+          const heading = document.createElement("h5");
+          heading.textContent = `Registro ${index + 1} · ${record.type}`;
+          entry.append(heading);
+        }
         const dl = document.createElement("dl");
-        addDetail(dl, "Residuo", record.type);
+        if (group.records.length === 1) addDetail(dl, "Residuo", record.type);
         addDetail(dl, "Dirección", record.address);
         addDetail(dl, "Autorizado para", record.summary);
         addDetail(dl, "Resolución", record.resolution);
         addDetail(dl, "Patentes", record.plates);
         addDetail(dl, "Página PDF", record.pdfPage);
-        details.append(dl);
+        entry.append(dl);
+        details.append(entry);
       });
       const actions = document.createElement("div");
       actions.className = "carrier-card-actions";
-      const page = document.createElement("span");
-      page.className = "carrier-card-page";
-      page.textContent = group.records.length === 1 ? `Página ${item.pdfPage} del listado` : `${group.records.length} registros del listado`;
       const link = document.createElement("a");
       const quantity = quantitySelect.selectedOptions[0]?.textContent || "Aún no lo sé";
       const message = `*Consulta de retiro de residuos*\n\n*Empresa del listado:* ${item.company}\n*Tipo:* ${kindLabel(item.kind)}\n*Residuo:* ${typeSelect.value === "*" ? "Por definir" : typeSelect.value}\n*Comuna del transportista:* ${item.location}\n*Cantidad estimada:* ${quantity}\n*Registros coincidentes:* ${group.records.length}\n\nNecesito confirmar cuál registro y autorización corresponde a mi retiro.\n\n*Foto*\nAdjuntaré una foto del residuo, su envase y el lugar de acopio.`;
       link.href = "https://wa.me/56986067930?text=" + encodeURIComponent(message);
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = "Consultar resultado ↗";
-      actions.append(page, link);
-      const disclosure = document.createElement("details");
-      disclosure.className = "carrier-record-detail";
-      const summary = document.createElement("summary");
-      summary.textContent = `Ver ${group.records.length === 1 ? "antecedentes" : `${group.records.length} registros y antecedentes`}`;
-      disclosure.append(summary, details);
-      card.append(top, disclosure, actions);
+      link.textContent = "Consultar este resultado ↗";
+      actions.append(link);
+      card.append(top, details, actions);
       return card;
     }
     function renderResults() {
@@ -1788,7 +1797,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       more.hidden = state.groups.length <= state.visible;
       const quantityMessage = quantity === "unknown" ? "Indica la cantidad al contactar." : `Rango seleccionado: ${quantitySelect.selectedOptions[0].textContent}.`;
       if (state.matches.length) {
-        status.textContent = `${quantityMessage} Revisa los antecedentes del registro antes de coordinar.`;
+        status.textContent = `${quantityMessage} Los datos del listado se muestran en cada resultado; confirma el alcance antes de coordinar.`;
       } else {
         const alternatives = relaxedMatches(kind, type, location);
         status.textContent = alternatives.sameType || alternatives.sameLocation
@@ -2137,17 +2146,23 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 .transport-experience .carrier-search-form{grid-template-columns:repeat(3,minmax(0,1fr));background:#f8faff!important;border-radius:1rem!important}
 .transport-experience .carrier-reset{justify-self:start}
 .transport-experience select,.transport-experience input,.transport-experience textarea{max-width:100%;font-size:1rem!important}
-.transport-experience .carrier-results-grid{display:flex!important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;gap:1rem;padding:.25rem .15rem 1rem;scrollbar-width:thin;align-items:stretch}
+.transport-experience .carrier-results-grid{display:flex!important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;gap:1rem;padding:.25rem .15rem 1rem;scrollbar-width:thin;align-items:flex-start}
 .transport-experience .carrier-card{flex:0 0 min(100%,340px);scroll-snap-align:start;display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere}
 .transport-experience .carrier-card-actions{margin-top:auto;padding-top:1rem}
 .transport-experience .carrier-card-top{display:block}
 .transport-experience .carrier-kind-chip{margin-top:.6rem;display:inline-block}
 .transport-experience .carrier-card dl{margin:1rem 0;padding-top:.75rem}
-.carrier-record-detail{margin-block:1rem;max-height:240px;overflow-y:auto;scrollbar-width:thin}
-.carrier-record-detail summary{cursor:pointer;font-size:.9rem;min-height:44px;display:flex;align-items:center;gap:.5rem;justify-content:space-between}
+.transport-experience .carrier-record-list{margin-top:.15rem}
 .experience-carousel-controls{display:flex;gap:.5rem;justify-content:flex-end;margin:.5rem 0}
 .experience-carousel-controls button{border:1px solid var(--line);border-radius:50%;width:44px;height:44px;background:#fff;color:var(--ink);display:grid;place-items:center}
 .experience-carousel-controls button:disabled{opacity:.35;cursor:default}
+.transport-experience .carrier-results-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:.75rem}
+.transport-experience .carrier-results-head h3{font-size:1.1rem}
+.transport-experience .carrier-results-count{white-space:nowrap;font-size:.78rem}
+.transport-experience .experience-carousel-controls{margin:0}
+.transport-experience .experience-carousel-controls button{width:36px;height:36px}
+.experience-edit-filters{display:none;align-items:center;gap:.25rem;padding:.35rem .55rem;border:1px solid var(--line);border-radius:.65rem;background:#fff;color:var(--ink);font:inherit;font-size:.82rem;font-weight:800}
+.experience-edit-filters .material-symbols-outlined{font-size:1.1rem}
 .transport-experience .residue-finder{padding:0;border:0;background:transparent}
 .transport-experience .residue-finder-head{display:block}
 .transport-experience .residue-finder-head p{margin-top:.65rem;max-width:65ch}
@@ -2179,7 +2194,7 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
   #experience-search .carrier-card{flex-basis:min(100%,320px)}
 }
 @media(max-width:800px){.experience-routes{grid-template-columns:1fr}.experience-routes button{min-height:72px}.experience-cover{object-position:60% center}}
-@media(max-width:560px){.transport-experience{border-radius:1.25rem;height:clamp(680px,calc(100dvh - 100px),780px)}.transport-experience::before{background:linear-gradient(180deg,rgb(9 24 43 / .78),rgb(9 24 43 / .2) 48%,rgb(9 24 43 / .82))}.experience-routes button{min-height:70px}.transport-experience .carrier-search-form,#experience-help-form,.transport-experience .finder-steps{grid-template-columns:1fr!important}.transport-experience .carrier-kind-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.4rem}.transport-experience .carrier-kind-option{padding:.45rem!important;min-height:44px;font-size:.82rem}.transport-experience .carrier-search-form{gap:.55rem!important;padding:.75rem!important}.transport-experience .carrier-search-helper{display:none}.transport-experience .carrier-field select{min-height:44px}.transport-experience .experience-toolbar{margin-bottom:.5rem}.transport-experience .carrier-results-head{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem}.transport-experience .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.experience-workspace{padding:1rem}.transport-experience .carrier-card{flex-basis:100%}}
+@media(max-width:560px){.transport-experience{border-radius:1.25rem;height:clamp(680px,calc(100dvh - 100px),780px)}.transport-experience::before{background:linear-gradient(180deg,rgb(9 24 43 / .78),rgb(9 24 43 / .2) 48%,rgb(9 24 43 / .82))}.experience-routes button{min-height:70px}.transport-experience .carrier-search-form,#experience-help-form,.transport-experience .finder-steps{grid-template-columns:1fr!important}.transport-experience .carrier-kind-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.4rem}.transport-experience .carrier-kind-option{padding:.45rem!important;min-height:44px;font-size:.82rem}.transport-experience .carrier-search-form{gap:.35rem!important;padding:.65rem!important}.transport-experience .carrier-kind-field legend,.transport-experience .carrier-field label{margin-bottom:.2rem}.transport-experience .carrier-reset{min-block-size:1.8rem;padding:0}.transport-experience .carrier-search-helper{display:none}.transport-experience .carrier-field select{min-height:42px;padding:.55rem .75rem}.transport-experience .experience-toolbar{margin-bottom:.4rem}.transport-experience .carrier-results-head{grid-template-columns:minmax(0,1fr) auto;gap:.25rem .5rem;margin-bottom:.5rem}.transport-experience .carrier-results-count{grid-column:1;grid-row:2;text-align:start;white-space:normal;max-width:18ch}.transport-experience .experience-carousel-controls{grid-column:2;grid-row:2}.transport-experience .experience-edit-filters{display:inline-flex;grid-column:2;grid-row:1}.transport-experience .carrier-results{margin-top:.75rem}.transport-experience .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.experience-workspace{padding:1rem}.transport-experience .carrier-card{flex-basis:100%}}
 @media(prefers-reduced-motion:reduce){.experience-routes button{transition:none}}
 </style>
 <script>
@@ -2221,11 +2236,20 @@ if(routes[location.hash])open(routes[location.hash]);
 window.addEventListener('hashchange',()=>{if(routes[location.hash])open(routes[location.hash])});
 const grid=hero.querySelector('#carrier-results-grid'),controls=document.createElement('div');controls.className='experience-carousel-controls';
 controls.innerHTML='<button type="button" aria-label="Transportistas anteriores"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button><button type="button" aria-label="Transportistas siguientes"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>';
-grid.before(controls);grid.tabIndex=0;grid.setAttribute('aria-label','Resultados de transportistas; desplázate para ver más');
+const editFilters=document.createElement('button');editFilters.type='button';editFilters.className='experience-edit-filters';editFilters.innerHTML='<span class="material-symbols-outlined" aria-hidden="true">tune</span> Filtros';editFilters.addEventListener('click',()=>workspace.scrollTo({top:0,behavior:reduced.matches?'auto':'smooth'}));hero.querySelector('.carrier-results-head').append(editFilters,controls);grid.tabIndex=0;grid.setAttribute('aria-label','Resultados de transportistas; desplázate para ver más');
 const [prev,next]=controls.children;
 const update=()=>{const overflow=grid.scrollWidth>grid.clientWidth+2;controls.hidden=!overflow;prev.disabled=grid.scrollLeft<2;next.disabled=grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-2};
 [prev,next].forEach((b,i)=>b.addEventListener('click',()=>grid.scrollBy({left:(i?1:-1)*(grid.clientWidth*.9),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})));
 grid.addEventListener('scroll',update,{passive:true});new ResizeObserver(update).observe(grid);
+// On narrow screens, keep the edited filters visible while bringing the first result into view.
+hero.querySelectorAll('#carrier-type,#carrier-location,#carrier-quantity,[name="carrier-kind"]').forEach(control=>control.addEventListener('change',()=>{
+ if(!matchMedia('(max-width:560px)').matches||workspace.hidden||!grid.querySelector('.carrier-card'))return;
+ requestAnimationFrame(()=>{
+  const desired=workspace.getBoundingClientRect().top+12;
+  const delta=hero.querySelector('.carrier-results').getBoundingClientRect().top-desired;
+  if(delta>0)workspace.scrollBy({top:delta,behavior:reduced.matches?'auto':'smooth'});
+ });
+}));
 new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.82,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:260,easing:'cubic-bezier(.22,1,.36,1)'})}}).observe(grid,{childList:true});
 const form=hero.querySelector('#experience-help-form'),result=hero.querySelector('.experience-help-result');
 form.addEventListener('input',e=>{result.hidden=true;e.target.setCustomValidity?.('')});
