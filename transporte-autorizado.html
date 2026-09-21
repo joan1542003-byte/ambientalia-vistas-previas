@@ -937,7 +937,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
     <button type="button" data-experience-route="help" aria-pressed="false" aria-controls="experience-help"><span class="material-symbols-outlined" aria-hidden="true">support_agent</span><span><strong>Necesito orientación</strong><small>Describe tu caso</small></span><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
   </div>
   <div class="experience-workspace" hidden>
-    <div class="experience-toolbar"><button type="button" class="experience-back"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>Volver a las opciones</button><p class="experience-status" role="status"></p></div>
+    <div class="experience-toolbar"><button type="button" class="experience-back"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>Volver</button><p class="experience-status" role="status"></p></div>
     <div id="experience-search" class="experience-panel" hidden><div class="experience-search-slot"></div></div>
     <div id="experience-residue" class="experience-panel" hidden></div>
     <div id="experience-help" class="experience-panel" hidden>
@@ -1950,6 +1950,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       const titleWrap = document.createElement("div");
       const title = document.createElement("h4");
       title.textContent = item.company;
+      title.title = item.company;
       const location = document.createElement("p");
       location.className = "carrier-location";
       location.textContent = group.location;
@@ -2388,6 +2389,7 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 <style>
 /* One bounded workspace for each visitor intent. */
 .transport-experience{margin-block:1.5rem 2rem;padding:clamp(1.1rem,3.2vw,2.5rem);border:1px solid #dfe5ef;border-radius:2rem;background:#102943;min-width:0;overflow-anchor:none;height:clamp(680px,calc(100dvh - 120px),850px);display:flex;flex-direction:column;position:relative;isolation:isolate;overflow:hidden}
+.transport-experience.has-search-output:not(.is-editing-search){height:40rem}
 .experience-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:-2}
 .transport-experience::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgb(9 24 43 / .88) 0%,rgb(9 24 43 / .61) 46%,rgb(9 24 43 / .22) 100%),linear-gradient(0deg,rgb(9 24 43 / .68),transparent 43%);z-index:-1;pointer-events:none}
 .experience-intro{display:flex;align-items:flex-start;margin-bottom:1.75rem}
@@ -2412,11 +2414,11 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 .transport-experience[data-route]{height:clamp(28rem,calc(100dvh - 9rem),42rem)}
 .transport-experience[data-route] .experience-intro{display:block;margin-bottom:1rem}
 .transport-experience[data-route] .experience-intro p{display:none}
-.transport-experience[data-route] h1{font-size:clamp(1.5rem,2.5vw,2rem)!important;max-width:none!important}
+.transport-experience[data-route] h1{font-size:clamp(1.5rem,2.5vw,2rem)!important;max-width:none!important;padding-inline-end:7rem}
 .transport-experience[data-route] .experience-workspace{margin-top:0}
-.experience-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.25rem}
-.experience-back{display:inline-flex;align-items:center;gap:.5rem;border:0;background:transparent;color:var(--ink);padding:.5rem 0;min-height:44px;font-size:.9rem}
-.experience-status{font-size:.9rem!important;color:var(--muted)}
+.experience-toolbar{position:absolute;inset-block-start:clamp(1rem,2.4vw,1.75rem);inset-inline-end:clamp(1rem,2.4vw,1.75rem);z-index:3;margin:0}
+.experience-back{display:inline-flex;align-items:center;gap:.35rem;border:1px solid rgb(255 255 255 / .32);border-radius:999px;background:rgb(10 31 52 / .52);backdrop-filter:blur(12px);color:#fff;padding:.45rem .7rem;min-height:40px;font-size:.82rem;font-weight:800}
+.experience-status{position:absolute!important;inline-size:1px!important;block-size:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%);white-space:nowrap}
 .transport-experience .experience-panel,.transport-experience .experience-panel *{min-width:0}
 .transport-experience .wrap{width:100%!important;inline-size:100%!important;max-width:100%;margin:0}
 .transport-experience .section{padding:0!important;opacity:1!important;transform:none!important;transition:none!important}
@@ -2427,23 +2429,29 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 .transport-experience .carrier-search-form{grid-template-columns:repeat(3,minmax(0,1fr));background:#f8faff!important;border-radius:1rem!important}
 .transport-experience .carrier-reset{justify-self:start}
 .transport-experience select,.transport-experience input,.transport-experience textarea{max-width:100%;font-size:1rem!important}
-.transport-experience .carrier-results-grid{display:flex!important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;gap:1rem;padding:.25rem .15rem 1rem;scrollbar-width:thin;align-items:flex-start}
-.transport-experience .carrier-card{flex:0 0 min(100%,340px);scroll-snap-align:start;display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere}
-.transport-experience .carrier-card-actions{margin-top:auto;padding-top:1rem}
+.transport-experience .carrier-results-grid{display:flex!important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;gap:1rem;padding:.2rem .1rem;scrollbar-width:thin;align-items:flex-start}
+.transport-experience .carrier-card{flex:0 0 min(100%,340px);scroll-snap-align:start;display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere;padding:.8rem!important;gap:.4rem}
+.transport-experience .carrier-card-actions{margin-top:auto;padding-top:.45rem}
 .transport-experience .carrier-card-top{display:block}
 .transport-experience .carrier-kind-chip{margin:0;display:inline-block}
-.transport-experience .carrier-card dl{margin:1rem 0;padding-top:.75rem}
-.transport-experience .carrier-record-list{margin-top:.15rem}
+.transport-experience .carrier-card h4{margin:0}
+.transport-experience .carrier-card dl{margin:.25rem 0 0;padding-top:.25rem}
+.transport-experience .carrier-record-list{margin-top:.15rem;padding-block:.45rem}
 .experience-carousel-controls{display:flex;gap:.5rem;justify-content:flex-end;margin:.5rem 0}
 .experience-carousel-controls button{border:1px solid var(--line);border-radius:50%;width:44px;height:44px;background:#fff;color:var(--ink);display:grid;place-items:center}
 .experience-carousel-controls button:disabled{opacity:.35;cursor:default}
-.transport-experience .carrier-results-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:.75rem}
+.transport-experience .carrier-results-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:.75rem;margin-block-end:.45rem}
 .transport-experience .carrier-results-head h3{font-size:1.1rem}
 .transport-experience .carrier-results-count{white-space:nowrap;font-size:.78rem}
 .transport-experience .experience-carousel-controls{margin:0}
 .transport-experience .experience-carousel-controls button{width:36px;height:36px}
 .experience-edit-filters{display:none;align-items:center;gap:.25rem;padding:.35rem .55rem;border:1px solid var(--line);border-radius:.65rem;background:#fff;color:var(--ink);font:inherit;font-size:.82rem;font-weight:800}
 .experience-edit-filters .material-symbols-outlined{font-size:1.1rem}
+#experience-search.has-output:not(.editing-filters) .carrier-search-form,
+#experience-search.has-output:not(.editing-filters) .carrier-search-status{display:none!important}
+#experience-search.has-output:not(.editing-filters) .carrier-results{margin-top:0}
+#experience-search.has-output .experience-edit-filters{display:inline-flex}
+#experience-search.editing-filters .carrier-results{display:none}
 .transport-experience .residue-finder{padding:0;border:0;background:transparent}
 .transport-experience .residue-finder-head{display:block}
 .transport-experience .residue-finder-head p{margin-top:.65rem;max-width:65ch}
@@ -2475,11 +2483,35 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
   #experience-search .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}
   #experience-search .carrier-results{grid-column:2;grid-row:1/3;min-width:0}
   #experience-search .carrier-card{flex-basis:min(100%,460px)}
+  #experience-search.has-output:not(.editing-filters) #buscar-transportistas{display:block}
+  #experience-search.has-output:not(.editing-filters) .carrier-results{inline-size:100%}
 }
 @media(max-width:800px){.experience-routes{grid-template-columns:1fr}.experience-routes button{min-height:72px}.experience-cover{object-position:60% center}}
-@media(max-width:560px){.transport-experience{border-radius:1.25rem;height:clamp(680px,calc(100dvh - 100px),780px)}.transport-experience::before{background:linear-gradient(180deg,rgb(9 24 43 / .78),rgb(9 24 43 / .2) 48%,rgb(9 24 43 / .82))}.experience-routes button{min-height:70px}.transport-experience .carrier-search-form,#experience-help-form,.transport-experience .finder-steps{grid-template-columns:1fr!important}.transport-experience .carrier-kind-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.4rem}.transport-experience .carrier-kind-option{padding:.45rem!important;min-height:44px;font-size:.82rem}.transport-experience .carrier-search-form{gap:.35rem!important;padding:.65rem!important}.transport-experience .carrier-kind-field legend,.transport-experience .carrier-field label{margin-bottom:.2rem}.transport-experience .carrier-reset{min-block-size:1.8rem;padding:0}.transport-experience .carrier-search-helper{display:none}.transport-experience .carrier-field select{min-height:42px;padding:.55rem .75rem}.transport-experience .experience-toolbar{margin-bottom:.4rem}.transport-experience .carrier-results-head{grid-template-columns:minmax(0,1fr) auto;gap:.25rem .5rem;margin-bottom:.5rem}.transport-experience .carrier-results-count{grid-column:1;grid-row:2;text-align:start;white-space:normal;max-width:18ch}.transport-experience .experience-carousel-controls{grid-column:2;grid-row:2}.transport-experience .experience-edit-filters{display:inline-flex;grid-column:2;grid-row:1}.transport-experience .carrier-results{margin-top:.75rem}.transport-experience .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.experience-workspace{padding:1rem}.transport-experience .carrier-card{flex-basis:100%}}
+@media(max-width:560px){.transport-experience{border-radius:1.25rem;height:clamp(680px,calc(100dvh - 100px),780px)}.transport-experience::before{background:linear-gradient(180deg,rgb(9 24 43 / .78),rgb(9 24 43 / .2) 48%,rgb(9 24 43 / .82))}.transport-experience[data-route] h1{padding-inline-end:5.5rem}.experience-routes button{min-height:70px}.transport-experience .carrier-search-form,#experience-help-form,.transport-experience .finder-steps{grid-template-columns:1fr!important}.transport-experience .carrier-kind-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.4rem}.transport-experience .carrier-kind-option{padding:.45rem!important;min-height:44px;font-size:.82rem}.transport-experience .carrier-search-form{gap:.35rem!important;padding:.65rem!important}.transport-experience .carrier-kind-field legend,.transport-experience .carrier-field label{margin-bottom:.2rem}.transport-experience .carrier-reset{min-block-size:1.8rem;padding:0}.transport-experience .carrier-search-helper{display:none}.transport-experience .carrier-field select{min-height:42px;padding:.55rem .75rem}.transport-experience .carrier-results-head{grid-template-columns:minmax(0,1fr) auto;gap:.25rem .5rem;margin-bottom:.5rem}.transport-experience .carrier-results-count{grid-column:1;grid-row:2;text-align:start;white-space:normal;max-width:18ch}.transport-experience .experience-carousel-controls{grid-column:2;grid-row:2}.transport-experience .experience-edit-filters{grid-column:2;grid-row:1}.transport-experience .carrier-results{margin-top:.75rem}.transport-experience .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.experience-workspace{padding:1rem}.transport-experience .carrier-card{flex-basis:100%}}
 @media(max-width:560px){.transport-experience .carrier-results-head{grid-template-columns:minmax(0,1fr) auto auto;gap:.3rem}.transport-experience .carrier-results-head h3{font-size:.98rem}.transport-experience .carrier-results-count{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.transport-experience .experience-edit-filters{grid-column:2;grid-row:1;justify-content:center;width:34px;height:34px;padding:0;font-size:0}.transport-experience .experience-edit-filters .material-symbols-outlined{font-size:1.1rem}.transport-experience .experience-carousel-controls{grid-column:3;grid-row:1;gap:.2rem}.transport-experience .experience-carousel-controls button{width:32px;height:32px}}
+@media(max-width:560px){
+ .transport-experience.has-search-output:not(.is-editing-search){height:28rem}
+ .transport-experience .carrier-card{padding:.65rem!important;gap:.25rem}
+ .transport-experience .carrier-card h4{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;font-size:.9rem!important;line-height:1.22}
+ .transport-experience .carrier-location{font-size:.76rem!important}
+ .transport-experience .carrier-kind-chip{padding:.2rem .4rem;font-size:.6rem}
+ .transport-experience .carrier-record-list{padding-block:.3rem;gap:.25rem}
+ .transport-experience .carrier-record-list h5{margin-block-end:.2rem;font-size:.78rem}
+ .transport-experience .carrier-card dl{font-size:.72rem!important;line-height:1.3}
+ .transport-experience .carrier-card .carrier-secondary-detail,.transport-experience .carrier-card .carrier-source-page{display:none}
+ .transport-experience .carrier-card-actions{padding-top:.25rem}
+ .transport-experience .carrier-card-actions a{min-block-size:2.35rem;padding:.42rem .65rem;font-size:.78rem}
+ .transport-experience .carrier-record-pager{font-size:.68rem}
+ .transport-experience .carrier-record-pager button{width:1.75rem;height:1.75rem}
+}
+@media(max-width:560px) and (max-height:620px){
+ .transport-experience .carrier-card h4{-webkit-line-clamp:1}
+ .transport-experience .carrier-results-head{margin-bottom:.25rem}
+ .transport-experience .carrier-card{padding:.55rem!important}
+}
 @media(prefers-reduced-motion:reduce){.experience-routes button{transition:none}}
+@media(prefers-reduced-motion:no-preference){.transport-experience{transition:height 560ms cubic-bezier(.22,1,.36,1)}}
+@media(prefers-reduced-motion:reduce){.transport-experience{transition:none!important}}
 </style>
 <script>
 (()=>{
@@ -2520,14 +2552,15 @@ const open=(route,focus=false)=>{
  requestAnimationFrame(()=>{const top=hero.getBoundingClientRect().top;if(top<80)window.scrollTo({top:window.scrollY+top-90,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 };
 buttons.forEach(b=>b.addEventListener('click',()=>open(b.dataset.experienceRoute)));
-hero.querySelector('.experience-back').addEventListener('click',()=>{transition(()=>{workspace.hidden=true;buttons.forEach(b=>b.setAttribute('aria-pressed','false'));delete hero.dataset.route},hero.querySelector('.experience-routes'));buttons.find(b=>b.dataset.experienceRoute===current)?.focus({preventScroll:true})});
+hero.querySelector('.experience-back').addEventListener('click',()=>{hero.querySelector('#experience-search')?.classList.remove('editing-filters');hero.classList.remove('is-editing-search');transition(()=>{workspace.hidden=true;buttons.forEach(b=>b.setAttribute('aria-pressed','false'));delete hero.dataset.route},hero.querySelector('.experience-routes'));buttons.find(b=>b.dataset.experienceRoute===current)?.focus({preventScroll:true})});
 const routes={'#buscar-transportistas':'search','#residuos':'residue'};
 document.addEventListener('click',e=>{const a=e.target.closest('a[href]');const route=routes[a?.getAttribute('href')];if(!route)return;e.preventDefault();open(route,true);hero.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})});
 if(routes[location.hash])open(routes[location.hash]);
 window.addEventListener('hashchange',()=>{if(routes[location.hash])open(routes[location.hash])});
 const grid=hero.querySelector('#carrier-results-grid'),controls=document.createElement('div');controls.className='experience-carousel-controls';
 controls.innerHTML='<button type="button" aria-label="Transportistas anteriores"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button><button type="button" aria-label="Transportistas siguientes"><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>';
-const editFilters=document.createElement('button');editFilters.type='button';editFilters.className='experience-edit-filters';editFilters.innerHTML='<span class="material-symbols-outlined" aria-hidden="true">tune</span> Filtros';editFilters.addEventListener('click',()=>workspace.scrollTo({top:0,behavior:reduced.matches?'auto':'smooth'}));hero.querySelector('.carrier-results-head').append(editFilters,controls);grid.tabIndex=0;grid.setAttribute('aria-label','Resultados de transportistas; desplázate para ver más');
+const searchPanel=hero.querySelector('#experience-search');
+const editFilters=document.createElement('button');editFilters.type='button';editFilters.className='experience-edit-filters';editFilters.innerHTML='<span class="material-symbols-outlined" aria-hidden="true">tune</span> Editar filtros';editFilters.addEventListener('click',()=>{searchPanel.classList.add('editing-filters');hero.classList.add('is-editing-search');workspace.scrollTo({top:0,behavior:reduced.matches?'auto':'smooth'});requestAnimationFrame(()=>searchPanel.querySelector('input,select')?.focus({preventScroll:true}))});hero.querySelector('.carrier-results-head').append(editFilters,controls);grid.tabIndex=0;grid.setAttribute('aria-label','Resultados de transportistas; desplázate para ver más');
 const [prev,next]=controls.children;
 const update=()=>{const overflow=grid.scrollWidth>grid.clientWidth+2;controls.hidden=!overflow;prev.disabled=grid.scrollLeft<2;next.disabled=grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-2};
 [prev,next].forEach((b,i)=>b.addEventListener('click',()=>grid.scrollBy({left:(i?1:-1)*(grid.clientWidth*.9),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})));
@@ -2541,7 +2574,7 @@ hero.querySelectorAll('#carrier-type,#carrier-location,#carrier-quantity,[name="
   if(delta>0)workspace.scrollBy({top:delta,behavior:reduced.matches?'auto':'smooth'});
  });
 }));
-new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.68,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:380,easing:'cubic-bezier(.22,1,.36,1)'})}}).observe(grid,{childList:true});
+new MutationObserver(()=>{const hasOutput=grid.childElementCount>0;searchPanel.classList.toggle('has-output',hasOutput);hero.classList.toggle('has-search-output',hasOutput);if(hasOutput){searchPanel.classList.remove('editing-filters');hero.classList.remove('is-editing-search')}grid.scrollLeft=0;workspace.scrollTop=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.68,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:380,easing:'cubic-bezier(.22,1,.36,1)'})}}).observe(grid,{childList:true});
 const form=hero.querySelector('#experience-help-form'),result=hero.querySelector('.experience-help-result');
 form.addEventListener('input',e=>{result.hidden=true;e.target.setCustomValidity?.('')});
 form.addEventListener('submit',e=>{e.preventDefault();const fields=[...form.querySelectorAll('input,textarea')];for(const f of fields){f.setCustomValidity(f.value.trim()?'':'Completa este dato.')}if(!form.reportValidity())return;const data=new FormData(form);const message=['*Consulta de orientación*','','*Residuo:* '+data.get('material').trim(),'*Comuna:* '+data.get('comuna').trim(),'','*Mi consulta*',data.get('contexto').trim(),'','Adjuntaré una foto del residuo y de su lugar de acopio.'].join('\n');result.querySelector('.experience-help-summary').textContent=message.replaceAll('*','');result.querySelector('a').href='https://wa.me/56986067930?text='+encodeURIComponent(message);result.hidden=false});
