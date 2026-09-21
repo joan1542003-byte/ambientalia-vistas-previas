@@ -811,6 +811,35 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
   .transport-services .service-card h3{font-size:1.12rem!important}
 }
 
+/* Mobile reading flow: primary services stay stacked; secondary services form one compact rail. */
+@media(max-width:720px){
+  :root{--section-space:2.8rem}
+  .support-services{margin-block-start:2.25rem}
+  .support-services-heading{margin-block-end:1rem}
+  .support-services-grid{
+    display:flex!important;
+    gap:.8rem!important;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;
+    margin-inline:calc(var(--gutter) * -1);
+    padding-inline:var(--gutter);
+    padding-block:.15rem .7rem;
+  }
+  .support-services-grid::-webkit-scrollbar{display:none}
+  .support-service-card{
+    flex:0 0 min(82vw,20rem);
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    content-visibility:auto;
+    contain-intrinsic-size:25rem;
+  }
+  .support-service-image{aspect-ratio:1.7!important}
+  .priority-list summary{min-height:3.25rem;padding-block:.2rem}
+  .priority-list summary::after{inline-size:1.75rem;block-size:1.75rem;flex-basis:1.75rem}
+}
+
 /* Hero común: lectura cómoda, imagen protagonista y accesos directos. */
 .hero{min-block-size:min(42rem,calc(100svh - 5.5rem))!important;gap:clamp(2rem,4vw,3.75rem)!important;padding-block:2rem 4.25rem!important}
 .hero h1{font-size:clamp(2.5rem,4.35vw,3.75rem)!important;line-height:1.04!important}
@@ -916,7 +945,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       <h3 id="support-services-title">Más soluciones para gestionar tus residuos.</h3>
       <p>Si el retiro no es lo único que necesitas, podemos orientarte en estas tareas relacionadas.</p>
     </div>
-    <div class="support-services-grid">
+    <div class="support-services-grid" role="region" aria-labelledby="support-services-title" tabindex="0">
       <article class="support-service-card">
         <figure class="support-service-image"><img src="assets/transporte/servicio-retiro.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></figure>
         <span class="support-service-icon material-symbols-outlined" aria-hidden="true">search</span>
