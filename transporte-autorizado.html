@@ -592,9 +592,9 @@ button,a,summary{touch-action:manipulation}
 }
 </style>
 <style>
-/* Override final: no recorte ni bandas vacías en recursos 3:2. */
+/* Las fotografías llenan su marco; el foco se ajusta por servicio en el sistema final. */
 .service-grid .service-image{aspect-ratio:3 / 2}
-.service-grid .service-image img{object-fit:contain;object-position:center;background:linear-gradient(145deg,#f0efff,#eef7ff)}
+.service-grid .service-image img{object-fit:cover;object-position:center;background:#e9eef7}
 </style>
 <style id="transporte-design-system">
 /* Transporte Autorizado · sistema de lectura compacto */
@@ -867,6 +867,57 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
 }
 
 .material-symbols-outlined{font-family:'Material Symbols Outlined';font-weight:400;font-style:normal;font-size:1.18em;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;font-feature-settings:'liga';font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 20}
+
+/* Motion and image finish: deliberate, quiet and consistent. */
+:root{
+  --motion-enter:520ms;
+  --motion-state:360ms;
+  --motion-press:140ms;
+  --ease-premium:cubic-bezier(.22,1,.36,1);
+  --ease-standard:cubic-bezier(.4,0,.2,1);
+}
+.service-image,.support-service-image,.priority-image,.ecosystem-photo{background:#e9eef7;isolation:isolate}
+.service-grid .service-image img,.support-service-image img,.priority-image img,.ecosystem-photo img{
+  inline-size:100%;block-size:100%;object-fit:cover!important;background:transparent!important;
+  transform:scale(1.001);transition:transform var(--motion-enter) var(--ease-premium),filter var(--motion-state) ease!important;
+}
+.transport-services .service-card:first-child .service-image img{object-position:50% 48%!important}
+.transport-services .service-card:nth-child(2) .service-image img{object-position:52% 52%!important}
+.support-service-card:nth-child(4) .support-service-image img{object-position:50% 38%}
+.support-service-card:nth-child(5) .support-service-image img{object-position:50% 42%}
+.service-card,.support-service-card,.waste-route,.carrier-card,.network a,.ecosystem-card{
+  transition:transform var(--motion-state) var(--ease-premium),border-color var(--motion-state) ease,background-color var(--motion-state) ease,box-shadow var(--motion-state) var(--ease-premium)!important;
+}
+.button,.service-open,.support-service-link,.text-link,.nav a,.menu,.experience-routes button{
+  transition:transform var(--motion-press) ease-out,color 220ms ease,background-color var(--motion-state) var(--ease-standard),border-color var(--motion-state) ease,box-shadow var(--motion-state) var(--ease-premium)!important;
+}
+.field input,.field select,.field textarea,.carrier-field select,.carrier-kind-option{
+  transition:border-color 220ms ease,background-color var(--motion-state) ease,box-shadow var(--motion-state) var(--ease-premium),transform var(--motion-state) var(--ease-premium)!important;
+}
+.field :is(input,select,textarea):focus-visible,.carrier-field select:focus-visible{
+  box-shadow:0 0 0 .25rem color-mix(in srgb,#315fc7 18%,transparent)!important;
+}
+.carrier-kind-option:has(input:checked){transform:translateY(-1px);box-shadow:0 .5rem 1.4rem rgb(30 54 96 / .08)}
+.priority-list summary::after,.process summary::after,.faq summary::after{transition:transform var(--motion-state) var(--ease-premium),background-color var(--motion-state) ease!important}
+.priority-list details[open] summary::after,.process details[open] summary::after,.faq details[open] summary::after{transform:rotate(45deg)}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  .service-card:hover,.support-service-card:hover,.network a:hover,.ecosystem-card:hover{transform:translateY(-3px)!important;box-shadow:0 1rem 2.5rem rgb(34 57 94 / .09)!important}
+  .service-card:hover .service-image img,.support-service-card:hover .support-service-image img,.ecosystem-card:hover .ecosystem-photo img{transform:scale(1.045)}
+  .button:hover,.service-open:hover,.support-service-link:hover,.text-link:hover{transform:translateY(-1px)}
+}
+:is(.button,.service-open,.support-service-link,.text-link,.nav a,.menu,.experience-routes button):active{transform:scale(.975)!important;transition-duration:var(--motion-press)!important}
+@supports (interpolate-size:allow-keywords) and selector(::details-content){
+  .priority-list details{interpolate-size:allow-keywords}
+  .priority-list details::details-content{block-size:0;overflow:clip;opacity:0;transition:block-size var(--motion-enter) var(--ease-premium),opacity 240ms ease,content-visibility var(--motion-enter) allow-discrete}
+  .priority-list details[open]::details-content{block-size:auto;opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .service-grid .service-image img,.support-service-image img,.priority-image img,.ecosystem-photo img,
+  .service-card,.support-service-card,.waste-route,.carrier-card,.network a,.ecosystem-card,
+  .button,.service-open,.support-service-link,.text-link,.nav a,.menu,.experience-routes button,
+  .field input,.field select,.field textarea,.carrier-field select,.carrier-kind-option,
+  .priority-list summary::after,.process summary::after,.faq summary::after{transition-duration:.01ms!important;animation-duration:.01ms!important;transform:none!important}
+}
 </style>
 </head>
 <body>
@@ -2164,7 +2215,7 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
     surfaceMotion?.cancel();
     dialog.classList.add('is-closing');
     surfaceMotion=dialog.animate([start,{opacity:0,transform:'translateY(8px) scale(.985)'}],{
-      duration:230,easing:'cubic-bezier(.4,0,.6,1)',fill:'forwards'
+      duration:260,easing:'cubic-bezier(.4,0,.6,1)',fill:'forwards'
     });
     surfaceMotion.finished.then(()=>{
       dialog.close();surfaceMotion.cancel();surfaceMotion=null;
@@ -2225,7 +2276,7 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
         surfaceMotion=dialog.animate([
           {opacity:0,transform:'translateY(12px) scale(.985)'},
           {opacity:1,transform:'translateY(0) scale(1)'}
-        ],{duration:380,easing:'cubic-bezier(.2,.65,.3,1)'});
+        ],{duration:420,easing:'cubic-bezier(.22,1,.36,1)'});
       }
     });
   });
@@ -2436,16 +2487,23 @@ hero.querySelector('.experience-search-slot').append(search);
 hero.querySelector('#experience-residue').append(residue);
 [search,residue].forEach(el=>{el.classList.remove('reveal-pending');el.classList.add('is-visible')});
 const workspace=hero.querySelector('.experience-workspace'),buttons=[...hero.querySelectorAll('[data-experience-route]')],panels=[...hero.querySelectorAll('.experience-panel')],status=hero.querySelector('.experience-status');
-let current='',motion;
+let current='',motion,sizeMotion;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 // Route changes keep the active workspace at its natural, readable height.
 const transition=(change,target)=>{
+ const from=hero.getBoundingClientRect().height;
  motion?.cancel();
+ sizeMotion?.cancel();
  change();
  if(reduced.matches)return;
- if(target)motion=target.animate([{opacity:.84,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:280,easing:'cubic-bezier(.22,1,.36,1)'});
+ const to=hero.getBoundingClientRect().height;
+ if(Math.abs(to-from)>1){
+  sizeMotion=hero.animate([{height:from+'px'},{height:to+'px'}],{duration:560,easing:'cubic-bezier(.22,1,.36,1)'});
+  sizeMotion.finished.then(()=>{sizeMotion=null},()=>{sizeMotion=null});
+ }
+ if(target)motion=target.animate([{opacity:.72,transform:'translateY(10px)'},{opacity:1,transform:'translateY(0)'}],{duration:420,easing:'cubic-bezier(.22,1,.36,1)'});
 };
-reduced.addEventListener('change',()=>{if(reduced.matches)motion?.cancel()});
+reduced.addEventListener('change',()=>{if(reduced.matches){motion?.cancel();sizeMotion?.cancel()}});
 const open=(route,focus=false)=>{
  const panel=hero.querySelector('#experience-'+route);
  if(!panel)return;
@@ -2481,7 +2539,7 @@ hero.querySelectorAll('#carrier-type,#carrier-location,#carrier-quantity,[name="
   if(delta>0)workspace.scrollBy({top:delta,behavior:reduced.matches?'auto':'smooth'});
  });
 }));
-new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.82,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:260,easing:'cubic-bezier(.22,1,.36,1)'})}}).observe(grid,{childList:true});
+new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.68,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:380,easing:'cubic-bezier(.22,1,.36,1)'})}}).observe(grid,{childList:true});
 const form=hero.querySelector('#experience-help-form'),result=hero.querySelector('.experience-help-result');
 form.addEventListener('input',e=>{result.hidden=true;e.target.setCustomValidity?.('')});
 form.addEventListener('submit',e=>{e.preventDefault();const fields=[...form.querySelectorAll('input,textarea')];for(const f of fields){f.setCustomValidity(f.value.trim()?'':'Completa este dato.')}if(!form.reportValidity())return;const data=new FormData(form);const message=['*Consulta de orientación*','','*Residuo:* '+data.get('material').trim(),'*Comuna:* '+data.get('comuna').trim(),'','*Mi consulta*',data.get('contexto').trim(),'','Adjuntaré una foto del residuo y de su lugar de acopio.'].join('\n');result.querySelector('.experience-help-summary').textContent=message.replaceAll('*','');result.querySelector('a').href='https://wa.me/56986067930?text='+encodeURIComponent(message);result.hidden=false});
