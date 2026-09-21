@@ -1340,8 +1340,8 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
     display: flex;
     min-inline-size: 0;
     flex-direction: column;
-    gap: .8rem;
-    padding: 1.15rem;
+    gap: .6rem;
+    padding: .9rem;
     border: 1px solid color-mix(in srgb, var(--ink) 13%, var(--line));
     border-radius: 1.35rem;
     background: var(--paper);
@@ -1349,17 +1349,23 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       border-color 180ms ease, background-color 180ms ease;
   }
   .carrier-card-top {
-    display: flex;
-    align-items: start;
-    justify-content: space-between;
-    gap: .75rem;
+    display: block;
+  }
+  .carrier-card-top > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .3rem .45rem;
   }
   .carrier-card h4 {
+    grid-column: 1 / -1;
     max-inline-size: 28ch;
-    font-size: 1.04rem;
+    font-size: 1rem;
     line-height: 1.25;
   }
   .carrier-kind-chip {
+    grid-column: 2;
+    grid-row: 2;
     flex: 0 0 auto;
     padding: .3rem .5rem;
     border-radius: 999px;
@@ -1375,32 +1381,42 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
     color: var(--carrier-danger);
   }
   .carrier-location {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
     color: var(--muted);
-    font-size: .86rem;
+    font-size: .82rem;
   }
   .carrier-card dl {
     display: grid;
-    grid-template-columns: minmax(5rem, auto) 1fr;
-    gap: .28rem .65rem;
+    grid-template-columns: minmax(4.7rem, auto) 1fr;
+    gap: .2rem .55rem;
     margin: 0;
-    font-size: .84rem;
-    line-height: 1.45;
+    font-size: .81rem;
+    line-height: 1.38;
   }
   .carrier-record-list {
     display: grid;
-    gap: .8rem;
-    padding-block: .8rem;
+    gap: .45rem;
+    padding-block: .6rem;
     border-block: 1px solid var(--line);
   }
-  .carrier-record-list > section + section {
-    padding-block-start: .8rem;
-    border-block-start: 1px solid var(--line);
-  }
+  .carrier-record-list > section[hidden] { display: none; }
   .carrier-record-list h5 {
-    margin: 0 0 .55rem;
-    font-size: .82rem;
+    margin: 0 0 .4rem;
+    font-size: .86rem;
     font-weight: 800;
     color: var(--ink);
+  }
+  .carrier-source-page { margin: .45rem 0 0; color: var(--muted); font-size: .72rem; }
+  .carrier-record-pager { display: flex; align-items: center; justify-content: space-between; gap: .5rem; color: var(--muted); font-size: .75rem; font-weight: 800; }
+  .carrier-record-pager div { display: flex; gap: .25rem; }
+  .carrier-record-pager button { display: grid; place-items: center; width: 2rem; height: 2rem; padding: 0; border: 1px solid var(--line); border-radius: .7rem; background: var(--paper); color: var(--ink); cursor: pointer; }
+  .carrier-record-pager button:disabled { opacity: .35; cursor: default; }
+  .carrier-record-pager button:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+  @media (max-width: 375px) {
+    .carrier-card .carrier-secondary-detail,
+    .carrier-card .carrier-source-page { display: none; }
   }
   .carrier-card dt {
     color: var(--muted);
@@ -1555,7 +1571,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
   <p class="carrier-search-status" id="carrier-search-status" role="status" aria-live="polite">Selecciona un tipo de residuo o una comuna para mostrar resultados automáticamente.</p>
   <div class="carrier-results" id="carrier-results">
     <div class="carrier-results-head">
-      <h3>Resultados del listado</h3>
+      <h3>Resultados</h3>
       <p class="carrier-results-count" id="carrier-results-count" role="status" aria-live="polite"></p>
     </div>
     <div class="carrier-results-grid" id="carrier-results-grid"></div>
@@ -1712,12 +1728,32 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       empty.append(actions);
       return empty;
     }
-    function addDetail(dl, label, value) {
+    function addDetail(dl, label, value, fullValue = value) {
       const dt = document.createElement("dt");
       dt.textContent = label;
       const dd = document.createElement("dd");
       dd.textContent = value;
+      if (label === "Dirección" || label === "Patentes") {
+        dt.className = "carrier-secondary-detail";
+        dd.className = "carrier-secondary-detail";
+      }
+      if (fullValue !== value) {
+        dd.title = fullValue;
+        dd.setAttribute("aria-label", fullValue);
+      }
       dl.append(dt, dd);
+    }
+    function compactReferences(value, kind) {
+      if (value.length <= 65) return value;
+      const date = kind === "resolution" ? value.match(/\bdel\s+(\d{2}\/\d{2}\/\d{4})/i)?.[1] : null;
+      const source = date ? value.replace(/\s+del\s+\d{2}\/\d{2}\/\d{4}.*/i, "") : value;
+      const parts = source.split(/\s*\-\s*/).map((part) => part.trim()).filter(Boolean);
+      if (parts.length > 1) {
+        const count = parts.length - 1;
+        const unit = kind === "resolution" ? (count === 1 ? "resolución" : "resoluciones") : (count === 1 ? "patente" : "patentes");
+        return `${parts[0]} y ${count} ${unit} más${date ? ` · ${date}` : ""}`;
+      }
+      return `${value.slice(0, 72).trimEnd()}…`;
     }
     function groupMatches(matches) {
       const groups = new Map();
@@ -1741,43 +1777,77 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       title.textContent = item.company;
       const location = document.createElement("p");
       location.className = "carrier-location";
-      const types = [...new Set(group.records.map((record) => record.type))];
-      location.textContent = `${group.location} · ${group.records.length} registro${group.records.length === 1 ? "" : "s"}${types.length === 1 ? ` para ${types[0]}` : ` en ${types.length} tipos de residuo`}`;
+      location.textContent = group.location;
       titleWrap.append(title, location);
       const chip = document.createElement("span");
       chip.className = `carrier-kind-chip${item.kind === "hazard" ? " is-hazard" : ""}`;
       chip.textContent = kindLabel(item.kind);
-      top.append(titleWrap, chip);
+      titleWrap.append(chip);
+      top.append(titleWrap);
       const details = document.createElement("div");
       details.className = "carrier-record-list";
-      group.records.forEach((record, index) => {
+      const entries = group.records.map((record, index) => {
         const entry = document.createElement("section");
-        if (group.records.length > 1) {
-          const heading = document.createElement("h5");
-          heading.textContent = `Registro ${index + 1} · ${record.type}`;
-          entry.append(heading);
-        }
+        entry.hidden = index !== 0;
+        const heading = document.createElement("h5");
+        heading.textContent = record.type;
+        entry.append(heading);
         const dl = document.createElement("dl");
-        if (group.records.length === 1) addDetail(dl, "Residuo", record.type);
         addDetail(dl, "Dirección", record.address);
-        addDetail(dl, "Autorizado para", record.summary);
-        addDetail(dl, "Resolución", record.resolution);
-        addDetail(dl, "Patentes", record.plates);
-        addDetail(dl, "Página PDF", record.pdfPage);
+        if (typeSelect.value === "*" && !record.summary.includes(record.type)) addDetail(dl, "Alcance", record.summary);
+        addDetail(dl, "Resolución", compactReferences(record.resolution, "resolution"), record.resolution);
+        addDetail(dl, "Patentes", compactReferences(record.plates, "plates"), record.plates);
         entry.append(dl);
+        const sourcePage = document.createElement("p");
+        sourcePage.className = "carrier-source-page";
+        sourcePage.textContent = `Listado, pág. ${record.pdfPage}`;
+        entry.append(sourcePage);
         details.append(entry);
+        return entry;
       });
       const actions = document.createElement("div");
       actions.className = "carrier-card-actions";
       const link = document.createElement("a");
       const quantity = quantitySelect.selectedOptions[0]?.textContent || "Aún no lo sé";
-      const message = `*Consulta de retiro de residuos*\n\n*Empresa del listado:* ${item.company}\n*Tipo:* ${kindLabel(item.kind)}\n*Residuo:* ${typeSelect.value === "*" ? "Por definir" : typeSelect.value}\n*Comuna del transportista:* ${item.location}\n*Cantidad estimada:* ${quantity}\n*Registros coincidentes:* ${group.records.length}\n\nNecesito confirmar cuál registro y autorización corresponde a mi retiro.\n\n*Foto*\nAdjuntaré una foto del residuo, su envase y el lugar de acopio.`;
-      link.href = "https://wa.me/56986067930?text=" + encodeURIComponent(message);
+      const setActiveRecord = (index) => {
+        entries.forEach((entry, position) => { entry.hidden = position !== index; });
+        const record = group.records[index];
+        const message = `*Consulta de retiro de residuos*\n\n*Empresa del listado:* ${item.company}\n*Tipo:* ${kindLabel(item.kind)}\n*Residuo:* ${record.type}\n*Comuna del transportista:* ${item.location}\n*Cantidad estimada:* ${quantity}\n*Dirección:* ${record.address}\n*Alcance autorizado:* ${record.summary}\n*Resolución:* ${record.resolution}\n*Patentes:* ${record.plates}\n*Página del listado:* ${record.pdfPage}\n\nQuisiera confirmar la disponibilidad para el retiro. Adjuntaré fotos del residuo y su lugar de acopio.`;
+        link.href = "https://wa.me/56986067930?text=" + encodeURIComponent(message);
+      };
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = "Consultar este resultado ↗";
+      link.textContent = "Consultar retiro ↗";
       actions.append(link);
-      card.append(top, details, actions);
+      card.append(top, details);
+      if (group.records.length > 1) {
+        const pager = document.createElement("nav");
+        pager.className = "carrier-record-pager";
+        pager.setAttribute("aria-label", `Autorizaciones de ${item.company}`);
+        const position = document.createElement("span");
+        const controls = document.createElement("div");
+        const previous = document.createElement("button");
+        const next = document.createElement("button");
+        previous.type = next.type = "button";
+        previous.textContent = "‹";
+        next.textContent = "›";
+        previous.setAttribute("aria-label", "Autorización anterior");
+        next.setAttribute("aria-label", "Autorización siguiente");
+        const show = (index) => {
+          setActiveRecord(index);
+          position.textContent = `Registro ${index + 1}/${group.records.length}`;
+          previous.disabled = index === 0;
+          next.disabled = index === group.records.length - 1;
+          previous.dataset.index = next.dataset.index = String(index);
+        };
+        previous.addEventListener("click", () => show(Number(previous.dataset.index) - 1));
+        next.addEventListener("click", () => show(Number(next.dataset.index) + 1));
+        controls.append(previous, next);
+        pager.append(position, controls);
+        card.append(pager);
+        show(0);
+      } else setActiveRecord(0);
+      card.append(actions);
       return card;
     }
     function renderResults() {
@@ -2150,7 +2220,7 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 .transport-experience .carrier-card{flex:0 0 min(100%,340px);scroll-snap-align:start;display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere}
 .transport-experience .carrier-card-actions{margin-top:auto;padding-top:1rem}
 .transport-experience .carrier-card-top{display:block}
-.transport-experience .carrier-kind-chip{margin-top:.6rem;display:inline-block}
+.transport-experience .carrier-kind-chip{margin:0;display:inline-block}
 .transport-experience .carrier-card dl{margin:1rem 0;padding-top:.75rem}
 .transport-experience .carrier-record-list{margin-top:.15rem}
 .experience-carousel-controls{display:flex;gap:.5rem;justify-content:flex-end;margin:.5rem 0}
@@ -2186,15 +2256,17 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 .transport-experience h2[tabindex="-1"]:focus{outline:none}
 .transport-experience .carrier-card{box-shadow:none!important;border:1px solid #e0e5ed!important;transform:none!important}
 .transport-experience .carrier-card h3{line-height:1.35;letter-spacing:-.015em}
+.transport-experience .carrier-more{display:none!important}
 @media(min-width:900px){
   #experience-search #buscar-transportistas{display:grid;grid-template-columns:minmax(300px,.86fr) minmax(0,1.14fr);gap:0 1.5rem;align-items:start}
   #experience-search .carrier-search-form{grid-column:1;grid-row:1/3;grid-template-columns:1fr;padding:1.15rem!important;gap:.7rem!important}
   #experience-search .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}
   #experience-search .carrier-results{grid-column:2;grid-row:1/3;min-width:0}
-  #experience-search .carrier-card{flex-basis:min(100%,320px)}
+  #experience-search .carrier-card{flex-basis:min(100%,460px)}
 }
 @media(max-width:800px){.experience-routes{grid-template-columns:1fr}.experience-routes button{min-height:72px}.experience-cover{object-position:60% center}}
 @media(max-width:560px){.transport-experience{border-radius:1.25rem;height:clamp(680px,calc(100dvh - 100px),780px)}.transport-experience::before{background:linear-gradient(180deg,rgb(9 24 43 / .78),rgb(9 24 43 / .2) 48%,rgb(9 24 43 / .82))}.experience-routes button{min-height:70px}.transport-experience .carrier-search-form,#experience-help-form,.transport-experience .finder-steps{grid-template-columns:1fr!important}.transport-experience .carrier-kind-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.4rem}.transport-experience .carrier-kind-option{padding:.45rem!important;min-height:44px;font-size:.82rem}.transport-experience .carrier-search-form{gap:.35rem!important;padding:.65rem!important}.transport-experience .carrier-kind-field legend,.transport-experience .carrier-field label{margin-bottom:.2rem}.transport-experience .carrier-reset{min-block-size:1.8rem;padding:0}.transport-experience .carrier-search-helper{display:none}.transport-experience .carrier-field select{min-height:42px;padding:.55rem .75rem}.transport-experience .experience-toolbar{margin-bottom:.4rem}.transport-experience .carrier-results-head{grid-template-columns:minmax(0,1fr) auto;gap:.25rem .5rem;margin-bottom:.5rem}.transport-experience .carrier-results-count{grid-column:1;grid-row:2;text-align:start;white-space:normal;max-width:18ch}.transport-experience .experience-carousel-controls{grid-column:2;grid-row:2}.transport-experience .experience-edit-filters{display:inline-flex;grid-column:2;grid-row:1}.transport-experience .carrier-results{margin-top:.75rem}.transport-experience .carrier-search-status{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.experience-workspace{padding:1rem}.transport-experience .carrier-card{flex-basis:100%}}
+@media(max-width:560px){.transport-experience .carrier-results-head{grid-template-columns:minmax(0,1fr) auto auto;gap:.3rem}.transport-experience .carrier-results-head h3{font-size:.98rem}.transport-experience .carrier-results-count{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%)}.transport-experience .experience-edit-filters{grid-column:2;grid-row:1;justify-content:center;width:34px;height:34px;padding:0;font-size:0}.transport-experience .experience-edit-filters .material-symbols-outlined{font-size:1.1rem}.transport-experience .experience-carousel-controls{grid-column:3;grid-row:1;gap:.2rem}.transport-experience .experience-carousel-controls button{width:32px;height:32px}}
 @media(prefers-reduced-motion:reduce){.experience-routes button{transition:none}}
 </style>
 <script>
@@ -2240,7 +2312,7 @@ const editFilters=document.createElement('button');editFilters.type='button';edi
 const [prev,next]=controls.children;
 const update=()=>{const overflow=grid.scrollWidth>grid.clientWidth+2;controls.hidden=!overflow;prev.disabled=grid.scrollLeft<2;next.disabled=grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-2};
 [prev,next].forEach((b,i)=>b.addEventListener('click',()=>grid.scrollBy({left:(i?1:-1)*(grid.clientWidth*.9),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})));
-grid.addEventListener('scroll',update,{passive:true});new ResizeObserver(update).observe(grid);
+grid.addEventListener('scroll',()=>{update();if(grid.scrollLeft+grid.clientWidth>=grid.scrollWidth-240){const more=hero.querySelector('#carrier-more');if(more&&!more.hidden)more.click()}},{passive:true});new ResizeObserver(update).observe(grid);
 // On narrow screens, keep the edited filters visible while bringing the first result into view.
 hero.querySelectorAll('#carrier-type,#carrier-location,#carrier-quantity,[name="carrier-kind"]').forEach(control=>control.addEventListener('change',()=>{
  if(!matchMedia('(max-width:560px)').matches||workspace.hidden||!grid.querySelector('.carrier-card'))return;
