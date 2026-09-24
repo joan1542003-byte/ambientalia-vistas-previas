@@ -3340,6 +3340,10 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 
 /* Final layout pass: keep desktop filters on one line so result cards have room. */
 @media (min-width: 901px) {
+  .transport-experience {
+    height: min(44rem, calc(100svh - 6.875rem));
+    margin-block-start: .625rem;
+  }
   .transport-experience .carrier-search-form {
     grid-template-columns: minmax(18rem, 1.45fr) minmax(12rem, 1.15fr) minmax(10rem, .95fr) minmax(9rem, .85fr);
     align-items: end;
