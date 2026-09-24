@@ -1626,8 +1626,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
   .carrier-record-pager button:disabled { opacity: .35; cursor: default; }
   .carrier-record-pager button:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
   @media (max-width: 375px) {
-    .carrier-card .carrier-secondary-detail,
-    .carrier-card .carrier-source-page { display: none; }
+    .carrier-card .carrier-secondary-detail { display: none; }
   }
   .carrier-card dt {
     color: var(--muted);
@@ -1846,7 +1845,6 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       summary: row[4] || "Sin resumen de residuos autorizado",
       resolution: row[5] || "No informada en el registro",
       plates: row[6] || "No informadas en el registro",
-      pdfPage: row[7] || "No indicada",
       locationKey: locationKey(row[1]),
     }));
     const state = { matches: [], groups: [], visible: 12 };
@@ -1882,7 +1880,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       resultGrid.replaceChildren(start);
       resultCount.textContent = "";
       more.hidden = true;
-      status.textContent = `Listado listo: ${filtered.length.toLocaleString("es-CL")} registros para residuos ${kind === "hazard" ? "peligrosos" : "no peligrosos"}.`;
+      status.textContent = `${filtered.length.toLocaleString("es-CL")} opciones en el listado para residuos ${kind === "hazard" ? "peligrosos" : "no peligrosos"}. Filtra por comuna o residuo para acotar la búsqueda.`;
     }
     function relaxedMatches(kind, type, location) {
       const currentRows = rows.filter((item) => item.kind === kind);
@@ -1909,7 +1907,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
         return empty;
       }
       const note = document.createElement("p");
-      note.textContent = "Estas alternativas amplían el listado sin asumir distancias entre comunas.";
+      note.textContent = "Son coincidencias del listado consultado; no se calcula distancia entre comunas.";
       empty.append(note);
       const actions = document.createElement("div");
       actions.className = "carrier-empty-actions";
@@ -1918,7 +1916,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
         const action = document.createElement("button");
         action.type = "button";
         action.className = "button carrier-suggest";
-        action.textContent = `Ver ${sameType.toLocaleString("es-CL")} registros de «${typeLabel}» en todas las comunas`;
+        action.textContent = `Ver ${sameType.toLocaleString("es-CL")} coincidencias de «${typeLabel}» en otras comunas`;
         action.addEventListener("click", () => {
           locationSelect.value = "*";
           renderResults();
@@ -1930,7 +1928,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
         const action = document.createElement("button");
         action.type = "button";
         action.className = "button carrier-suggest";
-        action.textContent = `Ver ${sameLocation.toLocaleString("es-CL")} registros de otros residuos en ${locationLabel}`;
+        action.textContent = `Ver ${sameLocation.toLocaleString("es-CL")} coincidencias de otros residuos en ${locationLabel}`;
         action.addEventListener("click", () => {
           typeSelect.value = "*";
           renderResults();
@@ -2032,7 +2030,7 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       if (group.records.length > 1) {
         const pager = document.createElement("nav");
         pager.className = "carrier-record-pager";
-        pager.setAttribute("aria-label", `Autorizaciones de ${item.company}`);
+        pager.setAttribute("aria-label", `Tipos de residuo asociados a ${item.company}`);
         const position = document.createElement("span");
         const controls = document.createElement("div");
         const previous = document.createElement("button");
@@ -2040,11 +2038,11 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
         previous.type = next.type = "button";
         previous.textContent = "‹";
         next.textContent = "›";
-        previous.setAttribute("aria-label", "Autorización anterior");
-        next.setAttribute("aria-label", "Autorización siguiente");
+        previous.setAttribute("aria-label", "Tipo de residuo anterior");
+        next.setAttribute("aria-label", "Tipo de residuo siguiente");
         const show = (index) => {
           setActiveRecord(index);
-          position.textContent = `Registro ${index + 1}/${group.records.length}`;
+          position.textContent = `Tipo de residuo ${index + 1} de ${group.records.length}`;
           previous.disabled = index === 0;
           next.disabled = index === group.records.length - 1;
           previous.dataset.index = next.dataset.index = String(index);
@@ -2072,11 +2070,11 @@ h3{font-size:clamp(1.12rem,1.35vw,1.25rem)!important}
       } else {
         resultGrid.replaceChildren(createEmptyState(kind, type, location));
       }
-      resultCount.textContent = `${state.groups.length.toLocaleString("es-CL")} empresa${state.groups.length === 1 ? "" : "s"} · ${state.matches.length.toLocaleString("es-CL")} registro${state.matches.length === 1 ? "" : "s"}`;
+      resultCount.textContent = `${state.groups.length.toLocaleString("es-CL")} opci${state.groups.length === 1 ? "ón" : "ones"} de transporte · ${state.matches.length.toLocaleString("es-CL")} coincidencia${state.matches.length === 1 ? "" : "s"}`;
       more.hidden = state.groups.length <= state.visible;
       const quantityMessage = quantity === "unknown" ? "Indica la cantidad al contactar." : `Rango seleccionado: ${quantitySelect.selectedOptions[0].textContent}.`;
       if (state.matches.length) {
-        status.textContent = `${quantityMessage} Los datos del listado se muestran en cada resultado; confirma el alcance antes de coordinar.`;
+        status.textContent = `${quantityMessage} La ficha resume los datos del listado; confirma vigencia, alcance y disponibilidad antes de coordinar.`;
       } else {
         const alternatives = relaxedMatches(kind, type, location);
         status.textContent = alternatives.sameType || alternatives.sameLocation
