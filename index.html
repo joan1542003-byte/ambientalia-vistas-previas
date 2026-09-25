@@ -1,1 +1,66 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Vistas previas de los sitios</title></head><body><main><h1>Vistas previas de los sitios</h1><p>Versiones de diseño en revisión.</p><ul><li><a href="hds.html">HDS</a></li><li><a href="campanas-reciclaje.html">Campañas de reciclaje</a></li><li><a href="transporte-autorizado.html">Transporte Autorizado</a></li></ul></main></body></html>
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Vistas previas de los sitios</title>
+<meta name="description" content="Vistas previas de diseño en revisión: Transporte Autorizado, HDS y Campañas de reciclaje.">
+<meta name="theme-color" content="#f5f5f7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f5f7;--ink:#1d1d1f;--muted:#6e6e73;--card:#fff;--ease:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 Nunito,-apple-system,BlinkMacSystemFont,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+main{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:clamp(48px,10vw,120px) 0 64px}
+h1{margin:0;font-size:clamp(40px,7vw,72px);line-height:1.02;letter-spacing:-.04em;font-weight:900;text-wrap:balance}
+.lead{margin:16px 0 0;max-width:46ch;color:var(--muted);font-size:clamp(17px,2vw,21px);text-wrap:pretty}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:48px}
+.site{position:relative;display:flex;flex-direction:column;gap:14px;min-height:260px;padding:28px;border-radius:28px;background:var(--card);color:inherit;text-decoration:none;box-shadow:0 1px 2px rgb(0 0 0 / .04);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.site img{width:48px;height:48px}
+.site h2{margin:auto 0 0;font-size:26px;letter-spacing:-.02em;line-height:1.1}
+.site p{margin:0;color:var(--muted);font-size:15px}
+.site .go{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:15px;color:var(--accent)}
+.site .go svg{width:16px;height:16px;transition:transform .4s var(--ease)}
+.site:active{transform:scale(.98)}
+.site:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+@media (hover:hover){.site:hover{transform:translateY(-6px);box-shadow:0 24px 48px -20px rgb(0 0 0 / .25)}.site:hover .go svg{transform:translateX(4px)}}
+.note{margin-top:40px;color:var(--muted);font-size:14px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}.site{min-height:0}}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes rise{from{opacity:0;transform:translateY(20px);filter:blur(8px)}}
+  h1,.lead,.site{animation:rise .9s var(--ease) both}
+  .lead{animation-delay:.08s}.site:nth-child(1){animation-delay:.16s}.site:nth-child(2){animation-delay:.24s}.site:nth-child(3){animation-delay:.32s}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Vistas previas de los sitios</h1>
+  <p class="lead">Versiones de diseño en revisión. Cada sitio tiene su propio servicio, identidad y formulario.</p>
+  <div class="grid">
+    <a class="site" href="transporte-autorizado.html" style="--accent:#315fc7">
+      <img src="assets/transporte/favicon.svg" alt="" width="48" height="48">
+      <h2>Transporte Autorizado</h2>
+      <p>Retiro de residuos peligrosos y no peligrosos, y búsqueda de transportistas por comuna.</p>
+      <span class="go">Ver vista previa <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+    </a>
+    <a class="site" href="hds.html" style="--accent:#7b3fb2">
+      <img src="assets/hds/favicon.svg" alt="" width="48" height="48">
+      <h2>HDS</h2>
+      <p>Hojas de seguridad de productos químicos y evaluación documental de residuos (FDSR).</p>
+      <span class="go">Ver vista previa <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+    </a>
+    <a class="site" href="campanas-reciclaje.html" style="--accent:#176548">
+      <img src="assets/campanas/favicon.svg" alt="" width="48" height="48">
+      <h2>Campañas de reciclaje</h2>
+      <p>Diseño y coordinación de campañas de recolección para municipalidades, empresas y comunidades.</p>
+      <span class="go">Ver vista previa <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+    </a>
+  </div>
+  <p class="note">Vistas de trabajo: no se indexan en buscadores y los formularios solo preparan un resumen local.</p>
+</main>
+</body>
+</html>

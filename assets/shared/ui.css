@@ -1,0 +1,160 @@
+/*
+  Capa compartida de interacción para las vistas previas (Transporte Autorizado, HDS, Campañas).
+  Solo actúa con html.ui (lo agrega un script en el head); sin JavaScript la página queda como estaba.
+  Todo el movimiento vive dentro de prefers-reduced-motion: no-preference.
+*/
+:root {
+  --ui-ease: cubic-bezier(.22, 1, .36, 1);
+  --ui-ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ui-fast: 160ms;
+  --ui-med: 320ms;
+  --ui-accent: var(--green, #315fc7);
+  --ui-ink: var(--ink, #202451);
+  --ui-shadow-1: 0 1px 2px rgb(16 24 40 / .04), 0 4px 12px -2px rgb(16 24 40 / .06);
+  --ui-shadow-2: 0 2px 6px rgb(16 24 40 / .04), 0 18px 40px -12px rgb(16 24 40 / .18);
+}
+
+/* Texto */
+html.ui { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+html.ui :is(p, li, dd, small) { text-wrap: pretty; }
+html.ui ::selection { background: color-mix(in srgb, var(--ui-accent) 24%, transparent); }
+
+/* Progreso de lectura */
+.ui-progress {
+  position: fixed; inset: 0 0 auto; z-index: 100; height: 2px; pointer-events: none;
+  background: var(--ui-accent); transform-origin: 0 50%; transform: scaleX(var(--ui-p, 0));
+}
+
+/* Header: se asienta al hacer scroll */
+html.ui .header :is(.brand, .nav, .menu) {
+  transition: box-shadow var(--ui-med) var(--ui-ease), background-color var(--ui-med) var(--ui-ease);
+}
+html.ui .header.ui-scrolled :is(.brand, .nav, .menu) {
+  background-color: rgb(255 255 255 / .8);
+  box-shadow: var(--ui-shadow-2);
+}
+html.ui .nav a { transition: background-color var(--ui-med) var(--ui-ease), color var(--ui-med) var(--ui-ease); }
+html.ui .nav a.ui-current:not(.nav-cta) { background: color-mix(in srgb, var(--ui-accent) 13%, transparent); }
+
+/* Botones y controles: respuesta táctil */
+html.ui :is(a, button, summary, label, select) { -webkit-tap-highlight-color: transparent; }
+html.ui :is(.button, .nav-cta, .ui-dock a) {
+  transition: transform var(--ui-fast) var(--ui-ease), background-color var(--ui-med) var(--ui-ease),
+    box-shadow var(--ui-med) var(--ui-ease), color var(--ui-med) var(--ui-ease);
+}
+html.ui :is(.button, .nav-cta, .ui-dock a, .experience-routes > *, .waste-option, .picker-option, .rep-choice):active {
+  transform: scale(.97) !important;
+  transition-duration: 90ms;
+}
+html.ui .button .material-symbols-outlined { transition: transform var(--ui-med) var(--ui-ease); }
+@media (hover: hover) {
+  html.ui .button:hover { box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--ui-ink) 70%, transparent); }
+  html.ui .button:hover .material-symbols-outlined { transform: translateX(3px); }
+}
+
+/* Tarjetas: levantan al pasar el puntero */
+html.ui :is(.service-card, .support-service-card, .ecosystem-card, .legal-item, .transport-law-grid > article) {
+  transition: transform var(--ui-med) var(--ui-ease), box-shadow var(--ui-med) var(--ui-ease), border-color var(--ui-med) var(--ui-ease);
+}
+html.ui :is(.service-card, .support-service-card, .ecosystem-card) img { transition: transform 900ms var(--ui-ease-out); }
+@media (hover: hover) {
+  html.ui :is(.service-card, .support-service-card, .ecosystem-card, .legal-item, .transport-law-grid > article):hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ui-shadow-2);
+  }
+  html.ui :is(.service-card, .support-service-card, .ecosystem-card):hover img { transform: scale(1.04); }
+}
+
+/* Formularios */
+html.ui :is(.field, #experience-help-form) :is(input, select, textarea) {
+  transition: border-color var(--ui-fast) ease, box-shadow var(--ui-med) var(--ui-ease), background-color var(--ui-med) ease;
+}
+html.ui :is(.field, #experience-help-form) :is(input, select, textarea):focus-visible {
+  outline: none;
+  border-color: var(--ui-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ui-accent) 30%, transparent);
+}
+html.ui .field label { transition: color var(--ui-med) var(--ui-ease); }
+@media (max-width: 760px) {
+  /* 16 px evita el zoom automático de iOS al enfocar */
+  html.ui :is(input, select, textarea) { font-size: 16px !important; }
+}
+
+/* Details animados */
+html.ui details.ui-animating { overflow: hidden; }
+
+/* Carrusel en móvil */
+.ui-dots { display: none; }
+@media (max-width: 760px) {
+  html.ui .ui-carousel {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-block: 4px 10px !important;
+  }
+  html.ui .ui-carousel::-webkit-scrollbar { display: none; }
+  html.ui .ui-carousel > * { flex: 0 0 84% !important; min-width: 0; scroll-snap-align: start; }
+  html.ui .ui-carousel + .ui-dots, html.ui .ui-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+  .ui-dots span {
+    width: 6px; height: 6px; border-radius: 99px;
+    background: color-mix(in srgb, var(--ui-ink) 22%, transparent);
+    transition: width var(--ui-med) var(--ui-ease), background-color var(--ui-med) var(--ui-ease);
+  }
+  .ui-dots span.ui-on { width: 20px; background: var(--ui-ink); }
+}
+
+/* Barra de acción en móvil */
+.ui-dock {
+  position: fixed; z-index: 60; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom));
+  display: flex; gap: 8px; padding: 8px; border-radius: 22px;
+  background: rgb(255 255 255 / .74);
+  -webkit-backdrop-filter: saturate(1.8) blur(20px); backdrop-filter: saturate(1.8) blur(20px);
+  border: 1px solid rgb(16 24 40 / .08);
+  box-shadow: 0 12px 40px -14px rgb(16 24 40 / .4);
+  transform: translateY(calc(100% + 28px)); opacity: 0; visibility: hidden;
+  transition: transform 520ms var(--ui-ease-out), opacity 260ms ease, visibility 0s linear 520ms;
+}
+.ui-dock.ui-show { transform: none; opacity: 1; visibility: visible; transition-delay: 0s; }
+.ui-dock a {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; border-radius: 15px; font: 800 15px/1.1 Nunito, Arial, sans-serif; text-decoration: none;
+}
+.ui-dock .ui-dock-primary { flex: 1; background: var(--ui-ink); color: #fff; }
+.ui-dock .ui-dock-chat { flex: 0 0 auto; padding-inline: 16px; background: #e3f5ea; color: #0d5132; }
+.ui-dock svg { width: 20px; height: 20px; flex: 0 0 auto; }
+@media (min-width: 761px) { .ui-dock { display: none; } }
+@media (max-width: 760px) { html.ui body { padding-bottom: 84px; } }
+@media print { .ui-dock, .ui-progress { display: none !important; } }
+
+/* ---------- Movimiento ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ui-rise { from { opacity: 0; transform: translateY(18px); filter: blur(8px); } }
+  @keyframes ui-rise-soft { from { transform: translateY(14px); filter: blur(10px); } }
+  @keyframes ui-settle { from { transform: scale(1.07); } }
+  @keyframes ui-fade { from { opacity: 0; transform: translateY(-4px); } }
+
+  html.ui .ui-intro { animation: ui-rise 900ms var(--ui-ease-out) both; animation-delay: calc(var(--ui-i, 0) * 80ms); }
+  html.ui .ui-intro-soft { animation: ui-rise-soft 900ms var(--ui-ease-out) both; }
+  html.ui .ui-settle { animation: ui-settle 1800ms var(--ui-ease-out) both; }
+
+  /* Aparición escalonada de tarjetas */
+  html.ui .ui-stagger > * {
+    opacity: 0; transform: translateY(22px);
+    transition: opacity 760ms var(--ui-ease-out), transform 760ms var(--ui-ease-out);
+    transition-delay: calc(var(--ui-i, 0) * 70ms);
+  }
+  html.ui .ui-stagger.ui-in > * { opacity: 1; transform: none; }
+
+  html.ui details.ui-opening > :not(summary) { animation: ui-fade 420ms var(--ui-ease-out) both; }
+
+  /* Imágenes diferidas: aparecen suaves al cargar */
+  html.ui img.ui-img { opacity: 0; filter: blur(10px); transition: opacity 700ms var(--ui-ease), filter 900ms var(--ui-ease); }
+  html.ui img.ui-img.ui-loaded { opacity: 1; filter: none; }
+}
+@media print {
+  html.ui .ui-stagger > *, html.ui img.ui-img { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
