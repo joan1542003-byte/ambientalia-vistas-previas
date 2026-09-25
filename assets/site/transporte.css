@@ -1,0 +1,75 @@
+/* Transporte Autorizado: piezas propias de la página. */
+
+.intents { margin-top: 16px; }
+
+.service .card-media img { aspect-ratio: 3 / 2; }
+.service p + p { margin-top: 8px; }
+.more-services { margin-top: clamp(48px, 6vw, 72px); }
+.more-services .subtitle { margin-bottom: 16px; }
+
+.plan h3 { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.plan-note { font-size: .875rem; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+.plan .plan-promise { margin-top: 12px; color: var(--ink); font-weight: 700; }
+.plan .small { margin-top: 12px; }
+
+/* Formulario */
+.date-fields { margin-top: 16px; }
+
+/* Buscador */
+.finder { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.finder > * { min-width: 0; }
+.finder-controls { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; }
+.finder-commune { width: min(100%, 320px); }
+.categories { border: 0; margin: 0; padding: 0; min-width: 0; }
+.category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+.category { position: relative; }
+.category input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.category span {
+  display: grid; grid-template-rows: auto 1fr; gap: 8px; height: 100%; padding: 8px 8px 12px;
+  border-radius: 16px; border: 1px solid var(--line); background: #fff; cursor: pointer;
+  font-size: .8125rem; font-weight: 700; line-height: 1.25; text-align: center;
+  transition: border-color .2s, box-shadow .2s, transform .2s var(--ease);
+}
+.category img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: var(--bg-alt); }
+.category .all {
+  display: grid; place-items: center; aspect-ratio: 1; border-radius: 10px; background: var(--bg-alt); color: var(--muted);
+}
+.category .all svg { width: 36%; height: auto; }
+.category input:checked + span { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.category input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (hover: hover) { .category span:hover { border-color: var(--line-strong); } }
+.category input:active + span { transform: scale(.97); }
+@media (max-width: 640px) {
+  .category-grid { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 112px; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 6px; scrollbar-width: none; }
+  .category-grid::-webkit-scrollbar { display: none; }
+  .category { scroll-snap-align: start; }
+}
+
+.results-count { font-weight: 700; }
+.results-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 12px; margin-top: 16px; }
+.carrier {
+  display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 16px;
+  background: var(--bg-alt); min-width: 0;
+}
+.carrier h3 { font-size: 1rem; letter-spacing: -.01em; line-height: 1.3; overflow-wrap: anywhere; }
+.carrier .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.carrier .pill {
+  display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border-radius: 999px;
+  background: #fff; font-size: .8125rem; font-weight: 700; color: var(--ink-2);
+}
+.carrier .pill.is-hazard { color: var(--hazard); background: var(--hazard-soft); }
+.carrier .pill.is-safe { color: var(--safe); background: var(--safe-soft); }
+.carrier dl { display: grid; gap: 6px; font-size: .875rem; }
+.carrier dt { font-weight: 700; color: var(--ink-2); }
+.carrier dd { color: var(--muted); overflow-wrap: anywhere; }
+.carrier dl > div { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 8px; }
+.carrier .link { margin-top: auto; padding-top: 6px; font-size: .9375rem; }
+.results-more { margin-top: 20px; }
+.results-empty { padding: 24px; border-radius: 16px; background: var(--bg-alt); color: var(--ink-2); }
+.results-empty .actions { margin-top: 14px; }
+.finder-source { max-width: 80ch; }
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes result-in { from { opacity: 0; transform: translateY(6px); } }
+  .results-list > * { animation: result-in .4s var(--ease) both; }
+}

@@ -12,4 +12,4 @@ Antes de cambiar textos, código o formularios, lee `AGENTS.md` y `docs/contexto
 
 Convenciones: español de Chile, público empresarial (prevencionistas en terreno), «gestor» o «transportista autorizado» en vez de «operador», WhatsApp `56986067930` como canal principal y formulario como respaldo.
 
-Flujo acordado: en esta sesión se edita directamente el HTML de este repositorio y se publica en Pages (merge a `main`) al terminar cada tanda de cambios. Lee la sección «Coordinación entre agentes» de `AGENTS.md`: capa compartida `assets/shared/`, subconjunto de íconos y precauciones con las publicaciones del otro agente.
+Flujo acordado: en esta sesión se edita directamente el HTML de este repositorio y se publica en Pages (merge a `main`) al terminar cada tanda de cambios. Lee la sección «Coordinación entre agentes» de `AGENTS.md`: sistema de diseño `assets/site/` (sin los estilos anteriores) y precauciones con las publicaciones del otro agente.

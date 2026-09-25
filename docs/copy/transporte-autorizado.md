@@ -2,7 +2,7 @@
 
 Este documento conserva textos de una etapa anterior. **No es la fuente de verdad actual**: las instrucciones y correcciones más recientes del cliente, resumidas en [`../contexto-proyecto.md`](../contexto-proyecto.md), prevalecen. En particular, Transporte Autorizado se limita al retiro y coordinación de residuos; no ofrece obtener ni tramitar autorizaciones sanitarias. Revisa cada bloque antes de reutilizarlo.
 
-**Estado en el sitio:** Hero, Primer bloque y Bloque de retiro implementados. El formulario ya pide nombre y teléfono de contacto. El resto de las secciones está pendiente.
+**Estado en el sitio (25-09-2026):** implementados hero, primer bloque, bloque de retiro, modalidades, selector de residuo (como buscador con categorías), cómo trabajamos, formulario de cotización, gestores y CTA final. En «Espera y ahorra» se usó «Tú propones las fechas.» y el botón «Enviar opciones de fecha» para no repetir el texto de Retiro Programado. Pendientes: agente o chatbot, y la línea de permisos, que no corresponde a esta página.
 
 Las razones detrás de estos textos están en [reuniones/reunion-copy-transporte-autorizado.md](../reuniones/reunion-copy-transporte-autorizado.md).
 
