@@ -1441,26 +1441,27 @@ p, li {
 <section class="wrap transport-experience" id="hero-experience" aria-labelledby="hero-title">
   <img class="experience-cover" src="assets/transporte/transporte-hero-panorama.webp" width="1672" height="941" alt="" fetchpriority="high" decoding="async">
   <div class="experience-intro">
-    <div><h1 id="hero-title">¿Qué necesitas hacer con tu residuo?</h1><p>Encuentra un transportista, revisa tu material o prepara una consulta.</p></div>
+    <div><h1 id="hero-title">Nos hacemos cargo de tus residuos.</h1><p>Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p><div class="hero-actions"><a class="button hero-primary" href="#contacto">Cotizar retiro<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a><a class="hero-secondary" href="#buscar-transportistas">Buscar transportista autorizado</a></div><p class="hero-support">Residuos peligrosos y no peligrosos · Atención a empresas · Gestión documentada</p></div>
   </div>
-  <div class="experience-routes" role="group" aria-label="Elige cómo continuar">
-    <button type="button" data-experience-route="search" aria-pressed="false" aria-controls="experience-search"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><span><strong>Buscar un transportista</strong><small>Por residuo y comuna</small></span><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
-    <button type="button" data-experience-route="residue" aria-pressed="false" aria-controls="experience-residue"><span class="material-symbols-outlined" aria-hidden="true">recycling</span><span><strong>Revisar mi residuo</strong><small>Tipos de material y retiro</small></span><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
-    <button type="button" data-experience-route="help" aria-pressed="false" aria-controls="experience-help"><span class="material-symbols-outlined" aria-hidden="true">support_agent</span><span><strong>Necesito orientación</strong><small>Describe tu caso</small></span><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
+  <div class="experience-routes" role="group" aria-label="¿Qué necesitas?">
+    <button type="button" class="route-manage" data-experience-route="help" aria-pressed="false" aria-controls="experience-help"><span class="material-symbols-outlined" aria-hidden="true">recycling</span><span><strong>Necesito gestionar mis residuos</strong><small>Cotizar gestión</small></span><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
+    <button type="button" class="route-search" data-experience-route="search" aria-pressed="false" aria-controls="experience-search"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><span><strong>¿Buscas un transportista autorizado?</strong><small>Buscar por tipo de residuo y comuna</small></span><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
+    <a class="route-expert" href="https://wa.me/56986067930?text=%2AQuiero%20hablar%20con%20un%20especialista%2A%0A%0A%2AResiduo%3A%2A%20%0A%2AComuna%3A%2A%20%0A%2AMi%20caso%3A%2A%20" target="_blank" rel="noopener noreferrer"><span class="material-symbols-outlined" aria-hidden="true">support_agent</span><span><strong>¿Necesitas orientación?</strong><small>Hablar con un especialista</small></span><span class="material-symbols-outlined" aria-hidden="true">open_in_new</span><span class="sr-only"> (abre WhatsApp en una pestaña nueva)</span></a>
   </div>
   <div class="experience-workspace" hidden>
     <div class="experience-toolbar"><button type="button" class="experience-back"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>Volver</button><p class="experience-status" role="status"></p></div>
     <div id="experience-search" class="experience-panel" hidden><div class="experience-search-slot"></div></div>
     <div id="experience-residue" class="experience-panel" hidden></div>
     <div id="experience-help" class="experience-panel" hidden>
-      <h2>Cuéntanos qué necesitas resolver.</h2><p>Con estos antecedentes podemos orientar el siguiente paso.</p>
+      <h2>Cuéntanos qué necesitas retirar.</h2><p>Indícanos qué residuo tienes, volumen y dónde se encuentra. Coordinaremos a la brevedad una alternativa de retiro.</p>
       <form id="experience-help-form">
         <label>Residuo o material<input name="material" required maxlength="180" placeholder="Ej. envases, neumáticos o aceite usado"></label>
-        <label>Comuna<input name="comuna" required maxlength="100" autocomplete="address-level2" placeholder="Comuna de origen"></label>
-        <label class="experience-wide">¿Qué necesitas?<textarea name="contexto" required maxlength="1800" rows="3" placeholder="Indica la cantidad aproximada y describe tu consulta."></textarea></label>
-        <button class="button" type="submit">Preparar consulta<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
+        <label>Volumen aproximado<input name="volumen" required maxlength="120" placeholder="kg, litros, m³ o unidades"></label>
+        <label class="experience-wide">Comuna<input name="comuna" required maxlength="100" autocomplete="address-level2" placeholder="Comuna donde se encuentra el residuo"></label>
+        <label class="experience-wide">Comentarios (opcional)<textarea name="contexto" maxlength="1800" rows="3" placeholder="Cómo está almacenado, fecha aproximada o condiciones de acceso."></textarea></label>
+        <button class="button" type="submit">Cotizar gestión<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
       </form>
-      <div class="experience-help-result" hidden><h3>Tu consulta está lista</h3><p class="experience-help-summary"></p><p>Al enviar, adjunta una foto del residuo y de su lugar de acopio.</p><a class="button" target="_blank" rel="noopener noreferrer">Enviar consulta<span class="material-symbols-outlined" aria-hidden="true">open_in_new</span></a></div>
+      <div class="experience-help-result" hidden><h3>Tu solicitud está lista</h3><p class="experience-help-summary"></p><p>Al enviar, adjunta una foto del residuo y de su lugar de acopio.</p><a class="button" target="_blank" rel="noopener noreferrer">Enviar por WhatsApp<span class="material-symbols-outlined" aria-hidden="true">open_in_new</span></a></div>
     </div>
   </div>
 </section>
@@ -3403,6 +3404,27 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
   .experience-back,
   .experience-carousel-controls button { transition: none; }
 }
+/* Hero con copy aprobado (docs/copy/transporte-autorizado.md) */
+.transport-experience:not([data-route]){height:auto;min-height:42rem}
+.hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1.5rem;margin-top:1.5rem}
+.hero-actions .hero-primary{background:#fff;color:#102943;gap:.6rem}
+.hero-actions .hero-primary:hover{background:#e2ebfc;color:#102943}
+.hero-secondary{color:#fff;font-weight:800;font-size:.95rem;text-decoration:underline;text-underline-offset:5px}
+.hero-secondary:hover{text-decoration-thickness:2px}
+.experience-intro .hero-support{max-width:none;margin-top:1rem;font-size:.85rem;font-weight:700;color:rgb(255 255 255 / .82)}
+.transport-experience[data-route] :is(.hero-actions,.hero-support){display:none}
+.experience-routes a{display:flex;align-items:center;gap:.75rem;min-width:0;min-height:5.25rem;padding:1rem 1.1rem;border:1px solid #f2c87a;border-radius:1rem;text-align:left;text-decoration:none;transition:transform 220ms cubic-bezier(.22,1,.36,1),filter 180ms ease}
+.experience-routes a>span:nth-child(2){flex:1;min-width:0}
+.experience-routes .route-manage{color:#fff;background:rgb(33 94 80 / .92);border-color:rgb(255 255 255 / .34)}
+.experience-routes .route-manage small{color:rgb(255 255 255 / .84)}
+.experience-routes .route-search{color:#fff;background:rgb(28 58 91 / .84);border-color:rgb(255 255 255 / .34)}
+.experience-routes .route-search small{color:rgb(255 255 255 / .84)}
+.experience-routes .route-expert{color:#202451;background:#f2c87a}
+.experience-routes .route-expert small{color:#405262}
+@media(hover:hover){.experience-routes a:hover{filter:brightness(1.05);transform:translateY(-3px)}}
+@media (max-width:760px){.experience-routes a{min-height:4.5rem;padding:.75rem .9rem}}
+@media (max-width:560px){.transport-experience:not([data-route]){min-height:0}.hero-actions{margin-top:1rem;gap:.6rem 1rem}.experience-intro .hero-support{margin-top:.7rem;font-size:.78rem}.experience-routes a{min-height:64px;padding:.55rem .7rem;border-radius:.9rem;gap:.55rem}}
+@media (prefers-reduced-motion:reduce){.experience-routes a{transition:none}}
 </style>
 <script>
 (()=>{
@@ -3413,7 +3435,7 @@ hero.querySelector('#experience-residue').append(residue);
 [search,residue].forEach(el=>{el.classList.remove('reveal-pending');el.classList.add('is-visible')});
 const workspace=hero.querySelector('.experience-workspace'),buttons=[...hero.querySelectorAll('[data-experience-route]')],panels=[...hero.querySelectorAll('.experience-panel')],status=hero.querySelector('.experience-status'),heroTitle=hero.querySelector('#hero-title');
 const initialTitle=heroTitle.textContent;
-const routeTitles={search:'Busca transporte para tu residuo',residue:'Identifica el residuo que necesitas retirar',help:'Cuéntanos qué necesitas retirar'};
+const routeTitles={search:'Busca transporte para tu residuo',residue:'Identifica el residuo que necesitas retirar',help:'Necesito gestionar mis residuos'};
 let current='',motion;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 // Route changes animate only the panel content; the hero keeps its breakpoint height.
@@ -3432,7 +3454,7 @@ const open=(route,focus=true)=>{
     current=route;workspace.hidden=false;hero.dataset.route=route;heroTitle.textContent=routeTitles[route];
  buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.experienceRoute===route)));
  panels.forEach(p=>p.hidden=p.id!=='experience-'+route);
- status.textContent={search:'Búsqueda de transportistas',residue:'Revisión del residuo',help:'Orientación'}[route];
+ status.textContent={search:'Búsqueda de transportistas',residue:'Revisión del residuo',help:'Cotización de gestión'}[route];
  },panel);
  if(focus){heroTitle.tabIndex=-1;heroTitle.focus({preventScroll:true})}
  requestAnimationFrame(()=>{const top=hero.getBoundingClientRect().top;if(top<80)window.scrollTo({top:window.scrollY+top-90,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
@@ -3453,7 +3475,7 @@ grid.addEventListener('scroll',()=>{update();if(grid.scrollLeft+grid.clientWidth
 new MutationObserver(()=>{grid.scrollLeft=0;requestAnimationFrame(update);if(!reduced.matches&&!workspace.hidden&&!grid.closest('[hidden]')){grid.getAnimations().forEach(a=>a.cancel());grid.animate([{opacity:.82,transform:'translateY(4px)'},{opacity:1,transform:'translateY(0)'}],{duration:260,easing:'cubic-bezier(.22,1,.36,1)'})}}).observe(grid,{childList:true});
 const form=hero.querySelector('#experience-help-form'),result=hero.querySelector('.experience-help-result');
 form.addEventListener('input',e=>{result.hidden=true;e.target.setCustomValidity?.('')});
-form.addEventListener('submit',e=>{e.preventDefault();const fields=[...form.querySelectorAll('input,textarea')];for(const f of fields){f.setCustomValidity(f.value.trim()?'':'Completa este dato.')}if(!form.reportValidity())return;const data=new FormData(form);const message=['*Consulta de orientación*','','*Residuo:* '+data.get('material').trim(),'*Comuna:* '+data.get('comuna').trim(),'','*Mi consulta*',data.get('contexto').trim(),'','Adjuntaré una foto del residuo y de su lugar de acopio.'].join('\n');result.querySelector('.experience-help-summary').textContent=message.replaceAll('*','');result.querySelector('a').href='https://wa.me/56986067930?text='+encodeURIComponent(message);result.hidden=false});
+form.addEventListener('submit',e=>{e.preventDefault();const fields=[...form.querySelectorAll('[required]')];for(const f of fields){f.setCustomValidity(f.value.trim()?'':'Completa este dato.')}if(!form.reportValidity())return;const data=new FormData(form);const extra=data.get('contexto').trim();const message=['*Cotizar gestión de residuos*','','*Residuo:* '+data.get('material').trim(),'*Volumen aproximado:* '+data.get('volumen').trim(),'*Comuna:* '+data.get('comuna').trim(),...(extra?['','*Comentarios*',extra]:[]),'','Adjuntaré una foto del residuo y de su lugar de acopio.'].join('\n');result.querySelector('.experience-help-summary').textContent=message.replaceAll('*','');result.querySelector('a').href='https://wa.me/56986067930?text='+encodeURIComponent(message);result.hidden=false});
 })();
 </script>
 <noscript><style>#contacto form{display:none}.header .menu{display:none}.header-inner{flex-wrap:wrap}.header .nav{display:flex;position:static;flex-wrap:wrap;width:auto}.header{position:relative}</style><p class="no-script-contact">El generador necesita JavaScript. Puedes <a href="https://wa.me/56986067930">contactarnos directamente</a>.</p></noscript>

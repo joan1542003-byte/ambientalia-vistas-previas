@@ -2,6 +2,8 @@
 
 Textos revisados y corregidos para `transporte-autorizado.html`. Son la **fuente de verdad** del copy. Si el HTML no coincide con este documento, manda este documento.
 
+**Estado en el sitio:** Hero y Primer bloque implementados. El resto de las secciones está pendiente.
+
 Las razones detrás de estos textos están en [reuniones/reunion-copy-transporte-autorizado.md](../reuniones/reunion-copy-transporte-autorizado.md).
 
 ---
@@ -223,4 +225,5 @@ Cuéntanos qué tienes y dónde se encuentra. Nosotros te ayudamos a definir el 
 ## Puntos abiertos
 
 - **«Espera y ahorra»** repite la bajada de Retiro Programado («Coordina tu retiro con anticipación») y usa el mismo botón («Programar retiro»). Conviene diferenciarlos. Por ejemplo: bajada «Flexibiliza la fecha y paga menos» y botón «Elegir fechas flexibles».
+- En el sitio, **«¿Necesitas orientación?»** abre WhatsApp directo con un especialista. **«Necesito gestionar mis residuos»** abre un formulario breve (residuo, volumen, comuna) que prepara el mensaje de WhatsApp.
 - El **formulario** y el **chatbot** solo ofrecen Express y Programado. Falta agregar «Espera y ahorra» como tercera opción.
