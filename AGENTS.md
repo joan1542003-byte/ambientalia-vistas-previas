@@ -15,8 +15,9 @@ El código fuente y la documentación de trabajo están en el repositorio privad
 ## Límites editoriales y normativos
 
 - No confundas estos tres servicios ni combines sus formularios, promesas, precios, contactos o áreas de cobertura.
+- Las correcciones recientes del cliente prevalecen sobre minutas, copies antiguos y HTML previo. Si otro documento dice que Transporte Autorizado tramita permisos sanitarios, considéralo desactualizado: la página es de retiro y coordinación de residuos.
 - Presenta como hechos solo lo que esté respaldado por las notas, el material fuente y los registros disponibles. No inventes clientes, resultados, acreditaciones, autorizaciones, plazos o compromisos comerciales.
-- El D.S. 148 se relaciona con la gestión de residuos peligrosos y requisitos de transporte; la documentación y sus excepciones dependen del caso. El D.S. 57 trata clasificación y comunicación de peligros de sustancias y mezclas, no clasifica automáticamente un residuo. El D.S. 29 corresponde al marco sanitario de campañas de recolección y sus condiciones. Antes de cambiar una afirmación legal, confirma el texto y vigencia en una fuente oficial (BCN, Diario Oficial o autoridad competente) y limita la redacción a lo que esa fuente establece.
+- El D.S. 148 se relaciona con la gestión de residuos peligrosos y requisitos de transporte; la documentación y sus excepciones dependen del caso. El D.S. 57 trata clasificación y comunicación de peligros de sustancias y mezclas, no clasifica automáticamente un residuo. El D.S. 29 establece requisitos sanitarios para ciertas actividades vinculadas con residuos de productos prioritarios y campañas; una obligación regulatoria no convierte el trámite de una autorización en un servicio de Transporte Autorizado. Antes de cambiar una afirmación legal, confirma texto, alcance, vigencia y disposiciones transitorias en una fuente oficial (BCN, Diario Oficial o autoridad competente). En la documentación de trabajo existe el texto publicado el 14-ENE-2026 como Decreto 29, promulgado en 2024; evita llamarlo «Decreto 29 de 2026» sin verificar su denominación oficial.
 - Una HDS/FDS de un producto no es una FDSR ni sustituye por sí sola los documentos exigibles para transportar un residuo peligroso. No afirmes que una hoja, asesoría o herramienta equivale a un certificado o aprobación de una autoridad.
 - Los listados de transportistas son una fuente fechada, no una garantía de que una autorización siga vigente hoy. Conserva la procedencia y fecha de cualquier dato mostrado; evita referencias internas de Excel como números de pestaña o página cuando no ayuden al usuario.
 - Los formularios actuales preparan una consulta o un resumen local salvo que el código de origen demuestre que existe un endpoint conectado. No afirmes que una solicitud fue enviada si solo se abrió WhatsApp, correo, copia o descarga.
@@ -32,6 +33,8 @@ El código fuente y la documentación de trabajo están en el repositorio privad
 - Usa HTML semántico, foco visible, etiquetas accesibles y texto alternativo cuando la imagen aporte información. No dupliques navegación ni headings.
 
 ## Edición y publicación
+
+Las notas de reunión y `docs/copy/transporte-autorizado.md` conservan formulaciones anteriores sobre permisos. No son vigentes donde contradigan este contexto. Consulta `docs/contexto-proyecto.md`, `docs/README.md` y la fuente normativa oficial antes de reutilizarlas.
 
 1. Identifica el sitio afectado y localiza la fuente modular correspondiente en el repositorio privado.
 2. Cambia los fragmentos fuente, vuelve a generar `website/index.html` y comprueba que los fragmentos y el montaje estén sincronizados.

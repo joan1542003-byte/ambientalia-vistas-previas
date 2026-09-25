@@ -1,6 +1,6 @@
-# Copy aprobado: Transporte autorizado
+# Copy de referencia: Transporte Autorizado
 
-Textos revisados y corregidos para `transporte-autorizado.html`. Son la **fuente de verdad** del copy. Si el HTML no coincide con este documento, manda este documento.
+Este documento conserva textos de una etapa anterior. **No es la fuente de verdad actual**: las instrucciones y correcciones más recientes del cliente, resumidas en [`../contexto-proyecto.md`](../contexto-proyecto.md), prevalecen. En particular, Transporte Autorizado se limita al retiro y coordinación de residuos; no ofrece obtener ni tramitar autorizaciones sanitarias. Revisa cada bloque antes de reutilizarlo.
 
 **Estado en el sitio:** Hero y Primer bloque implementados. El resto de las secciones está pendiente.
 
@@ -201,13 +201,11 @@ Incorpora tu empresa, cobertura, residuos autorizados y servicios disponibles de
 
 ---
 
-## Permisos (línea secundaria)
+## Permisos — texto anterior, no usar en Transporte Autorizado
 
-### ¿Necesitas apoyo con permisos o documentación?
+El siguiente concepto quedó en versiones previas, pero el cliente aclaró que Transporte Autorizado ofrece retiros de residuos. No lo presentes como un servicio de esta página: «¿Necesitas apoyo con permisos o documentación? Te ayudamos a ordenar los antecedentes necesarios para trámites sanitarios…».
 
-Te ayudamos a ordenar los antecedentes necesarios para trámites sanitarios, documentación de residuos y otras exigencias asociadas a su gestión.
-
-**Botón:** Revisar mi caso
+La orientación sobre los requisitos de autorización de una **campaña de recolección** corresponde al contexto de Campañas de reciclaje y debe redactarse allí, con base en la norma oficial vigente y sin prometer la aprobación de la autoridad.
 
 ---
 

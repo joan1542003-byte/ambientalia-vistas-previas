@@ -4,15 +4,15 @@ Vistas previas de tres páginas de servicios de gestión de residuos para Chile.
 
 Hoy hay poca publicidad y poco posicionamiento en gestión de residuos en Chile, así que las páginas tienen que dejar clara la promesa y llevar a una solicitud.
 
-## Modelo de ingresos (orienta la jerarquía de contenidos)
+## Modelo de ingresos (antecedente, validar antes de usar)
 
 | Línea | Peso | Dónde vive |
 |---|---|---|
 | Retiro de residuos (peligrosos y no peligrosos) | **80 %** | `transporte-autorizado.html` |
 | Suscripción de gestores/transportistas a la plataforma | 10 % | Buscador de transportistas (`transporte-autorizado.html`) |
-| Permisos (autorizaciones sanitarias y similares) | 10 % | `transporte-autorizado.html` y `campanas-reciclaje.html` |
+| Trámite de permisos sanitarios | **No confirmado como servicio** | No presentarlo en `transporte-autorizado.html`; Campañas puede orientar sobre requisitos aplicables, sin prometer una autorización. |
 
-Como el retiro es la línea principal, la parte superior de las páginas lleva a **cotizar un retiro**, y los permisos se derivan a secciones propias.
+Los porcentajes proceden de notas anteriores y no deben presentarse como dato vigente sin confirmación. El retiro es la actividad principal de Transporte Autorizado. No presentar ese sitio como un servicio para obtener o tramitar autorizaciones sanitarias.
 
 ## Las tres páginas y cómo se conectan
 
@@ -24,25 +24,25 @@ Como el retiro es la línea principal, la parte superior de las páginas lleva a
    transporte autorizado         necesitan HDS / HDSR
                /                          \
    Transporte autorizado  <———————————>  HDS
-   (retiro + autorización   el residuo peligroso viaja
-    sanitaria)              con su HDS
+   (retiro de residuos)     documentación técnica
+                            cuando corresponda
 ```
 
 ### 1. Transporte autorizado — `transporte-autorizado.html`
-- **Objetivo:** que el cliente pueda pedir el **retiro de residuos peligrosos y no peligrosos**, y también obtener la **autorización sanitaria** (permiso para transportar).
+- **Objetivo:** que empresas y organizaciones puedan coordinar el **retiro de residuos peligrosos y no peligrosos** y encontrar transportistas según residuo y comuna. El servicio del sitio es retirar y coordinar residuos; no ofrece obtener ni tramitar autorizaciones sanitarias.
 - Promesa principal: **«Nos hacemos cargo de tus residuos»**.
 - Incluye un buscador de transportistas autorizados por tipo de residuo y comuna (`assets/transportistas-filtro-residuo.js`).
-- Normativa: DS 148/2003 (residuos peligrosos), DS 29/2024 (productos prioritarios; el art. 28 exige autorización sanitaria para transportar residuos peligrosos de productos prioritarios y el art. 29 exime a los no peligrosos, aunque deben estar registrados), DS 594.
+- Normativa: D.S. 148/2003 para manejo de residuos peligrosos. El D.S. 29 regula labores relacionadas con residuos de productos prioritarios y puede establecer requisitos de autorización según actividad y caso. Una regla normativa no significa que Transporte Autorizado preste el trámite. Verifica el artículo, alcance, vigencia y transición en la fuente oficial antes de publicar requisitos concretos.
 
 ### 2. HDS — `hds.html`
 - **Objetivo:** elaborar, actualizar o revisar **Hojas de Datos de Seguridad** (HDS de producto y HDSR/FDSR de residuos).
-- **Va de la mano con Transporte autorizado:** un residuo peligroso tiene que **viajar con su HDS**. La página de transporte deriva a HDS y al revés.
+- **Va de la mano con Transporte Autorizado:** cuando el retiro de un residuo peligroso requiere documentación de seguridad, HDS apoya con la hoja que corresponda. No confundas HDS/FDS de producto, FDSR/HDSR de residuo y documentos de transporte; verifica excepciones y requisitos aplicables al caso.
 - Normativa: DS 57/2019 (clasificación, etiquetado y HDS; Título V).
 - Cotización: ver [PR-COT-HDS-01](procedimientos/PR-COT-HDS-01-cotizacion-hds.md) (servicios, antecedentes mínimos, complejidad, plazos, exclusiones).
 
 ### 3. Campañas de reciclaje — `campanas-reciclaje.html`
 - **Objetivo:** ofrecer **campañas de recolección** a municipalidades, empresas y otras organizaciones.
-- Aquí se juntan las otras dos páginas: la campaña necesita **transporte autorizado** para el retiro y, si recibe residuos peligrosos, sus **HDS**.
+- Aquí se conectan las otras dos páginas: la campaña puede requerir **Transporte Autorizado** para coordinar retiros y apoyo de **HDS** si corresponde documentación de residuos peligrosos.
 - Normativa: DS 29/2024, arts. 7, 24–26, 39–40 y 42. Ver [informe técnico](procedimientos/informe-tecnico-campanas-recoleccion.md).
 - Datos clave para el copy:
   - La solicitud de autorización sanitaria va a la SEREMI de Salud **al menos 40 días hábiles antes** de la campaña (art. 24).
@@ -60,8 +60,11 @@ Como el retiro es la línea principal, la parte superior de las páginas lleva a
 - Hablar de **gestor autorizado** o **transportista autorizado**, no de «operador».
 - Siempre ofrecer una acción clara: *Cotizar retiro*, *Buscar transportista*, *Hablar con especialista*.
 
-## Documentación relacionada
-- [Copy aprobado de Transporte autorizado](copy/transporte-autorizado.md)
+## Precedencia y documentación relacionada
+
+Las anotaciones y correcciones más recientes de la persona responsable prevalecen sobre decisiones de reuniones antiguas, borradores de copy y texto ya incluido en las vistas. Para afirmaciones legales, prevalece la norma oficial vigente. El texto de `copy/transporte-autorizado.md` conserva material anterior y no debe tratarse como aprobado en las partes que contradigan este contexto; en particular, Transporte Autorizado no ofrece tramitar permisos sanitarios.
+
+- [Copy de referencia de Transporte Autorizado, con secciones antiguas por revisar](copy/transporte-autorizado.md)
 - [Decisiones de la reunión de copy](reuniones/reunion-copy-transporte-autorizado.md)
 - [Normativa](normativa/)
 - [Procedimientos internos](procedimientos/)
