@@ -25,7 +25,6 @@
 <link rel="preload" as="image" href="assets/transporte/transporte-hero-flota.webp" fetchpriority="high">
 <link rel="stylesheet" href="assets/site/site.css">
 <link rel="stylesheet" href="assets/site/transporte.css">
-<script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -107,8 +106,8 @@
     </button>
     <nav class="nav" id="nav" aria-label="Principal">
       <a href="#servicios">Servicios</a>
+      <a href="#modalidades">Modalidades</a>
       <a href="#buscar">Buscar transportista</a>
-      <a href="#proceso">Cómo trabajamos</a>
       <a href="#preguntas">Preguntas</a>
       <a class="btn btn-primary btn-small" href="#cotizar">Cotizar retiro</a>
     </nav>
@@ -118,34 +117,34 @@
 <main id="contenido">
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="container">
-      <div class="hero-copy">
-        <h1 class="display" id="hero-title">Nos hacemos cargo de tus residuos.</h1>
-        <p class="lead">Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro">Cotizar retiro <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-          <a class="btn btn-secondary" href="#buscar">Buscar transportista autorizado</a>
+      <div class="hero-split">
+        <div class="hero-copy">
+          <h1 class="display" id="hero-title">Nos hacemos cargo de tus residuos.</h1>
+          <p class="lead">Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro">Cotizar retiro <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+            <a class="btn btn-secondary" href="#buscar">Buscar transportista autorizado</a>
+          </div>
+          <p class="hero-meta"><span>Residuos peligrosos y no peligrosos</span><span>Atención a empresas</span><span>Gestión documentada</span></p>
         </div>
-        <p class="hero-meta">Residuos peligrosos y no peligrosos · Atención a empresas · Gestión documentada</p>
+        <figure class="hero-media">
+          <img src="assets/transporte/transporte-hero-flota.webp" width="1942" height="809" alt="Camiones de retiro de residuos de distinto tamaño en un patio industrial" fetchpriority="high" decoding="async">
+        </figure>
       </div>
-      <figure class="hero-media">
-        <img src="assets/transporte/transporte-hero-flota.webp" width="1942" height="809" alt="Tres camiones de retiro de residuos de distinto tamaño estacionados en un patio industrial" fetchpriority="high" decoding="async">
-      </figure>
+
       <h2 class="sr-only">¿Qué necesitas?</h2>
-      <div class="grid grid-3 intents reveal-group">
-        <a class="card tile" href="#cotizar" data-set="servicio=retiro">
-          <h3>Necesito gestionar mis residuos</h3>
-          <p>Indícanos qué residuo tienes, volumen y dónde se encuentra. Coordinaremos a la brevedad una alternativa de retiro.</p>
-          <span class="link">Cotizar gestión <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+      <div class="paths">
+        <a class="path" href="#cotizar" data-set="servicio=retiro">
+          <span class="path-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg></span>
+          <span class="path-text"><strong>Necesito gestionar mis residuos</strong><small>Indícanos qué residuo tienes, volumen y dónde se encuentra. Coordinaremos a la brevedad una alternativa de retiro.</small><em>Cotizar gestión</em></span>
         </a>
-        <a class="card tile" href="#buscar">
-          <h3>¿Buscas un transportista autorizado?</h3>
-          <p>Encuentra transportistas según el tipo de residuo y comuna donde necesitas realizar el retiro.</p>
-          <span class="link">Buscar transportista <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        <a class="path" href="#buscar">
+          <span class="path-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg></span>
+          <span class="path-text"><strong>¿Buscas un transportista autorizado?</strong><small>Encuentra transportistas según el tipo de residuo y comuna donde necesitas realizar el retiro.</small><em>Buscar transportista</em></span>
         </a>
-        <a class="card tile" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20hablar%20con%20un%20especialista%20sobre%20la%20gesti%C3%B3n%20de%20mis%20residuos." target="_blank" rel="noopener noreferrer">
-          <h3>¿Necesitas orientación?</h3>
-          <p>¿No sabes cómo gestionar tu residuo? Habla con un especialista y cuéntanos tu caso.</p>
-          <span class="link">Hablar con un especialista <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (abre WhatsApp)</span></span>
+        <a class="path" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20hablar%20con%20un%20especialista%20sobre%20la%20gesti%C3%B3n%20de%20mis%20residuos." target="_blank" rel="noopener noreferrer">
+          <span class="path-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg></span>
+          <span class="path-text"><strong>¿Necesitas orientación?</strong><small>¿No sabes cómo gestionar tu residuo? Habla con un especialista y cuéntanos tu caso.</small><em>Hablar con un especialista<span class="sr-only"> (abre WhatsApp)</span></em></span>
         </a>
       </div>
     </div>
@@ -157,41 +156,39 @@
         <h2 class="title" id="servicios-title">Gestiona tus residuos sin complicaciones.</h2>
         <p class="lead">Evaluamos el tipo de residuo, coordinamos el retiro y definimos la mejor alternativa de gestión según sus características y condiciones.</p>
       </div>
-      <div class="grid grid-2 reveal-group">
-        <article class="card service">
-          <figure class="card-media"><img src="assets/transporte/transporte-portacontenedor-azul-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
-          <h3>Retiro de residuos no peligrosos</h3>
-          <p>Coordinamos el retiro y traslado de residuos industriales no peligrosos a una planta de valorización o disposición adecuada.</p>
-          <div class="card-foot"><a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro;tipo=no-peligroso">Cotizar retiro</a></div>
+
+      <div class="services reveal-group">
+        <article class="service">
+          <figure class="service-media"><img src="assets/transporte/transporte-portacontenedor-azul-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
+          <div class="service-body">
+            <h3>Retiro de residuos no peligrosos</h3>
+            <p>Coordinamos el retiro y traslado de residuos industriales no peligrosos a una planta de valorización o disposición adecuada.</p>
+            <h4 class="list-title">Qué revisamos</h4>
+            <ul class="tags"><li>Material</li><li>Cantidad</li><li>Condición</li><li>Embalaje</li><li>Acceso al punto de retiro</li><li>Destino previsto</li></ul>
+            <p class="service-start"><strong>Para comenzar:</strong> indica qué material tienes, cuánto es y cómo está acopiado. Si existe contaminación o dudas sobre su condición, la revisamos antes de programar.</p>
+            <a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro;tipo=no-peligroso">Cotizar retiro</a>
+          </div>
         </article>
-        <article class="card service">
-          <figure class="card-media"><img src="assets/transporte/transporte-camion-industrial-dia-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
-          <h3>Retiro de residuos peligrosos</h3>
-          <p>Evaluamos las características del residuo y la documentación necesaria antes de coordinar el transporte y gestión.</p>
-          <p>Envíanos una fotografía, HDS/FDS, análisis u otros antecedentes para cotizar a la brevedad.</p>
-          <div class="card-foot"><a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro;tipo=peligroso">Evaluar mi residuo</a></div>
+        <article class="service">
+          <figure class="service-media"><img src="assets/transporte/transporte-camion-industrial-dia-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
+          <div class="service-body">
+            <h3>Retiro de residuos peligrosos</h3>
+            <p>Evaluamos las características del residuo y la documentación necesaria antes de coordinar el transporte y gestión. Envíanos una fotografía, HDS/FDS, análisis u otros antecedentes para cotizar a la brevedad.</p>
+            <h4 class="list-title">Qué revisamos</h4>
+            <ul class="tags"><li>Proceso que lo genera</li><li>Composición conocida</li><li>Contaminación</li><li>Cantidad y estado</li><li>Contenedor</li><li>Condiciones de traslado y destino</li></ul>
+            <p class="service-start"><strong>Para comenzar:</strong> comparte HDS/FDS del producto original, FDSR, análisis u otros antecedentes si los tienes. Si falta información, te indicamos qué revisar antes de coordinar.</p>
+            <a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro;tipo=peligroso">Evaluar mi residuo</a>
+          </div>
         </article>
       </div>
 
-      <div class="more-services reveal">
-        <h3 class="subtitle">Otros servicios</h3>
-        <div class="rows">
-          <div class="row">
-            <div><h4 class="row-title">Gestión REP y productos prioritarios</h4><p>Orientamos la gestión de neumáticos, envases, aceites, aparatos, pilas, baterías y textiles.</p></div>
-            <a class="link" href="#cotizar" data-set="servicio=rep">Consultar <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-          </div>
-          <div class="row">
-            <div><h4 class="row-title">Destrucción de marcas</h4><p>Coordinamos una gestión documentada para productos o envases que deben salir de circulación.</p></div>
-            <a class="link" href="#cotizar" data-set="servicio=marcas">Consultar <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-          </div>
-          <div class="row">
-            <div><h4 class="row-title">Gestión de REAS</h4><p>Revisamos los residuos de atención de salud y sus antecedentes antes de coordinar el retiro.</p></div>
-            <a class="link" href="#cotizar" data-set="servicio=reas">Consultar <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-          </div>
-          <div class="row">
-            <div><h4 class="row-title">Limpieza y patios de residuos</h4><p>Apoyamos la limpieza de sitios y el manejo ordenado de patios, según el alcance acordado.</p></div>
-            <a class="link" href="#cotizar" data-set="servicio=patios">Consultar <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-          </div>
+      <div class="more reveal">
+        <h3 class="list-title">También te ayudamos con</h3>
+        <div class="more-grid">
+          <a class="more-item" href="#cotizar" data-set="servicio=rep"><strong>Gestión REP y productos prioritarios</strong><span>Neumáticos, envases, aceites, aparatos, pilas, baterías y textiles.</span></a>
+          <a class="more-item" href="#cotizar" data-set="servicio=marcas"><strong>Destrucción de marcas</strong><span>Gestión documentada de productos o envases que deben salir de circulación.</span></a>
+          <a class="more-item" href="#cotizar" data-set="servicio=reas"><strong>Gestión de REAS</strong><span>Residuos de atención de salud, revisando sus antecedentes antes del retiro.</span></a>
+          <a class="more-item" href="#cotizar" data-set="servicio=patios"><strong>Limpieza y patios de residuos</strong><span>Limpieza de sitios y manejo ordenado de patios, según el alcance acordado.</span></a>
         </div>
       </div>
     </div>
@@ -202,25 +199,25 @@
       <div class="section-head reveal">
         <h2 class="title" id="modalidades-title">¿Cuándo necesitas retirar tus residuos?</h2>
       </div>
-      <div class="grid grid-3 reveal-group">
-        <article class="card plan">
+      <div class="compare reveal-group">
+        <article class="plan">
           <h3>Retiro Express</h3>
           <p class="plan-promise">Priorizamos tu retiro dentro de las próximas 24 horas.</p>
           <p>Una respuesta rápida ante urgencias y emergencias.</p>
-          <p class="small muted">Sujeto a disponibilidad, tipo de residuo y comuna.</p>
-          <div class="card-foot"><a class="btn btn-primary" href="#cotizar" data-set="modalidad=express">Solicitar retiro Express</a></div>
+          <p class="plan-note">Sujeto a disponibilidad, tipo de residuo y comuna.</p>
+          <a class="btn btn-primary btn-small" href="#cotizar" data-set="modalidad=express">Solicitar retiro Express</a>
         </article>
-        <article class="card plan">
-          <h3>Retiro Programado <span class="plan-note">plan mensual</span></h3>
+        <article class="plan">
+          <h3>Retiro Programado <span>plan mensual</span></h3>
           <p class="plan-promise">Coordina tu retiro con anticipación.</p>
           <p>Selecciona una fecha y organizamos mes a mes el retiro programado de tus residuos.</p>
-          <div class="card-foot"><a class="btn btn-secondary" href="#cotizar" data-set="modalidad=programado">Programar retiro</a></div>
+          <a class="btn btn-secondary btn-small" href="#cotizar" data-set="modalidad=programado">Programar retiro</a>
         </article>
-        <article class="card plan">
+        <article class="plan">
           <h3>Espera y ahorra</h3>
           <p class="plan-promise">Tú propones las fechas.</p>
           <p>Envíanos opciones de fecha y coordinamos de acuerdo con nuestra disponibilidad.</p>
-          <div class="card-foot"><a class="btn btn-secondary" href="#cotizar" data-set="modalidad=flexible">Enviar opciones de fecha</a></div>
+          <a class="btn btn-secondary btn-small" href="#cotizar" data-set="modalidad=flexible">Enviar opciones de fecha</a>
         </article>
       </div>
     </div>
@@ -230,47 +227,51 @@
     <div class="container">
       <div class="section-head reveal">
         <h2 class="title" id="buscar-title">Encuentra un transportista autorizado.</h2>
-        <p class="lead">Elige el tipo de residuo y la comuna. Los resultados se actualizan al seleccionar.</p>
+        <p class="lead">Elige el tipo de residuo, la categoría y la comuna. Los resultados se actualizan al instante.</p>
       </div>
 
       <div class="finder panel" data-finder>
-        <div class="finder-controls">
+        <div class="finder-bar">
           <div class="segmented" role="radiogroup" aria-label="Tipo de residuo">
             <label class="is-safe"><input type="radio" name="finder-kind" value="safe" checked><span><i class="dot"></i>No peligroso</span></label>
             <label class="is-hazard"><input type="radio" name="finder-kind" value="hazard"><span><i class="dot"></i>Peligroso</span></label>
           </div>
           <div class="field finder-commune">
-            <label for="finder-commune">Comuna del transportista</label>
+            <label class="sr-only" for="finder-commune">Comuna del transportista</label>
             <select id="finder-commune" disabled><option value="*">Todas las comunas</option></select>
           </div>
         </div>
 
-        <fieldset class="categories">
+        <fieldset class="chips-wrap">
           <legend class="sr-only">Categoría de residuo</legend>
-          <div class="category-grid" data-categories></div>
+          <div class="chips" data-categories></div>
         </fieldset>
 
         <div class="results">
           <p class="results-count" data-count role="status">Cargando el listado de transportistas…</p>
-          <div class="results-list" data-results></div>
-          <button class="btn btn-secondary results-more" type="button" data-more hidden>Ver más resultados</button>
+          <ul class="results-list" data-results aria-label="Transportistas">
+            <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
+            <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
+            <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
+          </ul>
+          <button class="btn btn-secondary btn-small results-more" type="button" data-more hidden>Ver más resultados</button>
         </div>
-        <p class="finder-source small muted">Fuente: listado de transportistas autorizados con datos al 31-12-2025. La vigencia, cobertura y disponibilidad se confirman al consultar. Las imágenes son ilustrativas y no determinan la clasificación de un residuo.</p>
+        <p class="finder-source">Fuente: listado de transportistas autorizados con datos al 31-12-2025. La vigencia, cobertura y disponibilidad se confirman al consultar. Las imágenes son ilustrativas y no determinan la clasificación de un residuo.</p>
       </div>
     </div>
   </section>
 
   <section class="section" id="proceso" aria-labelledby="proceso-title">
-    <div class="container split-layout">
+    <div class="container">
       <div class="section-head reveal">
         <h2 class="title" id="proceso-title">Coordinamos todo el proceso. De principio a fin.</h2>
       </div>
-      <ol class="steps reveal-group">
-        <li class="step"><h3>Cuéntanos qué necesitas retirar</h3><p>Indica el residuo, cantidad, ubicación y fecha aproximada. También puedes enviarnos fotografías.</p></li>
-        <li class="step"><h3>Tomamos tu caso</h3><p>Evaluamos el residuo, las condiciones del retiro, la documentación disponible y las alternativas de gestión.</p></li>
-        <li class="step"><h3>Te enviamos una propuesta</h3><p>Te informamos el alcance, valor estimado y condiciones del servicio.</p></li>
-        <li class="step"><h3>Coordinamos el retiro</h3><p>Programamos un transporte express o retiros semanales y mensuales.</p></li>
-        <li class="step"><h3>Siempre recibes el respaldo de cada gestión</h3><p>Una vez finalizado el servicio, te enviamos en menos de 48 horas los certificados y respaldos tributarios correspondientes a cada operación.</p></li>
+      <ol class="timeline reveal-group">
+        <li><h3>Cuéntanos qué necesitas retirar</h3><p>Indica el residuo, cantidad, ubicación y fecha aproximada. También puedes enviarnos fotografías.</p></li>
+        <li><h3>Tomamos tu caso</h3><p>Evaluamos el residuo, las condiciones del retiro, la documentación disponible y las alternativas de gestión.</p></li>
+        <li><h3>Te enviamos una propuesta</h3><p>Te informamos el alcance, valor estimado y condiciones del servicio.</p></li>
+        <li><h3>Coordinamos el retiro</h3><p>Programamos un transporte express o retiros semanales y mensuales.</p></li>
+        <li><h3>Siempre recibes el respaldo</h3><p>En menos de 48 horas te enviamos los certificados y respaldos tributarios de cada operación.</p></li>
       </ol>
     </div>
   </section>
@@ -281,7 +282,7 @@
         <h2 class="title" id="normativa-title">Documentación y normativa.</h2>
         <p class="lead">Los requisitos se revisan según el tipo de residuo, su condición y la operación.</p>
         <p class="doc-note">En los casos sujetos al Título V del D.S. 148, se debe portar el Documento de Declaración y la Hoja de Seguridad de Transporte de Residuos Peligrosos. El artículo 42 contempla una excepción específica; revisamos la aplicabilidad al caso.</p>
-        <a class="link" href="./hds.html">Revisar la hoja del residuo en HDS <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <p><a class="link" href="./hds.html">Revisar la hoja del residuo en HDS <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
       </div>
       <div class="rows reveal">
         <div class="row">
@@ -320,6 +321,7 @@
         <h2 class="title" id="cotizar-title">Cotiza el retiro de tus residuos.</h2>
         <p class="lead">Completa algunos antecedentes y revisaremos la factibilidad, condiciones y valor estimado del servicio.</p>
         <ul class="aside-list">
+          <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Tres pasos, alrededor de dos minutos.</li>
           <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Te enviamos una propuesta con alcance, valor estimado y condiciones.</li>
           <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Las fotografías del residuo se envían por WhatsApp.</li>
         </ul>
@@ -327,7 +329,12 @@
       </div>
 
       <div class="panel">
-        <form class="form" id="cotizacion" data-summary="cotizacion-resumen" data-title="Solicitud de cotización — Transporte Autorizado" data-closing="Adjuntaré fotografías del residuo, su contenedor y el lugar donde está almacenado." novalidate>
+        <form class="form" id="cotizacion" data-steps data-summary="cotizacion-resumen" data-title="Solicitud de cotización — Transporte Autorizado" data-closing="Adjuntaré fotografías del residuo, su contenedor y el lugar donde está almacenado." novalidate>
+          <div class="stepper" aria-hidden="true">
+            <div class="stepper-labels"><span>Residuo</span><span>Retiro</span><span>Contacto</span></div>
+            <div class="stepper-bar"><i></i></div>
+          </div>
+
           <fieldset>
             <legend>Sobre el residuo</legend>
             <div class="fields">
@@ -343,7 +350,7 @@
               </div>
               <div class="field full">
                 <label for="f-residuo">¿Qué residuo necesitas gestionar?</label>
-                <input id="f-residuo" name="residuo" data-label="Residuo" required maxlength="180" placeholder="Ej.: cartón, aceite usado, baterías, envases contaminados…">
+                <input id="f-residuo" name="residuo" data-label="Residuo" required maxlength="180" placeholder="Ej.: cartón, aceite usado, baterías…">
               </div>
               <div class="field full">
                 <span class="label" id="l-tipo">Tipo de residuo</span>
@@ -368,37 +375,31 @@
           </fieldset>
 
           <fieldset>
-            <legend>Lugar del retiro</legend>
+            <legend>Lugar y fecha del retiro</legend>
             <div class="fields">
               <div class="field">
                 <label for="f-comuna">Comuna</label>
                 <input id="f-comuna" name="comuna" required maxlength="100" autocomplete="address-level2">
               </div>
               <div class="field">
-                <label for="f-direccion">Dirección del retiro</label>
+                <label for="f-direccion">Dirección del retiro (opcional)</label>
                 <input id="f-direccion" name="direccion" maxlength="200" autocomplete="street-address">
               </div>
               <div class="field full">
                 <label for="f-acceso">¿Hay alguna condición especial de acceso? (opcional)</label>
-                <textarea id="f-acceso" name="acceso" data-label="Condiciones de acceso" maxlength="1200" rows="3" placeholder="Ej.: horario de carga, acceso para camión, altura máxima, grúa requerida…"></textarea>
+                <textarea id="f-acceso" name="acceso" data-label="Condiciones de acceso" maxlength="1200" rows="2" placeholder="Ej.: horario de carga, acceso para camión, altura máxima, grúa requerida…"></textarea>
               </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Fecha</legend>
-            <div class="field">
-              <span class="label" id="l-modalidad">¿Cuándo necesitas el retiro?</span>
-              <div class="choices" role="radiogroup" aria-labelledby="l-modalidad">
-                <label class="choice"><input type="radio" name="modalidad" value="express" data-label="Modalidad"><span><strong>Retiro Express</strong><small>Prioridad dentro de las próximas 24 horas.</small></span></label>
-                <label class="choice"><input type="radio" name="modalidad" value="programado" data-label="Modalidad" checked><span><strong>Retiro Programado</strong><small>Quiero elegir una fecha.</small></span></label>
-                <label class="choice"><input type="radio" name="modalidad" value="flexible" data-label="Modalidad"><span><strong>Espera y ahorra</strong><small>Propongo fechas y coordinan según su disponibilidad.</small></span></label>
+              <div class="field full">
+                <span class="label" id="l-modalidad">¿Cuándo necesitas el retiro?</span>
+                <div class="choices" role="radiogroup" aria-labelledby="l-modalidad">
+                  <label class="choice"><input type="radio" name="modalidad" value="express" data-label="Modalidad"><span><strong>Retiro Express</strong><small>Prioridad dentro de las próximas 24 horas.</small></span></label>
+                  <label class="choice"><input type="radio" name="modalidad" value="programado" data-label="Modalidad" checked><span><strong>Retiro Programado</strong><small>Quiero elegir una fecha.</small></span></label>
+                  <label class="choice"><input type="radio" name="modalidad" value="flexible" data-label="Modalidad"><span><strong>Espera y ahorra</strong><small>Propongo fechas y coordinan según disponibilidad.</small></span></label>
+                </div>
               </div>
-            </div>
-            <div class="fields date-fields">
               <div class="field">
-                <label for="f-fecha">Fecha estimada</label>
-                <input id="f-fecha" name="fecha" type="date">
+                <label for="f-fecha">Fecha estimada (opcional)</label>
+                <input id="f-fecha" name="fecha" type="date" data-label="Fecha estimada">
               </div>
               <div class="field">
                 <label for="f-horario">Horario de retiro (opcional)</label>
@@ -415,8 +416,8 @@
                 <input id="f-empresa" name="empresa" required maxlength="160" autocomplete="organization">
               </div>
               <div class="field">
-                <label for="f-rut">RUT de la empresa</label>
-                <input id="f-rut" name="rut" maxlength="14" placeholder="76.123.456-7" inputmode="text" autocomplete="off">
+                <label for="f-rut">RUT de la empresa (opcional)</label>
+                <input id="f-rut" name="rut" data-label="RUT" maxlength="14" placeholder="76.123.456-7" autocomplete="off">
               </div>
               <div class="field">
                 <label for="f-nombre">Nombre de contacto</label>
@@ -430,26 +431,23 @@
                 <label for="f-correo">Correo electrónico</label>
                 <input id="f-correo" name="correo" type="email" required maxlength="254" autocomplete="email" spellcheck="false">
               </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Antecedentes adicionales</legend>
-            <div class="fields">
-              <div class="field full">
+              <div class="field">
                 <label for="f-documentos">¿Tienes documentación del residuo?</label>
                 <select id="f-documentos" name="documentos" data-label="Documentación del residuo">
                   <option>No tengo</option><option>HDS/FDS</option><option>Análisis</option><option>Autorización</option><option>Otros documentos</option>
                 </select>
               </div>
-              <div class="field full">
-                <label for="f-comentarios">Comentarios adicionales (opcional)</label>
-                <textarea id="f-comentarios" name="comentarios" maxlength="1800" rows="3"></textarea>
+              <div class="field">
+                <label for="f-comentarios">Comentarios (opcional)</label>
+                <input id="f-comentarios" name="comentarios" maxlength="600">
               </div>
             </div>
           </fieldset>
 
-          <div class="form-submit">
+          <div class="step-nav">
+            <button class="btn btn-quiet btn-back" type="button" data-back>Atrás</button>
+            <span class="small muted" data-step-count></span>
+            <button class="btn btn-primary" type="button" data-next>Continuar <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
             <button class="btn btn-primary" type="submit">Solicitar cotización</button>
             <p>Revisaremos los antecedentes antes de confirmar disponibilidad, valor y condiciones del retiro.</p>
           </div>
@@ -463,7 +461,6 @@
             <a class="btn btn-primary" data-send target="_blank" rel="noopener noreferrer">Enviar por WhatsApp</a>
             <button class="btn btn-secondary" type="button" data-copy>Copiar</button>
           </div>
-          <p class="status" role="status"></p>
         </div>
       </div>
     </div>
@@ -475,37 +472,21 @@
         <h2 class="title" id="relacionados-title">Servicios relacionados.</h2>
       </div>
       <div class="grid grid-2 reveal-group">
-        <a class="card" href="./hds.html">
-          <figure class="card-media"><img src="assets/transporte/ecosistema-hds-transporte-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
-          <h3>HDS</h3>
-          <p>Hojas de seguridad, revisión técnica y evaluación documental de residuos.</p>
-          <div class="card-foot"><span class="link">Preparar mis documentos <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+        <a class="related" href="./hds.html">
+          <img src="assets/transporte/ecosistema-hds-transporte-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async">
+          <span><strong>HDS</strong><small>Hojas de seguridad, revisión técnica y evaluación documental de residuos.</small><em class="link">Preparar mis documentos <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></em></span>
         </a>
-        <a class="card" href="./campanas-reciclaje.html">
-          <figure class="card-media"><img src="assets/transporte/ecosistema-campanas-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
-          <h3>Campañas de reciclaje</h3>
-          <p>Diseño y coordinación de campañas temporales de recolección.</p>
-          <div class="card-foot"><span class="link">Organizar una campaña <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div>
+        <a class="related" href="./campanas-reciclaje.html">
+          <img src="assets/transporte/ecosistema-campanas-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async">
+          <span><strong>Campañas de reciclaje</strong><small>Diseño y coordinación de campañas temporales de recolección.</small><em class="link">Organizar una campaña <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></em></span>
         </a>
       </div>
-
       <div class="partner reveal">
         <div>
-          <h3 class="subtitle">¿Eres gestor o transportista autorizado?</h3>
+          <h3>¿Eres gestor o transportista autorizado?</h3>
           <p>Conecta tus servicios con empresas que necesitan gestionar residuos. Incorpora tu empresa, cobertura, residuos autorizados y servicios disponibles dentro de nuestra plataforma.</p>
         </div>
         <a class="btn btn-secondary" href="https://wa.me/56986067930?text=Hola%2C%20soy%20gestor%20o%20transportista%20autorizado%20y%20quiero%20ser%20parte%20de%20la%20red." target="_blank" rel="noopener noreferrer">Quiero ser parte de la red</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-alt cta-band" aria-labelledby="cta-title">
-    <div class="container reveal">
-      <h2 class="title" id="cta-title">¿Tienes residuos que necesitas gestionar?</h2>
-      <p class="lead">Cuéntanos qué tienes y dónde se encuentra. Nosotros te ayudamos a definir el siguiente paso.</p>
-      <div class="actions">
-        <a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro">Cotizar retiro</a>
-        <a class="btn btn-secondary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20hablar%20con%20un%20especialista%20sobre%20la%20gesti%C3%B3n%20de%20mis%20residuos." target="_blank" rel="noopener noreferrer">Hablar con un especialista</a>
       </div>
     </div>
   </section>

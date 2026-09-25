@@ -56,15 +56,16 @@
     return svg;
   };
 
-  /* Categorías */
+  /* Categorías como chips con miniatura */
   function renderCategories() {
-    const all = el('label', { className: 'category' },
+    const all = el('label', { className: 'chip' },
       el('input', { type: 'radio', name: 'finder-type', value: '*', checked: state.type === '*' }),
-      el('span', {}, el('i', { className: 'all', innerHTML: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>' }), 'Todos los residuos'));
-    const tiles = CATEGORIES[state.kind].map(([name, file]) => el('label', { className: 'category' },
+      el('span', {}, el('i', { className: 'all', innerHTML: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>' }), 'Todos'));
+    const chips = CATEGORIES[state.kind].map(([name, file]) => el('label', { className: 'chip' },
       el('input', { type: 'radio', name: 'finder-type', value: name, checked: state.type === name }),
-      el('span', {}, el('img', { src: `assets/transporte/cat/residuo-${file}.webp`, alt: '', width: 320, height: 320, loading: 'lazy', decoding: 'async' }), name)));
-    grid.replaceChildren(all, ...tiles);
+      el('span', {}, el('img', { src: `assets/transporte/cat/residuo-${file}.webp`, alt: '', width: 28, height: 28, loading: 'lazy', decoding: 'async' }), name)));
+    grid.replaceChildren(all, ...chips);
+    grid.scrollLeft = 0;
   }
 
   /* Comunas disponibles para el tipo y la categoría elegidos */
@@ -100,20 +101,37 @@
       'Quiero coordinar el retiro de este residuo. Adjuntaré la cantidad aproximada y fotografías.'
     ].join('\n');
   }
-  function card(g) {
+  function row(g, i, fresh) {
     const r = g.first;
-    const details = el('dl', {},
-      el('div', {}, el('dt', { textContent: 'Residuos' }), el('dd', { textContent: r.summary })),
-      el('div', {}, el('dt', { textContent: 'Dirección' }), el('dd', { textContent: r.address })),
-      el('div', {}, el('dt', { textContent: 'Resolución' }), el('dd', { textContent: compact(r.resolution), title: r.resolution })));
-    const link = el('a', { className: 'link', href: window.SITE.whatsapp(message(g)), target: '_blank', rel: 'noopener noreferrer' },
-      'Consultar retiro', arrowUpRight(), el('span', { className: 'sr-only', textContent: ` con ${r.company} (abre WhatsApp)` }));
-    return el('article', { className: 'carrier' },
-      el('h3', { textContent: r.company }),
-      el('div', { className: 'meta' },
-        el('span', { className: 'pill', textContent: g.placeLabel }),
-        el('span', { className: `pill ${r.kind === 'hazard' ? 'is-hazard' : 'is-safe'}`, textContent: KIND_LABEL[r.kind] })),
-      details, link);
+    const link = el('a', { className: 'btn btn-secondary btn-small', href: window.SITE.whatsapp(message(g)), target: '_blank', rel: 'noopener noreferrer' },
+      'Consultar', arrowUpRight(), el('span', { className: 'sr-only', textContent: ` retiro con ${r.company} (abre WhatsApp)` }));
+    const li = el('li', { className: fresh ? 'result is-new' : 'result' },
+      el('div', {},
+        el('h3', { textContent: r.company }),
+        el('p', { className: 'result-meta' },
+          el('span', { className: `pill ${r.kind === 'hazard' ? 'is-hazard' : 'is-safe'}`, textContent: g.placeLabel }),
+          el('span', { textContent: compact(r.resolution), title: r.resolution }))),
+      el('p', { className: 'result-waste', textContent: r.summary, title: r.summary }),
+      link);
+    li.style.setProperty('--i', Math.min(i, 8));
+    return li;
+  }
+  /* Conteo con un breve avance numérico */
+  let tick = 0;
+  function setCount(n, text) {
+    cancelAnimationFrame(tick);
+    const b = el('b', { className: 'tnum' });
+    count.replaceChildren(b, text);
+    const from = Number(count.dataset.n || 0);
+    count.dataset.n = n;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || from === n) { b.textContent = n.toLocaleString('es-CL'); return; }
+    const t0 = performance.now();
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / 450);
+      b.textContent = Math.round(from + (n - from) * (1 - (1 - k) ** 3)).toLocaleString('es-CL');
+      if (k < 1) tick = requestAnimationFrame(step);
+    };
+    tick = requestAnimationFrame(step);
   }
   function groups() {
     const map = new Map();
@@ -126,26 +144,31 @@
     });
     return [...map.values()].sort((a, b) => a.first.company.localeCompare(b.first.company, 'es', { sensitivity: 'base' }));
   }
-  function renderResults() {
+  function renderResults(append) {
     const found = groups();
-    const typeText = state.type === '*' ? `residuos ${KIND_LABEL[state.kind].toLowerCase()}s` : state.type;
+    const typeText = state.type === '*' ? `residuos ${KIND_LABEL[state.kind].toLowerCase()}s` : (/^\p{Lu}{2}/u.test(state.type) ? state.type : state.type[0].toLowerCase() + state.type.slice(1));
     const placeText = state.place === '*' ? 'todas las comunas' : commune.selectedOptions[0]?.textContent;
-    count.textContent = found.length
-      ? `${found.length.toLocaleString('es-CL')} ${found.length === 1 ? 'transportista' : 'transportistas'} para ${typeText} en ${placeText}.`
-      : 'No hay transportistas del listado para esa combinación.';
+    if (found.length) setCount(found.length, ` ${found.length === 1 ? 'transportista' : 'transportistas'} · ${typeText} · ${placeText}`);
+    else { count.dataset.n = 0; count.textContent = 'No hay transportistas del listado para esa combinación.'; }
     if (!found.length) {
       const actions = el('div', { className: 'actions' });
       if (state.place !== '*') actions.append(el('button', { type: 'button', className: 'btn btn-secondary btn-small', textContent: 'Ver todas las comunas', onclick: () => { state.place = '*'; commune.value = '*'; update(); } }));
       if (state.type !== '*') actions.append(el('button', { type: 'button', className: 'btn btn-secondary btn-small', textContent: 'Ver todos los residuos', onclick: () => { state.type = '*'; renderCategories(); update(); } }));
-      list.replaceChildren(el('div', { className: 'results-empty' }, el('p', { textContent: 'Prueba ampliar la búsqueda o cotiza el retiro directamente con nosotros.' }), actions));
+      list.replaceChildren(el('li', { className: 'results-empty' }, el('p', { textContent: 'Prueba ampliar la búsqueda o cotiza el retiro directamente con nosotros.' }), actions));
       more.hidden = true;
       return;
     }
-    list.replaceChildren(...found.slice(0, state.shown).map(card));
-    more.hidden = found.length <= state.shown;
-    more.textContent = 'Ver más resultados';
+    if (append) list.append(...found.slice(list.children.length, state.shown).map((g, i) => row(g, i, true)));
+    else list.replaceChildren(...found.slice(0, state.shown).map((g, i) => row(g, i, true)));
+    const left = found.length - state.shown;
+    more.hidden = left <= 0;
+    more.textContent = `Ver ${Math.min(left, PAGE)} más`;
   }
-  function update() { state.shown = PAGE; renderPlaces(); renderResults(); }
+  function update() {
+    state.shown = PAGE; renderPlaces();
+    list.classList.add('is-updating');
+    requestAnimationFrame(() => { renderResults(); list.classList.remove('is-updating'); });
+  }
 
   /* Carga de datos bajo demanda */
   function load() {
@@ -194,7 +217,7 @@
   more.addEventListener('click', () => {
     const before = state.shown;
     state.shown += PAGE;
-    renderResults();
+    renderResults(true);
     list.children[before]?.querySelector('a')?.focus({ preventScroll: true });
   });
 

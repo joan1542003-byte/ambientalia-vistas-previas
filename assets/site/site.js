@@ -3,7 +3,21 @@
   const d = document;
   const WHATSAPP = '56986067930';
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
+  const smooth = () => (motion.matches ? 'smooth' : 'auto');
   window.SITE = { whatsapp: (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}` };
+
+  /* Aviso breve */
+  const toast = d.createElement('div');
+  toast.className = 'toast';
+  toast.setAttribute('role', 'status');
+  d.body.append(toast);
+  let toastTimer;
+  window.SITE.toast = (text) => {
+    toast.textContent = text;
+    toast.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('is-on'), 2200);
+  };
 
   /* Header */
   const header = d.querySelector('.site-header');
@@ -38,16 +52,16 @@
     navLinks.forEach((a) => { const el = d.getElementById(a.hash.slice(1)); if (el) spy.observe(el); });
   }
 
-  /* Aparición al entrar en pantalla */
-  const revealables = d.querySelectorAll('.reveal, .reveal-group');
+  /* Animación al entrar en pantalla. Lo que ya se ve al cargar queda quieto y visible. */
   d.querySelectorAll('.reveal-group').forEach((g) => [...g.children].forEach((c, i) => c.style.setProperty('--i', Math.min(i, 6))));
   if ('IntersectionObserver' in window && motion.matches) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
-    }, { rootMargin: '0px 0px -6% 0px' });
-    revealables.forEach((el) => io.observe(el));
-  } else {
-    revealables.forEach((el) => el.classList.add('is-in'));
+    }, { rootMargin: '0px 0px 40px 0px' });
+    d.querySelectorAll('.reveal, .reveal-group').forEach((el) => {
+      if (el.getBoundingClientRect().top < innerHeight) return;
+      io.observe(el);
+    });
   }
 
   /* Acordeones con altura animada */
@@ -72,14 +86,14 @@
     });
   });
 
-  /* Pestañas: radios name=X dentro de [data-tabs] y paneles [data-tab-panel="valor"] */
+  /* Pestañas: radios dentro de [data-tabs] y paneles [data-tab-panel="valor"] */
   d.querySelectorAll('[data-tabs]').forEach((tabs) => {
     const panels = [...tabs.querySelectorAll('[data-tab-panel]')];
     const show = () => {
       const value = tabs.querySelector('input[type="radio"]:checked')?.value;
       panels.forEach((p) => { p.hidden = p.dataset.tabPanel !== value; });
     };
-    tabs.addEventListener('change', (e) => { if (e.target.type === 'radio') show(); });
+    tabs.addEventListener('change', (e) => { if (e.target.type === 'radio' && !e.target.closest('[data-tab-panel]')) show(); });
     show();
   });
 
@@ -106,6 +120,8 @@
         field.dispatchEvent(new Event('change', { bubbles: true }));
       });
     });
+    const form = d.querySelector(trigger.getAttribute('href'))?.querySelector('form[data-steps]');
+    form?.goTo?.(0);
   });
 
   /* Enlaces de WhatsApp con texto dinámico: data-wa="Texto con {#id-de-campo}" */
@@ -116,13 +132,13 @@
       const f = d.getElementById(id);
       return f ? (f.tagName === 'SELECT' ? f.selectedOptions[0]?.textContent : f.value).trim() : '';
     });
-    link.href = window.SITE.whatsapp(text.replace(/\\n/g, '\n'));
+    link.href = window.SITE.whatsapp(text);
   });
 
-  /* Formularios que preparan un resumen para WhatsApp */
+  /* Formularios que preparan un resumen para WhatsApp (con pasos opcionales: data-steps) */
   const labelFor = (field) => {
     if (field.dataset.label) return field.dataset.label;
-    if (field.type === 'radio') return field.closest('fieldset, .field')?.querySelector('legend, .label')?.textContent.trim();
+    if (field.type === 'radio') return field.closest('fieldset, .field')?.querySelector('.label, legend')?.textContent.trim();
     return field.labels?.[0]?.textContent.replace(/\(opcional\)/i, '').trim() || field.name;
   };
   const valueOf = (field) => {
@@ -131,20 +147,70 @@
     if (field.type === 'date' && field.value) return field.value.split('-').reverse().join('-');
     return field.value.trim();
   };
+  const validate = (scope) => {
+    const fields = [...scope.querySelectorAll('input, select, textarea')].filter((f) => !f.disabled);
+    fields.forEach((f) => { if (f.required && f.type !== 'radio') f.setCustomValidity(f.value.trim() ? '' : 'Completa este dato.'); });
+    const bad = fields.find((f) => !f.checkValidity());
+    fields.forEach((f) => (f.checkValidity() ? f.removeAttribute('aria-invalid') : f.setAttribute('aria-invalid', 'true')));
+    return bad;
+  };
+
   d.querySelectorAll('form[data-summary]').forEach((form) => {
     const out = d.getElementById(form.dataset.summary);
     const pre = out?.querySelector('pre');
     const send = out?.querySelector('[data-send]');
     const copy = out?.querySelector('[data-copy]');
-    const status = out?.querySelector('.status');
-    const required = [...form.querySelectorAll('[required]')];
-    required.forEach((f) => f.addEventListener('input', () => { f.setCustomValidity(''); f.removeAttribute('aria-invalid'); }));
-    form.addEventListener('invalid', (e) => e.target.setAttribute('aria-invalid', 'true'), true);
-    form.addEventListener('input', () => { if (out) out.hidden = true; });
+    form.addEventListener('input', (e) => {
+      if (out) out.hidden = true;
+      if (e.target.getAttribute('aria-invalid') && e.target.checkValidity()) e.target.removeAttribute('aria-invalid');
+      e.target.setCustomValidity?.('');
+    });
+
+    /* Pasos */
+    const steps = form.hasAttribute('data-steps') ? [...form.querySelectorAll(':scope > fieldset')] : [];
+    let current = 0;
+    if (steps.length) {
+      const labels = form.querySelectorAll('.stepper-labels span');
+      const bar = form.querySelector('.stepper-bar i');
+      const back = form.querySelector('[data-back]');
+      const next = form.querySelector('[data-next]');
+      const submit = form.querySelector('[type="submit"]');
+      const counter = form.querySelector('[data-step-count]');
+      form.goTo = (i, dir = 1) => {
+        const changed = i !== current;
+        current = Math.max(0, Math.min(steps.length - 1, i));
+        steps.forEach((s, n) => {
+          s.hidden = n !== current;
+          s.classList.remove('is-entering', 'is-entering-back');
+        });
+        if (changed) steps[current].classList.add(dir > 0 ? 'is-entering' : 'is-entering-back');
+        labels.forEach((l, n) => { l.classList.toggle('is-done', n < current); l.classList.toggle('is-current', n === current); });
+        if (bar) bar.style.setProperty('--p', `${((current + 1) / steps.length) * 100}%`);
+        if (counter) counter.textContent = `Paso ${current + 1} de ${steps.length}`;
+        back.hidden = current === 0;
+        next.hidden = current === steps.length - 1;
+        submit.hidden = current !== steps.length - 1;
+      };
+      next.addEventListener('click', () => {
+        const bad = validate(steps[current]);
+        if (bad) { bad.reportValidity(); return; }
+        form.goTo(current + 1, 1);
+        form.scrollIntoView({ behavior: smooth(), block: 'start' });
+        steps[current].querySelector('input, select, textarea')?.focus({ preventScroll: true });
+      });
+      back.addEventListener('click', () => { form.goTo(current - 1, -1); form.scrollIntoView({ behavior: smooth(), block: 'start' }); });
+      form.goTo(0);
+    }
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      required.forEach((f) => { if (f.type !== 'radio') f.setCustomValidity(f.value.trim() ? '' : 'Completa este dato.'); });
-      if (!form.reportValidity()) return;
+      const bad = validate(form);
+      if (bad) {
+        const step = steps.findIndex((s) => s.contains(bad));
+        if (step > -1 && step !== current) form.goTo(step, -1);
+        requestAnimationFrame(() => bad.reportValidity());
+        return;
+      }
       const lines = [`*${form.dataset.title || 'Consulta'}*`];
       const seen = new Set();
       form.querySelectorAll('fieldset').forEach((fs) => {
@@ -164,13 +230,16 @@
       pre.textContent = text.replaceAll('*', '');
       send.href = window.SITE.whatsapp(text);
       out.hidden = false;
-      if (status) status.textContent = '';
-      out.scrollIntoView({ behavior: motion.matches ? 'smooth' : 'auto', block: 'nearest' });
+      out.scrollIntoView({ behavior: smooth(), block: 'nearest' });
       send.focus({ preventScroll: true });
     });
     copy?.addEventListener('click', async () => {
-      try { await navigator.clipboard.writeText(pre.textContent); status.textContent = 'Resumen copiado.'; }
-      catch { status.textContent = 'No se pudo copiar. Selecciona el texto y cópialo manualmente.'; }
+      try { await navigator.clipboard.writeText(pre.textContent); window.SITE.toast('Resumen copiado'); }
+      catch {
+        const range = d.createRange(); range.selectNodeContents(pre);
+        const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        window.SITE.toast('Texto seleccionado: cópialo con Ctrl+C');
+      }
     });
   });
 
