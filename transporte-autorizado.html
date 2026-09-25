@@ -1439,7 +1439,10 @@ p, li {
 <header class="header"><div class="wrap header-inner"><a class="brand" href="#contenido" aria-label="Transporte Autorizado, inicio"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="20" fill="#315fc7"/><path d="M8 13h15v13H8zm15 5h5l5 5v3H23M12 29a3 3 0 1 0 0-6 3 3 0 0 0 0 6m16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6" fill="none" stroke="#202451" stroke-width="2" stroke-linejoin="round"/></svg><span>Transporte<br>Autorizado</span></a><button class="menu" type="button" aria-expanded="false" aria-controls="nav">Menú</button><nav class="nav" id="nav" aria-label="Principal"><a href="#servicios"><span class="material-symbols-outlined" aria-hidden="true">recycling</span><span>Servicios</span></a><a href="#residuos"><span class="material-symbols-outlined" aria-hidden="true">category</span><span>Identifica tu residuo</span></a><a href="#buscar-transportistas"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><span>Buscar transportista</span></a><a href="#proceso"><span class="material-symbols-outlined" aria-hidden="true">route</span><span>Cómo funciona</span></a><a class="nav-cta" href="#contacto"><span class="material-symbols-outlined" aria-hidden="true">chat</span><span>Consultar</span></a></nav></div></header>
 <main id="contenido" tabindex="-1">
 <section class="wrap transport-experience" id="hero-experience" aria-labelledby="hero-title">
-  <img class="experience-cover" src="assets/transporte/transporte-hero-panorama.webp" width="1672" height="941" alt="" fetchpriority="high" decoding="async">
+  <picture class="experience-cover-frame" aria-hidden="true">
+    <source media="(max-width: 560px)" srcset="assets/transporte/transporte-hero-flota-mobile.webp" width="1024" height="1536">
+    <img class="experience-cover" src="assets/transporte/transporte-hero-flota.webp" width="1942" height="809" alt="" fetchpriority="high" decoding="async">
+  </picture>
   <div class="experience-intro">
     <div><h1 id="hero-title">Nos hacemos cargo de tus residuos.</h1><p>Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p><div class="hero-actions"><a class="button hero-primary" href="#contacto" data-request="retiro">Cotizar retiro<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a><a class="hero-secondary" href="#buscar-transportistas">Buscar transportista autorizado</a></div><p class="hero-support">Residuos peligrosos y no peligrosos · Atención a empresas · Gestión documentada</p></div>
   </div>
@@ -2890,7 +2893,8 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
 <style>
 /* One bounded workspace for each visitor intent. */
 .transport-experience{margin-block:1.5rem 2rem;padding:clamp(1.1rem,3.2vw,2.5rem);border:1px solid #dfe5ef;border-radius:2rem;background:#102943;min-width:0;overflow-anchor:none;height:42rem;display:flex;flex-direction:column;position:relative;isolation:isolate;overflow:hidden}
-.experience-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:-2}
+.experience-cover-frame{position:absolute;inset:0;z-index:-2}
+.experience-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0}
 .transport-experience::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgb(9 24 43 / .88) 0%,rgb(9 24 43 / .61) 46%,rgb(9 24 43 / .22) 100%),linear-gradient(0deg,rgb(9 24 43 / .68),transparent 43%);z-index:-1;pointer-events:none}
 .experience-intro{display:flex;align-items:flex-start;margin-bottom:1.75rem}
 .transport-experience h1{font-size:clamp(2rem,3.4vw,3.25rem)!important;max-width:20ch!important;letter-spacing:-.045em!important}
