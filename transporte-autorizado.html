@@ -1441,7 +1441,7 @@ p, li {
 <section class="wrap transport-experience" id="hero-experience" aria-labelledby="hero-title">
   <img class="experience-cover" src="assets/transporte/transporte-hero-panorama.webp" width="1672" height="941" alt="" fetchpriority="high" decoding="async">
   <div class="experience-intro">
-    <div><h1 id="hero-title">Nos hacemos cargo de tus residuos.</h1><p>Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p><div class="hero-actions"><a class="button hero-primary" href="#contacto">Cotizar retiro<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a><a class="hero-secondary" href="#buscar-transportistas">Buscar transportista autorizado</a></div><p class="hero-support">Residuos peligrosos y no peligrosos · Atención a empresas · Gestión documentada</p></div>
+    <div><h1 id="hero-title">Nos hacemos cargo de tus residuos.</h1><p>Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p><div class="hero-actions"><a class="button hero-primary" href="#contacto" data-request="retiro">Cotizar retiro<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a><a class="hero-secondary" href="#buscar-transportistas">Buscar transportista autorizado</a></div><p class="hero-support">Residuos peligrosos y no peligrosos · Atención a empresas · Gestión documentada</p></div>
   </div>
   <div class="experience-routes" role="group" aria-label="¿Qué necesitas?">
     <button type="button" class="route-manage" data-experience-route="help" aria-pressed="false" aria-controls="experience-help"><span class="material-symbols-outlined" aria-hidden="true">recycling</span><span><strong>Necesito gestionar mis residuos</strong><small>Cotizar gestión</small></span><span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
@@ -1467,8 +1467,8 @@ p, li {
 </section>
 <section class="wrap section" id="servicios" aria-labelledby="servicios-title">
   <div class="section-heading">
-    <h2 id="servicios-title">¿En qué podemos ayudarte?</h2>
-    <p>Elige el retiro que necesitas. Confirmamos el alcance después de revisar el material y sus condiciones.</p>
+    <h2 id="servicios-title">Gestiona tus residuos sin complicaciones.</h2>
+    <p>Evaluamos el tipo de residuo, coordinamos el retiro y definimos la mejor alternativa de gestión según sus características y condiciones.</p>
   </div>
   <div class="service-grid transport-services">
     <article class="service-card">
@@ -1476,34 +1476,21 @@ p, li {
         <img src="assets/transporte/transporte-retiro-studio.webp" alt="" width="960" height="640" loading="lazy" decoding="async">
         <span class="service-mark material-symbols-outlined" aria-hidden="true">local_shipping</span>
       </figure>
+      <p class="service-kicker">Residuos no peligrosos</p>
       <h3>Retiro de residuos no peligrosos</h3>
-      <p>Coordinamos el retiro de materiales separados, limpios y preparados para su traslado.</p>
-      <details>
-        <summary>Leer más<span class="sr-only"> sobre Retiro de residuos no peligrosos</span></summary>
-        <div class="service-more">
-          <p>Revisamos material, cantidad, condición, embalaje, acceso al punto de retiro y destino previsto. Con esos antecedentes confirmamos la factibilidad y la forma de coordinar la operación.</p>
-          <strong>Para comenzar</strong>
-          <p>Indica qué material tienes, cuánto es y cómo está acopiado. Si existe contaminación o dudas sobre su condición, la revisamos antes de programar.</p>
-          <a class="text-link service-request" href="#contacto" data-request="retiro">Consultar este servicio ↗</a>
-        </div>
-      </details>
+      <p>Coordinamos el retiro y traslado de residuos industriales no peligrosos a una planta de valorización o disposición adecuada.</p>
+      <a class="button service-cta" href="#contacto" data-request="retiro" data-kind="no-peligrosos">Cotizar retiro →</a>
     </article>
     <article class="service-card">
       <figure class="service-image">
         <img src="assets/transporte/transporte-autorizacion-studio.webp" alt="" width="960" height="640" loading="lazy" decoding="async">
         <span class="service-mark material-symbols-outlined" aria-hidden="true">warning_amber</span>
       </figure>
+      <p class="service-kicker">Residuos peligrosos</p>
       <h3>Retiro de residuos peligrosos</h3>
-      <p>Coordinamos el retiro revisando el residuo, su embalaje y los respaldos necesarios.</p>
-      <details>
-        <summary>Leer más<span class="sr-only"> sobre Retiro de residuos peligrosos</span></summary>
-        <div class="service-more">
-          <p>Partimos por el proceso que lo genera, composición conocida, contaminación, cantidad, estado y contenedor. Antes de programar, confirmamos las condiciones de traslado y el destino que corresponde.</p>
-          <strong>Para comenzar</strong>
-          <p>Comparte HDS/FDS del producto original, FDSR, análisis u otros antecedentes si los tienes. Si falta información, te indicamos qué revisar antes de coordinar.</p>
-          <a class="text-link service-request" href="#contacto" data-request="retiro">Consultar este servicio ↗</a>
-        </div>
-      </details>
+      <p>Evaluamos las características del residuo y la documentación necesaria antes de coordinar el transporte y gestión.</p>
+      <p>Envíanos una fotografía, HDS/FDS, análisis u otros antecedentes para cotizar a la brevedad.</p>
+      <a class="button service-cta" href="#contacto" data-request="retiro" data-kind="peligrosos">Evaluar mi residuo →</a>
     </article>
   </div>
   <div class="support-services" aria-labelledby="support-services-title">
@@ -2693,6 +2680,7 @@ function morphContent(target,update){
  document.querySelectorAll('[name="hero-waste"]').forEach(r=>r.addEventListener('change',()=>{chooseKind(r.value);chooseService('retiro')}));
  kind.addEventListener('change',()=>chooseKind(kind.value));service.addEventListener('change',()=>{result.hidden=true});
  document.querySelectorAll('[data-request]').forEach(a=>a.addEventListener('click',()=>chooseService(a.dataset.request)));
+ document.querySelectorAll('[data-kind]').forEach(a=>a.addEventListener('click',()=>chooseKind(a.dataset.kind)));
  form.addEventListener('input',()=>{result.hidden=true});form.addEventListener('change',()=>{result.hidden=true});
  form.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(form);brief.textContent=['*Consulta — Transporte Autorizado*','','*Servicio:* '+service.selectedOptions[0].textContent,'*Tipo de residuo:* '+kind.selectedOptions[0].textContent,'*Residuo o material:* '+data.get('material').trim(),'','*Datos de contacto*','• Empresa o nombre: '+data.get('empresa').trim(),'• Correo: '+data.get('correo').trim(),'• Comuna: '+data.get('comuna').trim(),'','*Coordinación del retiro*','• Cantidad: '+data.get('cantidad').trim(),'• Embalaje: '+(data.get('embalaje').trim()||'Por definir'),'• Estado: '+data.get('estado'),'• Fecha estimada: '+(data.get('fecha')||'Por definir'),'• Documentación: '+data.get('documentacion'),'','*Origen y condiciones*',data.get('contexto').trim(),'','*Foto*','Adjuntaré por WhatsApp una foto del residuo, su envase y el lugar de acopio.'].join('\n');send.href='https://wa.me/56986067930?text='+encodeURIComponent(brief.textContent);result.hidden=false;status.textContent='Resumen listo. La consulta aún no se ha enviado.';result.focus({preventScroll:true});result.scrollIntoView({behavior:reduced.matches?'auto':'smooth',block:'center'});animate(result)});
  document.querySelector('#copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(brief.textContent);status.textContent='Consulta copiada.'}catch{status.textContent='Selecciona el resumen para copiarlo o usa Descargar.'}});
@@ -3404,6 +3392,12 @@ dialog.innerHTML='<button type="button" class="dialog-close" aria-label="Cerrar 
   .experience-back,
   .experience-carousel-controls button { transition: none; }
 }
+/* Bloque de retiro con copy aprobado (docs/copy/transporte-autorizado.md) */
+.transport-services .service-kicker{margin:1rem 0 .35rem;padding-inline:.375rem;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);min-height:0}
+.transport-services .service-kicker+h3{min-block-size:0}
+.transport-services .service-card>p:not(.service-kicker){margin:.75rem 0 0;padding-inline:.375rem;min-height:0}
+.transport-services .service-cta{align-self:flex-start;margin:1.25rem .375rem .375rem;margin-block-start:auto;gap:.5rem}
+.transport-services .service-card>p:not(.service-kicker):last-of-type{margin-block-end:1.25rem}
 /* Hero con copy aprobado (docs/copy/transporte-autorizado.md) */
 .transport-experience:not([data-route]){height:auto;min-height:42rem}
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1.5rem;margin-top:1.5rem}

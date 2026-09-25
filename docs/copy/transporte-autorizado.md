@@ -2,7 +2,7 @@
 
 Textos revisados y corregidos para `transporte-autorizado.html`. Son la **fuente de verdad** del copy. Si el HTML no coincide con este documento, manda este documento.
 
-**Estado en el sitio:** Hero y Primer bloque implementados. El resto de las secciones está pendiente.
+**Estado en el sitio:** Hero, Primer bloque y Bloque de retiro implementados. El resto de las secciones está pendiente.
 
 Las razones detrás de estos textos están en [reuniones/reunion-copy-transporte-autorizado.md](../reuniones/reunion-copy-transporte-autorizado.md).
 
