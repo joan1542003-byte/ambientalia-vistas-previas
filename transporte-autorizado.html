@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta property="og:locale" content="es_CL">
 <title>Transporte Autorizado | Retiro de residuos peligrosos y no peligrosos</title>
-<meta name="description" content="Busca transportistas de residuos por comuna y tipo, y coordina el retiro de residuos peligrosos y no peligrosos. También orientamos en REP, permisos, REAS, destrucción de marcas y patios de residuos en Chile.">
+<meta name="description" content="Retiro de residuos peligrosos y no peligrosos para empresas en Chile. Busca transportistas por comuna y tipo de residuo, y cotiza por WhatsApp o formulario.">
 <link rel="canonical" href="https://transporteautorizado.cl/">
 <meta name="theme-color" content="#f7f7fb">
 <meta property="og:title" content="Transporte Autorizado | Retiro de residuos peligrosos y no peligrosos">
-<meta property="og:description" content="Busca transportistas de residuos por comuna y tipo, y coordina el retiro de residuos peligrosos y no peligrosos. También orientamos en REP, permisos, REAS, destrucción de marcas y patios de residuos en Chile.">
+<meta property="og:description" content="Retiro de residuos peligrosos y no peligrosos para empresas en Chile. Busca transportistas por comuna y tipo de residuo, y cotiza por WhatsApp o formulario.">
 <meta property="og:url" content="https://transporteautorizado.cl/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Transporte Autorizado">
 <meta name="twitter:title" content="Transporte Autorizado | Retiro de residuos peligrosos y no peligrosos">
-<meta name="twitter:description" content="Busca transportistas de residuos por comuna y tipo, y coordina el retiro de residuos peligrosos y no peligrosos. También orientamos en REP, permisos, REAS, destrucción de marcas y patios de residuos en Chile.">
+<meta name="twitter:description" content="Retiro de residuos peligrosos y no peligrosos para empresas en Chile. Busca transportistas por comuna y tipo de residuo, y cotiza por WhatsApp o formulario.">
 <meta property="og:image" content="https://transporteautorizado.cl/assets/truck-stock.jpg">
 <meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +23,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=arrow_back,arrow_forward,category,chat,chevron_left,chevron_right,cleaning_services,close,local_shipping,medical_services,north_east,north_west,open_in_new,recycling,route,search,sell,south_east,support_agent,warning_amber&display=block" rel="stylesheet">
+<link rel="icon" href="assets/transporte/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/transporte/apple-touch-icon.png">
+<link rel="preload" as="image" href="assets/transporte/transporte-hero-flota.webp" media="(min-width: 561px)" fetchpriority="high">
+<link rel="preload" as="image" href="assets/transporte/transporte-hero-flota-mobile.webp" media="(max-width: 560px)" fetchpriority="high">
+<style>#contacto .contact h2{color:var(--paper,#f7f7fb)}</style>
+<link rel="stylesheet" href="assets/shared/ui.css">
+<script>document.documentElement.classList.add('ui')</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -32,7 +39,14 @@
       "@type": "Organization",
       "@id": "https://transporteautorizado.cl/#organizacion",
       "name": "Transporte Autorizado",
-      "url": "https://transporteautorizado.cl/"
+      "url": "https://transporteautorizado.cl/",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+56 9 8606 7930",
+        "areaServed": "CL",
+        "availableLanguage": "es"
+      }
     },
     {
       "@type": "WebSite",
@@ -90,14 +104,6 @@
             "@type": "Offer",
             "itemOffered": {
               "@type": "Service",
-              "name": "Orientación para permisos sanitarios",
-              "description": "Apoyo para ordenar antecedentes y reconocer cuándo corresponde consultar a la Autoridad Sanitaria."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
               "name": "Gestión de REAS",
               "description": "Revisión inicial de antecedentes y condiciones para gestionar residuos de establecimientos de atención de salud."
             }
@@ -147,7 +153,7 @@
       "@id": "https://transporteautorizado.cl/#webpage",
       "url": "https://transporteautorizado.cl/",
       "name": "Transporte Autorizado | Retiro de residuos peligrosos y no peligrosos",
-      "description": "Busca transportistas por comuna y tipo de residuo, coordina retiros peligrosos y no peligrosos y prepara una consulta con cantidad y antecedentes.",
+      "description": "Retiro de residuos peligrosos y no peligrosos para empresas en Chile. Busca transportistas por comuna y tipo de residuo, y cotiza por WhatsApp o formulario.",
       "inLanguage": "es-CL",
       "isPartOf": {
         "@id": "https://transporteautorizado.cl/#website"
@@ -1434,7 +1440,7 @@ p, li {
 }
 </style>
 </head>
-<body>
+<body data-ui-cta-label="Cotizar retiro" data-ui-cta-href="#contacto" data-ui-chat-text="Hola, quiero cotizar el retiro de un residuo.">
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <header class="header"><div class="wrap header-inner"><a class="brand" href="#contenido" aria-label="Transporte Autorizado, inicio"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="20" fill="#315fc7"/><path d="M8 13h15v13H8zm15 5h5l5 5v3H23M12 29a3 3 0 1 0 0-6 3 3 0 0 0 0 6m16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6" fill="none" stroke="#202451" stroke-width="2" stroke-linejoin="round"/></svg><span>Transporte<br>Autorizado</span></a><button class="menu" type="button" aria-expanded="false" aria-controls="nav">Menú</button><nav class="nav" id="nav" aria-label="Principal"><a href="#servicios"><span class="material-symbols-outlined" aria-hidden="true">recycling</span><span>Servicios</span></a><a href="#residuos"><span class="material-symbols-outlined" aria-hidden="true">category</span><span>Identifica tu residuo</span></a><a href="#buscar-transportistas"><span class="material-symbols-outlined" aria-hidden="true">local_shipping</span><span>Buscar transportista</span></a><a href="#proceso"><span class="material-symbols-outlined" aria-hidden="true">route</span><span>Cómo funciona</span></a><a class="nav-cta" href="#contacto"><span class="material-symbols-outlined" aria-hidden="true">chat</span><span>Consultar</span></a></nav></div></header>
 <main id="contenido" tabindex="-1">
@@ -1509,13 +1515,7 @@ p, li {
         <p>Revisamos el residuo, su origen y las condiciones para buscar una coordinación adecuada.</p>
         <a href="#contacto" class="support-service-link" data-request="retiro">Consultar retiro ↗</a>
       </article>
-      <article class="support-service-card">
-        <figure class="support-service-image"><img src="assets/transporte/review-stock.jpg" alt="" width="900" height="657" loading="lazy" decoding="async"></figure>
-        <span class="support-service-icon material-symbols-outlined" aria-hidden="true">health_and_safety</span>
-        <h4>Orientación para permisos sanitarios</h4>
-        <p>Ordenamos tus antecedentes y te indicamos cuándo consultar a la Autoridad Sanitaria.</p>
-        <a href="#contacto" class="support-service-link" data-request="permiso">Preparar antecedentes ↗</a>
-      </article>
+      
       <article class="support-service-card">
         <figure class="support-service-image"><img src="assets/transporte/ecosistema-campanas.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></figure>
         <span class="support-service-icon material-symbols-outlined" aria-hidden="true">recycling</span>
@@ -2626,7 +2626,7 @@ p, li {
 </style>
 <section class="wrap section" id="normativa" aria-labelledby="normativa-title"><div class="transport-law"><div class="section-heading"><h2 id="normativa-title">Normativa asociada al retiro</h2><p>La revisión depende del residuo, de su condición y de la operación. Confirmamos el marco aplicable antes de coordinar el traslado.</p></div><div class="transport-law-grid"><article><h3>D.S. 148</h3><p>Regula la gestión de residuos peligrosos y las condiciones aplicables a su transporte. La clasificación, el embalaje y la documentación se revisan con los antecedentes del caso.</p><a href="https://www.bcn.cl/leychile/navegar?idNorma=226458" target="_blank" rel="noopener noreferrer">Ver norma oficial ↗</a></article><article><h3>D.S. 29</h3><p>Regula campañas de recolección, recepción y almacenamiento de residuos de productos prioritarios. En una campaña, el transporte se coordina dentro del alcance y las condiciones autorizadas.</p><a href="https://www.bcn.cl/leychile/navegar?idNorma=1220286" target="_blank" rel="noopener noreferrer">Ver norma oficial ↗</a></article><article><h3>D.S. 57</h3><p>Regula sustancias y mezclas peligrosas, no residuos peligrosos. Una HDS del producto puede aportar antecedentes, pero no sustituye la revisión del residuo que se retira.</p><a href="https://www.bcn.cl/leychile/navegar?idNorma=1155752" target="_blank" rel="noopener noreferrer">Ver norma oficial ↗</a></article></div></div></section>
 <section class="wrap section faq" id="preguntas" aria-labelledby="preguntas-title"><h2 id="preguntas-title">Antes de coordinar.</h2><div><details><summary>¿Retiran residuos peligrosos y no peligrosos?</summary><p>Puedes consultar ambos tipos. Antes de confirmar el retiro revisamos los antecedentes del residuo, la cantidad, el embalaje, las condiciones de carga y el destino.</p></details><details><summary>¿Qué pasa si no sé qué tipo de residuo tengo?</summary><p>Describe el material y el proceso que lo genera. Revisaremos qué información falta; una fotografía por sí sola no permite determinar su peligrosidad.</p></details><details><summary>¿Necesito una hoja de seguridad para el transporte?</summary><p>En los casos sujetos al Título V del D.S. 148, se debe portar la hoja de seguridad de transporte del residuo peligroso y el Documento de Declaración. Revisamos la aplicabilidad al caso y podemos conectar la revisión documental con HDS.</p></details><details><summary>¿Dónde realizan retiros y cuánto cuestan?</summary><p>La cobertura, el valor y la disponibilidad se evalúan según la comuna de origen, el destino, el tipo y cantidad de residuo y las condiciones del servicio. Comparte estos datos para preparar tu consulta.</p></details></div></section>
-<section class="wrap section" id="contacto" aria-labelledby="contacto-titulo"><div class="contact"><div><h2 id="contacto-titulo">Cuéntanos sobre el retiro.</h2><p>Completa los datos generales y las condiciones específicas del residuo. Con esto podremos revisar la factibilidad del servicio.</p></div><form id="transport-form" aria-labelledby="contacto-titulo"><div class="field full"><label for="service">Servicio</label><select id="service" name="servicio"><option value="retiro">Retiro de residuos</option><option value="orientacion">Orientación para clasificar y preparar el retiro</option><option value="rep">Gestión REP y productos prioritarios</option><option value="permiso">Orientación para permisos sanitarios</option><option value="marcas">Destrucción de marcas</option><option value="reas">Gestión de REAS</option><option value="sitios">Limpieza de sitios eriazos</option><option value="patio">Administración de patio de residuos</option></select></div><div class="field"><label for="kind">Tipo de residuo</label><select id="kind" name="residuo"><option value="orientacion">Por evaluar</option><option value="no-peligrosos">No peligroso</option><option value="peligrosos">Peligroso</option></select></div><div class="field"><label for="material">Residuo o material</label><input id="material" name="material" required maxlength="180" placeholder="Por ejemplo: cartón, aceite usado…"></div><div class="field"><label for="company">Empresa o nombre</label><input id="company" name="empresa" required autocomplete="organization" maxlength="160"></div><div class="field"><label for="email">Correo de contacto</label><input id="email" name="correo" type="email" required autocomplete="email" spellcheck="false" maxlength="254"></div><div class="field"><label for="commune">Comuna de origen</label><input id="commune" name="comuna" required maxlength="100"></div><div class="field"><label for="quantity">Cantidad estimada</label><input id="quantity" name="cantidad" required placeholder="kg, litros, unidades o m³" maxlength="120"></div><div class="field"><label for="packaging">Embalaje o contenedor</label><input id="packaging" name="embalaje" placeholder="Sacos, tambores, bins, a granel…" maxlength="180"></div><div class="field"><label for="waste-state">Estado del residuo</label><select id="waste-state" name="estado"><option>Sólido</option><option>Líquido</option><option>Lodo</option><option>Mixto</option><option>No estoy seguro</option></select></div><div class="field"><label for="pickup-date">Fecha estimada</label><input id="pickup-date" name="fecha" type="date"></div><div class="field full"><label for="documentation">Documentación disponible</label><select id="documentation" name="documentacion"><option>Sin documentos por ahora</option><option>HDS/FDS del producto original</option><option>FDSR u hoja del residuo</option><option>Análisis o caracterización</option><option>Más de uno de los anteriores</option></select></div><div class="field full"><label for="context" id="context-label">Origen, acceso y condiciones del retiro</label><textarea id="context" name="contexto" required maxlength="2500" placeholder="Proceso que genera el residuo, contaminación conocida, acceso para el vehículo, horario y destino si lo conoces…"></textarea></div><div class="field full photo-hint" role="note"><strong>Antes de enviar</strong><p>Adjunta por WhatsApp una foto del residuo, su envase y el lugar de acopio. La foto no se carga en este formulario.</p></div><button class="button full" type="submit">Preparar consulta ↗</button><small class="full">Se prepara un resumen para copiar o descargar. Este formulario no envía la consulta.</small><div class="result full" id="result" hidden tabindex="-1"><h3>Tu consulta está preparada.</h3><pre class="brief" id="brief"></pre><div class="actions"><button class="button" type="button" id="copy">Copiar</button><button class="button" type="button" id="download">Descargar</button></div><p id="status" role="status"></p></div></form></div><noscript><p class="no-script-contact">El generador necesita JavaScript. Puedes usar el enlace de contacto disponible en esta página.</p></noscript></section>
+<section class="wrap section" id="contacto" aria-labelledby="contacto-titulo"><div class="contact"><div><h2 id="contacto-titulo">Cuéntanos sobre el retiro.</h2><p>Completa los datos generales y las condiciones específicas del residuo. Con esto podremos revisar la factibilidad del servicio.</p></div><form id="transport-form" aria-labelledby="contacto-titulo"><div class="field full"><label for="service">Servicio</label><select id="service" name="servicio"><option value="retiro">Retiro de residuos</option><option value="orientacion">Orientación para clasificar y preparar el retiro</option><option value="rep">Gestión REP y productos prioritarios</option><option value="marcas">Destrucción de marcas</option><option value="reas">Gestión de REAS</option><option value="sitios">Limpieza de sitios eriazos</option><option value="patio">Administración de patio de residuos</option></select></div><div class="field"><label for="kind">Tipo de residuo</label><select id="kind" name="residuo"><option value="orientacion">Por evaluar</option><option value="no-peligrosos">No peligroso</option><option value="peligrosos">Peligroso</option></select></div><div class="field"><label for="material">Residuo o material</label><input id="material" name="material" required maxlength="180" placeholder="Por ejemplo: cartón, aceite usado…"></div><div class="field"><label for="company">Empresa</label><input id="company" name="empresa" required autocomplete="organization" maxlength="160"></div><div class="field"><label for="contact-name">Nombre de contacto</label><input id="contact-name" name="nombre" required autocomplete="name" maxlength="120"></div><div class="field"><label for="phone">Teléfono</label><input id="phone" name="telefono" type="tel" required autocomplete="tel" inputmode="tel" maxlength="30" placeholder="+56 9 1234 5678"></div><div class="field"><label for="email">Correo de contacto</label><input id="email" name="correo" type="email" required autocomplete="email" spellcheck="false" maxlength="254"></div><div class="field"><label for="commune">Comuna de origen</label><input id="commune" name="comuna" required maxlength="100"></div><div class="field"><label for="quantity">Cantidad estimada</label><input id="quantity" name="cantidad" required placeholder="kg, litros, unidades o m³" maxlength="120"></div><div class="field"><label for="packaging">Embalaje o contenedor</label><input id="packaging" name="embalaje" placeholder="Sacos, tambores, bins, a granel…" maxlength="180"></div><div class="field"><label for="waste-state">Estado del residuo</label><select id="waste-state" name="estado"><option>Sólido</option><option>Líquido</option><option>Lodo</option><option>Mixto</option><option>No estoy seguro</option></select></div><div class="field"><label for="pickup-date">Fecha estimada</label><input id="pickup-date" name="fecha" type="date"></div><div class="field full"><label for="documentation">Documentación disponible</label><select id="documentation" name="documentacion"><option>Sin documentos por ahora</option><option>HDS/FDS del producto original</option><option>FDSR u hoja del residuo</option><option>Análisis o caracterización</option><option>Más de uno de los anteriores</option></select></div><div class="field full"><label for="context" id="context-label">Origen, acceso y condiciones del retiro</label><textarea id="context" name="contexto" required maxlength="2500" placeholder="Proceso que genera el residuo, contaminación conocida, acceso para el vehículo, horario y destino si lo conoces…"></textarea></div><div class="field full photo-hint" role="note"><strong>Antes de enviar</strong><p>Adjunta por WhatsApp una foto del residuo, su envase y el lugar de acopio. La foto no se carga en este formulario.</p></div><button class="button full" type="submit">Preparar consulta ↗</button><small class="full">Se prepara un resumen para copiar o descargar. Este formulario no envía la consulta.</small><div class="result full" id="result" hidden tabindex="-1"><h3>Tu consulta está preparada.</h3><pre class="brief" id="brief"></pre><div class="actions"><button class="button" type="button" id="copy">Copiar</button><button class="button" type="button" id="download">Descargar</button></div><p id="status" role="status"></p></div></form></div><noscript><p class="no-script-contact">El generador necesita JavaScript. Puedes usar el enlace de contacto disponible en esta página.</p></noscript></section>
 </main>
 <footer class="wrap footer"><span>© <span id="year">2026</span> Transporte Autorizado</span><div><a href="./hds.html">HDS</a> · <a href="./campanas-reciclaje.html">Campañas de reciclaje</a></div></footer>
 <script>
@@ -2634,7 +2634,7 @@ p, li {
  const form=document.querySelector('#transport-form');if(!form)return;
  const menu=document.querySelector('.menu'),nav=document.querySelector('#nav'),service=document.querySelector('#service'),kind=document.querySelector('#kind'),result=document.querySelector('#result'),brief=document.querySelector('#brief'),status=document.querySelector('#status');
  const send=document.createElement('a');send.className='button';send.id='send-query';send.target='_blank';send.rel='noopener noreferrer';send.textContent='Enviar consulta ↗';result.querySelector('.actions').append(send);
- const extendedServices=[['rep','Gestión REP y productos prioritarios'],['permiso','Orientación para permisos sanitarios'],['marcas','Destrucción de marcas'],['reas','Gestión de REAS'],['sitios','Limpieza de sitios eriazos'],['patio','Administración de patio de residuos']];
+ const extendedServices=[['rep','Gestión REP y productos prioritarios'],['marcas','Destrucción de marcas'],['reas','Gestión de REAS'],['sitios','Limpieza de sitios eriazos'],['patio','Administración de patio de residuos']];
  extendedServices.forEach(([value,label])=>{if(![...service.options].some(option=>option.value===value))service.add(new Option(label,value))});
  if(!form.querySelector('.photo-hint')){const hint=document.createElement('div');hint.className='field full photo-hint';hint.setAttribute('role','note');hint.innerHTML='<strong>Antes de enviar</strong><p>Adjunta por WhatsApp una foto del residuo, su envase y el lugar de acopio. La foto no se carga en este formulario.</p>';form.querySelector('button[type="submit"]').before(hint)}
  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -2685,7 +2685,7 @@ function morphContent(target,update){
  document.querySelectorAll('[data-request]').forEach(a=>a.addEventListener('click',()=>chooseService(a.dataset.request)));
  document.querySelectorAll('[data-kind]').forEach(a=>a.addEventListener('click',()=>chooseKind(a.dataset.kind)));
  form.addEventListener('input',()=>{result.hidden=true});form.addEventListener('change',()=>{result.hidden=true});
- form.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(form);brief.textContent=['*Consulta — Transporte Autorizado*','','*Servicio:* '+service.selectedOptions[0].textContent,'*Tipo de residuo:* '+kind.selectedOptions[0].textContent,'*Residuo o material:* '+data.get('material').trim(),'','*Datos de contacto*','• Empresa o nombre: '+data.get('empresa').trim(),'• Correo: '+data.get('correo').trim(),'• Comuna: '+data.get('comuna').trim(),'','*Coordinación del retiro*','• Cantidad: '+data.get('cantidad').trim(),'• Embalaje: '+(data.get('embalaje').trim()||'Por definir'),'• Estado: '+data.get('estado'),'• Fecha estimada: '+(data.get('fecha')||'Por definir'),'• Documentación: '+data.get('documentacion'),'','*Origen y condiciones*',data.get('contexto').trim(),'','*Foto*','Adjuntaré por WhatsApp una foto del residuo, su envase y el lugar de acopio.'].join('\n');send.href='https://wa.me/56986067930?text='+encodeURIComponent(brief.textContent);result.hidden=false;status.textContent='Resumen listo. La consulta aún no se ha enviado.';result.focus({preventScroll:true});result.scrollIntoView({behavior:reduced.matches?'auto':'smooth',block:'center'});animate(result)});
+ form.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(form);brief.textContent=['*Consulta — Transporte Autorizado*','','*Servicio:* '+service.selectedOptions[0].textContent,'*Tipo de residuo:* '+kind.selectedOptions[0].textContent,'*Residuo o material:* '+data.get('material').trim(),'','*Datos de contacto*','• Empresa: '+data.get('empresa').trim(),'• Contacto: '+data.get('nombre').trim(),'• Teléfono: '+data.get('telefono').trim(),'• Correo: '+data.get('correo').trim(),'• Comuna: '+data.get('comuna').trim(),'','*Coordinación del retiro*','• Cantidad: '+data.get('cantidad').trim(),'• Embalaje: '+(data.get('embalaje').trim()||'Por definir'),'• Estado: '+data.get('estado'),'• Fecha estimada: '+(data.get('fecha')||'Por definir'),'• Documentación: '+data.get('documentacion'),'','*Origen y condiciones*',data.get('contexto').trim(),'','*Foto*','Adjuntaré por WhatsApp una foto del residuo, su envase y el lugar de acopio.'].join('\n');send.href='https://wa.me/56986067930?text='+encodeURIComponent(brief.textContent);result.hidden=false;status.textContent='Resumen listo. La consulta aún no se ha enviado.';result.focus({preventScroll:true});result.scrollIntoView({behavior:reduced.matches?'auto':'smooth',block:'center'});animate(result)});
  document.querySelector('#copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(brief.textContent);status.textContent='Consulta copiada.'}catch{status.textContent='Selecciona el resumen para copiarlo o usa Descargar.'}});
  document.querySelector('#download').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([brief.textContent],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='consulta-transporte.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Consulta descargada.'});
  document.querySelector('#year').textContent=new Date().getFullYear();
@@ -3477,5 +3477,6 @@ form.addEventListener('submit',e=>{e.preventDefault();const fields=[...form.quer
 })();
 </script>
 <noscript><style>#contacto form{display:none}.header .menu{display:none}.header-inner{flex-wrap:wrap}.header .nav{display:flex;position:static;flex-wrap:wrap;width:auto}.header{position:relative}</style><p class="no-script-contact">El generador necesita JavaScript. Puedes <a href="https://wa.me/56986067930">contactarnos directamente</a>.</p></noscript>
+<script src="assets/shared/ui.js" defer></script>
 </body>
 </html>

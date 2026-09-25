@@ -2,7 +2,7 @@
 
 Este documento conserva textos de una etapa anterior. **No es la fuente de verdad actual**: las instrucciones y correcciones más recientes del cliente, resumidas en [`../contexto-proyecto.md`](../contexto-proyecto.md), prevalecen. En particular, Transporte Autorizado se limita al retiro y coordinación de residuos; no ofrece obtener ni tramitar autorizaciones sanitarias. Revisa cada bloque antes de reutilizarlo.
 
-**Estado en el sitio:** Hero, Primer bloque y Bloque de retiro implementados. El resto de las secciones está pendiente.
+**Estado en el sitio:** Hero, Primer bloque y Bloque de retiro implementados. El formulario ya pide nombre y teléfono de contacto. El resto de las secciones está pendiente.
 
 Las razones detrás de estos textos están en [reuniones/reunion-copy-transporte-autorizado.md](../reuniones/reunion-copy-transporte-autorizado.md).
 

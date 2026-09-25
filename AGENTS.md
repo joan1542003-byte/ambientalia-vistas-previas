@@ -32,6 +32,15 @@ El código fuente y la documentación de trabajo están en el repositorio privad
 - Las animaciones son cortas y funcionales, respetan `prefers-reduced-motion` y no deben mover el layout de forma inesperada.
 - Usa HTML semántico, foco visible, etiquetas accesibles y texto alternativo cuando la imagen aporte información. No dupliques navegación ni headings.
 
+## Coordinación entre agentes (desde el 25-09-2026)
+
+Por decisión del responsable, las sesiones de Claude Code editan **directamente** el HTML de este repositorio y publican en `main`. Otro agente genera estas mismas páginas desde la copia local de `ambientalia`, y una publicación suya sin sincronizar ya sobrescribió cambios aprobados una vez. Por eso:
+
+- Antes de publicar un HTML regenerado desde `ambientalia`, trae los cambios de `main` de este repositorio (`git log -- <archivo>.html`) y llévalos a la fuente, o combínalos. No reemplaces el archivo completo sin comparar.
+- La capa compartida `assets/shared/ui.css` y `assets/shared/ui.js` agrega las microinteracciones: progreso de lectura, header al hacer scroll, sección activa en la navegación, aparición escalonada, `details` animados, carruseles en móvil y barra de acción móvil. Cada página la carga desde el `head` (con `html.ui`) y al final del `body`. La barra móvil se configura con `data-ui-cta-label`, `data-ui-cta-href` y `data-ui-chat-text` en `<body>`. Consérvalas al regenerar.
+- La fuente de íconos usa un subconjunto (`icon_names=` en el enlace de Google Fonts, en orden alfabético). Si agregas un ícono de Material Symbols, súmalo a esa lista o se verá como texto.
+- Cada sitio tiene `favicon.svg` y `apple-touch-icon.png` en su carpeta `assets/<sitio>/`.
+
 ## Edición y publicación
 
 Las notas de reunión y `docs/copy/transporte-autorizado.md` conservan formulaciones anteriores sobre permisos. No son vigentes donde contradigan este contexto. Consulta `docs/contexto-proyecto.md`, `docs/README.md` y la fuente normativa oficial antes de reutilizarlas.
