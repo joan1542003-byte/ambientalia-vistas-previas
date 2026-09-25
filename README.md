@@ -16,8 +16,9 @@ Campañas organiza jornadas; Transporte Autorizado coordina retiros; HDS desarro
 
 - `transporte-autorizado.html`, `hds.html` y `campanas-reciclaje.html` son documentos completos para previsualización.
 - `assets/transporte/`, `assets/hds/` y `assets/campanas/` mantienen separados los recursos de cada página.
+- [`docs/activos-visuales.md`](docs/activos-visuales.md) cataloga las 23 imágenes de categorías de residuos del buscador de Transporte Autorizado y enlaza a cada recurso.
 - `index.html` es el índice de las vistas.
 - `robots.txt` y las etiquetas `noindex` mantienen este repositorio fuera de los resultados de búsqueda. No copiar esa configuración a los dominios de producción.
 
 
-Los documentos de referencia están organizados en [`docs/`](docs/README.md): copy, decisiones, normativa y procedimientos. Este repositorio se excluye deliberadamente de indexación; no copies su configuración `noindex` a producción.
+Los documentos de referencia están organizados en [`docs/`](docs/README.md): contexto, contenido, normativa, procedimientos y recursos visuales. Este repositorio se excluye deliberadamente de indexación; no copies su configuración `noindex` a producción.

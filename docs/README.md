@@ -12,3 +12,4 @@ Contexto, normativa y procedimientos que sustentan las vistas previas. Empieza p
 | [procedimientos/PR-COT-HDS-01-cotizacion-hds.md](procedimientos/PR-COT-HDS-01-cotizacion-hds.md) | Procedimiento de cotización estandarizada de HDS/HDSR. |
 | [procedimientos/informe-tecnico-campanas-recoleccion.md](procedimientos/informe-tecnico-campanas-recoleccion.md) | Informe técnico sobre campañas de recolección según el DS 29/2024. |
 | [procedimientos/originales/](procedimientos/originales/) | Archivos .docx originales. Son la fuente oficial; los .md son conversiones para leerlos más fácil. |
+| [activos-visuales.md](activos-visuales.md) | Catálogo de imágenes de categorías de residuos usadas como recursos ilustrativos de Transporte Autorizado. |
