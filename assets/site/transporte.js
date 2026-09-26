@@ -1,31 +1,17 @@
 /* Transporte Autorizado: buscador de transportistas.
-   Los datos (2 MB) se cargan solo cuando el buscador se acerca a la pantalla. */
+   El residuo y la comuna se eligen en ventanas de selección (seleccion.js), con el número de transportistas de cada opción.
+   Los datos (2 MB) se cargan solo cuando se abre el buscador. */
 (() => {
   const root = document.querySelector('[data-finder]');
   if (!root) return;
 
   const DATA_URL = 'assets/transporte/transportistas-filtro-residuo.js';
   const PAGE = matchMedia('(max-width: 640px)').matches ? 4 : 6;
-  const CATEGORIES = {
-    safe: [
-      ['Aceites y grasas', 'np-aceites-grasas'], ['Construcción y demolición', 'np-construccion-demolicion'],
-      ['Lodos y aguas', 'np-lodos-aguas'], ['Madera', 'np-madera'], ['Metales', 'np-metales'],
-      ['Neumáticos y caucho', 'np-neumaticos-caucho'], ['Orgánicos y alimentos', 'np-organicos-alimentos'],
-      ['Papel y cartón', 'np-papel-carton'], ['Plásticos', 'np-plasticos'], ['RAEE y electrónicos', 'np-raee-electronicos'],
-      ['Textiles y cuero', 'np-textiles-cuero'], ['Vidrio', 'np-vidrio'], ['Otros residuos no peligrosos', 'np-otros-residuos']
-    ],
-    hazard: [
-      ['Aceites e hidrocarburos', 'p-aceites-hidrocarburos'], ['Asbesto', 'p-asbesto'], ['Baterías y pilas', 'p-baterias-pilas'],
-      ['Envases y materiales contaminados', 'p-envases-materiales-contaminados'], ['Gases y refrigerantes', 'p-gases-refrigerantes'],
-      ['Lodos, aguas y suelos', 'p-lodos-aguas-suelos'], ['Metales y metales pesados', 'p-metales-pesados'],
-      ['Químicos, solventes y pinturas', 'p-quimicos-solventes-pinturas'], ['RAEE, luminarias y mercurio', 'p-raee-luminarias-mercurio'],
-      ['Residuos clínicos y farmacéuticos', 'p-residuos-clinicos-farmaceuticos']
-    ]
-  };
+  const CATEGORIES = window.PICK.CATEGORIES;
   const KIND_LABEL = { safe: 'No peligroso', hazard: 'Peligroso' };
 
-  const grid = root.querySelector('[data-categories]');
-  const commune = root.querySelector('#finder-commune');
+  const residuoValue = root.querySelector('[data-finder-value="residuo"]');
+  const comunaValue = root.querySelector('[data-finder-value="comuna"]');
   const count = root.querySelector('[data-count]');
   const list = root.querySelector('[data-results]');
   const more = root.querySelector('[data-more]');
@@ -56,30 +42,39 @@
     return svg;
   };
 
-  /* Categorías como chips con miniatura */
-  function renderCategories() {
-    const all = el('label', { className: 'chip' },
-      el('input', { type: 'radio', name: 'finder-type', value: '*', checked: state.type === '*' }),
-      el('span', {}, el('i', { className: 'all', innerHTML: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>' }), 'Todos'));
-    const chips = CATEGORIES[state.kind].map(([name, file]) => el('label', { className: 'chip' },
-      el('input', { type: 'radio', name: 'finder-type', value: name, checked: state.type === name }),
-      el('span', {}, el('img', { src: `assets/transporte/cat/residuo-${file}.webp`, alt: '', width: 28, height: 28, loading: 'lazy', decoding: 'async' }), name)));
-    grid.replaceChildren(all, ...chips);
-    grid.scrollLeft = 0;
+  /* Etiquetas de los dos campos y opciones de cada ventana */
+  const labels = new Map();
+  const placeLabel = (key) => labels.get(key) || LABELS[key] || key;
+  const kindText = (kind) => (kind === 'safe' ? 'no peligrosos' : 'peligrosos');
+  function paint() {
+    residuoValue.textContent = state.type === '*' ? `Todos los ${kindText(state.kind)}` : `${state.type} · ${KIND_LABEL[state.kind]}`;
+    comunaValue.textContent = state.place === '*' ? 'Todas las comunas' : placeLabel(state.place);
   }
-
-  /* Comunas disponibles para el tipo y la categoría elegidos */
-  function renderPlaces() {
+  /* Mismo criterio que la lista de resultados: cada transportista cuenta una vez por comuna */
+  const companies = (filter) => new Set(rows.filter(filter).map((r) => `${normalize(r.company)}|${r.place}`)).size;
+  const plural = (n) => `${n.toLocaleString('es-CL')} ${n === 1 ? 'transportista' : 'transportistas'}`;
+  function residueGroups() {
+    const group = (kind, label) => ({
+      label,
+      count: CATEGORIES[kind].length,
+      options: [
+        { value: `${kind}|*`, label: `Todos los ${kindText(kind)}`, hint: plural(companies((r) => r.kind === kind)), icon: window.PICK.ICONS.grid },
+        ...CATEGORIES[kind].map(([name, file]) => ({ value: `${kind}|${name}`, label: name, hint: plural(companies((r) => r.kind === kind && r.type === name)), img: window.PICK.thumb(file) }))
+      ]
+    });
+    return [group('safe', 'No peligrosos'), group('hazard', 'Peligrosos')];
+  }
+  function placeOptions() {
     const map = new Map();
     rows.forEach((r) => {
       if (r.kind !== state.kind || (state.type !== '*' && r.type !== state.type)) return;
-      if (!map.has(r.place)) map.set(r.place, LABELS[r.place] || titleCase(r.placeRaw || ''));
+      if (!labels.has(r.place)) labels.set(r.place, LABELS[r.place] || titleCase(r.placeRaw || ''));
+      if (!map.has(r.place)) map.set(r.place, new Set());
+      map.get(r.place).add(normalize(r.company));
     });
-    const options = [...map].sort((a, b) => (a[0] === '' ? 1 : b[0] === '' ? -1 : a[1].localeCompare(b[1], 'es')));
-    if (state.place !== '*' && !map.has(state.place)) state.place = '*';
-    commune.replaceChildren(el('option', { value: '*', textContent: 'Todas las comunas' }),
-      ...options.map(([value, label]) => el('option', { value, textContent: label, selected: value === state.place })));
-    commune.disabled = false;
+    const total = [...map.values()].reduce((n, set) => n + set.size, 0);
+    const list = [...map].sort((a, b) => (a[0] === '' ? 1 : b[0] === '' ? -1 : placeLabel(a[0]).localeCompare(placeLabel(b[0]), 'es')));
+    return [{ value: '*', label: 'Todas las comunas', hint: plural(total) }, ...list.map(([key, set]) => ({ value: key || '∅', label: placeLabel(key), hint: plural(set.size) }))];
   }
 
   /* Resultados */
@@ -120,6 +115,15 @@
   let tick = 0;
   function setCount(n, text) {
     cancelAnimationFrame(tick);
+    /* Con NumberFlow los dígitos giran hacia el nuevo valor; sin él, conteo simple */
+    if (customElements.get('number-flow')) {
+      let flow = count.querySelector('number-flow');
+      if (!flow) { flow = document.createElement('number-flow'); flow.locales = 'es-CL'; }
+      count.replaceChildren(flow, text);
+      flow.update(n);
+      count.dataset.n = n;
+      return;
+    }
     const b = el('b', { className: 'tnum' });
     count.replaceChildren(b, text);
     const from = Number(count.dataset.n || 0);
@@ -147,13 +151,13 @@
   function renderResults(append) {
     const found = groups();
     const typeText = state.type === '*' ? `residuos ${KIND_LABEL[state.kind].toLowerCase()}s` : (/^\p{Lu}{2}/u.test(state.type) ? state.type : state.type[0].toLowerCase() + state.type.slice(1));
-    const placeText = state.place === '*' ? 'todas las comunas' : commune.selectedOptions[0]?.textContent;
+    const placeText = state.place === '*' ? 'todas las comunas' : placeLabel(state.place);
     if (found.length) setCount(found.length, ` ${found.length === 1 ? 'transportista' : 'transportistas'} · ${typeText} · ${placeText}`);
     else { count.dataset.n = 0; count.textContent = 'No hay transportistas del listado para esa combinación.'; }
     if (!found.length) {
       const actions = el('div', { className: 'actions' });
-      if (state.place !== '*') actions.append(el('button', { type: 'button', className: 'btn btn-secondary btn-small', textContent: 'Ver todas las comunas', onclick: () => { state.place = '*'; commune.value = '*'; update(); } }));
-      if (state.type !== '*') actions.append(el('button', { type: 'button', className: 'btn btn-secondary btn-small', textContent: 'Ver todos los residuos', onclick: () => { state.type = '*'; renderCategories(); update(); } }));
+      if (state.place !== '*') actions.append(el('button', { type: 'button', className: 'btn btn-secondary btn-small', textContent: 'Ver todas las comunas', onclick: () => { state.place = '*'; paint(); update(); } }));
+      if (state.type !== '*') actions.append(el('button', { type: 'button', className: 'btn btn-secondary btn-small', textContent: 'Ver todos los residuos', onclick: () => { state.type = '*'; paint(); update(); } }));
       list.replaceChildren(el('li', { className: 'results-empty' }, el('p', { textContent: 'Prueba ampliar la búsqueda o cotiza el retiro directamente con nosotros.' }), actions));
       more.hidden = true;
       return;
@@ -164,10 +168,17 @@
     more.hidden = left <= 0;
     more.textContent = `Ver ${Math.min(left, PAGE)} más`;
   }
+  /* Cambio de filtro: la lista se atenúa, se reemplaza y vuelve a aparecer (sin superponer filas) */
+  let fade = 0;
   function update() {
-    state.shown = PAGE; renderPlaces();
+    state.shown = PAGE;
+    clearTimeout(fade);
     list.classList.add('is-updating');
-    requestAnimationFrame(() => { renderResults(); list.classList.remove('is-updating'); });
+    fade = setTimeout(() => {
+      renderResults();
+      list.closest('[data-scroll-root]')?.scrollTo({ top: 0 });
+      requestAnimationFrame(() => list.classList.remove('is-updating'));
+    }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 140);
   }
 
   /* Carga de datos bajo demanda */
@@ -198,6 +209,7 @@
     });
     return loading;
   }
+  window.FINDER_LOAD = load;
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '800px 0px' });
     io.observe(root);
@@ -206,13 +218,26 @@
   }
 
   /* Eventos */
-  root.addEventListener('change', (e) => {
-    const t = e.target;
-    if (t.name === 'finder-kind') { state.kind = t.value; state.type = '*'; state.place = '*'; renderCategories(); }
-    else if (t.name === 'finder-type') state.type = t.value;
-    else if (t === commune) state.place = t.value;
-    else return;
-    if (rows) update(); else load();
+  root.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-finder-pick]');
+    if (!b || !window.Picker) return;
+    await load();
+    if (!rows) return;
+    if (b.dataset.finderPick === 'residuo') {
+      const v = await window.Picker.choose({ title: '¿Qué residuo necesitas retirar?', sub: 'Las imágenes son ilustrativas y no determinan la clasificación.', groups: residueGroups(), value: `${state.kind}|${state.type}`, search: 'Buscar residuo', layout: 'tiles', tabs: true });
+      if (!v) return;
+      const [kind, type] = v.split('|');
+      state.kind = kind;
+      state.type = type;
+      if (!placeOptions().some((o) => o.value === (state.place || '∅'))) state.place = '*';
+    } else {
+      const [all, ...places] = placeOptions();
+      const v = await window.Picker.choose({ title: 'Comuna del transportista', sub: 'Solo aparecen comunas con transportistas para el residuo elegido.', groups: [{ options: [all], layout: 'list' }, { label: `${places.length} comunas`, options: places, layout: 'grid' }], value: state.place === '' ? '∅' : state.place, search: 'Buscar comuna' });
+      if (v === undefined || v === null) return;
+      state.place = v === '∅' ? '' : v;
+    }
+    paint();
+    update();
   });
   more.addEventListener('click', () => {
     const before = state.shown;
@@ -221,5 +246,21 @@
     list.children[before]?.querySelector('a')?.focus({ preventScroll: true });
   });
 
-  renderCategories();
+  /* El chat del hero puede abrir el buscador ya filtrado: FINDER.set({ tipo: 'peligroso', categoria, comuna }) */
+  window.FINDER = {
+    set: async ({ tipo, categoria, comuna } = {}) => {
+      await load();
+      if (!rows) return;
+      if (tipo) { state.kind = tipo === 'peligroso' ? 'hazard' : 'safe'; state.type = '*'; }
+      if (categoria && CATEGORIES[state.kind].some(([n]) => n === categoria)) state.type = categoria;
+      state.place = '*';
+      if (comuna) {
+        const key = placeKey(comuna);
+        if (placeOptions().some((o) => o.value === key)) state.place = key;
+      }
+      paint();
+      update();
+    }
+  };
+  paint();
 })();

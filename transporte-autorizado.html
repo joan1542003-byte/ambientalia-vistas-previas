@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" href="assets/transporte/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/transporte/transporte-hero-flota.webp" fetchpriority="high">
 <link rel="stylesheet" href="assets/site/site.css">
 <link rel="stylesheet" href="assets/site/transporte.css">
@@ -117,35 +117,285 @@
 <main id="contenido">
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="container">
-      <div class="hero-split">
-        <div class="hero-copy">
-          <h1 class="display" id="hero-title">Nos hacemos cargo de tus residuos.</h1>
-          <p class="lead">Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro">Cotizar retiro <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-            <a class="btn btn-secondary" href="#buscar">Buscar transportista autorizado</a>
-          </div>
-          <p class="hero-meta"><span>Residuos peligrosos y no peligrosos</span><span>Atención a empresas</span><span>Gestión documentada</span></p>
-        </div>
-        <figure class="hero-media">
-          <img src="assets/transporte/transporte-hero-flota.webp" width="1942" height="809" alt="Camiones de retiro de residuos de distinto tamaño en un patio industrial" fetchpriority="high" decoding="async">
-        </figure>
-      </div>
+      <div class="stage" data-hero data-view="inicio">
+        <picture class="stage-media" aria-hidden="true">
+          <img src="assets/transporte/transporte-hero-flota.webp" width="1942" height="809" alt="" fetchpriority="high" decoding="async">
+        </picture>
 
-      <h2 class="sr-only">¿Qué necesitas?</h2>
-      <div class="paths">
-        <a class="path" href="#cotizar" data-set="servicio=retiro">
-          <span class="path-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg></span>
-          <span class="path-text"><strong>Necesito gestionar mis residuos</strong><small>Indícanos qué residuo tienes, volumen y dónde se encuentra. Coordinaremos a la brevedad una alternativa de retiro.</small><em>Cotizar gestión</em></span>
-        </a>
-        <a class="path" href="#buscar">
-          <span class="path-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg></span>
-          <span class="path-text"><strong>¿Buscas un transportista autorizado?</strong><small>Encuentra transportistas según el tipo de residuo y comuna donde necesitas realizar el retiro.</small><em>Buscar transportista</em></span>
-        </a>
-        <a class="path" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20hablar%20con%20un%20especialista%20sobre%20la%20gesti%C3%B3n%20de%20mis%20residuos." target="_blank" rel="noopener noreferrer">
-          <span class="path-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg></span>
-          <span class="path-text"><strong>¿Necesitas orientación?</strong><small>¿No sabes cómo gestionar tu residuo? Habla con un especialista y cuéntanos tu caso.</small><em>Hablar con un especialista<span class="sr-only"> (abre WhatsApp)</span></em></span>
-        </a>
+        <div class="stage-side">
+          <div class="stage-copy">
+            <h1 class="display" id="hero-title">Nos hacemos cargo de tus residuos.</h1>
+            <p class="lead">Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p>
+          </div>
+
+          <form class="ask" data-ask autocomplete="off" role="search" aria-label="Cuéntanos qué necesitas">
+            <label class="sr-only" for="ask-input">Cuéntanos qué necesitas retirar</label>
+            <input id="ask-input" name="ask" type="text" maxlength="300" enterkeyhint="send" placeholder="Cuéntanos qué necesitas retirar">
+            <button type="submit" class="ask-send" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
+          </form>
+
+          <div class="routes" role="tablist" aria-label="¿Qué necesitas?" aria-orientation="vertical" data-routes>
+            <span class="routes-pill" aria-hidden="true"></span>
+            <button class="route" type="button" role="tab" id="tab-cotizar" aria-controls="cotizar" aria-selected="false" data-route="cotizar">
+              <span class="route-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg></span>
+              <span class="route-text"><strong>Necesito gestionar mis residuos</strong><small>Cotizar gestión</small></span>
+              <span class="route-short" aria-hidden="true">Cotizar</span>
+            </button>
+            <button class="route" type="button" role="tab" id="tab-buscar" aria-controls="buscar" aria-selected="false" data-route="buscar">
+              <span class="route-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg></span>
+              <span class="route-text"><strong>¿Buscas un transportista autorizado?</strong><small>Buscar transportista</small></span>
+              <span class="route-short" aria-hidden="true">Buscar</span>
+            </button>
+            <button class="route" type="button" role="tab" id="tab-especialista" aria-controls="especialista" aria-selected="false" data-route="especialista">
+              <span class="route-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>
+              <span class="route-text"><strong>¿Necesitas orientación?</strong><small>Hablar con un especialista</small></span>
+              <span class="route-short" aria-hidden="true">Especialista</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="stage-panel" data-panel hidden>
+          <div class="hcard">
+            <!-- Cotizar -->
+            <div class="hcard-panel" id="cotizar" role="tabpanel" aria-labelledby="tab-cotizar" tabindex="-1" hidden>
+              <form class="qform" id="cotizacion" data-steps data-summary="cotizacion-resumen" data-title="Solicitud de cotización — Transporte Autorizado" data-closing="Adjuntaré fotografías del residuo, su envase y el lugar donde está almacenado." data-file="solicitud-de-retiro" novalidate>
+                <div class="hcard-head">
+                  <div class="hcard-title">
+                    <h2>Cotiza tu retiro</h2>
+                    <div class="mode-toggle" role="group" aria-label="Forma de cotizar"><button type="button" data-mode="form" aria-pressed="true">Formulario</button><button type="button" data-mode="chat" aria-pressed="false">Conversación</button></div>
+                    <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                  </div>
+                  <div class="stepper" style="--n:2">
+                    <div class="stepper-labels"><button type="button">Retiro</button><button type="button">Contacto</button></div>
+                    <div class="stepper-bar" aria-hidden="true"><i></i></div>
+                  </div>
+                </div>
+
+                <div class="hcard-body" data-scroll-root>
+                  <fieldset data-step-panel data-summary-title="Retiro">
+                    <legend class="sr-only">Datos del retiro</legend>
+                    <div class="picks">
+                        <div class="pick" data-pick="servicio" data-show-when="servicio=rep,marcas,reas,patios">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Servicio</span><span class="pick-value" data-empty="Retiro de residuos">Retiro de residuos</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="servicio" value="retiro" data-label="Servicio" data-text="Retiro de residuos">
+                        </div>
+                        <div class="pick" data-pick="residuo" data-required-pick="residuo-ok">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Residuo</span><span class="pick-value" data-empty="Elige el residuo">Elige el residuo</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="tipo" data-label="Tipo de residuo"><input type="hidden" name="categoria" data-label="Residuo"><input type="hidden" name="residuo-ok" data-summary-skip>
+                          <p class="pick-error">Elige el residuo que necesitas retirar.</p>
+                        </div>
+                        <div class="pick pick-field" data-show-when="tipo=no-se">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/><path d="M9 9.5a3 3 0 1 1 3.5 3c-.3 0-.5.2-.5.5v1M12 17h.01"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-descripcion">¿Qué es y de qué proceso proviene?</label><input id="f-descripcion" name="descripcion" data-label="Residuo" required maxlength="240" placeholder="Ej.: polvo de la limpieza de hornos"></span>
+                        </div>
+                        <div class="pick" data-pick="cantidad" data-required-pick="cantidad">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20h12l-1.6-10H7.6z"/><path d="M9.5 10a2.5 2.5 0 1 1 5 0"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Cantidad aproximada</span><span class="pick-value" data-empty="Elige un rango">Elige un rango</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="cantidad" data-label="Cantidad aproximada">
+                          <p class="pick-error">Elige la cantidad aproximada.</p>
+                        </div>
+                        <div class="pick" data-pick="comuna" data-required-pick="comuna">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Comuna</span><span class="pick-value" data-empty="Elige tu comuna">Elige tu comuna</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="region" value="Metropolitana" data-summary-skip><input type="hidden" name="comuna" data-label="Comuna">
+                          <p class="pick-error">Elige la comuna del retiro.</p>
+                        </div>
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-direccion">Dirección del retiro</label><input id="f-direccion" name="direccion" data-label="Dirección" required maxlength="200" autocomplete="street-address" placeholder="Calle, número y referencia"></span>
+                        </div>
+                        <div class="pick" data-pick="cuando" data-required-pick="cuando-ok">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Fecha y horario</span><span class="pick-value" data-empty="Elige modalidad, día y horario">Elige modalidad, día y horario</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="modalidad" data-label="Modalidad"><input type="hidden" name="fecha" data-label="Fecha"><input type="hidden" name="fechas" data-label="Fechas posibles"><input type="hidden" name="horario" data-label="Horario"><input type="hidden" name="cuando-ok" data-summary-skip>
+                          <p class="pick-error">Elige cuándo necesitas el retiro.</p>
+                        </div>
+                        <div class="pick" data-pick="antecedentes" data-show-when="tipo=peligroso,no-se">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Antecedentes del residuo</span><span class="pick-value" data-empty="Opcional: HDS/FDS, análisis…">Opcional: HDS/FDS, análisis…</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="documentos" data-label="Antecedentes">
+                        </div>
+                        <div class="pick" data-pick="detalles">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Detalles del retiro</span><span class="pick-value" data-empty="Opcional: acceso, estado y almacenamiento">Opcional: acceso, estado y almacenamiento</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="acceso" data-label="Condiciones de acceso"><input type="hidden" name="estado" data-label="Estado"><input type="hidden" name="almacenamiento" data-label="Almacenamiento">
+                        </div>
+                    </div>
+                  </fieldset>
+
+                  <fieldset data-step-panel data-summary-title="Contacto">
+                    <legend class="sr-only">Datos de contacto</legend>
+                    <div class="picks">
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 9h4a1 1 0 0 1 1 1v11M3 21h18M8 8h3M8 12h3M8 16h3"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-empresa">Empresa</label><input id="f-empresa" name="empresa" required maxlength="160" autocomplete="organization"></span>
+                        </div>
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-nombre">Nombre de contacto</label><input id="f-nombre" name="nombre" required maxlength="120" autocomplete="name"></span>
+                        </div>
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-telefono">Teléfono</label><input id="f-telefono" name="telefono" type="tel" required maxlength="30" autocomplete="tel" inputmode="tel" placeholder="+56 9 1234 5678"></span>
+                        </div>
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-correo">Correo electrónico</label><input id="f-correo" name="correo" type="email" required maxlength="254" autocomplete="email" spellcheck="false" placeholder="nombre@empresa.cl"></span>
+                        </div>
+                    </div>
+                    <details class="more-fields">
+                      <summary>Más información <span>(opcional)</span></summary>
+                      <div class="picks">
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-rut">RUT de la empresa</label><input id="f-rut" name="rut" data-label="RUT" maxlength="12" placeholder="76.123.456-7" autocomplete="off"></span>
+                        </div>
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-ficha">Enviar la ficha de retiro también a</label><input id="f-ficha" name="ficha" type="email" data-label="Enviar ficha a" maxlength="254" spellcheck="false" placeholder="otro@empresa.cl"></span>
+                        </div>
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="f-comentarios">Comentarios</label><input id="f-comentarios" name="comentarios" maxlength="600"></span>
+                        </div>
+                      </div>
+                    </details>
+                  </fieldset>
+                </div>
+
+                <div class="hcard-foot step-nav">
+                  <button class="btn btn-quiet btn-small" type="button" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Atrás</button>
+                  <span class="small muted" data-step-count></span>
+                  <button class="btn btn-primary btn-small" type="button" data-next>Continuar <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+                  <button class="btn btn-primary btn-small" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Preparar solicitud</button>
+                </div>
+              </form>
+
+              <div class="summary" id="cotizacion-resumen" hidden tabindex="-1">
+                <div class="hcard-head">
+                  <div class="hcard-title">
+                    <h2><svg class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>Tu solicitud está lista.</h2>
+                    <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                  </div>
+                  <p class="hcard-sub">Se abrirá WhatsApp con este texto escrito: adjunta las fotografías y envíalo. Revisaremos los antecedentes antes de confirmar disponibilidad, valor y condiciones del retiro.</p>
+                </div>
+                <div class="hcard-body"><pre></pre></div>
+                <div class="hcard-foot">
+                  <a class="btn btn-primary btn-small" data-send target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10.5 13.5"/><path d="M21 3l-6.5 18-4-7.5L3 9.5z"/></svg>Enviar por WhatsApp</a>
+                  <button class="btn btn-secondary btn-small" type="button" data-copy><svg class="icon-idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="icon-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>Copiar</span></button>
+                  <button class="btn btn-quiet btn-small" type="button" data-edit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Editar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Buscar -->
+            <div class="hcard-panel" id="buscar" role="tabpanel" aria-labelledby="tab-buscar" tabindex="-1" hidden data-finder>
+              <div class="hcard-head">
+                <div class="hcard-title">
+                  <h2>Encuentra un transportista autorizado.</h2>
+                  <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
+                <div class="picks picks-row">
+                  <div class="pick"><button type="button" class="pick-btn" aria-haspopup="dialog" data-finder-pick="residuo">
+                    <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Residuo</span><span class="pick-value" data-finder-value="residuo">Todos los no peligrosos</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button></div>
+                  <div class="pick"><button type="button" class="pick-btn" aria-haspopup="dialog" data-finder-pick="comuna">
+                    <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Comuna del transportista</span><span class="pick-value" data-finder-value="comuna">Todas las comunas</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button></div>
+                </div>
+              </div>
+              <div class="hcard-body" data-scroll-root>
+                <p class="results-count" data-count role="status">Cargando el listado de transportistas…</p>
+                <ul class="results-list" data-results aria-label="Transportistas">
+                  <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
+                  <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
+                  <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
+                </ul>
+                <button class="btn btn-secondary btn-small results-more" type="button" data-more hidden>Ver más resultados</button>
+              </div>
+              <div class="hcard-foot">
+                <p class="finder-source">Listado de transportistas autorizados con datos al 31-12-2025. La vigencia, cobertura y disponibilidad se confirman al consultar.</p>
+              </div>
+            </div>
+
+            <!-- Especialista -->
+            <div class="hcard-panel" id="especialista" role="tabpanel" aria-labelledby="tab-especialista" tabindex="-1" hidden>
+              <div class="hcard-head">
+                <div class="hcard-title">
+                  <h2>Habla con un especialista.</h2>
+                  <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
+                <p class="hcard-sub">¿No sabes cómo gestionar tu residuo? Cuéntanos tu caso. Por WhatsApp también puedes enviarnos fotos del residuo y del lugar donde está.</p>
+              </div>
+              <div class="hcard-body">
+                <div class="picks">
+                        <div class="pick" data-pick="tema">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">¿Sobre qué quieres hablar?</span><span class="pick-value" data-empty="Opcional">Opcional</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="tema">
+                        </div>
+                </div>
+              </div>
+              <div class="hcard-foot">
+                <a class="btn btn-primary btn-small" href="https://wa.me/56986067930" target="_blank" rel="noopener noreferrer" data-expert-wa><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>Hablar por WhatsApp<span class="sr-only"> (abre WhatsApp)</span></a>
+                <button class="btn btn-secondary btn-small" type="button" data-assistant-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11"/><circle cx="5.5" cy="18" r="1.5"/></svg>Prefiero que me guíen paso a paso</button>
+              </div>
+            </div>
+            <!-- Asistente de retiro: conversación y opciones (assets/site/asistente.js) -->
+            <div class="hcard-panel guide" id="asistente" tabindex="-1" hidden data-guide aria-labelledby="guide-title">
+              <div class="hcard-head">
+                <div class="hcard-title">
+                  <h2 id="guide-title">Cotiza tu retiro</h2>
+                  <div class="mode-toggle" role="group" aria-label="Forma de cotizar"><button type="button" data-mode="form" aria-pressed="false">Formulario</button><button type="button" data-mode="chat" aria-pressed="true">Conversación</button></div>
+                  <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
+                <div class="guide-meta">
+                  <button type="button" class="guide-back" data-guide-back hidden aria-label="Paso anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+                  <span class="small muted" data-guide-count>Paso 1 de 7</span>
+                  <div class="stepper-bar" aria-hidden="true"><i></i></div>
+                </div>
+                <div class="guide-trail" data-guide-trail aria-label="Tus respuestas" hidden></div>
+              </div>
+              <div class="hcard-body guide-body" data-scroll-root data-guide-body aria-live="polite"></div>
+              <form class="hcard-foot guide-composer" data-guide-composer autocomplete="off">
+                <label class="sr-only" for="guide-input">Escribe tu respuesta</label>
+                <input id="guide-input" type="text" maxlength="300" enterkeyhint="send" placeholder="Escribe tu respuesta">
+                <button type="submit" class="ask-send" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
+              </form>
+              <div class="hcard-foot guide-actions" data-guide-actions hidden></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -163,32 +413,54 @@
           <div class="service-body">
             <h3>Retiro de residuos no peligrosos</h3>
             <p>Coordinamos el retiro y traslado de residuos industriales no peligrosos a una planta de valorización o disposición adecuada.</p>
-            <h4 class="list-title">Qué revisamos</h4>
-            <ul class="tags"><li>Material</li><li>Cantidad</li><li>Condición</li><li>Embalaje</li><li>Acceso al punto de retiro</li><li>Destino previsto</li></ul>
-            <p class="service-start"><strong>Para comenzar:</strong> indica qué material tienes, cuánto es y cómo está acopiado. Si existe contaminación o dudas sobre su condición, la revisamos antes de programar.</p>
-            <a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro;tipo=no-peligroso">Cotizar retiro</a>
+            <div class="service-foot">
+              <a class="btn btn-primary btn-small" href="#cotizar" data-set="servicio=retiro;tipo=no-peligroso">Cotizar retiro <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-np" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
+            </div>
+            <div class="collapse" id="sv-np"><div class="collapse-inner"><p class="service-more">Cuéntanos qué residuo es, cuánto hay aproximadamente, en qué comuna está y cómo está almacenado. También puedes enviarnos fotografías.</p></div></div>
           </div>
         </article>
         <article class="service">
           <figure class="service-media"><img src="assets/transporte/transporte-camion-industrial-dia-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
           <div class="service-body">
             <h3>Retiro de residuos peligrosos</h3>
-            <p>Evaluamos las características del residuo y la documentación necesaria antes de coordinar el transporte y gestión. Envíanos una fotografía, HDS/FDS, análisis u otros antecedentes para cotizar a la brevedad.</p>
-            <h4 class="list-title">Qué revisamos</h4>
-            <ul class="tags"><li>Proceso que lo genera</li><li>Composición conocida</li><li>Contaminación</li><li>Cantidad y estado</li><li>Contenedor</li><li>Condiciones de traslado y destino</li></ul>
-            <p class="service-start"><strong>Para comenzar:</strong> comparte HDS/FDS del producto original, FDSR, análisis u otros antecedentes si los tienes. Si falta información, te indicamos qué revisar antes de coordinar.</p>
-            <a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro;tipo=peligroso">Evaluar mi residuo</a>
+            <p>Evaluamos las características del residuo y la documentación necesaria antes de coordinar el transporte y gestión.</p>
+            <div class="service-foot">
+              <a class="btn btn-primary btn-small" href="#cotizar" data-set="servicio=retiro;tipo=peligroso">Evaluar mi residuo <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-p" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
+            </div>
+            <div class="collapse" id="sv-p"><div class="collapse-inner"><p class="service-more">Envíanos una fotografía, HDS/FDS, análisis u otros antecedentes para cotizar a la brevedad. Si falta información, te indicamos qué revisar antes de coordinar.</p></div></div>
           </div>
         </article>
       </div>
 
-      <div class="more reveal">
-        <h3 class="list-title">También te ayudamos con</h3>
-        <div class="more-grid">
-          <a class="more-item" href="#cotizar" data-set="servicio=rep"><strong>Gestión REP y productos prioritarios</strong><span>Neumáticos, envases, aceites, aparatos, pilas, baterías y textiles.</span></a>
-          <a class="more-item" href="#cotizar" data-set="servicio=marcas"><strong>Destrucción de marcas</strong><span>Gestión documentada de productos o envases que deben salir de circulación.</span></a>
-          <a class="more-item" href="#cotizar" data-set="servicio=reas"><strong>Gestión de REAS</strong><span>Residuos de atención de salud, revisando sus antecedentes antes del retiro.</span></a>
-          <a class="more-item" href="#cotizar" data-set="servicio=patios"><strong>Limpieza y patios de residuos</strong><span>Limpieza de sitios y manejo ordenado de patios, según el alcance acordado.</span></a>
+      <div class="extras reveal">
+        <h3 class="extras-title">También te ayudamos con</h3>
+        <div class="extras-grid">
+          <a class="extra" href="#cotizar" data-set="servicio=rep">
+            <span class="extra-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 0 1 13-5.1M19.5 12a7.5 7.5 0 0 1-13 5.1"/><path d="M18 3.5v3.8h-3.8M6 20.5v-3.8h3.8"/></svg></span>
+            <strong>Gestión REP y productos prioritarios</strong>
+            <span class="extra-text">Neumáticos, envases, aceites, aparatos, pilas, baterías y textiles.</span>
+            <span class="extra-link">Cotizar</span>
+          </a>
+          <a class="extra" href="#cotizar" data-set="servicio=marcas">
+            <span class="extra-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></span>
+            <strong>Destrucción de marcas</strong>
+            <span class="extra-text">Gestión documentada de productos o envases que deben salir de circulación.</span>
+            <span class="extra-link">Cotizar</span>
+          </a>
+          <a class="extra" href="#cotizar" data-set="servicio=reas">
+            <span class="extra-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span>
+            <strong>Gestión de REAS</strong>
+            <span class="extra-text">Residuos de establecimientos de atención de salud, revisando sus antecedentes antes del retiro.</span>
+            <span class="extra-link">Cotizar</span>
+          </a>
+          <a class="extra" href="#cotizar" data-set="servicio=patios">
+            <span class="extra-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/></svg></span>
+            <strong>Limpieza y patios de residuos</strong>
+            <span class="extra-text">Limpieza de sitios y manejo ordenado de patios, según el alcance acordado.</span>
+            <span class="extra-link">Cotizar</span>
+          </a>
         </div>
       </div>
     </div>
@@ -199,69 +471,44 @@
       <div class="section-head reveal">
         <h2 class="title" id="modalidades-title">¿Cuándo necesitas retirar tus residuos?</h2>
       </div>
-      <div class="compare reveal-group">
-        <article class="plan">
-          <h3>Retiro Express</h3>
-          <p class="plan-promise">Priorizamos tu retiro dentro de las próximas 24 horas.</p>
-          <p>Una respuesta rápida ante urgencias y emergencias.</p>
-          <p class="plan-note">Sujeto a disponibilidad, tipo de residuo y comuna.</p>
-          <a class="btn btn-primary btn-small" href="#cotizar" data-set="modalidad=express">Solicitar retiro Express</a>
+      <div class="plans reveal-group">
+        <article class="plan" data-tone="express">
+          <div class="plan-cover">
+            <h3>Retiro Express</h3>
+            <p>Para urgencias y emergencias</p>
+          </div>
+          <div class="plan-body">
+            <p class="plan-promise">Priorizamos tu retiro dentro de las próximas 24 horas.</p>
+            <p class="plan-note">Sujeto a disponibilidad, tipo de residuo y comuna.</p>
+            <a class="btn btn-secondary plan-btn" href="#cotizar" data-set="modalidad=express">Solicitar retiro Express <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
         </article>
-        <article class="plan">
-          <h3>Retiro Programado <span>plan mensual</span></h3>
-          <p class="plan-promise">Coordina tu retiro con anticipación.</p>
-          <p>Selecciona una fecha y organizamos mes a mes el retiro programado de tus residuos.</p>
-          <a class="btn btn-secondary btn-small" href="#cotizar" data-set="modalidad=programado">Programar retiro</a>
+        <article class="plan" data-tone="programado">
+          <div class="plan-cover">
+            <h3>Retiro Programado</h3>
+            <p>Plan mensual para retiros periódicos</p>
+          </div>
+          <div class="plan-body">
+            <p class="plan-promise">Coordina tu retiro con anticipación.</p>
+            <p class="plan-text">Selecciona una fecha y organizamos mes a mes el retiro programado de tus residuos.</p>
+            <a class="btn btn-secondary plan-btn" href="#cotizar" data-set="modalidad=programado">Programar retiro <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
         </article>
-        <article class="plan">
-          <h3>Espera y ahorra</h3>
-          <p class="plan-promise">Tú propones las fechas.</p>
-          <p>Envíanos opciones de fecha y coordinamos de acuerdo con nuestra disponibilidad.</p>
-          <a class="btn btn-secondary btn-small" href="#cotizar" data-set="modalidad=flexible">Enviar opciones de fecha</a>
+        <article class="plan" data-tone="flexible">
+          <div class="plan-cover">
+            <h3>Espera y ahorra</h3>
+            <p>Para retiros sin urgencia</p>
+          </div>
+          <div class="plan-body">
+            <p class="plan-promise">Tú propones las fechas.</p>
+            <p class="plan-text">Envíanos opciones de fecha y coordinamos de acuerdo con nuestra disponibilidad.</p>
+            <a class="btn btn-secondary plan-btn" href="#cotizar" data-set="modalidad=flexible">Enviar opciones de fecha <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
         </article>
       </div>
     </div>
   </section>
-
-  <section class="section section-alt" id="buscar" aria-labelledby="buscar-title">
-    <div class="container">
-      <div class="section-head reveal">
-        <h2 class="title" id="buscar-title">Encuentra un transportista autorizado.</h2>
-        <p class="lead">Elige el tipo de residuo, la categoría y la comuna. Los resultados se actualizan al instante.</p>
-      </div>
-
-      <div class="finder panel" data-finder>
-        <div class="finder-bar">
-          <div class="segmented" role="radiogroup" aria-label="Tipo de residuo">
-            <label class="is-safe"><input type="radio" name="finder-kind" value="safe" checked><span><i class="dot"></i>No peligroso</span></label>
-            <label class="is-hazard"><input type="radio" name="finder-kind" value="hazard"><span><i class="dot"></i>Peligroso</span></label>
-          </div>
-          <div class="field finder-commune">
-            <label class="sr-only" for="finder-commune">Comuna del transportista</label>
-            <select id="finder-commune" disabled><option value="*">Todas las comunas</option></select>
-          </div>
-        </div>
-
-        <fieldset class="chips-wrap">
-          <legend class="sr-only">Categoría de residuo</legend>
-          <div class="chips" data-categories></div>
-        </fieldset>
-
-        <div class="results">
-          <p class="results-count" data-count role="status">Cargando el listado de transportistas…</p>
-          <ul class="results-list" data-results aria-label="Transportistas">
-            <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
-            <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
-            <li class="result is-skeleton" aria-hidden="true"><i></i><i></i></li>
-          </ul>
-          <button class="btn btn-secondary btn-small results-more" type="button" data-more hidden>Ver más resultados</button>
-        </div>
-        <p class="finder-source">Fuente: listado de transportistas autorizados con datos al 31-12-2025. La vigencia, cobertura y disponibilidad se confirman al consultar. Las imágenes son ilustrativas y no determinan la clasificación de un residuo.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="proceso" aria-labelledby="proceso-title">
+  <section class="section section-alt" id="proceso" aria-labelledby="proceso-title">
     <div class="container">
       <div class="section-head reveal">
         <h2 class="title" id="proceso-title">Coordinamos todo el proceso. De principio a fin.</h2>
@@ -276,35 +523,46 @@
     </div>
   </section>
 
-  <section class="section section-alt" id="normativa" aria-labelledby="normativa-title">
-    <div class="container split-layout">
+  <section class="section" id="normativa" aria-labelledby="normativa-title">
+    <div class="container">
       <div class="section-head reveal">
         <h2 class="title" id="normativa-title">Documentación y normativa.</h2>
         <p class="lead">Los requisitos se revisan según el tipo de residuo, su condición y la operación.</p>
-        <p class="doc-note">En los casos sujetos al Título V del D.S. 148, se debe portar el Documento de Declaración y la Hoja de Seguridad de Transporte de Residuos Peligrosos. El artículo 42 contempla una excepción específica; revisamos la aplicabilidad al caso.</p>
-        <p><a class="link" href="./hds.html">Revisar la hoja del residuo en HDS <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
       </div>
-      <div class="rows reveal">
-        <div class="row">
-          <div><h3>D.S. 148</h3><p>Regula la gestión de residuos peligrosos y las condiciones aplicables a su transporte. La clasificación, el embalaje y la documentación se revisan con los antecedentes del caso.</p></div>
-          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=226458" target="_blank" rel="noopener noreferrer">Ver norma <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (BCN, pestaña nueva)</span></a>
-        </div>
-        <div class="row">
-          <div><h3>D.S. 29</h3><p>Regula campañas de recolección, recepción y almacenamiento de residuos de productos prioritarios. En una campaña, el transporte se coordina dentro del alcance y las condiciones autorizadas.</p></div>
-          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=1220286" target="_blank" rel="noopener noreferrer">Ver norma <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (BCN, pestaña nueva)</span></a>
-        </div>
-        <div class="row">
-          <div><h3>D.S. 57</h3><p>Regula sustancias y mezclas peligrosas, no residuos peligrosos. Una HDS del producto puede aportar antecedentes, pero no sustituye la revisión del residuo que se retira.</p></div>
-          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=1155752" target="_blank" rel="noopener noreferrer">Ver norma <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (BCN, pestaña nueva)</span></a>
-        </div>
+      <div class="laws reveal-group">
+        <article class="law">
+          <p class="law-kind">Decreto supremo</p>
+          <h3>D.S. 148</h3>
+          <p>Regula la gestión de residuos peligrosos y las condiciones aplicables a su transporte. La clasificación, el embalaje y la documentación se revisan con los antecedentes del caso.</p>
+          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=226458" target="_blank" rel="noopener noreferrer">Ver en BCN <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (pestaña nueva)</span></a>
+        </article>
+        <article class="law">
+          <p class="law-kind">Decreto supremo</p>
+          <h3>D.S. 29</h3>
+          <p>Regula campañas de recolección, recepción y almacenamiento de residuos de productos prioritarios. En una campaña, el transporte se coordina dentro del alcance y las condiciones autorizadas.</p>
+          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=1220286" target="_blank" rel="noopener noreferrer">Ver en BCN <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (pestaña nueva)</span></a>
+        </article>
+        <article class="law">
+          <p class="law-kind">Decreto supremo</p>
+          <h3>D.S. 57</h3>
+          <p>Regula sustancias y mezclas peligrosas, no residuos peligrosos. Una HDS del producto puede aportar antecedentes, pero no sustituye la revisión del residuo que se retira.</p>
+          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=1155752" target="_blank" rel="noopener noreferrer">Ver en BCN <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (pestaña nueva)</span></a>
+        </article>
+      </div>
+      <div class="law-note reveal">
+        <span class="law-note-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+        <p>En los casos sujetos al Título V del D.S. 148, se debe portar el Documento de Declaración y la Hoja de Seguridad de Transporte de Residuos Peligrosos. El artículo 42 contempla una excepción específica; revisamos la aplicabilidad al caso.</p>
+        <a class="btn btn-secondary btn-small" href="./hds.html">Revisar la hoja en HDS <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
 
-  <section class="section" id="preguntas" aria-labelledby="preguntas-title">
+  <section class="section section-alt" id="preguntas" aria-labelledby="preguntas-title">
     <div class="container split-layout">
       <div class="section-head reveal">
         <h2 class="title" id="preguntas-title">Preguntas frecuentes.</h2>
+        <p class="faq-more">¿Tienes otra pregunta?</p>
+        <a class="btn btn-secondary btn-small" href="#especialista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>Habla con un especialista</a>
       </div>
       <div class="accordion reveal">
         <details><summary>¿Retiran residuos peligrosos y no peligrosos?<span class="plus" aria-hidden="true"></span></summary><div class="answer"><p>Sí, puedes consultar ambos tipos. Antes de confirmar el retiro revisamos los antecedentes del residuo, la cantidad, el embalaje, las condiciones de carga y el destino.</p></div></details>
@@ -315,158 +573,22 @@
     </div>
   </section>
 
-  <section class="section section-alt" id="cotizar" aria-labelledby="cotizar-title" data-hide-dock>
-    <div class="container contact-layout">
-      <div class="contact-aside">
-        <h2 class="title" id="cotizar-title">Cotiza el retiro de tus residuos.</h2>
-        <p class="lead">Completa algunos antecedentes y revisaremos la factibilidad, condiciones y valor estimado del servicio.</p>
-        <ul class="aside-list">
-          <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Tres pasos, alrededor de dos minutos.</li>
-          <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Te enviamos una propuesta con alcance, valor estimado y condiciones.</li>
-          <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Las fotografías del residuo se envían por WhatsApp.</li>
-        </ul>
-        <a class="btn btn-secondary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20cotizar%20el%20retiro%20de%20un%20residuo." target="_blank" rel="noopener noreferrer">Prefiero escribir por WhatsApp</a>
-      </div>
-
-      <div class="panel">
-        <form class="form" id="cotizacion" data-steps data-summary="cotizacion-resumen" data-title="Solicitud de cotización — Transporte Autorizado" data-closing="Adjuntaré fotografías del residuo, su contenedor y el lugar donde está almacenado." novalidate>
-          <div class="stepper" aria-hidden="true">
-            <div class="stepper-labels"><span>Residuo</span><span>Retiro</span><span>Contacto</span></div>
-            <div class="stepper-bar"><i></i></div>
-          </div>
-
-          <fieldset>
-            <legend>Sobre el residuo</legend>
-            <div class="fields">
-              <div class="field full">
-                <label for="f-servicio">Servicio</label>
-                <select id="f-servicio" name="servicio">
-                  <option value="retiro">Retiro de residuos</option>
-                  <option value="rep">Gestión REP y productos prioritarios</option>
-                  <option value="marcas">Destrucción de marcas</option>
-                  <option value="reas">Gestión de REAS</option>
-                  <option value="patios">Limpieza y patios de residuos</option>
-                </select>
-              </div>
-              <div class="field full">
-                <label for="f-residuo">¿Qué residuo necesitas gestionar?</label>
-                <input id="f-residuo" name="residuo" data-label="Residuo" required maxlength="180" placeholder="Ej.: cartón, aceite usado, baterías…">
-              </div>
-              <div class="field full">
-                <span class="label" id="l-tipo">Tipo de residuo</span>
-                <div class="segmented" role="radiogroup" aria-labelledby="l-tipo">
-                  <label class="is-safe"><input type="radio" name="tipo" value="no-peligroso" data-label="Tipo de residuo"><span><i class="dot"></i>No peligroso</span></label>
-                  <label class="is-hazard"><input type="radio" name="tipo" value="peligroso" data-label="Tipo de residuo"><span><i class="dot"></i>Peligroso</span></label>
-                  <label><input type="radio" name="tipo" value="no-se" data-label="Tipo de residuo" checked><span>No lo sé</span></label>
-                </div>
-              </div>
-              <div class="field">
-                <label for="f-cantidad">Cantidad aproximada</label>
-                <input id="f-cantidad" name="cantidad" required maxlength="120" placeholder="kg, litros, m³ o unidades">
-              </div>
-              <div class="field">
-                <label for="f-almacenamiento">¿Cómo está almacenado?</label>
-                <select id="f-almacenamiento" name="almacenamiento" data-label="Almacenamiento">
-                  <option value="">Selecciona una opción</option>
-                  <option>Sacos</option><option>Tambores</option><option>Bins</option><option>Contenedores</option><option>A granel</option><option>Otro</option>
-                </select>
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Lugar y fecha del retiro</legend>
-            <div class="fields">
-              <div class="field">
-                <label for="f-comuna">Comuna</label>
-                <input id="f-comuna" name="comuna" required maxlength="100" autocomplete="address-level2">
-              </div>
-              <div class="field">
-                <label for="f-direccion">Dirección del retiro (opcional)</label>
-                <input id="f-direccion" name="direccion" maxlength="200" autocomplete="street-address">
-              </div>
-              <div class="field full">
-                <label for="f-acceso">¿Hay alguna condición especial de acceso? (opcional)</label>
-                <textarea id="f-acceso" name="acceso" data-label="Condiciones de acceso" maxlength="1200" rows="2" placeholder="Ej.: horario de carga, acceso para camión, altura máxima, grúa requerida…"></textarea>
-              </div>
-              <div class="field full">
-                <span class="label" id="l-modalidad">¿Cuándo necesitas el retiro?</span>
-                <div class="choices" role="radiogroup" aria-labelledby="l-modalidad">
-                  <label class="choice"><input type="radio" name="modalidad" value="express" data-label="Modalidad"><span><strong>Retiro Express</strong><small>Prioridad dentro de las próximas 24 horas.</small></span></label>
-                  <label class="choice"><input type="radio" name="modalidad" value="programado" data-label="Modalidad" checked><span><strong>Retiro Programado</strong><small>Quiero elegir una fecha.</small></span></label>
-                  <label class="choice"><input type="radio" name="modalidad" value="flexible" data-label="Modalidad"><span><strong>Espera y ahorra</strong><small>Propongo fechas y coordinan según disponibilidad.</small></span></label>
-                </div>
-              </div>
-              <div class="field">
-                <label for="f-fecha">Fecha estimada (opcional)</label>
-                <input id="f-fecha" name="fecha" type="date" data-label="Fecha estimada">
-              </div>
-              <div class="field">
-                <label for="f-horario">Horario de retiro (opcional)</label>
-                <input id="f-horario" name="horario" data-label="Horario" maxlength="80" placeholder="Ej.: entre 9:00 y 12:00">
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Datos de contacto</legend>
-            <div class="fields">
-              <div class="field">
-                <label for="f-empresa">Empresa</label>
-                <input id="f-empresa" name="empresa" required maxlength="160" autocomplete="organization">
-              </div>
-              <div class="field">
-                <label for="f-rut">RUT de la empresa (opcional)</label>
-                <input id="f-rut" name="rut" data-label="RUT" maxlength="14" placeholder="76.123.456-7" autocomplete="off">
-              </div>
-              <div class="field">
-                <label for="f-nombre">Nombre de contacto</label>
-                <input id="f-nombre" name="nombre" required maxlength="120" autocomplete="name">
-              </div>
-              <div class="field">
-                <label for="f-telefono">Teléfono</label>
-                <input id="f-telefono" name="telefono" type="tel" required maxlength="30" autocomplete="tel" inputmode="tel" placeholder="+56 9 1234 5678">
-              </div>
-              <div class="field full">
-                <label for="f-correo">Correo electrónico</label>
-                <input id="f-correo" name="correo" type="email" required maxlength="254" autocomplete="email" spellcheck="false">
-              </div>
-              <div class="field">
-                <label for="f-documentos">¿Tienes documentación del residuo?</label>
-                <select id="f-documentos" name="documentos" data-label="Documentación del residuo">
-                  <option>No tengo</option><option>HDS/FDS</option><option>Análisis</option><option>Autorización</option><option>Otros documentos</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="f-comentarios">Comentarios (opcional)</label>
-                <input id="f-comentarios" name="comentarios" maxlength="600">
-              </div>
-            </div>
-          </fieldset>
-
-          <div class="step-nav">
-            <button class="btn btn-quiet btn-back" type="button" data-back>Atrás</button>
-            <span class="small muted" data-step-count></span>
-            <button class="btn btn-primary" type="button" data-next>Continuar <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
-            <button class="btn btn-primary" type="submit">Solicitar cotización</button>
-            <p>Revisaremos los antecedentes antes de confirmar disponibilidad, valor y condiciones del retiro.</p>
-          </div>
-        </form>
-
-        <div class="summary" id="cotizacion-resumen" hidden tabindex="-1">
-          <h3>Tu solicitud está lista para enviar.</h3>
-          <p class="small muted">Envíala por WhatsApp y adjunta las fotografías del residuo. Este formulario no la envía por sí solo.</p>
-          <pre></pre>
-          <div class="actions">
-            <a class="btn btn-primary" data-send target="_blank" rel="noopener noreferrer">Enviar por WhatsApp</a>
-            <button class="btn btn-secondary" type="button" data-copy>Copiar</button>
-          </div>
+  <section class="section" id="empezar" aria-labelledby="empezar-title">
+    <div class="container">
+      <div class="cta-band reveal">
+        <div>
+          <h2 class="title" id="empezar-title">¿Tienes residuos que necesitas gestionar?</h2>
+          <p class="lead">Cuéntanos qué tienes y dónde se encuentra. Nosotros te ayudamos a definir el siguiente paso.</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn-primary" href="#cotizar">Cotizar retiro <svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          <a class="btn btn-secondary" href="#especialista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>Hablar con un especialista</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="relacionados" aria-labelledby="relacionados-title">
+  <section class="section section-alt" id="relacionados" aria-labelledby="relacionados-title">
     <div class="container">
       <div class="section-head reveal">
         <h2 class="title" id="relacionados-title">Servicios relacionados.</h2>
@@ -482,11 +604,12 @@
         </a>
       </div>
       <div class="partner reveal">
+        <span class="partner-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6"/></svg></span>
         <div>
           <h3>¿Eres gestor o transportista autorizado?</h3>
           <p>Conecta tus servicios con empresas que necesitan gestionar residuos. Incorpora tu empresa, cobertura, residuos autorizados y servicios disponibles dentro de nuestra plataforma.</p>
         </div>
-        <a class="btn btn-secondary" href="https://wa.me/56986067930?text=Hola%2C%20soy%20gestor%20o%20transportista%20autorizado%20y%20quiero%20ser%20parte%20de%20la%20red." target="_blank" rel="noopener noreferrer">Quiero ser parte de la red</a>
+        <a class="btn btn-secondary" href="https://wa.me/56986067930?text=Hola%2C%20soy%20gestor%20o%20transportista%20autorizado%20y%20quiero%20ser%20parte%20de%20la%20red." target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6"/></svg>Quiero ser parte de la red</a>
       </div>
     </div>
   </section>
@@ -531,10 +654,18 @@
 
 <nav class="dock" aria-label="Acciones rápidas">
   <a class="btn btn-primary" href="#cotizar">Cotizar retiro</a>
-  <a class="btn btn-quiet" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20cotizar%20el%20retiro%20de%20un%20residuo." target="_blank" rel="noopener noreferrer">WhatsApp</a>
+  <a class="btn btn-quiet" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20cotizar%20el%20retiro%20de%20un%20residuo." target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>WhatsApp</a>
+  <button class="btn btn-quiet dock-assistant" type="button" data-assistant-open hidden aria-label="Abrir asistente de retiro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></button>
 </nav>
 
+<button class="assistant-launcher" type="button" data-assistant-open hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg>Asistente de retiro</button>
+
 <script src="assets/site/site.js" defer></script>
+<script src="assets/site/pickers.js" defer></script>
+<script src="assets/site/seleccion.js" defer></script>
+<script src="assets/site/interpretar.js" defer></script>
 <script src="assets/site/transporte.js" defer></script>
+<script src="assets/site/transporte-ui.js" defer></script>
+<script src="assets/site/asistente.js" defer></script>
 </body>
 </html>
