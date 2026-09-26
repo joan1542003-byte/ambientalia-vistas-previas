@@ -348,12 +348,6 @@
   });
   d.querySelectorAll('.collapse').forEach((c) => { c.inert = true; });
 
-  /* El acceso flotante al asistente aparece después del hero, donde ya están las opciones */
-  const heroSection = d.querySelector('.hero');
-  if (heroSection && 'IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => d.documentElement.classList.toggle('hero-in-view', e.isIntersecting), { rootMargin: '-80px 0px 0px 0px' }).observe(heroSection);
-  }
-
   /* Zonas con scroll del hero: el borde por donde continúa el contenido se difumina */
   d.querySelectorAll('.hcard-body').forEach((b) => Picker?.hint(b));
 

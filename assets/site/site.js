@@ -374,17 +374,42 @@
     });
   });
 
-  /* Barra de acción en móvil */
-  const dock = d.querySelector('.dock');
+  /* Burbuja de ayuda: aparece al pasar el hero y se oculta sobre el pie de página. Al abrirla se expande
+     (CSS: vidrio líquido) y muestra las acciones; se cierra al elegir una, al tocar fuera o con Escape. */
+  const dock = d.querySelector('[data-dock]');
   if (dock) {
+    const button = dock.querySelector('.dock-toggle');
+    const menu = dock.querySelector('.dock-menu');
     const blockers = new Set();
     const hero = d.querySelector('.hero');
+    let open = false;
+    /* El tamaño abierto sale del propio menú, así la animación termina justo en su borde */
+    const measure = () => {
+      dock.style.setProperty('--dock-w', `${menu.offsetWidth}px`);
+      dock.style.setProperty('--dock-h', `${menu.offsetHeight}px`);
+    };
+    const setOpen = (next, { focus = false } = {}) => {
+      if (next === open) return;
+      open = next;
+      if (open) measure();
+      dock.classList.toggle('is-open', open);
+      button.setAttribute('aria-expanded', String(open));
+      menu.inert = !open;
+      if (!open && focus) button.focus();
+    };
     const refresh = () => {
       const past = hero ? hero.getBoundingClientRect().bottom < 80 : scrollY > innerHeight * .6;
       const show = past && blockers.size === 0 && !nav?.classList.contains('is-open');
+      if (!show) setOpen(false);
       dock.classList.toggle('is-visible', show);
       dock.inert = !show;
     };
+    menu.inert = true;
+    button.addEventListener('click', () => setOpen(!open));
+    menu.addEventListener('click', (e) => { if (e.target.closest('a, button')) setOpen(false); });
+    d.addEventListener('pointerdown', (e) => { if (open && !dock.contains(e.target)) setOpen(false); });
+    d.addEventListener('keydown', (e) => { if (open && e.key === 'Escape') setOpen(false, { focus: true }); });
+    addEventListener('resize', () => { if (open) measure(); });
     if ('IntersectionObserver' in window) {
       const watch = new IntersectionObserver((entries) => {
         entries.forEach((e) => (e.isIntersecting ? blockers.add(e.target) : blockers.delete(e.target)));

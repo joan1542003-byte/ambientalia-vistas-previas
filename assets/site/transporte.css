@@ -577,23 +577,7 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
   .guide-step { animation: guide-in .45s var(--ease) both; }
 }
 
-/* Acceso al asistente desde el resto de la página (abre el asistente en el hero) */
-.assistant-launcher {
-  position: fixed; z-index: 45; right: clamp(16px, 2.5vw, 28px); bottom: clamp(16px, 2.5vw, 28px);
-  display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 18px 0 14px;
-  border: 1px solid rgb(255 255 255 / .12); border-radius: 999px; background: rgb(21 26 45 / .88); color: #fff; font-weight: 800; font-size: .9375rem; cursor: pointer;
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-  box-shadow: 0 12px 30px -14px rgb(21 26 45 / .6); transition: transform .35s var(--ease), background-color .2s, opacity .3s;
-}
-.assistant-launcher svg { width: 20px; height: 20px; }
-.assistant-launcher:hover { background: var(--accent-strong); }
-.assistant-launcher:active { background: var(--accent-strong); }
-.assistant-launcher:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.hero-in-view .assistant-launcher { opacity: 0; pointer-events: none; transform: translateY(10px); }
-@media (max-width: 760px) { .assistant-launcher { display: none; } }
-.dock .dock-assistant { flex: 0 0 auto; width: 42px; padding: 0; }
-.dock .dock-assistant svg { width: 20px; height: 20px; }
-@media print { .assistant-launcher, .picker { display: none !important; } }
+@media print { .picker { display: none !important; } }
 .when .cal { max-width: none; }
 .when .cal-day { aspect-ratio: auto; height: 40px; }
 .guide .is-tiles { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; }
