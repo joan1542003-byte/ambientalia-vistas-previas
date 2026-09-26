@@ -1,7 +1,7 @@
 /* Transporte Autorizado: el hero cambia en el mismo lugar según la opción elegida (cotizar, buscar,
    especialista o asistente guiado). Los campos del formulario se eligen en ventanas de selección (seleccion.js).
-   Transiciones: View Transitions API cuando el navegador la soporta (si no, el cambio es inmediato)
-   y AutoAnimate (@formkit/auto-animate, 8 KB) para los resultados del buscador. */
+   Transiciones: el cambio se aplica de inmediato; la tarjeta ajusta su alto con una animación corta y el contenido
+   nuevo entra con CSS (transporte.css). Sin View Transitions: se ve igual en todos los navegadores y en móvil. */
 (() => {
   const d = document;
   const PICK = window.PICK;
@@ -9,16 +9,22 @@
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
   const mobile = matchMedia('(max-width: 860px)');
 
-  /* Cambio de estado con transición del documento; devuelve una promesa que se cumple con el DOM ya actualizado */
+  /* Cambio de estado: aplica el cambio y anima solo el alto de la tarjeta (de su alto anterior al nuevo).
+     El contenido que aparece entra con CSS. Devuelve una promesa que se cumple con el DOM ya actualizado. */
+  let resize = null;
   const transition = (update) => {
-    if (!d.startViewTransition || !motion.matches || d.hidden) { update(); return Promise.resolve(); }
-    try {
-      /* Si otra transición la reemplaza (clics rápidos), `ready` se rechaza: se ignora para no dejar errores en consola */
-      const vt = d.startViewTransition(update);
-      vt.ready.catch(() => {});
-      return vt.updateCallbackDone.catch(() => {});
+    const card = d.querySelector('.hcard');
+    const visible = () => !!card && card.getClientRects().length > 0;
+    const from = visible() ? card.offsetHeight : 0;
+    update();
+    if (motion.matches && from && visible() && card.animate) {
+      const to = card.offsetHeight;
+      if (Math.abs(to - from) > 1) {
+        resize?.cancel();
+        resize = card.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 340, easing: 'cubic-bezier(.25, 1, .5, 1)' });
+      }
     }
-    catch { update(); return Promise.resolve(); }
+    return Promise.resolve();
   };
 
   /* ---------- Formulario: filas que abren una ventana de selección ---------- */
@@ -241,6 +247,7 @@
         t.tabIndex = on || !tab ? 0 : -1;
       });
       Object.entries(panels).forEach(([k, p]) => { if (p) p.hidden = k !== name; });
+      routes.setAttribute('aria-orientation', mobile.matches && name !== 'inicio' ? 'horizontal' : 'vertical');
       placePill();
       window.SITE.refresh?.();
     };

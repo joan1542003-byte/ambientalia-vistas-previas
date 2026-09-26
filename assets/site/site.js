@@ -27,6 +27,9 @@
     setTimeout(() => { btn.classList.remove('is-done'); target.textContent = label; }, 1600);
   };
 
+  /* iOS solo aplica :active al tocar si la página escucha touchstart; el estado presionado reemplaza al resaltado gris */
+  d.addEventListener('touchstart', () => {}, { passive: true });
+
   /* Header */
   const header = d.querySelector('.site-header');
   const onScroll = () => header?.classList.toggle('is-scrolled', scrollY > 4);
@@ -248,7 +251,7 @@
       const top = el.getBoundingClientRect().top;
       if (top < 64 || top > innerHeight - 160) el.scrollIntoView({ behavior: smooth(), block: 'start' });
     };
-    /* form.transition(update) permite animar el cambio (p. ej. con View Transitions); por defecto es inmediato */
+    /* form.transition(update) permite acompañar el cambio (p. ej., animar el alto del contenedor); por defecto es inmediato */
     const run = (update, dir) => Promise.resolve(form.transition ? form.transition(update, dir) : update());
 
     /* Pasos: [data-step-panel] o, si no hay, los fieldset directos del formulario */
@@ -284,7 +287,7 @@
         const changed = target !== current;
         current = target;
         if (!changed) { paint(dir, false); return Promise.resolve(); }
-        return run(() => paint(dir, !form.transition), dir);
+        return run(() => paint(dir, true), dir);
       };
       const move = (i, dir) => form.goTo(i, dir).then(() => {
         bring(form);
