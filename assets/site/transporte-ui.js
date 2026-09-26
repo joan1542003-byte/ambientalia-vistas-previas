@@ -271,7 +271,7 @@
         if (card.parentElement !== wrap) wrap.append(card);
       };
       clearTimeout(sheetTimer);
-      if (sheet.open && motion.matches && !sheetInstant) { sheet.classList.add('is-closing'); sheetTimer = setTimeout(end, 250); }
+      if (sheet.open && motion.matches && !sheetInstant) { sheet.classList.add('is-closing'); sheetTimer = setTimeout(end, 240); }
       else end();
       sheetInstant = false;
     };

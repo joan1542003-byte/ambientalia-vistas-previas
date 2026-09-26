@@ -31,7 +31,7 @@ Los porcentajes proceden de notas anteriores y no deben presentarse como dato vi
 ### 1. Transporte autorizado — `transporte-autorizado.html`
 - **Objetivo:** que empresas y organizaciones puedan coordinar el **retiro de residuos peligrosos y no peligrosos** y encontrar transportistas según residuo y comuna. El servicio del sitio es retirar y coordinar residuos; no ofrece obtener ni tramitar autorizaciones sanitarias.
 - Promesa principal: **«Nos hacemos cargo de tus residuos»**.
-- Incluye un buscador de transportistas autorizados por tipo de residuo y comuna (`assets/transportistas-filtro-residuo.js`).
+- Incluye un buscador de transportistas autorizados por tipo de residuo y comuna (datos en `assets/transporte/transportistas.json`, versión compacta de `assets/transporte/transportistas-filtro-residuo.js`; ver `tools/compactar-transportistas.py`).
 - Normativa: D.S. 148/2003 para manejo de residuos peligrosos. El D.S. 29 regula labores relacionadas con residuos de productos prioritarios y puede establecer requisitos de autorización según actividad y caso. Una regla normativa no significa que Transporte Autorizado preste el trámite. Verifica el artículo, alcance, vigencia y transición en la fuente oficial antes de publicar requisitos concretos.
 
 ### 2. HDS — `hds.html`

@@ -5,7 +5,9 @@
   const root = document.querySelector('[data-finder]');
   if (!root) return;
 
-  const DATA_URL = 'assets/transporte/transportistas-filtro-residuo.js';
+  /* Listado compacto (tools/compactar-transportistas.py): cada registro una vez y, por categoría, los registros que la atienden.
+     Al regenerarlo, sube la versión para que el teléfono no use el anterior en caché */
+  const DATA_URL = 'assets/transporte/transportistas.json?v=2025-12-31';
   const PAGE = matchMedia('(max-width: 640px)').matches ? 4 : 6;
   const CATEGORIES = window.PICK.CATEGORIES;
   const KIND_LABEL = { safe: 'No peligroso', hazard: 'Peligroso' };
@@ -50,16 +52,18 @@
     residuoValue.textContent = state.type === '*' ? `Todos los ${kindText(state.kind)}` : `${state.type} · ${KIND_LABEL[state.kind]}`;
     comunaValue.textContent = state.place === '*' ? 'Todas las comunas' : placeLabel(state.place);
   }
-  /* Mismo criterio que la lista de resultados: cada transportista cuenta una vez por comuna */
-  const companies = (filter) => new Set(rows.filter(filter).map((r) => `${normalize(r.company)}|${r.place}`)).size;
+  /* Conteos por residuo, calculados una sola vez al cargar (cada transportista cuenta una vez por comuna) */
+  const counts = new Map();
+  const companies = (kind, type = '*') => counts.get(`${kind}|${type}`) || 0;
+  const collator = new Intl.Collator('es', { sensitivity: 'base' });
   const plural = (n) => `${n.toLocaleString('es-CL')} ${n === 1 ? 'transportista' : 'transportistas'}`;
   function residueGroups() {
     const group = (kind, label) => ({
       label,
       count: CATEGORIES[kind].length,
       options: [
-        { value: `${kind}|*`, label: `Todos los ${kindText(kind)}`, hint: plural(companies((r) => r.kind === kind)), icon: window.PICK.ICONS.grid },
-        ...CATEGORIES[kind].map(([name, file]) => ({ value: `${kind}|${name}`, label: name, hint: plural(companies((r) => r.kind === kind && r.type === name)), img: window.PICK.thumb(file) }))
+        { value: `${kind}|*`, label: `Todos los ${kindText(kind)}`, hint: plural(companies(kind)), icon: window.PICK.ICONS.grid },
+        ...CATEGORIES[kind].map(([name, file]) => ({ value: `${kind}|${name}`, label: name, hint: plural(companies(kind, name)), img: window.PICK.thumb(file) }))
       ]
     });
     return [group('safe', 'No peligrosos'), group('hazard', 'Peligrosos')];
@@ -70,10 +74,10 @@
       if (r.kind !== state.kind || (state.type !== '*' && r.type !== state.type)) return;
       if (!labels.has(r.place)) labels.set(r.place, LABELS[r.place] || titleCase(r.placeRaw || ''));
       if (!map.has(r.place)) map.set(r.place, new Set());
-      map.get(r.place).add(normalize(r.company));
+      map.get(r.place).add(r.companyKey);
     });
     const total = [...map.values()].reduce((n, set) => n + set.size, 0);
-    const list = [...map].sort((a, b) => (a[0] === '' ? 1 : b[0] === '' ? -1 : placeLabel(a[0]).localeCompare(placeLabel(b[0]), 'es')));
+    const list = [...map].sort((a, b) => (a[0] === '' ? 1 : b[0] === '' ? -1 : collator.compare(placeLabel(a[0]), placeLabel(b[0]))));
     return [{ value: '*', label: 'Todas las comunas', hint: plural(total) }, ...list.map(([key, set]) => ({ value: key || '∅', label: placeLabel(key), hint: plural(set.size) }))];
   }
 
@@ -143,10 +147,9 @@
       if (r.kind !== state.kind) return;
       if (state.type !== '*' && r.type !== state.type) return;
       if (state.place !== '*' && r.place !== state.place) return;
-      const key = `${normalize(r.company)}|${r.place}`;
-      if (!map.has(key)) map.set(key, { first: r, placeLabel: LABELS[r.place] || titleCase(r.placeRaw || '') });
+      if (!map.has(r.key)) map.set(r.key, { first: r, placeLabel: LABELS[r.place] || titleCase(r.placeRaw || '') });
     });
-    return [...map.values()].sort((a, b) => a.first.company.localeCompare(b.first.company, 'es', { sensitivity: 'base' }));
+    return [...map.values()].sort((a, b) => collator.compare(a.first.company, b.first.company));
   }
   function renderResults(append) {
     const found = groups();
@@ -162,8 +165,11 @@
       more.hidden = true;
       return;
     }
-    if (append) list.append(...found.slice(list.children.length, state.shown).map((g, i) => row(g, i, true)));
-    else list.replaceChildren(...found.slice(0, state.shown).map((g, i) => row(g, i, true)));
+    /* Las filas entran con un fundido solo si el buscador está a la vista; si se prepararon ocultas (carga en segundo plano),
+       aparecen ya puestas al abrirlo */
+    const fresh = list.getClientRects().length > 0;
+    if (append) list.append(...found.slice(list.children.length, state.shown).map((g, i) => row(g, i, fresh)));
+    else list.replaceChildren(...found.slice(0, state.shown).map((g, i) => row(g, i, fresh)));
     const left = found.length - state.shown;
     more.hidden = left <= 0;
     more.textContent = `Ver ${Math.min(left, PAGE)} más`;
@@ -181,41 +187,54 @@
     }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 140);
   }
 
-  /* Carga de datos bajo demanda */
+  /* Carga de datos: el listado compacto se descarga en segundo plano apenas la página queda libre (ver abajo),
+     así el buscador y sus ventanas abren al instante. Claves y conteos se calculan aquí una sola vez */
   function load() {
     if (loading) return loading;
-    loading = new Promise((resolve, reject) => {
-      if (window.TRANSPORTISTAS_FILTRO_RESIDUO) return resolve();
-      const s = document.createElement('script');
-      s.src = DATA_URL; s.async = true; s.onload = resolve; s.onerror = reject;
-      document.head.append(s);
-    }).then(() => {
-      const src = window.TRANSPORTISTAS_FILTRO_RESIDUO;
-      rows = ['safe', 'hazard'].flatMap((kind) => (src[kind] || []).map((row) => ({
-        kind,
-        type: row[0] || 'Tipo no informado',
-        placeRaw: row[1] || '',
-        place: placeKey(row[1]),
-        company: (row[2] || 'Empresa no informada').trim(),
-        address: row[3] || 'No informada',
-        summary: row[4] || 'No informado',
-        resolution: row[5] || 'No informada',
-        plates: row[6] || '',
-        page: row[7] || '—'
+    loading = fetch(DATA_URL).then((res) => {
+      if (!res.ok) throw new Error(res.status);
+      return res.json();
+    }).then((src) => {
+      /* Cada registro se prepara una vez (2 mil) y las filas por categoría lo reutilizan (10 mil) */
+      const base = src.records.map((rec) => {
+        const company = (rec[1] || 'Empresa no informada').trim();
+        const place = placeKey(rec[0]);
+        const companyKey = normalize(company);
+        return {
+          placeRaw: rec[0] || '', place, company, companyKey, key: `${companyKey}|${place}`,
+          address: rec[2] || 'No informada', summary: rec[3] || 'No informado', resolution: rec[4] || 'No informada', plates: rec[5] || '', page: rec[6] || '—'
+        };
+      });
+      const seen = new Map();
+      rows = [];
+      ['safe', 'hazard'].forEach((kind) => (src[kind] || []).forEach(([type, ids]) => ids.forEach((i) => {
+        const row = { kind, type: type || 'Tipo no informado', ...base[i] };
+        rows.push(row);
+        [`${kind}|*`, `${kind}|${row.type}`].forEach((k) => {
+          if (!seen.has(k)) seen.set(k, new Set());
+          seen.get(k).add(row.key);
+        });
       })));
+      seen.forEach((set, k) => counts.set(k, set.size));
       update();
     }).catch(() => {
+      loading = null;
       count.textContent = 'No pudimos cargar el listado. Recarga la página o cotiza el retiro directamente.';
     });
     return loading;
   }
   window.FINDER_LOAD = load;
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '800px 0px' });
-    io.observe(root);
-  } else {
-    load();
-  }
+  /* Descarga en segundo plano cuando la página queda libre (110 KB comprimidos; no con «ahorro de datos»).
+     Si alguien abre el buscador antes, se carga en ese momento */
+  const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1500));
+  /* También las imágenes de las categorías (23, ~9 KB c/u): así las ventanas de residuo abren completas, sin imágenes que aparecen después */
+  const warmImages = () => [...window.PICK.CATEGORIES.safe, ...window.PICK.CATEGORIES.hazard].forEach(([, file]) => {
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = window.PICK.thumb(file);
+  });
+  const prefetch = () => { if (!navigator.connection?.saveData) idle(() => { load(); warmImages(); }, { timeout: 4000 }); };
+  if (document.readyState === 'complete') prefetch(); else addEventListener('load', prefetch, { once: true });
 
   /* Eventos */
   root.addEventListener('click', async (e) => {

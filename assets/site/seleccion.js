@@ -245,7 +245,7 @@
       lastFocus?.focus?.({ preventScroll: true });
       done?.(value);
     };
-    if (motion.matches && !instant) { dlg.classList.add('is-closing'); setTimeout(end, 180); } else end();
+    if (motion.matches && !instant) { dlg.classList.add('is-closing'); setTimeout(end, sheet.matches ? 220 : 180); } else end();
   };
   const open = ({ title, sub = '', search = '', done = '' }) => {
     if (!dlg) build();
@@ -278,7 +278,7 @@
     const on = el.body.querySelector('[aria-pressed="true"]');
     const target = on || (!el.searchWrap.hidden && !coarse.matches ? el.search : el.body.querySelector('button:not([disabled]), input, select'));
     target?.focus({ preventScroll: true });
-    on?.scrollIntoView({ block: 'center' });
+    on?.scrollIntoView({ block: 'nearest' });  // solo si no se ve: la ventana no salta al abrir
   });
   const counter = (n, one, many) => (n ? `${n} ${n === 1 ? one : many}` : '');
 

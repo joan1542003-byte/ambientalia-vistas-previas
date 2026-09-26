@@ -179,9 +179,11 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .picker-foot { display: flex; align-items: center; gap: 12px; padding: 12px 22px; border-top: 1px solid var(--line); }
 .picker-count { margin-right: auto; color: var(--muted); font-size: var(--fs-caption); font-weight: 700; }
 @media (max-width: 640px) {
-  .picker { padding: 0; }
-  .picker[open] { place-items: end stretch; }
-  .picker-card { width: 100%; max-height: 90dvh; border-radius: 24px 24px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  /* Pantalla completa, sobre el teclado si está abierto; el fondo se vela sin desenfoque (más fluido en el teléfono) */
+  .picker { padding: 0 0 var(--vv-bottom, 0px); }
+  .picker[open] { place-items: stretch; }
+  .picker::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(13 21 49 / .5); }
+  .picker-card { width: 100%; height: 100%; max-height: none; border-radius: 0; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
   .picker-grab { display: block; width: 40px; height: 4px; margin: 8px auto 0; border-radius: 99px; background: var(--line-strong); }
   .picker-head { padding: 10px 12px 10px 18px; }
   .picker-search { margin-inline: 18px; }
@@ -199,8 +201,8 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
   .picker.is-closing::backdrop { animation: veil .18s ease reverse both; }
 }
 @media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
-  .picker[open] .picker-card { animation: picker-sheet .45s var(--ease) both; }
-  .picker.is-closing .picker-card { animation: picker-out .18s ease both; }
+  .picker[open] .picker-card { animation: sheet-up .42s cubic-bezier(.32, .72, 0, 1) both; }
+  .picker.is-closing .picker-card { animation: sheet-down .22s cubic-bezier(.4, 0, 1, 1) both; }
 }
 
 /* Opciones */
@@ -694,19 +696,17 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
   .stage-copy .lead { display: none; }
 }
 
-/* ---------- Móvil: cada opción del hero se abre en una hoja inferior (transporte-ui.js mueve la tarjeta a <dialog class="hero-sheet">) ----------
-   Mismo lenguaje que las ventanas de selección: manilla, fondo velado, sube desde abajo, se cierra al bajarla con el dedo,
-   con la X, tocando fuera o con «atrás». Se apoya sobre el teclado (--vv-bottom, site.js). */
+/* ---------- Móvil: cada opción del hero se abre a pantalla completa (transporte-ui.js mueve la tarjeta a <dialog class="hero-sheet">) ----------
+   Mismo lenguaje que las ventanas de selección: sube sólida desde abajo y se cierra con la X, con «atrás», con Escape
+   o bajándola con el dedo desde la manilla o la cabecera. Se apoya sobre el teclado (--vv-bottom, site.js). */
 .sheet-open { overflow: hidden; }
 .sheet-open .dock { opacity: 0; visibility: hidden; }
 .hero-sheet {
-  position: fixed; inset: auto 0 var(--vv-bottom, 0px); width: 100%; max-width: 640px;
-  max-height: min(92dvh, calc(var(--vv-h, 100dvh) - 12px)); margin: 0 auto; padding: 0; border: 0;
-  border-radius: 24px 24px 0 0; background: #fff; color: var(--ink); overflow: hidden;
-  box-shadow: 0 -18px 50px -20px rgb(13 21 49 / .5);
+  position: fixed; inset: 0 0 var(--vv-bottom, 0px); width: 100%; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  border-radius: 0; background: #fff; color: var(--ink); overflow: hidden;
 }
-.hero-sheet[open] { display: flex; flex-direction: column; }
-.hero-sheet::backdrop { background: rgb(13 21 49 / .42); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.hero-sheet[open] { display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); }
+.hero-sheet::backdrop { background: rgb(13 21 49 / .5); }
 .sheet-grab { flex: none; display: block; width: 40px; height: 4px; margin: 8px auto 0; border-radius: 99px; background: var(--line-strong); }
 .hero-sheet .sheet-grab, .hero-sheet .hcard-head { touch-action: none; }
 .hero-sheet .hcard { flex: 1 1 auto; min-height: 0; max-height: none; border-radius: 0; box-shadow: none; }
@@ -716,10 +716,12 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
 @media (prefers-reduced-motion: no-preference) {
   @keyframes sheet-up { from { transform: translateY(100%); } }
   @keyframes sheet-down { to { transform: translateY(100%); } }
-  .hero-sheet[open] { animation: sheet-up .48s cubic-bezier(.32, .72, 0, 1) both; }
+  .hero-sheet[open] { animation: sheet-up .42s cubic-bezier(.32, .72, 0, 1) both; }
+  /* La hoja entra sólida: su contenido no se funde encima (se vería «cargando») */
+  .hero-sheet .hcard-panel:not([hidden]), .hero-sheet .summary:not([hidden]) { animation: none; }
   .hero-sheet[open]::backdrop { animation: veil .3s ease both; }
-  .hero-sheet.is-closing { animation: sheet-down .26s cubic-bezier(.4, 0, 1, 1) both; }
-  .hero-sheet.is-closing::backdrop { animation: veil .26s ease reverse both; }
+  .hero-sheet.is-closing { animation: sheet-down .24s cubic-bezier(.4, 0, 1, 1) both; }
+  .hero-sheet.is-closing::backdrop { animation: veil .24s ease reverse both; }
 }
 /* Ventanas de selección en móvil: también se cierran bajándolas desde la manilla o la cabecera */
 @media (max-width: 640px) { .picker-grab, .picker-head { touch-action: none; } }
