@@ -60,7 +60,7 @@
   ];
   const TITLE = 'Solicitud de cotización — Transporte Autorizado';
   const CLOSING = 'Adjuntaré fotografías del residuo, su contenedor y el lugar donde está almacenado.';
-  const GREETING = 'Hola, te ayudo a gestionar tu residuo. Cuéntame qué necesitas retirar o elige una opción.';
+  const GREETING = 'Hola, te ayudo a gestionar tu residuo. Te haré algunas preguntas para preparar una solicitud de cotización.';
 
   const answers = {};
   const meta = { tipo: '', region: '', dates: {}, search: '' };

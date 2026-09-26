@@ -260,13 +260,20 @@
       if (name !== 'inicio' && !panels[name]) return Promise.resolve();
       if (name === 'buscar') window.FINDER_LOAD?.();
       const move = from !== 'hero' || mobile.matches;
+      const before = view;
       const target = active || (name === 'asistente' ? tab || 'cotizar' : name);
       return transition(() => {
         apply(name, target);
         if (move) align();
       }).then(() => {
-        history.replaceState(null, '', name === 'inicio' ? location.pathname + location.search : `#${name}`);
-        if (from !== 'hero') panels[name]?.focus({ preventScroll: true });
+        /* Historial: abrir una opción desde el inicio agrega una entrada, así «atrás» en el teléfono vuelve al inicio
+           del hero en vez de salir del sitio. Cambiar de opción solo reemplaza la entrada. */
+        const url = name === 'inicio' ? location.pathname + location.search : `#${name}`;
+        if (from !== 'history') {
+          if (before === 'inicio' && name !== 'inicio') history.pushState({ hero: name, pushed: true }, '', url);
+          else history.replaceState(name === 'inicio' ? null : { hero: name, pushed: !!history.state?.pushed }, '', url);
+        }
+        if (from !== 'hero' && from !== 'history') panels[name]?.focus({ preventScroll: true });
       });
     };
     window.HERO = { show, transition, get view() { return view; } };
@@ -283,8 +290,11 @@
       tabs[n].focus();
       show(tabs[n].dataset.route);
     });
+    let refocus = null;
     const close = () => {
       const was = tabs.find((t) => t.dataset.route === tab);
+      /* Si la opción se abrió con su propia entrada, cerrar es lo mismo que «atrás» */
+      if (history.state?.pushed) { refocus = was; history.back(); return; }
       show('inicio').then(() => was?.focus({ preventScroll: true }));
     };
     hero.addEventListener('click', (e) => { if (e.target.closest('[data-hero-close]')) close(); });
@@ -301,6 +311,15 @@
       if (a.hash === '#cotizar' && a.hasAttribute('data-set') && form?.hidden) d.querySelector('#cotizacion-resumen [data-edit]')?.click();
       const name = HASH[a.hash];
       if (view === name) { align(); panels[name]?.focus({ preventScroll: true }); } else show(name, { from: 'link' });
+    });
+    /* Atrás y adelante del navegador: muestran la opción de esa entrada (otros anclajes, como #servicios, no tocan el hero) */
+    addEventListener('popstate', () => {
+      const name = HASH[location.hash] || (location.hash ? null : 'inicio');
+      if (!name || name === view) return;
+      show(name, { from: 'history' }).then(() => {
+        if (name === 'inicio') refocus?.focus({ preventScroll: true });
+        refocus = null;
+      });
     });
     if (HASH[location.hash]) {
       apply(HASH[location.hash], HASH[location.hash] === 'asistente' ? 'cotizar' : HASH[location.hash]);
@@ -357,12 +376,15 @@
     const field = ask.querySelector('input');
     /* Ejemplos que se escriben y borran solos en el placeholder (uno por cada camino: cotizar, buscar y hablar) */
     const EXAMPLES = ['Necesito un retiro urgente', '600 kg de cartón en Quilicura', 'Busco un transportista para aceite', 'Quiero hablar con un especialista'];
+    /* Al tocar el campo se muestra una instrucción completa, nunca una frase a medio escribir */
+    const HINT = 'Escribe lo que necesitas retirar';
     let timer = 0;
-    if (!motion.matches) field.placeholder = EXAMPLES[0];
-    else {
-      let line = 0;
-      let at = 0;
-      let erase = false;
+    let line = 0;
+    let at = EXAMPLES[0].length;
+    let erase = false;
+    field.placeholder = EXAMPLES[0];
+    if (motion.matches) {
+      /* Se escribe un ejemplo, se sostiene y se borra; empieza con el primero ya escrito para que el campo nunca se vea vacío */
       const tick = () => {
         let wait = erase ? 26 : 52;
         if (field.value || d.activeElement === field || d.hidden) wait = 700;
@@ -375,9 +397,16 @@
         }
         timer = setTimeout(tick, wait);
       };
-      field.placeholder = '';
-      timer = setTimeout(tick, 600);
+      erase = true;
+      timer = setTimeout(tick, 2400);
     }
+    field.addEventListener('focus', () => { field.placeholder = HINT; });
+    field.addEventListener('blur', () => {
+      if (field.value) return;
+      at = EXAMPLES[line].length;
+      field.placeholder = EXAMPLES[line];
+      erase = false;  /* el siguiente paso lo sostiene completo antes de borrarlo */
+    });
     ask.addEventListener('submit', (e) => {
       e.preventDefault();
       const text = field.value.trim();
