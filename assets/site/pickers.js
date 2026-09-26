@@ -88,7 +88,7 @@
   const shortAmount = (a) => a.replace(' kg o L', '');
 
   /* Opciones y etiquetas comunes del formulario y el asistente */
-  const ic = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const ic = (d) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
   const bars = (n) => ic([0, 1, 2, 3].map((i) => `<path d="M${5 + i * 4.5} 19v-${4 + i * 3}"${i < n ? '' : ' opacity=".25"'}/>`).join(''));
   const ICONS = {
     help: ic('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01"/>'),
