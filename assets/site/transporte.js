@@ -228,10 +228,12 @@
      Si alguien abre el buscador antes, se carga en ese momento */
   const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1500));
   /* También las imágenes de las categorías (23, ~9 KB c/u): así las ventanas de residuo abren completas, sin imágenes que aparecen después */
+  const warm = [];  // se guardan para que el navegador conserve las imágenes ya decodificadas
   const warmImages = () => [...window.PICK.CATEGORIES.safe, ...window.PICK.CATEGORIES.hazard].forEach(([, file]) => {
     const img = new Image();
-    img.decoding = 'async';
     img.src = window.PICK.thumb(file);
+    img.decode?.().catch(() => {});
+    warm.push(img);
   });
   const prefetch = () => { if (!navigator.connection?.saveData) idle(() => { load(); warmImages(); }, { timeout: 4000 }); };
   if (document.readyState === 'complete') prefetch(); else addEventListener('load', prefetch, { once: true });

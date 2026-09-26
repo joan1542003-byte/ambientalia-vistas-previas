@@ -23,7 +23,7 @@
 
   /* ---------- Renderizadores en línea ---------- */
   const optionHTML = (o, on) => `<button type="button" class="opt" data-value="${esc(o.value)}" aria-pressed="${on}">${
-    o.img ? `<img src="${esc(o.img)}" alt="" width="48" height="48" loading="lazy" decoding="async">` : o.icon ? `<span class="opt-icon" aria-hidden="true">${o.icon}</span>` : ''
+    o.img ? `<img src="${esc(o.img)}" alt="" width="48" height="48" decoding="async">` : o.icon ? `<span class="opt-icon" aria-hidden="true">${o.icon}</span>` : ''
   }<span class="opt-text"><strong>${esc(o.label)}</strong>${o.hint ? `<small>${esc(o.hint)}</small>` : ''}</span><i class="opt-check" aria-hidden="true"></i></button>`;
 
   /* Opciones agrupadas. layout: 'tiles' (imagen), 'cards' (ícono y texto), 'list' (filas) o 'chips'. */
@@ -285,12 +285,22 @@
     dlg.showModal();
     return new Promise((res) => { resolver = res; });
   };
-  const focusFirst = () => requestAnimationFrame(() => {
+  /* La lista abre ya posicionada en la opción elegida (antes del primer cuadro, sin moverse mientras sube);
+     el foco se da después, sin desplazar nada */
+  const place = (on) => {
+    if (!on) return;
+    const box = el.body.getBoundingClientRect();
+    const r = on.getBoundingClientRect();
+    if (r.top < box.top || r.bottom > box.bottom) el.body.scrollTop += r.top - box.top - (box.height - r.height) / 2;
+  };
+  const focusFirst = () => {
     const on = el.body.querySelector('[aria-pressed="true"]');
-    const target = on || (!el.searchWrap.hidden && !coarse.matches ? el.search : el.body.querySelector('button:not([disabled]), input, select'));
-    target?.focus({ preventScroll: true });
-    on?.scrollIntoView({ block: 'nearest' });  // solo si no se ve: la ventana no salta al abrir
-  });
+    place(on);
+    requestAnimationFrame(() => {
+      const target = on || (!el.searchWrap.hidden && !coarse.matches ? el.search : el.body.querySelector('button:not([disabled]), input, select'));
+      target?.focus({ preventScroll: true });
+    });
+  };
   const counter = (n, one, many) => (n ? `${n} ${n === 1 ? one : many}` : '');
 
   /* Una opción (se cierra al tocar) o varias (con «Listo») */
@@ -409,12 +419,10 @@
     });
     hooks.done = () => finish(list);
     sync();
-    /* Foco en el día elegido o en el primero disponible (no en una flecha) */
-    requestAnimationFrame(() => {
-      const on = el.body.querySelector('.cal-day[aria-pressed="true"]') || el.body.querySelector('.cal-day:not([disabled])');
-      on?.focus({ preventScroll: true });
-      on?.scrollIntoView({ block: 'nearest' });
-    });
+    /* Abre en el día elegido o en el primero disponible (no en una flecha), sin moverse después */
+    const day = el.body.querySelector('.cal-day[aria-pressed="true"]') || el.body.querySelector('.cal-day:not([disabled])');
+    place(day);
+    requestAnimationFrame(() => day?.focus({ preventScroll: true }));
     return p;
   };
 

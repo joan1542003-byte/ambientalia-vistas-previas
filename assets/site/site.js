@@ -27,18 +27,26 @@
     setTimeout(() => { btn.classList.remove('is-done'); target.textContent = label; }, 1600);
   };
 
-  /* Teclado en pantalla: las hojas inferiores se apoyan sobre él. --vv-bottom es lo que el teclado tapa y --vv-h el alto visible */
+  /* Teclado en pantalla: mientras se escribe, las hojas inferiores se apoyan sobre él y se alinean con el área visible
+     (--vv-top, --vv-bottom). Sin un campo de texto activo valen 0: así las ventanas nunca se corren por valores que el
+     teléfono deja desactualizados (p. ej., tras cerrar el teclado o al mostrar u ocultar la barra del navegador). */
   const vv = window.visualViewport;
   if (vv) {
+    const root = d.documentElement.style;
+    const typing = () => d.activeElement?.matches?.('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="button"]):not([type="submit"]), textarea');
     const sync = () => {
-      if (vv.scale > 1.01) return;  // con zoom de pellizco no se mueve nada
-      const root = d.documentElement.style;
+      if (!typing() || vv.scale > 1.01) {
+        root.setProperty('--vv-top', '0px');
+        root.setProperty('--vv-bottom', '0px');
+        return;
+      }
+      root.setProperty('--vv-top', `${Math.max(0, Math.round(vv.offsetTop))}px`);
       root.setProperty('--vv-bottom', `${Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop))}px`);
-      root.setProperty('--vv-h', `${Math.round(vv.height)}px`);
-      root.setProperty('--vv-top', `${Math.max(0, Math.round(vv.offsetTop))}px`);  // lo que el navegador desplazó la vista al abrir el teclado
     };
     vv.addEventListener('resize', sync);
     vv.addEventListener('scroll', sync);
+    d.addEventListener('focusin', sync);
+    d.addEventListener('focusout', () => setTimeout(sync, 0));
     sync();
   }
 

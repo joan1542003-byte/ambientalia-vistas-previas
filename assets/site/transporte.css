@@ -198,7 +198,9 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 
 /* ---------- Ventana de selección (assets/site/seleccion.js): diálogo en escritorio, hoja inferior en móvil ---------- */
 .picker-open { overflow: hidden; }
-.picker { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 20px; border: 0; background: transparent; color: var(--ink); overflow: hidden; }
+.picker { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 20px; border: 0; background: transparent; color: var(--ink); overflow: hidden; overflow: clip; }
+/* overflow: clip (y no solo hidden): al abrir, el navegador enfoca el primer botón; si la ventana todavía viene subiendo,
+   con hidden desplazaba el contenedor para mostrarlo y la ventana se pasaba hacia arriba, se cortaba y volvía de golpe */
 .picker[open] { display: grid; place-items: center; }
 .picker::backdrop { background: rgb(13 21 49 / .42); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .picker-card {
@@ -228,7 +230,7 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
   .picker { padding: var(--vv-top, 0px) 0 var(--vv-bottom, 0px); }
   .picker[open] { place-items: stretch; }
   .picker::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(13 21 49 / .5); }
-  .picker-card { width: 100%; height: 100%; max-height: none; border-radius: 0; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .picker-card { width: 100%; height: 100%; max-height: none; border-radius: 0; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); will-change: transform; }
   .picker-grab { display: block; width: 40px; height: 4px; margin: 8px auto 0; border-radius: 99px; background: var(--line-strong); }
   .picker-head { padding: 10px 12px 10px 18px; }
   .picker-search { margin-inline: 18px; }
@@ -682,7 +684,7 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 /* ---------- Señal implícita de scroll: el borde por donde continúa el contenido se difumina ---------- */
 @property --fade-top { syntax: "<length>"; inherits: false; initial-value: 0px; }
 @property --fade-bottom { syntax: "<length>"; inherits: false; initial-value: 0px; }
-.picker-body, .hcard-body { transition: --fade-top .3s ease, --fade-bottom .3s ease; }
+/* Sin transición: animar el degradado obligaba a repintar toda la lista en cada cuadro justo al abrir la ventana */
 .picker-body[data-scrolled], .hcard-body[data-scrolled] { --fade-top: 24px; }
 .picker-body[data-more], .hcard-body[data-more] { --fade-bottom: 72px; }
 .picker-body[data-more], .picker-body[data-scrolled], .hcard-body[data-more], .hcard-body[data-scrolled] {
@@ -748,9 +750,9 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
 .sheet-open .dock { opacity: 0; visibility: hidden; }
 .hero-sheet {
   position: fixed; inset: var(--vv-top, 0px) 0 var(--vv-bottom, 0px); width: 100%; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
-  border-radius: 0; background: #fff; color: var(--ink); overflow: hidden;
+  border-radius: 0; background: #fff; color: var(--ink); overflow: hidden; overflow: clip;
 }
-.hero-sheet[open] { display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); }
+.hero-sheet[open] { display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); will-change: transform; }
 .hero-sheet::backdrop { background: rgb(13 21 49 / .5); }
 .sheet-grab { flex: none; display: block; width: 40px; height: 4px; margin: 8px auto 0; border-radius: 99px; background: var(--line-strong); }
 .hero-sheet .sheet-grab, .hero-sheet .hcard-head { touch-action: none; }
