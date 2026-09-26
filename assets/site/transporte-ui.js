@@ -54,10 +54,16 @@
       set('modalidad', m, PICK.MODE_LABEL[m]);
       set('fecha', one ? when.dates[0] : '', one ? PICK.longDate(when.dates[0]) : '');
       set('fechas', many ? when.dates.join(',') : '', many ? when.dates.map(PICK.longDate).join(', ') : '');
-      set('horario', m ? when.slot : '', m ? slotText() : '');
-      set('cuando-ok', m === 'express' || one || many ? 'ok' : '');
+      set('fecha-ok', one || many ? 'ok' : '');
+      set('horario', when.slot, slotText());
     };
 
+    const MODE_HINT = {
+      '': 'Elige qué tan pronto lo necesitas.',
+      express: 'Priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad.',
+      programado: 'Eliges el día y coordinamos el retiro.',
+      flexible: 'Tú propones hasta tres días y coordinamos según disponibilidad.'
+    };
     /* Texto visible de cada fila */
     const paint = () => {
       const show = (name, text, placeholder) => {
@@ -73,9 +79,16 @@
         tipo === 'peligroso' ? 'Elige el residuo peligroso' : tipo === 'no-peligroso' ? 'Elige el residuo no peligroso' : '');
       show('cantidad', field('cantidad').value);
       show('comuna', field('comuna').value);
-      const dates = when.modalidad === 'programado' ? when.dates.slice(0, 1) : when.modalidad === 'flexible' ? when.dates : [];
-      const day = dates.map(PICK.shortDate).join(', ') || (when.modalidad && when.modalidad !== 'express' ? 'falta elegir el día' : '');
-      show('cuando', when.modalidad ? [PICK.MODE_LABEL[when.modalidad], day, when.slot === 'otro' ? `${when.desde} a ${when.hasta}` : when.slot].filter(Boolean).join(' · ') : '');
+      show('direccion', field('direccion').value);
+      /* Tipo de retiro: tres botones en la misma fila y una línea que explica el elegido */
+      form.querySelectorAll('[data-modalidad]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.modalidad === when.modalidad)));
+      const hint = form.querySelector('[data-modalidad-hint]');
+      if (hint) hint.textContent = MODE_HINT[when.modalidad] || MODE_HINT[''];
+      const multi = when.modalidad === 'flexible';
+      const label = form.querySelector('[data-fecha-label]');
+      if (label) label.textContent = multi ? 'Días posibles' : 'Día del retiro';
+      show('fecha', multi ? when.dates.map(PICK.shortDate).join(', ') : when.dates[0] ? PICK.longDate(when.dates[0]) : '', multi ? 'Elige hasta tres días' : 'Elige el día');
+      show('horario', slotText());
       show('antecedentes', field('documentos').value);
       show('detalles', [field('acceso').value, field('estado').value, field('almacenamiento').value].filter(Boolean).join(' · '));
     };
@@ -140,8 +153,26 @@
         if (v) set('comuna', v.commune);
         return v;
       },
-      cuando: async () => {
-        const v = await Picker.when({ value: when });
+      /* La dirección se escribe en su propia ventana: el campo queda arriba y el teclado no mueve la pantalla */
+      direccion: async () => {
+        const v = await Picker.text({
+          title: '¿Dónde retiramos?', sub: 'Calle y número, y una referencia si ayuda: bodega, portón o piso.',
+          label: 'Dirección del retiro', value: field('direccion').value, placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address'
+        });
+        if (v) set('direccion', v);
+        return v;
+      },
+      fecha: async () => {
+        const multi = when.modalidad === 'flexible';
+        const v = await Picker.dates({
+          title: multi ? '¿Qué días te acomodan?' : '¿Qué día retiramos?',
+          sub: multi ? 'Elige hasta tres días posibles, de lunes a sábado.' : 'De lunes a sábado.', multi, max: 3, value: when.dates
+        });
+        if (v) { when.dates = v; writeWhen(); }
+        return v;
+      },
+      horario: async () => {
+        const v = await Picker.time({ value: when });
         if (v) { Object.assign(when, v); writeWhen(); }
         return v;
       },
@@ -178,6 +209,17 @@
       field('tipo').dispatchEvent(new Event('change', { bubbles: true }));
     });
     form.addEventListener('change', (e) => { if (e.target.type === 'hidden') normalize(); });
+    /* Tipo de retiro: se elige con un toque en la misma fila */
+    form.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-modalidad]');
+      if (!b) return;
+      when.modalidad = b.dataset.modalidad;
+      if (when.modalidad === 'express') when.dates = [];
+      if (when.modalidad === 'programado') when.dates = when.dates.slice(0, 1);
+      writeWhen();
+      b.closest('.pick')?.removeAttribute('data-invalid');
+      field('modalidad').dispatchEvent(new Event('change', { bubbles: true }));
+    });
     form.transition = (update) => transition(update);
 
     /* Recibe lo que ya se respondió en la conversación, para seguir en el formulario sin repetir nada */
@@ -247,6 +289,23 @@
       /* Si el sistema la cierra por su cuenta (p. ej., gesto «atrás» en Android), el hero se pone al día */
       sheet.addEventListener('close', () => { if (view !== 'inicio') { sheetInstant = true; close(); } });
       Picker?.drag?.(sheet, { handles: '.sheet-grab, .hcard-head', dismiss: () => { sheetInstant = true; close(); } });
+      /* Al tocar un campo para escribir, su fila sube al inicio de la lista antes de que abra el teclado: así el teléfono
+         no desplaza la pantalla para mostrarlo (en iPhone eso movía toda la hoja) */
+      const coarse = matchMedia('(pointer: coarse)');
+      sheet.addEventListener('focusin', (e) => {
+        const f = e.target;
+        if (!coarse.matches || !f.matches('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea')) return;
+        const body = f.closest('.hcard-body');
+        if (!body) return;
+        sheet.classList.add('is-typing');
+        const row = f.closest('.pick, .pick-field, .field') || f;
+        const delta = row.getBoundingClientRect().top - body.getBoundingClientRect().top - 8;
+        if (Math.abs(delta) > 4) body.scrollTop += delta;
+      });
+      sheet.addEventListener('focusout', () => setTimeout(() => {
+        const a = d.activeElement;
+        if (!a || !sheet.contains(a) || !a.matches('input, textarea')) sheet.classList.remove('is-typing');
+      }, 60));
     };
     const openSheet = () => {
       if (!sheet) buildSheet();

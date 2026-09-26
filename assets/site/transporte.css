@@ -120,6 +120,51 @@
 .pick[data-invalid] .pick-label, .pick-field:has([aria-invalid="true"]) .pick-label { color: var(--hazard); }
 .pick[data-invalid] .pick-icon { background: var(--hazard-soft); color: var(--hazard); }
 .pick-error { display: none; margin-top: -6px; padding: 0 14px 10px 62px; color: var(--hazard); font-size: var(--fs-caption); font-weight: 700; }
+/* Tipo de retiro: tres botones en la misma fila del formulario (sin abrir ventana) y una línea que explica el elegido */
+.pick-seg { display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: center; gap: 10px 12px; padding: 12px 14px 14px; }
+.pick-seg .pick-text { display: contents; }
+.pick-seg .seg, .pick-seg .seg-hint, .pick-seg .pick-error { grid-column: 1 / -1; }
+.pick-seg .pick-error { margin: -4px 0 0; padding: 0; }
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; border-radius: 14px; background: var(--bg-sunk); }
+.seg button {
+  min-height: 44px; padding: 4px 6px; border: 0; border-radius: 11px; background: transparent; color: var(--ink-2);
+  font: 800 var(--fs-small)/1.15 var(--font); cursor: pointer; transition: background-color .2s var(--ease), color .2s, box-shadow .2s;
+}
+.seg button[aria-checked="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgb(21 26 45 / .16); }
+.seg button:not([aria-checked="true"]):active { background: rgb(255 255 255 / .6); }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.seg-hint { margin-top: -2px; color: var(--muted); font-size: var(--fs-caption); line-height: 1.4; }
+.pick[data-invalid] .seg { box-shadow: inset 0 0 0 1.5px var(--hazard); }
+
+/* Ventana de texto (dirección): campo arriba, grande y claro */
+.text-field textarea {
+  display: block; width: 100%; min-height: 104px; padding: 14px 16px; border: 1px solid var(--line-strong); border-radius: 16px;
+  background: #fff; color: var(--ink); font: 600 1rem/1.5 var(--font); resize: none;
+}
+.text-field textarea::placeholder { color: var(--muted); }
+.text-field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.text-hint { margin-top: 8px; color: var(--muted); font-size: var(--fs-caption); }
+
+/* Horario: opciones de un toque (2 × 2, compactas) o rango con botones de hora */
+.time { display: grid; gap: 16px; }
+.time .opts.is-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.time .is-cards .opt { flex-direction: row; align-items: center; gap: 10px; min-height: 64px; padding: 10px 12px; }
+.time .is-cards .opt-icon { width: 34px; height: 34px; border-radius: 10px; }
+.time .is-cards .opt-check { display: none; }
+/* Días: varios meses seguidos, se recorren deslizando */
+.cal-months { display: grid; gap: 24px; }
+.cal-months .cal-head { justify-content: flex-start; margin-bottom: 10px; }
+.time-range h3 { margin-bottom: 8px; color: var(--ink-2); font-size: var(--fs-caption); font-weight: 800; }
+.hours + h3 { margin-top: 12px; }
+.hours { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.hour {
+  min-height: 44px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink);
+  font: 700 var(--fs-body-sm) var(--font); font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color .2s, border-color .2s, color .2s;
+}
+.hour[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: #fff; }
+.hour:disabled { border-color: transparent; background: var(--bg-alt); color: var(--line-strong); cursor: default; }
+.hour:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+@media (hover: hover) { .hour:not(:disabled):not([aria-pressed="true"]):hover { border-color: var(--line-strong); background: var(--bg-alt); } }
 .pick[data-invalid] .pick-error { display: block; }
 .hcard-head .picks { margin-top: 14px; }
 .picks-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -180,7 +225,7 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .picker-count { margin-right: auto; color: var(--muted); font-size: var(--fs-caption); font-weight: 700; }
 @media (max-width: 640px) {
   /* Pantalla completa, sobre el teclado si está abierto; el fondo se vela sin desenfoque (más fluido en el teléfono) */
-  .picker { padding: 0 0 var(--vv-bottom, 0px); }
+  .picker { padding: var(--vv-top, 0px) 0 var(--vv-bottom, 0px); }
   .picker[open] { place-items: stretch; }
   .picker::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(13 21 49 / .5); }
   .picker-card { width: 100%; height: 100%; max-height: none; border-radius: 0; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -702,7 +747,7 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
 .sheet-open { overflow: hidden; }
 .sheet-open .dock { opacity: 0; visibility: hidden; }
 .hero-sheet {
-  position: fixed; inset: 0 0 var(--vv-bottom, 0px); width: 100%; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  position: fixed; inset: var(--vv-top, 0px) 0 var(--vv-bottom, 0px); width: 100%; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
   border-radius: 0; background: #fff; color: var(--ink); overflow: hidden;
 }
 .hero-sheet[open] { display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); }
@@ -723,5 +768,8 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
   .hero-sheet.is-closing { animation: sheet-down .24s cubic-bezier(.4, 0, 1, 1) both; }
   .hero-sheet.is-closing::backdrop { animation: veil .24s ease reverse both; }
 }
+/* Mientras se escribe en la hoja, el campo sube al inicio de la lista antes de que aparezca el teclado (transporte-ui.js);
+   este espacio extra permite subir también el último campo */
+.hero-sheet.is-typing .hcard-body { padding-bottom: 55vh; }
 /* Ventanas de selección en móvil: también se cierran bajándolas desde la manilla o la cabecera */
 @media (max-width: 640px) { .picker-grab, .picker-head { touch-action: none; } }

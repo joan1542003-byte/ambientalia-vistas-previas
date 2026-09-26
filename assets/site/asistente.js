@@ -41,7 +41,7 @@
     { id: 'direccion', label: 'Dirección', type: 'text', sub: true, ask: '¿Cuál es la dirección del retiro?', help: 'Calle, número y alguna referencia.', hint: 'Escribe la dirección' },
     { id: 'almacenamiento', label: 'Almacenamiento', type: 'options', layout: 'cards', ask: '¿Cómo está almacenado?', hint: 'Ej.: en tambores',
       options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon })) },
-    { id: 'modalidad', label: 'Modalidad', type: 'options', layout: 'modes', ask: '¿Cuándo necesitas retirarlo?', hint: 'Ej.: es urgente', options: MODES },
+    { id: 'modalidad', label: 'Modalidad', type: 'options', layout: 'list', ask: '¿Cuándo necesitas retirarlo?', hint: 'Ej.: es urgente', options: MODES },
     { id: 'fecha', label: 'Fecha', type: 'calendar', sub: true, skip: 'Aún no lo sé', when: (a) => a.modalidad === 'Retiro Programado',
       ask: '¿Qué día te acomoda?', help: 'Lo confirmamos según disponibilidad, tipo de residuo y comuna.', hint: 'Ej.: el lunes' },
     { id: 'fechas', label: 'Fechas posibles', type: 'calendar', multi: 3, sub: true, when: (a) => a.modalidad === 'Espera y ahorra',

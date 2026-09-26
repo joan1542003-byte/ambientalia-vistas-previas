@@ -35,6 +35,7 @@
       const root = d.documentElement.style;
       root.setProperty('--vv-bottom', `${Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop))}px`);
       root.setProperty('--vv-h', `${Math.round(vv.height)}px`);
+      root.setProperty('--vv-top', `${Math.max(0, Math.round(vv.offsetTop))}px`);  // lo que el navegador desplazó la vista al abrir el teclado
     };
     vv.addEventListener('resize', sync);
     vv.addEventListener('scroll', sync);

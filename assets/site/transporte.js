@@ -1,6 +1,6 @@
 /* Transporte Autorizado: buscador de transportistas.
    El residuo y la comuna se eligen en ventanas de selección (seleccion.js), con el número de transportistas de cada opción.
-   Los datos (2 MB) se cargan solo cuando se abre el buscador. */
+   Los datos (listado compacto, 110 KB comprimido) se descargan en segundo plano cuando la página queda libre. */
 (() => {
   const root = document.querySelector('[data-finder]');
   if (!root) return;

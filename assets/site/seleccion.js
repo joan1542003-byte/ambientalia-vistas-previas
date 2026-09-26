@@ -17,7 +17,8 @@
     next: svg('<path d="M9 5l7 7-7 7"/>'),
     search: svg('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>'),
     check: svg('<path d="M5 12.5l4.5 4.5L19 7"/>'),
-    help: svg('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01"/>')
+    help: svg('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01"/>'),
+    range: svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12h4M4 21h4M16 21h4"/>')
   };
 
   /* ---------- Renderizadores en línea ---------- */
@@ -85,16 +86,15 @@
   const MONTHS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   const iso = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
   const parse = (v) => { const [y, m, dd] = v.split('-').map(Number); return new Date(y, m - 1, dd, 12); };
-  const calendar = (host, { multi = false, max = 3, value = [], onChange }) => {
+  /* months > 1: varios meses seguidos, uno bajo otro y sin flechas (en pantalla completa se recorren deslizando) */
+  const calendar = (host, { multi = false, max = 3, value = [], onChange, months = 1 }) => {
     const picked = [].concat(value).filter(Boolean);
     const today = new Date(); today.setHours(12, 0, 0, 0);
     const min = new Date(today); min.setDate(min.getDate() + 1);
     const lim = new Date(today); lim.setDate(lim.getDate() + 92);
     const view = picked[0] ? parse(picked[0]) : new Date(min);
     view.setDate(1);
-    const draw = () => {
-      const y = view.getFullYear();
-      const m = view.getMonth();
+    const month = (y, m, nav) => {
       const lead = (new Date(y, m, 1, 12).getDay() + 6) % 7;
       const count = new Date(y, m + 1, 0).getDate();
       const at = y * 12 + m;
@@ -105,15 +105,26 @@
         const off = dt < min || dt > lim || dt.getDay() === 0;
         cells += `<button type="button" class="cal-day${v === iso(today) ? ' is-today' : ''}" data-date="${v}" aria-pressed="${picked.includes(v)}" aria-label="${PICK.longDate(v)}"${off ? ' disabled' : ''}>${n}</button>`;
       }
-      host.innerHTML = `<div class="cal">
+      return `<div class="cal">
         <div class="cal-head">
-          <button type="button" class="cal-nav" data-cal-nav="-1" aria-label="Mes anterior"${at > min.getFullYear() * 12 + min.getMonth() ? '' : ' disabled'}>${ICON.back}</button>
+          ${nav ? `<button type="button" class="cal-nav" data-cal-nav="-1" aria-label="Mes anterior"${at > min.getFullYear() * 12 + min.getMonth() ? '' : ' disabled'}>${ICON.back}</button>` : ''}
           <strong aria-live="polite">${MONTHS[m]} ${y}</strong>
-          <button type="button" class="cal-nav" data-cal-nav="1" aria-label="Mes siguiente"${at < lim.getFullYear() * 12 + lim.getMonth() ? '' : ' disabled'}>${ICON.next}</button>
+          ${nav ? `<button type="button" class="cal-nav" data-cal-nav="1" aria-label="Mes siguiente"${at < lim.getFullYear() * 12 + lim.getMonth() ? '' : ' disabled'}>${ICON.next}</button>` : ''}
         </div>
         <div class="cal-week" aria-hidden="true"><span>lu</span><span>ma</span><span>mi</span><span>ju</span><span>vi</span><span>sá</span><span>do</span></div>
         <div class="cal-grid">${cells}</div>
       </div>`;
+    };
+    const draw = () => {
+      if (months > 1) {
+        const start = new Date(min.getFullYear(), min.getMonth(), 1, 12);
+        host.innerHTML = `<div class="cal-months">${Array.from({ length: months }, (_, i) => {
+          const d0 = new Date(start.getFullYear(), start.getMonth() + i, 1, 12);
+          return month(d0.getFullYear(), d0.getMonth(), false);
+        }).join('')}</div>`;
+        return;
+      }
+      host.innerHTML = month(view.getFullYear(), view.getMonth(), true);
     };
     host.onclick = (e) => {
       const nav = e.target.closest('[data-cal-nav]');
@@ -347,75 +358,122 @@
   };
 
   /* Modalidad, día(s) y horario del retiro */
+  /* Modalidades de retiro (las usa el asistente) */
   const MODES = [
     { value: 'express', label: 'Retiro Express', hint: 'Prioridad dentro de las próximas 24 horas.' },
     { value: 'programado', label: 'Retiro Programado', hint: 'Eliges el día del retiro.' },
     { value: 'flexible', label: 'Espera y ahorra', hint: 'Propones hasta tres días.' }
   ];
-  const when = ({ value = {} } = {}) => {
-    const p = open({ title: '¿Cuándo necesitas el retiro?', done: 'Listo' });
-    const st = {
-      modalidad: value.modalidad || '', dates: [...(value.dates || [])],
-      slot: value.slot || 'Cualquier horario', desde: value.desde || '8:00', hasta: value.hasta || '17:00'
+
+  /* Texto en su propia ventana (p. ej., la dirección): el campo queda arriba, así el teclado nunca lo tapa
+     y la pantalla no se mueve; «Listo» queda sobre el teclado. El foco se da en el mismo toque para que el teclado abra. */
+  const text = ({ title, sub = '', label = title, value = '', placeholder = '', hint = '', autocomplete = 'off', maxlength = 200, done = 'Listo' }) => {
+    const p = open({ title, sub, done });
+    el.body.innerHTML = `<div class="text-field">
+      <label class="sr-only" for="picker-text">${esc(label)}</label>
+      <textarea id="picker-text" rows="3" maxlength="${maxlength}" autocomplete="${esc(autocomplete)}" enterkeyhint="done" placeholder="${esc(placeholder)}">${esc(value)}</textarea>
+      ${hint ? `<p class="text-hint">${esc(hint)}</p>` : ''}
+    </div>`;
+    const input = el.body.querySelector('textarea');
+    const sync = () => { el.done.disabled = !input.value.trim(); };
+    input.addEventListener('input', sync);
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || e.shiftKey) return;
+      e.preventDefault();
+      if (input.value.trim()) finish(input.value.trim().replace(/\s+/g, ' '));
+    });
+    hooks.done = () => finish(input.value.trim().replace(/\s+/g, ' '));
+    sync();
+    input.focus({ preventScroll: true });
+    input.setSelectionRange(input.value.length, input.value.length);
+    return p;
+  };
+
+  /* Solo el calendario: un día (se cierra al tocarlo) o hasta `max` días posibles (con «Listo») */
+  const dates = ({ title, sub = '', multi = false, max = 3, value = [] }) => {
+    const p = open({ title, sub, done: multi ? 'Listo' : '' });
+    let list = [...value];
+    const sync = () => {
+      if (!multi) return;
+      el.done.disabled = !list.length;
+      el.count.textContent = counter(list.length, 'día elegido', 'días elegidos');
     };
-    const slots = [...PICK.SLOTS.map(([t, h]) => ({ value: t, label: t, hint: h })), { value: 'otro', label: 'Otro rango', hint: 'Desde y hasta' }];
-    const hours = (sel) => PICK.HOURS.map((h) => `<option${h === sel ? ' selected' : ''}>${h}</option>`).join('');
-    el.body.innerHTML = `<div class="when">
-      <div class="opts is-modes" role="group" aria-label="Modalidad">${MODES.map((m) => optionHTML(m, st.modalidad === m.value).replace('class="opt"', `class="opt" data-tone="${m.value}"`)).join('')}</div>
-      <div class="when-detail" data-detail></div>
-      <section class="opt-group"><h3>Horario de retiro</h3>
-        <div class="opts is-chips" data-slots role="group" aria-label="Horario">${slots.map((s) => optionHTML(s, st.slot === s.value)).join('')}</div>
-        <div class="when-range" data-range${st.slot === 'otro' ? '' : ' hidden'}>
-          <label>Desde<select data-desde>${hours(st.desde)}</select></label>
-          <label>Hasta<select data-hasta>${hours(st.hasta)}</select></label>
-        </div>
+    el.body.innerHTML = '<div class="when"><div data-cal></div></div>';
+    calendar(el.body.querySelector('[data-cal]'), {
+      multi, max, value: list, months: 3,
+      onChange: (next) => {
+        list = next;
+        if (!multi && next.length) setTimeout(() => finish(next), 160);  // se alcanza a ver el día marcado
+        else sync();
+      }
+    });
+    hooks.done = () => finish(list);
+    sync();
+    /* Foco en el día elegido o en el primero disponible (no en una flecha) */
+    requestAnimationFrame(() => {
+      const on = el.body.querySelector('.cal-day[aria-pressed="true"]') || el.body.querySelector('.cal-day:not([disabled])');
+      on?.focus({ preventScroll: true });
+      on?.scrollIntoView({ block: 'nearest' });
+    });
+    return p;
+  };
+
+  /* Horario: tres opciones de un toque o un rango con botones de hora (sin listas desplegables) */
+  const HOUR_CHIPS = Array.from({ length: 11 }, (_, i) => `${i + 8}:00`);
+  const mins = (h) => Number(h.split(':')[0]) * 60 + Number(h.split(':')[1] || 0);
+  const time = ({ value = {} } = {}) => {
+    const p = open({ title: '¿En qué horario?', sub: 'Es tu preferencia: la confirmamos al coordinar el retiro.', done: 'Listo' });
+    const st = { slot: value.slot || 'Cualquier horario', desde: value.desde || '9:00', hasta: value.hasta || '12:00' };
+    if (!HOUR_CHIPS.includes(st.desde) || mins(st.desde) >= mins('18:00')) st.desde = '9:00';
+    if (!HOUR_CHIPS.includes(st.hasta) || mins(st.hasta) <= mins(st.desde)) st.hasta = HOUR_CHIPS[HOUR_CHIPS.indexOf(st.desde) + 1];
+    const presets = [
+      { value: 'Cualquier horario', label: 'Cualquier horario', hint: 'Toda la jornada', icon: PICK.ICONS.clock },
+      { value: 'Mañana', label: 'Mañana', hint: '8:00 a 13:00', icon: PICK.ICONS.sun },
+      { value: 'Tarde', label: 'Tarde', hint: '13:00 a 18:00', icon: PICK.ICONS.sunset },
+      { value: 'otro', label: 'Elegir un rango', hint: 'Desde y hasta', icon: ICON.range }
+    ];
+    const chip = (h, on) => `<button type="button" class="hour" data-hour="${h}" aria-pressed="${on}">${h}</button>`;
+    el.body.innerHTML = `<div class="time">
+      <div class="opts is-cards" data-presets role="group" aria-label="Horario">${presets.map((o) => optionHTML(o, st.slot === o.value)).join('')}</div>
+      <section class="time-range" data-range${st.slot === 'otro' ? '' : ' hidden'}>
+        <h3 id="t-desde">Desde</h3><div class="hours" data-from role="group" aria-labelledby="t-desde">${HOUR_CHIPS.slice(0, -1).map((h) => chip(h, h === st.desde)).join('')}</div>
+        <h3 id="t-hasta">Hasta</h3><div class="hours" data-to role="group" aria-labelledby="t-hasta">${HOUR_CHIPS.slice(1).map((h) => chip(h, h === st.hasta)).join('')}</div>
       </section>
     </div>`;
-    const detail = el.body.querySelector('[data-detail]');
     const range = el.body.querySelector('[data-range]');
-    const desde = el.body.querySelector('[data-desde]');
-    const hasta = el.body.querySelector('[data-hasta]');
-    const sync = () => {
-      el.done.disabled = !(st.modalidad === 'express' || (st.modalidad && st.dates.length));
-      el.count.textContent = st.modalidad === 'flexible' ? counter(st.dates.length, 'día elegido', 'días elegidos') : '';
-    };
-    const drawDetail = () => {
-      if (!st.modalidad) { detail.innerHTML = '<p class="when-hint">Elige una modalidad para ver los días disponibles.</p>'; return; }
-      if (st.modalidad === 'express') { detail.innerHTML = '<p class="when-note">Te contactamos para coordinar el retiro dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna.</p>'; return; }
-      const multi = st.modalidad === 'flexible';
-      if (!multi) st.dates = st.dates.slice(0, 1);
-      detail.innerHTML = `<p class="when-label">${multi ? 'Elige hasta tres días posibles' : 'Elige el día'}</p><div data-cal></div>`;
-      calendar(detail.querySelector('[data-cal]'), { multi, max: 3, value: st.dates, onChange: (list) => { st.dates = list; sync(); } });
-    };
-    const fixRange = () => {
-      [...hasta.options].forEach((o, i) => { o.disabled = i <= desde.selectedIndex; });
-      if (hasta.selectedIndex <= desde.selectedIndex) hasta.selectedIndex = Math.min(desde.selectedIndex + 1, hasta.options.length - 1);
-      st.desde = desde.value;
-      st.hasta = hasta.value;
+    const paintRange = () => {
+      range.querySelectorAll('[data-from] .hour').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.hour === st.desde)));
+      range.querySelectorAll('[data-to] .hour').forEach((b) => {
+        b.disabled = mins(b.dataset.hour) <= mins(st.desde);
+        b.setAttribute('aria-pressed', String(b.dataset.hour === st.hasta));
+      });
+      el.count.textContent = st.slot === 'otro' ? `Entre ${st.desde} y ${st.hasta}` : '';
+      el.foot.hidden = st.slot !== 'otro';
     };
     el.body.onclick = (e) => {
-      const b = e.target.closest('.opt[data-value]');
-      if (!b) return;
-      if (b.closest('.is-modes')) {
-        st.modalidad = b.dataset.value;
-        b.parentElement.querySelectorAll('.opt').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-        drawDetail();
-      } else if (b.closest('[data-slots]')) {
-        st.slot = b.dataset.value;
-        b.parentElement.querySelectorAll('.opt').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-        range.hidden = st.slot !== 'otro';
+      const opt = e.target.closest('.opt[data-value]');
+      if (opt) {
+        el.body.querySelectorAll('[data-presets] .opt').forEach((x) => x.setAttribute('aria-pressed', String(x === opt)));
+        if (opt.dataset.value !== 'otro') { finish({ slot: opt.dataset.value }); return; }
+        st.slot = 'otro';
+        range.hidden = false;
+        paintRange();
+        range.scrollIntoView({ block: 'nearest', behavior: motion.matches ? 'smooth' : 'auto' });
+        return;
       }
-      sync();
+      const h = e.target.closest('.hour');
+      if (!h || h.disabled) return;
+      if (h.closest('[data-from]')) {
+        st.desde = h.dataset.hour;
+        if (mins(st.hasta) <= mins(st.desde)) st.hasta = HOUR_CHIPS[HOUR_CHIPS.indexOf(st.desde) + 1];
+      } else st.hasta = h.dataset.hour;
+      paintRange();
     };
-    desde.addEventListener('change', fixRange);
-    hasta.addEventListener('change', fixRange);
-    fixRange();
-    drawDetail();
-    sync();
-    hooks.done = () => finish({ ...st });
+    hooks.done = () => finish({ slot: 'otro', desde: st.desde, hasta: st.hasta });
+    paintRange();
     focusFirst();
     return p;
   };
 
-  window.Picker = { choose, chooseEach, commune, when, options, communes, calendar, hint, drag, MODES, close: () => finish() };
+  window.Picker = { choose, chooseEach, commune, text, dates, time, options, communes, calendar, hint, drag, MODES, close: () => finish() };
 })();
