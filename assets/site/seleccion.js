@@ -206,7 +206,10 @@
     dlg = d.createElement('dialog');
     dlg.className = 'picker';
     dlg.setAttribute('aria-labelledby', 'picker-title');
+    /* Al abrir, el foco va a un punto de inicio fijo (fuera de la tarjeta que sube), no a un botón que todavía viene subiendo:
+       enfocar algo fuera de la pantalla hacía que el navegador desplazara la vista (la ventana «se iba hacia arriba») */
     dlg.innerHTML = `
+      <span class="dialog-start" tabindex="-1" autofocus></span>
       <div class="picker-card">
         <span class="picker-grab" aria-hidden="true"></span>
         <header class="picker-head">
@@ -258,8 +261,9 @@
     };
     if (motion.matches && !instant) { dlg.classList.add('is-closing'); setTimeout(end, sheet.matches ? 220 : 180); } else end();
   };
-  const open = ({ title, sub = '', search = '', done = '' }) => {
+  const open = ({ title, sub = '', search = '', done = '', still = false }) => {
     if (!dlg) build();
+    dlg.classList.toggle('is-still', still);
     if (dlg.open) { resolver?.(); resolver = null; dlg.close(); }
     lastFocus = d.activeElement;
     Object.keys(hooks).forEach((k) => { hooks[k] = null; });
@@ -296,6 +300,7 @@
   const focusFirst = () => {
     const on = el.body.querySelector('[aria-pressed="true"]');
     place(on);
+    if (coarse.matches) return;  // en pantallas táctiles el foco queda en la ventana; con teclado, en la opción
     requestAnimationFrame(() => {
       const target = on || (!el.searchWrap.hidden && !coarse.matches ? el.search : el.body.querySelector('button:not([disabled]), input, select'));
       target?.focus({ preventScroll: true });
@@ -378,7 +383,7 @@
   /* Texto en su propia ventana (p. ej., la dirección): el campo queda arriba, así el teclado nunca lo tapa
      y la pantalla no se mueve; «Listo» queda sobre el teclado. El foco se da en el mismo toque para que el teclado abra. */
   const text = ({ title, sub = '', label = title, value = '', placeholder = '', hint = '', autocomplete = 'off', maxlength = 200, done = 'Listo' }) => {
-    const p = open({ title, sub, done });
+    const p = open({ title, sub, done, still: true });
     el.body.innerHTML = `<div class="text-field">
       <label class="sr-only" for="picker-text">${esc(label)}</label>
       <textarea id="picker-text" rows="3" maxlength="${maxlength}" autocomplete="${esc(autocomplete)}" enterkeyhint="done" placeholder="${esc(placeholder)}">${esc(value)}</textarea>
@@ -422,7 +427,7 @@
     /* Abre en el día elegido o en el primero disponible (no en una flecha), sin moverse después */
     const day = el.body.querySelector('.cal-day[aria-pressed="true"]') || el.body.querySelector('.cal-day:not([disabled])');
     place(day);
-    requestAnimationFrame(() => day?.focus({ preventScroll: true }));
+    if (!coarse.matches) requestAnimationFrame(() => day?.focus({ preventScroll: true }));
     return p;
   };
 

@@ -274,13 +274,17 @@
     /* Hoja inferior (móvil): la misma tarjeta, con su estado, pasa a un <dialog> que sube desde abajo sobre el hero */
     const sheetMode = () => mobile.matches;
     let sheet = null;
+    let panel = null;  // lo que sube: el <dialog> queda quieto a pantalla completa
     let sheetInstant = false;
     let sheetTimer = 0;
     const buildSheet = () => {
       sheet = d.createElement('dialog');
       sheet.className = 'hero-sheet';
       sheet.setAttribute('aria-label', 'Opción del inicio');
-      sheet.innerHTML = '<span class="sheet-grab" aria-hidden="true"></span>';
+      /* El foco inicial va a un punto fijo fuera del panel que sube: enfocar algo que todavía viene subiendo hacía que el
+         navegador desplazara la vista (la hoja «se iba hacia arriba» y volvía) */
+      sheet.innerHTML = '<span class="dialog-start" tabindex="-1" autofocus></span><div class="sheet-panel"><span class="sheet-grab" aria-hidden="true"></span></div>';
+      panel = sheet.querySelector('.sheet-panel');
       d.body.append(sheet);
       sheet.addEventListener('click', (e) => {
         if (e.target === sheet || e.target.closest('[data-hero-close]')) close();  // fondo velado o X
@@ -288,7 +292,7 @@
       sheet.addEventListener('cancel', (e) => { e.preventDefault(); close(); });  // Escape
       /* Si el sistema la cierra por su cuenta (p. ej., gesto «atrás» en Android), el hero se pone al día */
       sheet.addEventListener('close', () => { if (view !== 'inicio') { sheetInstant = true; close(); } });
-      Picker?.drag?.(sheet, { handles: '.sheet-grab, .hcard-head', dismiss: () => { sheetInstant = true; close(); } });
+      Picker?.drag?.(panel, { handles: '.sheet-grab, .hcard-head', dismiss: () => { sheetInstant = true; close(); } });
       /* Al tocar un campo para escribir, su fila sube al inicio de la lista antes de que abra el teclado: así el teléfono
          no desplaza la pantalla para mostrarlo (en iPhone eso movía toda la hoja) */
       const coarse = matchMedia('(pointer: coarse)');
@@ -311,8 +315,8 @@
       if (!sheet) buildSheet();
       clearTimeout(sheetTimer);
       sheet.classList.remove('is-closing');
-      sheet.style.transform = sheet.style.transition = '';
-      if (card.parentElement !== sheet) sheet.append(card);
+      panel.style.transform = panel.style.transition = '';
+      if (card.parentElement !== panel) panel.append(card);
       const label = panels[view]?.querySelector('h2')?.textContent;
       if (label) sheet.setAttribute('aria-label', label.replace(/\.$/, ''));
       if (!sheet.open) {
@@ -325,7 +329,7 @@
       const end = () => {
         if (sheet.open) sheet.close();
         sheet.classList.remove('is-closing');
-        sheet.style.transform = sheet.style.transition = '';
+        panel.style.transform = panel.style.transition = '';
         d.documentElement.classList.remove('sheet-open');
         if (card.parentElement !== wrap) wrap.append(card);
       };
@@ -387,7 +391,9 @@
           if (before === 'inicio' && name !== 'inicio') history.pushState({ hero: name, pushed: true }, '', url);
           else history.replaceState(name === 'inicio' ? null : { hero: name, pushed: !!history.state?.pushed }, '', url);
         }
-        if ((from !== 'hero' && from !== 'history') || (sheetMode() && name !== 'inicio')) panels[name]?.focus({ preventScroll: true });
+        /* En la hoja táctil el foco queda en la propia hoja; con teclado o fuera de la hoja, en el panel */
+        const touchSheet = sheetMode() && matchMedia('(pointer: coarse)').matches;
+        if (!touchSheet && ((from !== 'hero' && from !== 'history') || (sheetMode() && name !== 'inicio'))) panels[name]?.focus({ preventScroll: true });
       });
     };
     window.HERO = { show, transition, get view() { return view; } };

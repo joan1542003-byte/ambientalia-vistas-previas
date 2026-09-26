@@ -250,6 +250,8 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 @media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
   .picker[open] .picker-card { animation: sheet-up .42s cubic-bezier(.32, .72, 0, 1) both; }
   .picker.is-closing .picker-card { animation: sheet-down .22s cubic-bezier(.4, 0, 1, 1) both; }
+  /* Ventana de texto: aparece en su lugar (sin subir), así el campo ya está donde va cuando se abre el teclado */
+  .picker.is-still[open] .picker-card { animation: veil .2s ease both; }
 }
 
 /* Opciones */
@@ -750,9 +752,13 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
 .sheet-open .dock { opacity: 0; visibility: hidden; }
 .hero-sheet {
   position: fixed; inset: var(--vv-top, 0px) 0 var(--vv-bottom, 0px); width: 100%; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
-  border-radius: 0; background: #fff; color: var(--ink); overflow: hidden; overflow: clip;
+  border-radius: 0; background: transparent; color: var(--ink); overflow: hidden; overflow: clip;
 }
-.hero-sheet[open] { display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); will-change: transform; }
+.hero-sheet[open] { display: flex; flex-direction: column; }
+/* El <dialog> queda quieto; lo que sube es el panel */
+.sheet-panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); background: #fff; overflow: hidden; overflow: clip; will-change: transform; }
+/* Punto de inicio del foco al abrir una ventana u hoja: fijo e invisible, fuera de lo que se anima */
+.dialog-start { position: absolute; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden; outline: none; }
 .hero-sheet::backdrop { background: rgb(13 21 49 / .5); }
 .sheet-grab { flex: none; display: block; width: 40px; height: 4px; margin: 8px auto 0; border-radius: 99px; background: var(--line-strong); }
 .hero-sheet .sheet-grab, .hero-sheet .hcard-head { touch-action: none; }
@@ -763,11 +769,11 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
 @media (prefers-reduced-motion: no-preference) {
   @keyframes sheet-up { from { transform: translateY(100%); } }
   @keyframes sheet-down { to { transform: translateY(100%); } }
-  .hero-sheet[open] { animation: sheet-up .42s cubic-bezier(.32, .72, 0, 1) both; }
+  .hero-sheet[open] .sheet-panel { animation: sheet-up .42s cubic-bezier(.32, .72, 0, 1) both; }
   /* La hoja entra sólida: su contenido no se funde encima (se vería «cargando») */
   .hero-sheet .hcard-panel:not([hidden]), .hero-sheet .summary:not([hidden]) { animation: none; }
   .hero-sheet[open]::backdrop { animation: veil .3s ease both; }
-  .hero-sheet.is-closing { animation: sheet-down .24s cubic-bezier(.4, 0, 1, 1) both; }
+  .hero-sheet.is-closing .sheet-panel { animation: sheet-down .24s cubic-bezier(.4, 0, 1, 1) both; }
   .hero-sheet.is-closing::backdrop { animation: veil .24s ease reverse both; }
 }
 /* Mientras se escribe en la hoja, el campo sube al inicio de la lista antes de que aparezca el teclado (transporte-ui.js);
