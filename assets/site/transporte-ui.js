@@ -217,7 +217,7 @@
     window.SITE.refresh?.();
   }
 
-  /* ---------- Hero: las opciones cambian el propio hero ---------- */
+  /* ---------- Hero: en escritorio la opción elegida cambia el propio hero; en móvil se abre en una hoja inferior ---------- */
   const hero = d.querySelector('[data-hero]');
   if (hero) {
     const routes = hero.querySelector('[data-routes]');
@@ -227,6 +227,54 @@
     const panels = { cotizar: d.getElementById('cotizar'), buscar: d.getElementById('buscar'), especialista: d.getElementById('especialista'), asistente: d.getElementById('asistente') };
     let view = 'inicio';
     let tab = null;
+    const card = wrap.querySelector('.hcard');
+
+    /* Hoja inferior (móvil): la misma tarjeta, con su estado, pasa a un <dialog> que sube desde abajo sobre el hero */
+    const sheetMode = () => mobile.matches;
+    let sheet = null;
+    let sheetInstant = false;
+    let sheetTimer = 0;
+    const buildSheet = () => {
+      sheet = d.createElement('dialog');
+      sheet.className = 'hero-sheet';
+      sheet.setAttribute('aria-label', 'Opción del inicio');
+      sheet.innerHTML = '<span class="sheet-grab" aria-hidden="true"></span>';
+      d.body.append(sheet);
+      sheet.addEventListener('click', (e) => {
+        if (e.target === sheet || e.target.closest('[data-hero-close]')) close();  // fondo velado o X
+      });
+      sheet.addEventListener('cancel', (e) => { e.preventDefault(); close(); });  // Escape
+      /* Si el sistema la cierra por su cuenta (p. ej., gesto «atrás» en Android), el hero se pone al día */
+      sheet.addEventListener('close', () => { if (view !== 'inicio') { sheetInstant = true; close(); } });
+      Picker?.drag?.(sheet, { handles: '.sheet-grab, .hcard-head', dismiss: () => { sheetInstant = true; close(); } });
+    };
+    const openSheet = () => {
+      if (!sheet) buildSheet();
+      clearTimeout(sheetTimer);
+      sheet.classList.remove('is-closing');
+      sheet.style.transform = sheet.style.transition = '';
+      if (card.parentElement !== sheet) sheet.append(card);
+      const label = panels[view]?.querySelector('h2')?.textContent;
+      if (label) sheet.setAttribute('aria-label', label.replace(/\.$/, ''));
+      if (!sheet.open) {
+        d.documentElement.classList.add('sheet-open');
+        sheet.showModal();
+      }
+    };
+    const closeSheet = () => {
+      if (!sheet) return;
+      const end = () => {
+        if (sheet.open) sheet.close();
+        sheet.classList.remove('is-closing');
+        sheet.style.transform = sheet.style.transition = '';
+        d.documentElement.classList.remove('sheet-open');
+        if (card.parentElement !== wrap) wrap.append(card);
+      };
+      clearTimeout(sheetTimer);
+      if (sheet.open && motion.matches && !sheetInstant) { sheet.classList.add('is-closing'); sheetTimer = setTimeout(end, 250); }
+      else end();
+      sheetInstant = false;
+    };
 
     const placePill = () => {
       const on = tabs.find((t) => t.dataset.route === tab);
@@ -240,26 +288,33 @@
       view = name;
       tab = name === 'inicio' ? null : active;
       hero.dataset.view = name;
-      wrap.hidden = name === 'inicio';
+      if (sheetMode()) {
+        wrap.hidden = true;
+        if (name === 'inicio') closeSheet(); else openSheet();
+      } else {
+        closeSheet();
+        wrap.hidden = name === 'inicio';
+      }
       tabs.forEach((t) => {
         const on = t.dataset.route === tab;
         t.setAttribute('aria-selected', String(on));
         t.tabIndex = on || !tab ? 0 : -1;
       });
       Object.entries(panels).forEach(([k, p]) => { if (p) p.hidden = k !== name; });
-      routes.setAttribute('aria-orientation', mobile.matches && name !== 'inicio' ? 'horizontal' : 'vertical');
       placePill();
       window.SITE.refresh?.();
     };
-    /* Deja el hero a la vista bajo la barra de navegación (móvil y llegadas desde otro punto de la página) */
+    /* Deja el hero a la vista bajo la barra de navegación (llegadas desde otro punto de la página). En móvil no hace falta:
+       la hoja se abre donde está la persona, sin mover la página */
     const align = () => {
+      if (sheetMode()) return;
       const top = Math.max(0, hero.getBoundingClientRect().top + scrollY - 84);
       if (Math.abs(scrollY - top) > 2) window.scrollTo({ top, behavior: 'instant' });
     };
     const show = (name, { from = 'hero', tab: active } = {}) => {
       if (name !== 'inicio' && !panels[name]) return Promise.resolve();
       if (name === 'buscar') window.FINDER_LOAD?.();
-      const move = from !== 'hero' || mobile.matches;
+      const move = from !== 'hero';
       const before = view;
       const target = active || (name === 'asistente' ? tab || 'cotizar' : name);
       return transition(() => {
@@ -273,7 +328,7 @@
           if (before === 'inicio' && name !== 'inicio') history.pushState({ hero: name, pushed: true }, '', url);
           else history.replaceState(name === 'inicio' ? null : { hero: name, pushed: !!history.state?.pushed }, '', url);
         }
-        if (from !== 'hero' && from !== 'history') panels[name]?.focus({ preventScroll: true });
+        if ((from !== 'hero' && from !== 'history') || (sheetMode() && name !== 'inicio')) panels[name]?.focus({ preventScroll: true });
       });
     };
     window.HERO = { show, transition, get view() { return view; } };
@@ -291,7 +346,10 @@
       show(tabs[n].dataset.route);
     });
     let refocus = null;
+    let closing = 0;
     const close = () => {
+      if (view === 'inicio' || Date.now() - closing < 400) return;  // un solo cierre aunque lleguen varios avisos juntos
+      closing = Date.now();
       const was = tabs.find((t) => t.dataset.route === tab);
       /* Si la opción se abrió con su propia entrada, cerrar es lo mismo que «atrás» */
       if (history.state?.pushed) { refocus = was; history.back(); return; }
@@ -326,6 +384,13 @@
       if (location.hash === '#buscar') window.FINDER_LOAD?.();
       requestAnimationFrame(align);
     }
+    /* Con el teclado abierto, el campo activo queda a la vista dentro de la hoja (la hoja ya se apoya sobre el teclado) */
+    window.visualViewport?.addEventListener('resize', () => {
+      const a = d.activeElement;
+      if (sheet?.open && a && sheet.contains(a) && a.matches('input, textarea')) a.scrollIntoView({ block: 'nearest' });
+    });
+    /* Al girar una tablet o cambiar el ancho, la opción abierta pasa a la hoja o vuelve al hero */
+    mobile.addEventListener('change', () => { if (view !== 'inicio') apply(view, tab); });
     if ('ResizeObserver' in window) new ResizeObserver(placePill).observe(routes);
   }
 

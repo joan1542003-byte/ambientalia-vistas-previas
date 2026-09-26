@@ -27,6 +27,20 @@
     setTimeout(() => { btn.classList.remove('is-done'); target.textContent = label; }, 1600);
   };
 
+  /* Teclado en pantalla: las hojas inferiores se apoyan sobre él. --vv-bottom es lo que el teclado tapa y --vv-h el alto visible */
+  const vv = window.visualViewport;
+  if (vv) {
+    const sync = () => {
+      if (vv.scale > 1.01) return;  // con zoom de pellizco no se mueve nada
+      const root = d.documentElement.style;
+      root.setProperty('--vv-bottom', `${Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop))}px`);
+      root.setProperty('--vv-h', `${Math.round(vv.height)}px`);
+    };
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    sync();
+  }
+
   /* iOS solo aplica :active al tocar si la página escucha touchstart; el estado presionado reemplaza al resaltado gris */
   d.addEventListener('touchstart', () => {}, { passive: true });
 
@@ -248,6 +262,7 @@
     const bring = (el) => {
       const box = el.querySelector('[data-scroll-root]') || el.closest('[data-scroll-root]');
       if (box) box.scrollTo({ top: 0, behavior: smooth() });
+      if (el.closest('dialog')) return;  // dentro de una hoja o ventana, la página de atrás no se mueve
       const top = el.getBoundingClientRect().top;
       if (top < 64 || top > innerHeight - 160) el.scrollIntoView({ behavior: smooth(), block: 'start' });
     };

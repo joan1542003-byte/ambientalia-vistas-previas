@@ -157,6 +157,40 @@
   /* ---------- Ventana ---------- */
   let dlg; let el; let resolver = null; let lastFocus = null;
   const hooks = { back: null, search: null, done: null, action: null, tab: null };
+  /* Hoja inferior: se cierra bajándola con el dedo desde la manilla o la cabecera (no desde botones ni campos).
+     Si no llega al umbral, vuelve a su lugar; hacia arriba apenas cede. */
+  const drag = (surface, { handles, dismiss, enabled = () => true }) => {
+    let id = null; let y0 = 0; let dy = 0; let t0 = 0;
+    surface.addEventListener('pointerdown', (e) => {
+      if (id !== null || !enabled() || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      if (!e.target.closest(handles) || e.target.closest('button, a, input, select, textarea, label')) return;
+      id = e.pointerId; y0 = e.clientY; dy = 0; t0 = performance.now();
+      try { surface.setPointerCapture(id); } catch { /* puntero sintético o ya liberado */ }
+      surface.style.transition = 'none';
+    });
+    surface.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== id) return;
+      const raw = e.clientY - y0;
+      dy = raw > 0 ? raw : raw / 4;
+      surface.style.transform = `translateY(${dy}px)`;
+    });
+    const end = (e) => {
+      if (e.pointerId !== id) return;
+      id = null;
+      const speed = dy / Math.max(1, performance.now() - t0);
+      surface.style.transition = 'transform .3s cubic-bezier(.32, .72, 0, 1)';
+      if (dy > Math.min(120, surface.offsetHeight * .25) || (speed > .5 && dy > 24)) {
+        surface.style.transform = `translateY(${surface.offsetHeight + 40}px)`;
+        setTimeout(dismiss, 200);
+      } else {
+        surface.style.transform = '';
+      }
+    };
+    surface.addEventListener('pointerup', end);
+    surface.addEventListener('pointercancel', end);
+  };
+  const sheet = matchMedia('(max-width: 640px)');
+
   const build = () => {
     dlg = d.createElement('dialog');
     dlg.className = 'picker';
@@ -182,6 +216,8 @@
       done: dlg.querySelector('[data-done]'), count: dlg.querySelector('.picker-count'), action: dlg.querySelector('[data-action]')
     };
     hint(el.body);
+    el.card = dlg.querySelector('.picker-card');
+    drag(el.card, { handles: '.picker-grab, .picker-head', enabled: () => sheet.matches, dismiss: () => finish(undefined, { instant: true }) });
     dlg.addEventListener('click', (e) => {
       if (e.target === dlg || e.target.closest('[data-close]')) finish();
       else if (e.target.closest('[data-back]')) hooks.back?.();
@@ -197,18 +233,19 @@
       el.body.querySelector('button:not([disabled])')?.click();
     });
   };
-  const finish = (value) => {
+  const finish = (value, { instant = false } = {}) => {
     if (!dlg?.open) return;
     const done = resolver;
     resolver = null;
     const end = () => {
       dlg.close();
       dlg.classList.remove('is-closing');
+      el.card.style.transform = el.card.style.transition = '';
       d.documentElement.classList.remove('picker-open');
       lastFocus?.focus?.({ preventScroll: true });
       done?.(value);
     };
-    if (motion.matches) { dlg.classList.add('is-closing'); setTimeout(end, 180); } else end();
+    if (motion.matches && !instant) { dlg.classList.add('is-closing'); setTimeout(end, 180); } else end();
   };
   const open = ({ title, sub = '', search = '', done = '' }) => {
     if (!dlg) build();
@@ -380,5 +417,5 @@
     return p;
   };
 
-  window.Picker = { choose, chooseEach, commune, when, options, communes, calendar, hint, MODES, close: () => finish() };
+  window.Picker = { choose, chooseEach, commune, when, options, communes, calendar, hint, drag, MODES, close: () => finish() };
 })();
