@@ -41,6 +41,7 @@ for (const n of normas) {
   await send('Page.navigate', { url: pathToFileURL(join(ROOT, n.pagina)).href });
   for (let i = 0; i < 150 && !events.some((e) => e.method === 'Page.loadEventFired'); i++) await sleep(100);
   await send('Runtime.evaluate', { expression: 'document.fonts.ready', awaitPromise: true });
+  await send('Runtime.evaluate', { expression: "document.querySelectorAll('details').forEach((x) => { x.open = true; })" });
   const foot = `<div style="width:100%;font:8px Nunito,Arial,sans-serif;color:#667085;padding:0 16mm;display:flex;justify-content:space-between">
     <span>${n.corto} · Fuente: Ley Chile (BCN), versión del ${fecha(n.version)}, consultada el ${fecha(n.consulta)}. Copia referencial.</span>
     <span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>`;

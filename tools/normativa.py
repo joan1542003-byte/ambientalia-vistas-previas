@@ -123,15 +123,130 @@ def parrafos(texto):
     return ''.join(f'<p>{p}</p>' for p in out)
 
 
-def titulo_corto(tipo, numero, prom):
-    y = prom[:4]
-    if tipo == 'Ley':
-        n = f'{int(numero):,}'.replace(',', '.') if numero.isdigit() else numero
-        return f'Ley {n}'
-    return f'D.S. {numero}/{y}'
+DEFINICION = re.compile(r'^([A-ZÁÉÍÓÚÑ][^:.;]{1,70}?):\s+(\S.*)$')
 
 
-def estructura(parent, nivel, toc, arts):
+LISTA = re.compile(r'^((?:[a-zñ]|[ivx]{1,4}|\d{1,3})(?:\)|\.-|\.–|°\)|\.(?=\s)|-(?=\s)))\s+(.*)$', re.I)
+CONECTOR = re.compile(r'(,|\b(?:de|del|la|las|el|los|y|o|u|e|en|a|al|con|por|para|que|se|su|sus|un|una|como|sin|sobre|entre|desde|hasta|según|cuando|donde|cual|cuyo|cuya|lo|le|les|no|ni))$', re.I)
+
+
+def lineas(texto):
+    """Líneas del texto oficial, sin vacías. Algunas normas llegan con saltos fijos a mitad de frase:
+    se unen cuando la línea no termina en puntuación y la siguiente sigue la frase (minúscula o tras una coma o un conector)."""
+    ls = [re.sub(r'\b((?:[^\W\d_] ){4,}[^\W\d_])\b', lambda m: m.group(1).replace(' ', ''), re.sub(r'\s+', ' ', l).strip())
+          for l in html.unescape(texto or '').replace('\r', '').split('\n')]
+    out = []
+    for l in ls:
+        if not l:
+            if out and out[-1] != '':
+                out.append('')
+            continue
+        prev = out[-1] if out else ''
+        if prev and not re.search(r'[.:;!?»"”)\]]$', prev) and not LISTA.match(l) and (l[0].islower() or CONECTOR.search(prev)):
+            out[-1] = f'{prev} {l}'
+        else:
+            out.append(l)
+    return [l for l in out if l]
+
+
+def bloques(ls, definiciones=False):
+    """Cada línea es un párrafo; los incisos (a), b), 1.-) llevan sangría francesa y las definiciones su término destacado."""
+    out = []
+    # Filas cortas seguidas (tablas y listados sin viñeta) van juntas, sin espacio entre ellas
+    corta = [len(l) <= 60 and not re.search(r'[.:;]$', l) for l in ls]
+    fila = [c and ((k > 0 and corta[k - 1]) or (k + 1 < len(ls) and corta[k + 1])) for k, c in enumerate(corta)]
+    for k, l in enumerate(ls):
+        m = LISTA.match(l)
+        marca, resto = (m.group(1), m.group(2)) if m else ('', l)
+        cuerpo = esc(resto)
+        if definiciones:
+            d = DEFINICION.match(resto)
+            if d and len(d.group(1).split()) <= 9:
+                cuerpo = f'<dfn>{esc(d.group(1))}:</dfn> {esc(d.group(2))}'
+        clase = ' norm-row' if fila[k] else ''
+        out.append(f'<p class="norm-li{clase}"><span class="norm-li-m">{esc(marca)}</span><span>{cuerpo}</span></p>' if marca else f'<p{f' class="{clase.strip()}"' if clase else ''}>{cuerpo}</p>')
+    return ''.join(out)
+
+
+PARTE = re.compile(r'^(T[ÍI]TULO|CAP[ÍI]TULO|SUBP[ÁA]RRAFO|P[ÁA]RRAFO|LIBRO|SECCI[ÓO]N)\s+((?:[IVXLC]+|\d+|PRELIMINAR|FINAL|[ÚU]NICO|PRIMERO|SEGUNDO|TERCERO|CUARTO|QUINTO|SEXTO|S[ÉE]PTIMO|OCTAVO|NOVENO|D[ÉE]CIMO)[°º]?(?:\s+BIS)?)\b\.?\s*[-–.:]?\s*(.*)$', re.I)
+CLASES = {'titulo': 'Título', 'capitulo': 'Capítulo', 'parrafo': 'Párrafo', 'subparrafo': 'Subpárrafo', 'libro': 'Libro', 'seccion': 'Sección'}
+SIGLAS = {'REP', 'RETC', 'SMA', 'SEIA', 'REAS', 'SIDREP', 'HDS', 'SGA', 'ONU', 'OCDE', 'MINSAL', 'NCH', 'SEREMI', 'D.S.'}
+
+
+def sin_tildes(s):
+    import unicodedata
+    return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn').lower()
+
+
+def oracion(s):
+    """TEXTO EN MAYÚSCULAS a tipo oración, conservando siglas y números romanos."""
+    if not s or s != s.upper() or not re.search(r'[A-ZÁÉÍÓÚÑ]{3}', s):
+        return s
+    out = []
+    for k, w in enumerate(s.split(' ')):
+        base = re.sub(r'[^\wÁÉÍÓÚÑÜ.]', '', w)
+        if base in SIGLAS or re.fullmatch(r'[IVX]{1,5}', base):
+            out.append(w)
+        else:
+            out.append(w[:1] + w[1:].lower() if k == 0 else w.lower())
+    return ' '.join(out)
+
+
+def titulo_parte(t):
+    """«TITULO II De la Identificación» → ('Título II', 'De la identificación')."""
+    t = re.sub(r'\s+', ' ', t).strip()
+    t = re.sub(r'\b((?:[A-ZÁÉÍÓÚÑ] ){3,}[A-ZÁÉÍÓÚÑ])\b', lambda m: m.group(1).replace(' ', ''), t)
+    m = PARTE.match(t)
+    if not m:
+        return '', oracion(t)
+    clase = CLASES.get(sin_tildes(m.group(1)), m.group(1).capitalize())
+    num = m.group(2).upper() if re.fullmatch(r'[IVXLC]+|\d+[°º]?', m.group(2), re.I) else m.group(2).lower()
+    return f'{clase} {num}', oracion(m.group(3).strip(' .-–:'))
+
+
+ARTICULO = re.compile(r'^((?:Art[íi]culo|Art\.)(?:\s*(?:\d+[°º]?(?:\s*(?:bis|ter|qu[áa]ter))?|[úu]nico|primero|segundo|tercero|cuarto|quinto|sexto|s[ée]ptimo|octavo|noveno|d[ée]cimo))?(?:\s+transitorio)?)\s*(?:\.-|\.–|\.|:|-|–)?\s*', re.I)
+EPIGRAFE = re.compile(r'^([A-ZÁÉÍÓÚÑ][^.:;]{1,55})\.\s+(?=[A-ZÁÉÍÓÚÑ"«(])')
+
+
+def con_epigrafes(root):
+    """¿La norma titula sus artículos («Artículo 1°.- Objeto. La presente ley…»)? Se decide por la mayoría."""
+    si = total = 0
+    for parte in root.iter(f'{NS}EstructuraFuncional'):
+        if parte.get('tipoParte') != 'Artículo':
+            continue
+        ls = lineas(parte.findtext(f'{NS}Texto'))
+        if not ls:
+            continue
+        total += 1
+        resto = ARTICULO.sub('', ls[0], count=1)
+        m = EPIGRAFE.match(resto)
+        si += bool(m and len(m.group(1).split()) <= 6)
+    return total and si / total >= .5
+
+
+def articulo(texto, ancla, h, epigrafes, nombre=''):
+    ls = lineas(texto)
+    if not ls:
+        return ''
+    m = ARTICULO.match(ls[0])
+    etiqueta = re.sub(r'\s+', ' ', m.group(1)).strip() if m and m.group(1).strip() else ''
+    if etiqueta:
+        ls[0] = ls[0][m.end():]
+    epi = ''
+    if epigrafes and ls and ls[0]:
+        e = EPIGRAFE.match(ls[0])
+        if e and len(e.group(1).split()) <= 6:
+            epi, ls[0] = e.group(1), ls[0][e.end():]
+    ls = [l for l in ls if l]
+    # Definiciones: si el artículo tiene al menos tres líneas «Término: significado», se destacan los términos
+    defs = sum(1 for l in ls if DEFINICION.match(LISTA.sub(r'\2', l))) >= 3
+    if not etiqueta:
+        etiqueta = nombre if re.match(r'^art', nombre, re.I) else (f'Artículo {nombre}' if nombre else 'Artículo')
+    cab = f'<h{h} class="norm-art-h"><a href="#{ancla}">{esc(etiqueta)}</a>{f"<span>{esc(epi)}</span>" if epi else ""}</h{h}>'
+    return cab + bloques(ls, defs)
+
+
+def estructura(parent, nivel, toc, arts, epigrafes):
     """Recorre las partes (títulos, párrafos, artículos) y devuelve el HTML del texto."""
     out = []
     for parte in parent.findall(f'{NS}EstructuraFuncional'):
@@ -143,24 +258,37 @@ def estructura(parent, nivel, toc, arts):
         if tipo == 'Artículo':
             nombre = (parte.findtext(f'{NS}Metadatos/{NS}NombreParte') or '').strip()
             ancla = f'art-{re.sub(r"[^0-9a-z]+", "-", nombre.lower()).strip("-") or idp}'
-            if ancla in arts:
+            if ancla in [a for a, _ in arts]:
                 ancla = f'{ancla}-{idp}'
-            arts.append(ancla)
-            cuerpo = parrafos(texto)
-            cuerpo = re.sub(r'^<p>((?:Artículo|ARTÍCULO|Art\.)[^.<]{0,40}\.-?)', r'<p><strong>\1</strong>', cuerpo, count=1)
-            out.append(f'<section class="norm-art{" is-derogado" if derog else ""}" id="{ancla}">{cuerpo}</section>')
+            arts.append((ancla, nombre))
+            h = max(3, min(2 + nivel, 5))
+            out.append(f'<section class="norm-art{" is-derogado" if derog else ""}" id="{ancla}">{articulo(texto, ancla, h, epigrafes, nombre)}</section>')
         else:
             titulo = (parte.findtext(f'{NS}Metadatos/{NS}TituloParte') or '').strip() or texto.strip().split('\n')[0]
             h = min(2 + nivel, 4)
             ancla = f'p-{idp}'
+            rotulo, nombre = titulo_parte(titulo)
+            # El texto de la parte suele repetir su título en dos líneas («TITULO I» / «Disposiciones generales»): se omite
+            clave = re.sub(r'[^a-z0-9]', '', sin_tildes(titulo))
+            resto = [l for l in lineas(texto) if re.sub(r'[^a-z0-9]', '', sin_tildes(l)) not in clave]
+            entrada = [nivel, ancla, rotulo, nombre, len(arts), None]
             if titulo:
-                toc.append((nivel, ancla, re.sub(r'\s+', ' ', titulo)))
-            resto = texto.strip()
-            extra = '' if not resto or resto == titulo else parrafos(resto)
-            out.append(f'<h{h} class="norm-part" id="{ancla}">{esc(re.sub(r"\s+", " ", titulo))}</h{h}>{extra if extra != f"<p>{esc(titulo)}</p>" else ""}')
+                toc.append(entrada)
+            cab = f'<span class="norm-part-n">{esc(rotulo)}</span>{esc(nombre)}' if rotulo and nombre else esc(rotulo or nombre)
+            out.append(f'<h{h} class="norm-part" id="{ancla}">{cab}</h{h}>{bloques(resto)}')
         if hijos is not None:
-            out.append(estructura(hijos, nivel + 1, toc, arts))
+            out.append(estructura(hijos, nivel + 1, toc, arts, epigrafes))
+        if tipo != 'Artículo' and titulo:
+            entrada[5] = len(arts)
     return ''.join(out)
+
+
+def titulo_corto(tipo, numero, prom):
+    y = prom[:4]
+    if tipo == 'Ley':
+        n = f'{int(numero):,}'.replace(',', '.') if numero.isdigit() else numero
+        return f'Ley {n}'
+    return f'D.S. {numero}/{y}'
 
 
 def primer_articulo(root):
@@ -172,6 +300,30 @@ def primer_articulo(root):
                 continue
             return t
     return ''
+
+
+def _i(p, w=20):
+    return f'<svg width="{w}" height="{w}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{p}</svg>'
+
+
+# Íconos de los datos de una norma (los mismos en assets/site/normativa.js)
+DATO = {
+    'vigente': _i('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'),
+    'derogada': _i('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/>'),
+    'promulgada': _i('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),
+    'publicada': _i('<path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5M8 16h3"/>'),
+    'version': _i('<path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/><path d="M12 8v4l3 2"/>'),
+    'articulos': _i('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>'),
+    'organismo': _i('<path d="M4 20h16M6 20V10M18 20V10M10 20v-6h4v6M3 10l9-6 9 6"/>'),
+    'fuente': _i('<path d="M4 20h16M6 20V10M18 20V10M10 20v-6h4v6M3 10l9-6 9 6"/>'),
+    'retiro': _i('<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>'),
+    'buscar': _i('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>', 20),
+    'indice': _i('<path d="M4 6h16M4 12h10M4 18h13"/>', 20),
+    'arriba': _i('<path d="M6 15l6-6 6 6"/>', 20),
+    'abajo': _i('<path d="M6 9l6 6 6-6"/>', 20),
+    'cerrar': _i('<path d="M6 6l12 12M18 6L6 18"/>', 20),
+    'leer': _i('<path d="M5 12h14M13 6l6 6-6 6"/>', 20),
+}
 
 
 ICON = {
@@ -215,9 +367,24 @@ def pagina(n, cuerpo, toc, version):
             },
         ],
     }
-    indice = ''.join(f'<li><a href="#{a}">{esc(t)}</a></li>' for a, t in toc)
-    temas = ''.join(f'<li>{esc(TEMAS[t])}</li>' for t in n['temas'])
+    def rango(e):
+        a, b = e['desde'], e['hasta']
+        if a is None or b is None or b <= a:
+            return ''
+        num = lambda k: (lambda v: v.lower() if v.isalpha() else v)(re.sub(r'^(?:art[íi]culo|art\.)\s*', '', n['_arts'][k][1], flags=re.I) or str(k + 1))
+        return f'Art. {num(a)}' if b - a == 1 else f'Arts. {num(a)}–{num(b - 1)}'
+    indice = ''.join(
+        f'<li><a href="#{e["ancla"]}">{f"<small>{esc(e["rotulo"])}</small>" if e["rotulo"] and e["nombre"] else ""}'
+        f'<span>{esc(e["nombre"] or e["rotulo"])}</span>{f"<em>{rango(e)}</em>" if rango(e) else ""}</a></li>' for e in toc)
     estado = 'Vigente' if n['vigente'] else 'Derogada'
+    datos = (
+        f'<li class="norm-state{"" if n["vigente"] else " is-off"}" data-tip="Estado según Ley Chile al {fecha_larga(HOY)}">{DATO["vigente" if n["vigente"] else "derogada"]}{estado}</li>'
+        f'<li data-tip="Fecha en que se firmó">{DATO["promulgada"]}<span>Promulgada el <time datetime="{n["promulgacion"]}">{fecha_corta(n["promulgacion"])}</time></span></li>'
+        f'<li data-tip="Fecha de publicación en el Diario Oficial">{DATO["publicada"]}<span>Publicada el <time datetime="{n["publicacion"]}">{fecha_corta(n["publicacion"])}</time></span></li>'
+        f'<li data-tip="Versión del texto que muestra esta página">{DATO["version"]}<span>Texto al <time datetime="{n["version"]}">{fecha_corta(n["version"])}</time></span></li>'
+        f'<li>{DATO["articulos"]}{n["articulos"]} artículos</li>'
+        f'<li><a href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">{DATO["fuente"]}Ley Chile{ICON["out"]}<span class="sr-only"> (fuente oficial, pestaña nueva)</span></a></li>'
+    )
     desc = f'{n["corto"]}: {n["titulo"].capitalize()}. Texto oficial, datos clave y descarga en PDF. Fuente: Ley Chile (BCN).'
     return f'''<!doctype html>
 <html lang="es-CL">
@@ -246,7 +413,7 @@ def pagina(n, cuerpo, toc, version):
 </head>
 <body data-site="transporte" class="norm-page" data-tema="{n["temas"][0]}">
 <a class="skip" href="#contenido">Saltar al contenido</a>
-<header class="site-header">
+<header class="site-header norm-bar" data-reader>
   <div class="container">
     <a class="brand" href="../transporte-autorizado.html" aria-label="Transporte Autorizado, inicio">
       <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#2f5bd3"/><path d="M9 14h14v12H9zM23 18h5l4 4v4h-9M13 30a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm14 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -256,6 +423,23 @@ def pagina(n, cuerpo, toc, version):
       <a href="../transporte-autorizado.html#normativa">Normativa</a>
       <a class="btn btn-primary btn-small" href="../transporte-autorizado.html#cotizar">Cotizar retiro</a>
     </nav>
+    <div class="reader" data-reader-bar inert>
+      <a class="reader-back" href="../transporte-autorizado.html#normativa" aria-label="Volver a la biblioteca">{ICON["back"]}</a>
+      <p class="reader-where"><small>{esc(n["corto"])}</small><strong data-reader-now>{esc(n["tema"])}</strong></p>
+      <button class="reader-btn" type="button" data-find-open aria-label="Buscar en esta norma">{DATO["buscar"]}</button>
+      <button class="reader-btn reader-toc" type="button" data-toc-open aria-label="Índice">{DATO["indice"]}</button>
+      <a class="reader-btn" href="../{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF">{ICON["pdf"]}</a>
+    </div>
+    <form class="finder" data-finder role="search" inert>
+      <span class="finder-icon" aria-hidden="true">{DATO["buscar"]}</span>
+      <label class="sr-only" for="finder-q">Buscar en el texto de {esc(n["corto"])}</label>
+      <input id="finder-q" type="search" placeholder="Buscar en el texto" autocomplete="off" enterkeyhint="search" data-finder-q>
+      <output class="finder-count" data-finder-count aria-live="polite"></output>
+      <button class="reader-btn" type="button" data-finder-prev aria-label="Resultado anterior" disabled>{DATO["arriba"]}</button>
+      <button class="reader-btn" type="button" data-finder-next aria-label="Resultado siguiente" disabled>{DATO["abajo"]}</button>
+      <button class="reader-btn" type="button" data-finder-close aria-label="Cerrar búsqueda">{DATO["cerrar"]}</button>
+    </form>
+    <span class="reader-progress" aria-hidden="true"><i data-reader-progress></i></span>
   </div>
 </header>
 
@@ -263,26 +447,21 @@ def pagina(n, cuerpo, toc, version):
   <article class="container norm">
     <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#normativa">Documentos y normativa</a><span aria-hidden="true">/</span><span aria-current="page">{esc(n["corto"])}</span></nav>
     <header class="norm-head">
-      <p class="norm-kind">{esc(n["tipo"])} · {esc(n["organismo"])}</p>
+      <p class="norm-kind"><span class="doc-icon">{icono_tema(n["temas"][0])}</span>{esc(n["tipo"])} · {esc(n["organismo"])}</p>
       <h1 class="norm-title">{esc(n["corto"])} · {esc(n["tema"])}</h1>
       <p class="norm-lead">{esc(n["titulo"].capitalize())}.</p>
-      <ul class="norm-meta">
-        <li><span class="norm-state{"" if n["vigente"] else " is-off"}">{estado}</span></li>
-        <li>Promulgada el <time datetime="{n["promulgacion"]}">{fecha_corta(n["promulgacion"])}</time></li>
-        <li>Publicada el <time datetime="{n["publicacion"]}">{fecha_corta(n["publicacion"])}</time></li>
-        <li>Texto al <time datetime="{n["version"]}">{fecha_corta(n["version"])}</time></li>
-        <li>{n["articulos"]} artículos</li>
-      </ul>
+      <ul class="norm-facts" data-tips>{datos}</ul>
       <div class="norm-actions">
-        <a class="btn btn-ink btn-small" href="../{n["pdf"]}" download>{ICON["pdf"]}Descargar PDF</a>
-        <a class="btn btn-quiet btn-small" href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ley Chile{ICON["out"]}<span class="sr-only"> (pestaña nueva)</span></a>
+        <a class="btn btn-ink btn-small" href="../{n["pdf"]}" download data-doc-pdf>{ICON["pdf"]}<span><span class="lg">Descargar </span>PDF</span></a>
+        <button class="btn btn-quiet btn-small" type="button" data-find-open>{DATO["buscar"]}<span>Buscar<span class="lg"> en el texto</span></span></button>
+        {f'<button class="btn btn-quiet btn-small norm-toc-btn" type="button" data-toc-open>{DATO["indice"]}Índice</button>' if indice else ''}
       </div>
-      <p class="norm-why"><strong>Para el retiro:</strong> {esc(n["rel"])}</p>
+      <p class="norm-why">{DATO["retiro"]}<span><strong>Para el retiro:</strong> {esc(n["rel"])}</span></p>
     </header>
 
     <div class="norm-layout">
-      {f'<details class="norm-toc" data-toc><summary>Índice <small>{len(toc)} partes</small></summary><ol>{indice}</ol></details>' if indice else ''}
-      <section class="norm-text" aria-labelledby="texto">
+      {f'<nav class="norm-toc" aria-label="Índice" data-toc><p class="norm-toc-h">Índice</p><ol>{indice}</ol></nav>' if indice else '<div></div>'}
+      <section class="norm-text" aria-labelledby="texto" data-norm-text>
         <h2 id="texto" class="sr-only">Texto de la norma</h2>
         {cuerpo}
       </section>
@@ -294,15 +473,14 @@ def pagina(n, cuerpo, toc, version):
     </footer>
   </article>
 </main>
-<script>matchMedia('(min-width: 901px)').matches && document.querySelectorAll('[data-toc]').forEach((d) => {{ d.open = true; }});</script>
 
 <script src="../assets/site/site.js?v={version}" defer></script>
+<script src="../assets/site/norma.js?v={version}" defer></script>
 </body>
 </html>
 '''
 
 
-EYE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>'
 # Ícono de cada tema (el mismo mapa está en assets/site/normativa.js)
 TEMA_ICON = {
     'peligrosos': '<path d="M12 3.5l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
@@ -322,17 +500,17 @@ def icono_tema(t):
 
 
 def tarjeta(n, i=0):
-    """Tarjeta de la biblioteca (la misma que dibuja assets/site/normativa.js al filtrar)."""
+    """Fila de la biblioteca (la misma que dibuja assets/site/normativa.js al filtrar)."""
     estado = 'Vigente' if n['vigente'] else 'Derogada'
     t = n['temas'][0]
     return (f'          <li class="doc" data-slug="{n["slug"]}" data-tema="{t}" style="--i:{min(i, 8)}">'
-            f'<div class="doc-top"><span class="doc-icon">{icono_tema(t)}</span><p class="doc-kind">{esc(n["tipo"])} · {esc(n["organismo"])}</p></div>'
-            f'<h3><a href="{n["pagina"]}" data-doc-open>{esc(n["corto"])}</a></h3>'
-            f'<p class="doc-topic">{esc(n["tema"])}</p>'
+            f'<span class="doc-icon">{icono_tema(t)}</span>'
+            f'<div class="doc-body"><h3 class="doc-title"><a href="{n["pagina"]}">{esc(n["corto"])}</a><span class="doc-topic">{esc(n["tema"])}</span></h3>'
             f'<p class="doc-rel">{esc(n["rel"])}</p>'
-            f'<div class="doc-foot"><span class="doc-meta"><span class="doc-state{"" if n["vigente"] else " is-off"}">{estado}</span> · {n["articulos"]} artículos</span>'
-            f'<div class="doc-actions"><button class="btn btn-ink btn-small" type="button" data-doc-view>{EYE}Ver</button>'
-            f'<a class="btn btn-quiet btn-small" href="{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICON["pdf"]}<span>PDF</span></a></div></div></li>')
+            f'<ul class="doc-meta"><li class="doc-state{"" if n["vigente"] else " is-off"}">{DATO["vigente" if n["vigente"] else "derogada"]}{estado}</li>'
+            f'<li>{DATO["organismo"]}{esc(n["organismo"])}</li><li>{DATO["articulos"]}{n["articulos"]} artículos</li></ul></div>'
+            f'<div class="doc-actions"><span class="doc-go" aria-hidden="true">Leer{DATO["leer"]}</span>'
+            f'<a class="doc-pdf" href="{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICON["pdf"]}<span>PDF</span></a></div></li>')
 
 
 def escribir_tarjetas(normas):
@@ -386,30 +564,34 @@ def main():
         }
         n['objeto'] = primer_articulo(root)
         toc, arts = [], []
-        partes = [f'<div class="norm-intro">{parrafos(root.findtext(f"{NS}Encabezado/{NS}Texto"))}</div>']
+        enc = root.findtext(f"{NS}Encabezado/{NS}Texto") or ''
+        sub = 'vistos y considerandos' if re.search(r'consideran', enc, re.I) else 'texto previo al articulado'
+        partes = [f'<details class="norm-fold norm-intro"><summary>Encabezado <small>{sub}</small></summary>{bloques(lineas(enc))}</details>'] if enc.strip() else []
         ef = root.find(f'{NS}EstructurasFuncionales')
         if ef is not None:
-            partes.append(estructura(ef, 0, toc, arts))
+            partes.append(estructura(ef, 0, toc, arts, con_epigrafes(root)))
         prom = root.findtext(f'{NS}Promulgacion/{NS}Texto')
         if prom and prom.strip():
-            partes.append(f'<div class="norm-outro">{parrafos(prom)}</div>')
+            partes.append(f'<details class="norm-fold norm-outro"><summary>Promulgación y firmas</summary>{bloques(lineas(prom))}</details>')
         anexos = root.find(f'{NS}Anexos')
         if anexos is not None and len(anexos):
-            toc.append((-1, 'anexos', 'Anexos'))
-            bloques = []
+            toc.append([-1, 'anexos', '', 'Anexos', None, None])
+            anexos_html = []
             for i, ax in enumerate(anexos.findall(f'{NS}Anexo'), 1):
                 t = ax.findtext(f'{NS}Texto') or ''
                 binario = ax.find(f'.//{NS}ArchivoBinario') is not None or ax.find(f'.//{NS}ArchivosBinarios') is not None
                 nota = f'<p class="norm-note">Este anexo incluye material gráfico o tablas que se consultan en la <a href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">fuente oficial</a>.</p>' if binario or not t.strip() else ''
-                bloques.append(f'<section class="norm-annex" id="anexo-{i}">{parrafos(t)}{nota}</section>')
-            partes.append(f'<h2 class="norm-part" id="anexos">Anexos</h2>{"".join(bloques)}')
+                anexos_html.append(f'<section class="norm-annex" id="anexo-{i}">{parrafos(t)}{nota}</section>')
+            partes.append(f'<h2 class="norm-part" id="anexos">Anexos</h2>{"".join(anexos_html)}')
         # Índice: el nivel más alto con al menos tres entradas (en decretos que aprueban un reglamento, los títulos van un nivel más abajo)
-        niveles = sorted({lv for lv, _, _ in toc if lv >= 0})
+        niveles = sorted({e[0] for e in toc if e[0] >= 0})
         nivel_toc = next((lv for lv in niveles if sum(1 for x in toc if x[0] == lv) >= 3), niveles[0] if niveles else 0)
-        toc = [(a, t) for lv, a, t in toc if lv == nivel_toc or lv == -1]
+        toc = [dict(zip(('nivel', 'ancla', 'rotulo', 'nombre', 'desde', 'hasta'), e)) for e in toc if e[0] == nivel_toc or e[0] == -1]
         n['articulos'] = len(arts)
-        n['indice'] = [t for _, t in toc][:40]
+        n['indice'] = [' · '.join(x for x in (e['rotulo'], e['nombre']) if x) for e in toc][:40]
+        n['_arts'] = arts
         (ROOT / n['pagina']).write_text(pagina(n, ''.join(partes), toc, version), encoding='utf-8')
+        del n['_arts']
         normas.append(n)
         print(f'{n["corto"]:<16} {len(arts):>4} artículos  {n["pagina"]}')
     escribir_tarjetas(normas)

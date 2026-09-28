@@ -1,7 +1,7 @@
 /* Transporte Autorizado: biblioteca de documentos y normativa, y publicaciones recientes de LinkedIn con su norma relacionada.
    Datos: assets/transporte/normativa.json (tools/normativa.py, texto oficial de Ley Chile) y assets/transporte/linkedin.json
    (tools/linkedin.mjs, lo actualiza GitHub Actions con la API de LinkedIn). Las tarjetas de la biblioteca ya vienen en el HTML
-   (para buscadores); este script agrega búsqueda, filtros, vista previa y el carrusel de publicaciones. */
+   (para buscadores); este script agrega búsqueda, filtro por tema y el carrusel de publicaciones. Cada norma se lee en su página. */
 (() => {
   const d = document;
   const lib = d.querySelector('[data-lib]');
@@ -10,14 +10,20 @@
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
   const fold = (s) => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const svg = (p, w = 20, vb = 24) => `<svg width="${w}" height="${w}" viewBox="0 0 ${vb} ${vb}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const svg = (p, w = 20, vb = 24, sw = 1.8) => `<svg width="${w}" height="${w}" viewBox="0 0 ${vb} ${vb}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
   const ICON = {
-    eye: svg('<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>'),
-    pdf: svg('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>'),
+    pdf: svg('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', 20, 24, 2),
     doc: svg('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>'),
-    out: svg('<path d="M5 11l6-6M6 5h5v5"/>', 16, 16),
-    list: svg('<path d="M4 6h16M7 12h10M10 18h4"/>'),
+    out: svg('<path d="M5 11l6-6M6 5h5v5"/>', 16, 16, 2),
     li: '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>'
+  };
+  /* Íconos de los datos de una norma (los mismos en tools/normativa.py) */
+  const DATO = {
+    vigente: svg('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'),
+    derogada: svg('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/>'),
+    organismo: svg('<path d="M4 20h16M6 20V10M18 20V10M10 20v-6h4v6M3 10l9-6 9 6"/>'),
+    articulos: svg('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>'),
+    leer: svg('<path d="M5 12h14M13 6l6 6-6 6"/>')
   };
   /* Ícono de cada tema (el mismo mapa está en tools/normativa.py) */
   const TEMA_ICON = {
@@ -32,9 +38,6 @@
     marco: '<path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14z"/><path d="M5 19l7-7"/>'
   };
   const temaIcon = (t) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TEMA_ICON[t] || TEMA_ICON.marco}</svg>`;
-  const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-  const fecha = (iso) => { const [y, m, dd] = String(iso).split('-').map(Number); return `${dd} de ${MESES[m - 1]} de ${y}`; };
-
   /* ---------- Datos de normativa (compartidos por la biblioteca y las publicaciones) ---------- */
   const src = lib?.dataset.src || 'assets/transporte/normativa.json';
   let normasPromise = null;
@@ -51,38 +54,15 @@
     return best;
   };
 
-  /* ---------- Vista previa de una norma ---------- */
-  const preview = (n, data) => {
-    if (!window.Picker?.content) { location.href = n.pagina; return; }
-    const html = `<div class="doc-preview" data-tema="${n.temas[0]}">
-      <div class="doc-preview-top"><span class="doc-icon">${temaIcon(n.temas[0])}</span><div><strong>${esc(n.tema)}</strong><small>${n.articulos} artículos · ${n.vigente ? 'vigente' : 'derogada'}</small></div></div>
-      <dl>
-        <div><dt>Organismo</dt><dd>${esc(n.organismo)}</dd></div>
-        <div><dt>Promulgación</dt><dd>${fecha(n.promulgacion)}</dd></div>
-        <div><dt>Publicación</dt><dd>${fecha(n.publicacion)}</dd></div>
-        <div><dt>Versión del texto</dt><dd>${fecha(n.version)}</dd></div>
-      </dl>
-      <section><h3>Por qué importa para el retiro</h3><p>${esc(n.rel)}</p></section>
-      <section><h3>Objeto de la norma</h3><blockquote>${esc(n.objeto)}</blockquote></section>
-      ${n.indice?.length ? `<section><h3>Contenido (${n.articulos} artículos)</h3><ol>${n.indice.slice(0, 14).map((t) => `<li>${esc(t)}</li>`).join('')}</ol></section>` : ''}
-      <p class="doc-source">Fuente: Ley Chile, Biblioteca del Congreso Nacional. Consultada el ${fecha(data?.consulta || n.consulta)}.</p>
-    </div>`;
-    const links = `<a class="btn btn-ink btn-small" href="${esc(n.pagina)}">${ICON.doc}Leer completa</a>`
-      + `<a class="btn btn-secondary btn-small" href="${esc(n.pdf)}" download data-doc-pdf>${ICON.pdf}<span>PDF</span></a>`
-      + `<a class="btn btn-quiet btn-small" href="${esc(n.fuente)}" target="_blank" rel="noopener noreferrer">Ley Chile${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a>`;
-    window.Picker.content({ title: `${n.corto} · ${n.tema}`, sub: `${n.tipo} del ${n.organismo}`, html, links });
-  };
-
-  /* Descarga: confirmación breve en el botón y un aviso */
+  /* Descarga: el ícono se transforma en ✓ (se dibuja) y aparece un aviso */
+  const CHECK = '<svg class="done-mark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   d.addEventListener('click', (e) => {
     const a = e.target.closest('[data-doc-pdf]');
-    if (!a) return;
+    if (!a || a.classList.contains('is-downloading')) return;
     a.classList.add('is-downloading');
-    const label = a.querySelector('span');
-    const before = label?.textContent;
-    if (label) label.textContent = 'Descargando';
+    a.insertAdjacentHTML('beforeend', CHECK);
     window.SITE?.toast?.('Descargando el PDF de la norma');
-    setTimeout(() => { a.classList.remove('is-downloading'); if (label) label.textContent = before; }, 1800);
+    setTimeout(() => { a.classList.remove('is-downloading'); a.querySelector('.done-mark')?.remove(); }, 2000);
   });
 
   /* ---------- Biblioteca ---------- */
@@ -91,84 +71,183 @@
     const input = lib.querySelector('[data-lib-q]');
     const search = lib.querySelector('.lib-search');
     const count = lib.querySelector('[data-lib-count]');
+    const live = lib.querySelector('[data-lib-live]');
+    const topics = lib.querySelector('[data-lib-topics]');
     const empty = lib.querySelector('[data-lib-empty]');
-    const resets = lib.querySelectorAll('[data-lib-reset]');
-    const st = { q: '', tema: '*', org: '*' };
+    const KEY = 'ta-normativa';
+    const st = { q: '', tema: '*' };
     let data = null;
-    let drawn = false;
 
+    const reEsc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    /* Resalta lo buscado sin distinguir tildes: se compara sobre el texto plegado, carácter a carácter */
     const mark = (text, terms) => {
-      let out = esc(text);
+      const raw = String(text ?? '');
+      const folded = [...raw].map((c) => fold(c)[0] ?? c).join('');
+      const hits = [];
       terms.filter((t) => t.length > 1).forEach((t) => {
-        const re = new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        out = out.replace(/(^|>)([^<]*)/g, (m, a, b) => a + b.replace(re, '<mark>$1</mark>'));
+        const re = new RegExp(reEsc(fold(t)), 'g');
+        let m;
+        while ((m = re.exec(folded))) hits.push([m.index, m.index + m[0].length]);
       });
-      return out;
+      if (!hits.length) return esc(raw);
+      hits.sort((a, b) => a[0] - b[0]);
+      let out = '';
+      let at = 0;
+      hits.forEach(([a, b]) => { if (a < at) return; out += esc(raw.slice(at, a)) + `<mark>${esc(raw.slice(a, b))}</mark>`; at = b; });
+      return out + esc(raw.slice(at));
     };
     const terms = () => st.q.trim().split(/\s+/).filter(Boolean);
-    const card = (n, i, fresh) => {
+    const row = (n, i, fresh) => {
       const tt = terms();
       const t = n.temas[0];
       return `<li class="doc${fresh ? ' is-new' : ''}" data-slug="${n.slug}" data-tema="${t}" style="--i:${Math.min(i, 8)}">`
-        + `<div class="doc-top"><span class="doc-icon">${temaIcon(t)}</span><p class="doc-kind">${esc(n.tipo)} · ${esc(n.organismo)}</p></div>`
-        + `<h3><a href="${esc(n.pagina)}" data-doc-open>${mark(n.corto, tt)}</a></h3>`
-        + `<p class="doc-topic">${mark(n.tema, tt)}</p>`
+        + `<span class="doc-icon">${temaIcon(t)}</span>`
+        + `<div class="doc-body"><h3 class="doc-title"><a href="${esc(n.pagina)}">${mark(n.corto, tt)}</a><span class="doc-topic">${mark(n.tema, tt)}</span></h3>`
         + `<p class="doc-rel">${mark(n.rel, tt)}</p>`
-        + `<div class="doc-foot"><span class="doc-meta"><span class="doc-state${n.vigente ? '' : ' is-off'}">${n.vigente ? 'Vigente' : 'Derogada'}</span> · ${n.articulos} artículos</span>`
-        + `<div class="doc-actions"><button class="btn btn-ink btn-small" type="button" data-doc-view>${ICON.eye}Ver</button>`
-        + `<a class="btn btn-quiet btn-small" href="${esc(n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a></div></div></li>`;
+        + `<ul class="doc-meta"><li class="doc-state${n.vigente ? '' : ' is-off'}">${n.vigente ? DATO.vigente : DATO.derogada}${n.vigente ? 'Vigente' : 'Derogada'}</li>`
+        + `<li>${DATO.organismo}${mark(n.organismo, tt)}</li><li>${DATO.articulos}${n.articulos} artículos</li></ul></div>`
+        + `<div class="doc-actions"><span class="doc-go" aria-hidden="true">Leer${DATO.leer}</span>`
+        + `<a class="doc-pdf" href="${esc(n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a></div></li>`;
     };
-    const matches = (n) => {
-      if (st.tema !== '*' && !n.temas.includes(st.tema)) return false;
-      if (st.org !== '*' && n.organismo !== st.org) return false;
+    const byText = (n) => {
       const q = fold(st.q).trim();
       if (!q) return true;
       const hay = fold([n.corto, n.numero, n.tipo, n.tema, n.titulo, n.rel, n.organismo, ...n.temas.map((t) => data.temas[t])].join(' '));
       /* Cada palabra debe aparecer al comienzo de una palabra; las de hasta tres letras, completas («rep» no encuentra «reportes») */
-      const word = (t) => new RegExp(`(^|[^a-z0-9])${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}${t.length <= 3 ? '($|[^a-z0-9])' : ''}`).test(hay);  // siglas cortas: palabra completa
+      const word = (t) => new RegExp(`(^|[^a-z0-9])${reEsc(t)}${t.length <= 3 ? '($|[^a-z0-9])' : ''}`).test(hay);
       if (q.split(/\s+/).every((t) => word(t.replace(/^(ds|d\.s\.?)$/, 'd.s')))) return true;
       return (n.alias || []).some(([re, w]) => { try { return w >= 2 && new RegExp(re, 'i').test(q); } catch { return false; } });
     };
-    const setCount = (n) => {
-      const text = ` ${n === 1 ? 'norma' : 'normas'}${st.tema !== '*' ? ` · ${data.temas[st.tema]}` : ''}${st.org !== '*' ? ` · ${st.org}` : ''}`;
+    const byTema = (n) => st.tema === '*' || n.temas.includes(st.tema);
+    const plural = (k) => `${k} ${k === 1 ? 'norma' : 'normas'}`;
+    const setCount = (k) => {
+      live.textContent = plural(k);
       if (customElements.get('number-flow')) {
         let flow = count.querySelector('number-flow');
-        if (!flow) { flow = d.createElement('number-flow'); flow.locales = 'es-CL'; }
-        const rest = d.createTextNode(text);
-        count.replaceChildren(flow, rest);
-        flow.update ? flow.update(n) : (flow.value = n);
-      } else count.textContent = `${n}${text}`;
+        if (!flow) { flow = d.createElement('number-flow'); flow.locales = 'es-CL'; count.replaceChildren(flow, d.createTextNode('')); }
+        count.lastChild.textContent = k === 1 ? ' norma' : ' normas';
+        flow.update ? flow.update(k) : (flow.value = k);
+      } else count.textContent = plural(k);
     };
+
+    /* Temas: fichas con un indicador que se desliza hasta la elegida (sin cambiar de tamaño) */
+    const glide = d.createElement('span');
+    glide.className = 'lib-topics-glide';
+    glide.setAttribute('aria-hidden', 'true');
+    const place = (instant) => {
+      const on = topics.querySelector('[aria-checked="true"]');
+      if (!on) return;
+      glide.classList.toggle('is-instant', Boolean(instant) || !motion.matches);
+      glide.style.width = `${on.offsetWidth}px`;
+      glide.style.height = `${on.offsetHeight}px`;
+      glide.style.transform = `translate(${on.offsetLeft}px, ${on.offsetTop}px)`;
+    };
+    const drawTopics = () => {
+      const base = data.normas.filter(byText);
+      const chip = (value, label, k) => `<button type="button" role="radio" class="lib-topic" data-topic="${value}" ${value === '*' ? '' : `data-tema="${value}"`} aria-checked="${st.tema === value}"${k ? '' : ' disabled'}>`
+        + `${value === '*' ? '' : '<i aria-hidden="true"></i>'}${esc(label)}<small>${k}</small></button>`;
+      const html = chip('*', 'Todas', base.length) + Object.entries(data.temas)
+        .map(([k, label]) => [k, label, base.filter((n) => n.temas.includes(k)).length])
+        .map(([k, label, c]) => chip(k, label, c)).join('');
+      if (!topics.firstChild) { topics.innerHTML = html; topics.prepend(glide); place(true); edges(); return; }
+      /* Solo se actualizan contadores y estados: las fichas no se vuelven a dibujar */
+      const tmp = d.createElement('div');
+      tmp.innerHTML = html;
+      tmp.querySelectorAll('.lib-topic').forEach((b) => {
+        const cur = topics.querySelector(`[data-topic="${b.dataset.topic}"]`);
+        cur.querySelector('small').textContent = b.querySelector('small').textContent;
+        cur.disabled = b.disabled;
+        cur.hidden = b.disabled && b.getAttribute('aria-checked') !== 'true';
+        cur.setAttribute('aria-checked', b.getAttribute('aria-checked'));
+      });
+      place(true);
+      edges();
+    };
+    /* Riel de temas: una sola fila; en escritorio, flechas cuando hay más temas a un lado (el borde se difumina) */
+    const rail = d.createElement('div');
+    rail.className = 'lib-rail';
+    topics.before(rail);
+    const arrow = (dir) => `<button class="lib-rail-btn is-${dir}" type="button" tabindex="-1" aria-hidden="true">${svg(dir === 'prev' ? '<path d="M15 6l-6 6 6 6"/>' : '<path d="M9 6l6 6-6 6"/>', 18, 24, 2)}</button>`;
+    rail.insertAdjacentHTML('beforeend', arrow('prev'));
+    rail.append(topics);
+    rail.insertAdjacentHTML('beforeend', arrow('next'));
+    const edges = () => {
+      const max = topics.scrollWidth - topics.clientWidth;
+      rail.classList.toggle('can-prev', topics.scrollLeft > 4);
+      rail.classList.toggle('can-next', topics.scrollLeft < max - 4);
+    };
+    topics.addEventListener('scroll', () => requestAnimationFrame(edges), { passive: true });
+    rail.addEventListener('click', (e) => {
+      const b = e.target.closest('.lib-rail-btn');
+      if (b) topics.scrollBy({ left: (b.classList.contains('is-prev') ? -1 : 1) * topics.clientWidth * 0.7, behavior: motion.matches ? 'smooth' : 'auto' });
+    });
+    const reveal = (b) => {
+      const r = b.offsetLeft - (topics.clientWidth - b.offsetWidth) / 2;
+      if (topics.scrollWidth > topics.clientWidth) topics.scrollTo({ left: r, behavior: motion.matches ? 'smooth' : 'auto' });
+    };
+
     let fadeTimer = 0;
     const render = (animate = true) => {
       if (!data) return;
-      const found = data.normas.filter(matches);
+      if (st.tema !== '*' && !data.normas.filter(byText).some((n) => n.temas.includes(st.tema))) st.tema = '*';
+      const found = data.normas.filter((n) => byText(n) && byTema(n));
       setCount(found.length);
-      const active = st.q.trim() || st.tema !== '*' || st.org !== '*';
-      resets.forEach((b) => { if (b.closest('.lib-bar')) b.hidden = !active; });
+      drawTopics();
       search.classList.toggle('has-text', Boolean(st.q));
+      try { sessionStorage.setItem(KEY, JSON.stringify(st)); } catch {}
       clearTimeout(fadeTimer);
       const swap = () => {
-        list.innerHTML = found.map((n, i) => card(n, i, animate && motion.matches)).join('');
+        list.innerHTML = found.map((n, i) => row(n, i, animate && motion.matches)).join('');
         list.hidden = !found.length;
         empty.hidden = Boolean(found.length);
+        empty.querySelector('[data-lib-empty-title]').textContent = st.q.trim() ? `No encontramos «${st.q.trim()}».` : 'No hay normas con ese filtro.';
         list.classList.remove('is-updating');
-        drawn = true;
+        hover(null);
       };
-      if (animate && motion.matches) { list.classList.add('is-updating'); fadeTimer = setTimeout(swap, 140); } else swap();
+      if (animate && motion.matches) { list.classList.add('is-updating'); fadeTimer = setTimeout(swap, 120); } else swap();
     };
-    const paint = () => {
-      lib.querySelector('[data-lib-value="tema"]').textContent = st.tema === '*' ? 'Todos' : data.temas[st.tema];
-      lib.querySelector('[data-lib-value="organismo"]').textContent = st.org === '*' ? 'Todos' : st.org;
+
+    /* Resaltado que se desliza entre filas al pasar el puntero (en vez de aparecer y desaparecer en cada una) */
+    const hl = d.createElement('span');
+    hl.className = 'lib-hover';
+    hl.setAttribute('aria-hidden', 'true');
+    list.before(hl);
+    const hover = (li) => {
+      if (!li || !matchMedia('(hover: hover)').matches) { hl.classList.remove('is-on'); return; }
+      const first = !hl.classList.contains('is-on');
+      hl.classList.toggle('is-instant', first || !motion.matches);
+      hl.style.transform = `translate(${li.offsetLeft}px, ${li.offsetTop}px)`;
+      hl.style.width = `${li.offsetWidth}px`;
+      hl.style.height = `${li.offsetHeight}px`;
+      if (first) void hl.offsetWidth;
+      hl.classList.add('is-on');
+      hl.classList.remove('is-instant');
     };
+    list.addEventListener('pointerover', (e) => hover(e.target.closest('.doc')));
+    list.addEventListener('pointerleave', () => hover(null));
+    list.addEventListener('focusin', (e) => hover(e.target.closest('.doc')));
 
     normas().then((json) => {
       if (!json) return;
       data = json;
-      setCount(data.normas.length);
+      let saved = null;
+      try { saved = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch {}
+      if (saved && (saved.q || saved.tema !== '*')) {
+        Object.assign(st, { q: saved.q || '', tema: data.temas[saved.tema] ? saved.tema : '*' });
+        input.value = st.q;
+        render(false);
+      } else {
+        setCount(data.normas.length);
+        drawTopics();
+      }
     });
+    addEventListener('resize', () => { place(true); edges(); });
+    if ('ResizeObserver' in window) new ResizeObserver(() => place(true)).observe(topics);
+    const setPlaceholder = () => { input.placeholder = matchMedia('(max-width: 560px)').matches ? 'Busca: 148, REP, RETC…' : 'Busca por número, tema o palabra: 148, REP, RETC…'; };
+    setPlaceholder();
+    matchMedia('(max-width: 560px)').addEventListener?.('change', setPlaceholder);
 
-    /* Atajo de teclado: «/» lleva a la búsqueda (como en muchos buscadores) */
+    /* Teclado: «/» lleva a la búsqueda; ↓ baja a la lista y ↑ ↓ recorren las normas */
     d.addEventListener('keydown', (e) => {
       if (e.key !== '/' || e.target.closest('input, textarea, select, [contenteditable]') || d.querySelector('dialog[open]')) return;
       const r = lib.getBoundingClientRect();
@@ -176,47 +255,45 @@
       e.preventDefault();
       input.focus();
     });
+    const links = () => [...list.querySelectorAll('.doc-title a')];
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && input.value) { e.preventDefault(); input.value = ''; st.q = ''; render(); }
+      if (e.key === 'ArrowDown' && links()[0]) { e.preventDefault(); links()[0].focus(); }
+      if (e.key === 'Enter') { e.preventDefault(); if (links().length === 1) links()[0].click(); else input.blur(); }
+    });
+    list.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      const all = links();
+      const k = all.indexOf(d.activeElement);
+      if (k < 0) return;
+      e.preventDefault();
+      if (e.key === 'ArrowUp' && k === 0) input.focus(); else all[Math.max(0, Math.min(all.length - 1, k + (e.key === 'ArrowDown' ? 1 : -1)))]?.focus();
+    });
     let typing = 0;
     input.addEventListener('input', () => {
       st.q = input.value;
       search.classList.toggle('has-text', Boolean(st.q));
       clearTimeout(typing);
-      typing = setTimeout(() => render(), 160);
+      typing = setTimeout(() => render(), 140);
     });
-    input.addEventListener('keydown', (e) => { if (e.key === 'Escape' && input.value) { e.preventDefault(); input.value = ''; st.q = ''; render(); } });
     lib.querySelector('[data-lib-clear]').addEventListener('click', () => { input.value = ''; st.q = ''; render(); input.focus(); });
-    resets.forEach((b) => b.addEventListener('click', () => { input.value = ''; Object.assign(st, { q: '', tema: '*', org: '*' }); paint(); render(); }));
-
-    lib.addEventListener('click', async (e) => {
-      const pick = e.target.closest('[data-lib-pick]');
-      if (pick && window.Picker) {
-        if (!data) return;
-        const base = data.normas.filter((n) => (pick.dataset.libPick === 'tema' ? (st.org === '*' || n.organismo === st.org) : (st.tema === '*' || n.temas.includes(st.tema))));
-        const plural = (k) => `${k} ${k === 1 ? 'norma' : 'normas'}`;
-        if (pick.dataset.libPick === 'tema') {
-          const opts = Object.entries(data.temas).map(([k, label]) => ({ value: k, label, hint: plural(base.filter((n) => n.temas.includes(k)).length) })).filter((o) => !o.hint.startsWith('0 '));
-          const v = await window.Picker.choose({ title: 'Tema', groups: [{ options: [{ value: '*', label: 'Todos los temas', hint: plural(base.length) }, ...opts] }], value: st.tema, layout: 'list' });
-          if (v === undefined || v === null) return;
-          st.tema = v;
-        } else {
-          const orgs = [...new Set(data.normas.map((n) => n.organismo))].sort((a, b) => a.localeCompare(b, 'es'));
-          const opts = orgs.map((o) => ({ value: o, label: o, hint: plural(base.filter((n) => n.organismo === o).length) })).filter((o) => !o.hint.startsWith('0 '));
-          const v = await window.Picker.choose({ title: 'Organismo', groups: [{ options: [{ value: '*', label: 'Todos los organismos', hint: plural(base.length) }, ...opts] }], value: st.org, layout: 'list' });
-          if (v === undefined || v === null) return;
-          st.org = v;
-        }
-        paint();
-        render();
-        return;
-      }
-      const open = e.target.closest('[data-doc-view], [data-doc-open]');
-      if (!open) return;
-      e.preventDefault();
-      const json = data || await normas();
-      const n = json?.normas.find((x) => x.slug === open.closest('[data-slug]')?.dataset.slug);
-      if (n) preview(n, json); else location.href = open.closest('[data-slug]')?.querySelector('a')?.href;
+    lib.querySelectorAll('[data-lib-reset]').forEach((b) => b.addEventListener('click', () => { input.value = ''; Object.assign(st, { q: '', tema: '*' }); render(); }));
+    lib.querySelectorAll('[data-lib-try]').forEach((b) => b.addEventListener('click', () => { input.value = b.textContent; Object.assign(st, { q: b.textContent, tema: '*' }); render(); }));
+    topics.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-topic]');
+      if (!b || b.disabled || !data) return;
+      st.tema = st.tema === b.dataset.topic && b.dataset.topic !== '*' ? '*' : b.dataset.topic;
+      render();
+      reveal(topics.querySelector('[aria-checked="true"]') || b);
     });
-    void drawn;
+    /* Flechas dentro del grupo de temas, como un grupo de opciones */
+    topics.addEventListener('keydown', (e) => {
+      if (!['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
+      const all = [...topics.querySelectorAll('.lib-topic:not(:disabled)')];
+      const k = all.indexOf(d.activeElement);
+      const next = all[(k + (e.key === 'ArrowRight' ? 1 : -1) + all.length) % all.length];
+      if (next) { e.preventDefault(); next.focus(); next.click(); }
+    });
   }
 
   /* ---------- Publicaciones de LinkedIn ---------- */
@@ -249,7 +326,7 @@
           <span class="post-norm-icon doc-icon" aria-hidden="true">${temaIcon(n.temas[0])}</span>
           <small>Norma relacionada</small>
           <strong>${esc(n.corto)} · ${esc(n.tema)}</strong>
-          <div class="doc-actions"><button class="btn btn-ink btn-small" type="button" data-doc-view>${ICON.eye}Ver</button><a class="btn btn-quiet btn-small" href="${esc(n.pdf)}" download data-doc-pdf>${ICON.pdf}<span>PDF</span></a></div>
+          <div class="post-norm-actions"><a class="btn btn-ink btn-small" href="${esc(n.pagina)}">Leer norma${DATO.leer}</a><a class="btn btn-quiet btn-small" href="${esc(n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a></div>
         </div>` : ''}
         <div class="post-foot"><a class="link" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver en LinkedIn ${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a></div>
       </li>`;
@@ -281,12 +358,6 @@
       nav?.querySelector('[data-posts-prev]').addEventListener('click', () => track.scrollBy({ left: -step(), behavior: motion.matches ? 'smooth' : 'auto' }));
       nav?.querySelector('[data-posts-next]').addEventListener('click', () => track.scrollBy({ left: step(), behavior: motion.matches ? 'smooth' : 'auto' }));
       sync();
-      track.addEventListener('click', async (e) => {
-        const b = e.target.closest('[data-doc-view]');
-        if (!b) return;
-        const n = list.find((x) => x.slug === b.closest('[data-slug]')?.dataset.slug);
-        if (n) preview(n, norms);
-      });
     });
   }
 })();
