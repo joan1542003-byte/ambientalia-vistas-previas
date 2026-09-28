@@ -239,7 +239,7 @@ def pagina(n, cuerpo, toc, version):
 {json.dumps(ld, ensure_ascii=False, indent=2)}
 </script>
 </head>
-<body data-site="transporte" class="norm-page">
+<body data-site="transporte" class="norm-page" data-tema="{n["temas"][0]}">
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <header class="site-header">
   <div class="container">
@@ -262,7 +262,7 @@ def pagina(n, cuerpo, toc, version):
       <h1 class="title">{esc(n["corto"])} · {esc(n["tema"])}</h1>
       <p class="lead">{esc(n["titulo"].capitalize())}.</p>
       <div class="norm-actions">
-        <a class="btn btn-primary" href="../{n["pdf"]}" download>{ICON["pdf"]}Descargar PDF</a>
+        <a class="btn btn-ink" href="../{n["pdf"]}" download>{ICON["pdf"]}Descargar PDF</a>
         <a class="btn btn-secondary" href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ver en Ley Chile{ICON["out"]}<span class="sr-only"> (pestaña nueva)</span></a>
       </div>
     </header>
@@ -305,18 +305,36 @@ def pagina(n, cuerpo, toc, version):
 
 
 EYE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>'
+# Ícono de cada tema (el mismo mapa está en assets/site/normativa.js)
+TEMA_ICON = {
+    'peligrosos': '<path d="M12 3.5l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
+    'transporte': '<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>',
+    'rep': '<path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6"/><path d="M18 3v4h-4M6 21v-4h4"/>',
+    'almacenamiento': '<path d="M3 9.5l9-5 9 5V20H3z"/><path d="M8 20v-6h8v6"/>',
+    'sustancias': '<path d="M9 3h6M10 3v6l-5.2 9.2A1 1 0 0 0 5.7 20h12.6a1 1 0 0 0 .9-1.8L14 9V3"/><path d="M7.5 15h9"/>',
+    'salud': '<path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/>',
+    'trabajo': '<path d="M4 17h16M6 17a6 6 0 0 1 12 0M10 11.3V7.5h4v3.8"/>',
+    'registro': '<path d="M8 3.5h8v3H8z"/><path d="M6 5H5v15.5h14V5h-1M9 17v-3M12 17v-6M15 17v-4"/>',
+    'marco': '<path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14z"/><path d="M5 19l7-7"/>',
+}
+
+
+def icono_tema(t):
+    return f'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{TEMA_ICON.get(t, TEMA_ICON["marco"])}</svg>'
 
 
 def tarjeta(n, i=0):
     """Tarjeta de la biblioteca (la misma que dibuja assets/site/normativa.js al filtrar)."""
     estado = 'Vigente' if n['vigente'] else 'Derogada'
-    return (f'          <li class="doc" data-slug="{n["slug"]}" style="--i:{min(i, 8)}">'
-            f'<p class="doc-kind">{esc(n["tipo"])} · {esc(n["organismo"])}<span class="doc-state">{estado}</span></p>'
+    t = n['temas'][0]
+    return (f'          <li class="doc" data-slug="{n["slug"]}" data-tema="{t}" style="--i:{min(i, 8)}">'
+            f'<div class="doc-top"><span class="doc-icon">{icono_tema(t)}</span><p class="doc-kind">{esc(n["tipo"])} · {esc(n["organismo"])}</p></div>'
             f'<h3><a href="{n["pagina"]}" data-doc-open>{esc(n["corto"])}</a></h3>'
             f'<p class="doc-topic">{esc(n["tema"])}</p>'
             f'<p class="doc-rel">{esc(n["rel"])}</p>'
-            f'<div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view>{EYE}Ver</button>'
-            f'<a class="btn btn-quiet btn-small" href="{n["pdf"]}" download data-doc-pdf>{ICON["pdf"]}<span>PDF</span></a></div></li>')
+            f'<div class="doc-foot"><span class="doc-meta"><span class="doc-state{"" if n["vigente"] else " is-off"}">{estado}</span> · {n["articulos"]} artículos</span>'
+            f'<div class="doc-actions"><button class="btn btn-ink btn-small" type="button" data-doc-view>{EYE}Ver</button>'
+            f'<a class="btn btn-quiet btn-small" href="{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICON["pdf"]}<span>PDF</span></a></div></div></li>')
 
 
 def escribir_tarjetas(normas):

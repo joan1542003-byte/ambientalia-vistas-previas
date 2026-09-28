@@ -1,6 +1,40 @@
 {
- "actualizado": null,
- "fuente": "LinkedIn · Community Management API (tools/linkedin.mjs)",
- "organizacion": { "nombre": "Vínculo Verde", "url": "https://www.linkedin.com/company/vinculo-verde/" },
- "posts": []
+ "actualizado": "2026-09-28T14:30:45.443Z",
+ "fuente": "Página pública de LinkedIn (carga manual mientras se aprueba la API; tools/linkedin.mjs la reemplaza)",
+ "organizacion": {
+  "nombre": "Vínculo Verde",
+  "url": "https://www.linkedin.com/company/vinculo-verde/",
+  "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQGDHMVoD0a9eQ/company-logo_200_200/company-logo_200_200/0/1693186844279/vinculo_verde_logo?e=2147483647&v=beta&t=A6ATy2CIxfDkO0GiyhQHo8VmmQo8BObIECFYVJXw4zU"
+ },
+ "posts": [
+  {
+   "id": "urn:li:activity:7435308638992297985",
+   "url": "https://es.linkedin.com/posts/vinculo-verde_error-com%C3%BAn-rep-activity-7435308638992297985-4SlM",
+   "fecha": "2026-03-05T13:02:00Z",
+   "texto": "🚫 El error nº 1 en la Ley REP: La subdeclaración de toneladas.\n\n¿Sabías que uno de los fallos más comunes ante la autoridad no es la falta de voluntad, sino la falta de datos?\n\n🔍 El Problema: Inventarios incompletos o dispersos.\n📉 La Consecuencia: Declarar menos de lo real (Subdeclaración), lo que levanta alertas inmediatas en la fiscalización y expone a tu empresa a multas.\n\nLa memoria humana y las planillas de Excel manuales fallan. Por eso, la solución no es trabajar más duro, sino trabajar con mejores herramientas. Nuestro software centraliza tu inventario para que lo que declaras sea exactamente lo que generas. Ni más, ni menos.\n\n💡 ¿Confías al 100% en los números que estás declarando hoy?\n\n#Trazabilidad #DatosAmbientales #LeyREPChile #SoftwareAmbiental #GestionDeRiesgos #SustentabilidadCorporativa",
+   "normas": [
+    "ley-20920"
+   ]
+  },
+  {
+   "id": "urn:li:activity:7434946085871243264",
+   "url": "https://es.linkedin.com/posts/vinculo-verde_generas-pl%C3%A1sticos-envases-o-neum%C3%A1ticos-activity-7434946085871243264-Shoi",
+   "fecha": "2026-03-04T13:01:21Z",
+   "texto": "⚠️ ¿Generas envases, plásticos o neumáticos? El riesgo de no declarar correctamente es alto.\n\nSi tu empresa introduce productos prioritarios en el mercado, la Ley REP no es opcional. Muchos gestores subestiman la complejidad del reporte hasta que se enfrentan a los problemas reales:\n\n❌ El miedo a las multas de la SMA (que pueden llegar hasta 10.000 UTA).\n❌ Errores costosos en los reportes de trazabilidad.\n❌ La complejidad técnica de la Ventanilla Única.\n\nEn Vínculo Verde resolvemos estos nudos críticos. Nos encargamos de la parte difícil para que tú te enfoques en tu negocio, asegurando un cumplimiento normativo impecable y sin estrés.\n\n🚀 Evita sanciones y optimiza tu gestión. Escríbenos por DM para un diagnóstico inicial.\n\n#IndustriaChilena #LeyREP #MedioAmbiente #SMA #CumplimientoNormativo #GestionDeResiduos #EmpresasSustentables",
+   "normas": [
+    "ley-20920",
+    "ds-8-2019-mma"
+   ]
+  },
+  {
+   "id": "urn:li:activity:7434591027459670017",
+   "url": "https://es.linkedin.com/posts/vinculo-verde_bienvenidos-a-vinculo-verde-activity-7434591027459670017-HHV_",
+   "fecha": "2026-03-03T13:30:28Z",
+   "texto": "¿Tu empresa está lista para la Ley REP? Nosotros somos tu aliado estratégico. 🌱🤝\n\nEn Vínculo Verde no solo te asesoramos; integramos tecnología y experiencia técnica para transformar el cumplimiento ambiental en una ventaja competitiva.\n\nSabemos que la normativa en Chile es compleja, por eso hemos desarrollado un ecosistema de soluciones que abarca desde el diagnóstico hasta la gestión diaria:\n\n✅ Software Especializado: Plataformas como EcoRep y EcoResiduos para automatizar tu trazabilidad.\n✅ Asesoría Técnica: Resolvemos la complejidad de la Ventanilla Única (RETC).\n✅ Capacitación: Preparamos a tu equipo para que entienda el \"porqué\" y el \"cómo\".\n\nNo dejes la gestión ambiental al azar. Conoce una forma más inteligente de cumplir.\n\n💬 ¿Gestionas residuos en tu empresa? Cuéntanos en los comentarios cuál es tu mayor dolor de cabeza con el RETC. 👇\n\n#LeyREP #GestionAmbiental #SustentabilidadChile #EconomiaCircular #VinculoVerde #CumplimientoAmbiental #RETC",
+   "normas": [
+    "ds-1-2013-mma",
+    "ley-20920"
+   ]
+  }
+ ]
 }

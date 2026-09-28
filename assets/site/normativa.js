@@ -19,6 +19,19 @@
     list: svg('<path d="M4 6h16M7 12h10M10 18h4"/>'),
     li: '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>'
   };
+  /* Ícono de cada tema (el mismo mapa está en tools/normativa.py) */
+  const TEMA_ICON = {
+    peligrosos: '<path d="M12 3.5l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
+    transporte: '<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>',
+    rep: '<path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6"/><path d="M18 3v4h-4M6 21v-4h4"/>',
+    almacenamiento: '<path d="M3 9.5l9-5 9 5V20H3z"/><path d="M8 20v-6h8v6"/>',
+    sustancias: '<path d="M9 3h6M10 3v6l-5.2 9.2A1 1 0 0 0 5.7 20h12.6a1 1 0 0 0 .9-1.8L14 9V3"/><path d="M7.5 15h9"/>',
+    salud: '<path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/>',
+    trabajo: '<path d="M4 17h16M6 17a6 6 0 0 1 12 0M10 11.3V7.5h4v3.8"/>',
+    registro: '<path d="M8 3.5h8v3H8z"/><path d="M6 5H5v15.5h14V5h-1M9 17v-3M12 17v-6M15 17v-4"/>',
+    marco: '<path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14z"/><path d="M5 19l7-7"/>'
+  };
+  const temaIcon = (t) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TEMA_ICON[t] || TEMA_ICON.marco}</svg>`;
   const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   const fecha = (iso) => { const [y, m, dd] = String(iso).split('-').map(Number); return `${dd} de ${MESES[m - 1]} de ${y}`; };
 
@@ -41,10 +54,11 @@
   /* ---------- Vista previa de una norma ---------- */
   const preview = (n, data) => {
     if (!window.Picker?.content) { location.href = n.pagina; return; }
-    const html = `<div class="doc-preview">
+    const html = `<div class="doc-preview" data-tema="${n.temas[0]}">
+      <div class="doc-preview-top"><span class="doc-icon">${temaIcon(n.temas[0])}</span><div><strong>${esc(n.tema)}</strong><small>${n.articulos} artículos · ${n.vigente ? 'vigente' : 'derogada'}</small></div></div>
       <dl>
-        <div><dt>Estado</dt><dd>${n.vigente ? 'Vigente' : 'Derogada'} según Ley Chile</dd></div>
         <div><dt>Organismo</dt><dd>${esc(n.organismo)}</dd></div>
+        <div><dt>Promulgación</dt><dd>${fecha(n.promulgacion)}</dd></div>
         <div><dt>Publicación</dt><dd>${fecha(n.publicacion)}</dd></div>
         <div><dt>Versión del texto</dt><dd>${fecha(n.version)}</dd></div>
       </dl>
@@ -53,7 +67,7 @@
       ${n.indice?.length ? `<section><h3>Contenido (${n.articulos} artículos)</h3><ol>${n.indice.slice(0, 14).map((t) => `<li>${esc(t)}</li>`).join('')}</ol></section>` : ''}
       <p class="doc-source">Fuente: Ley Chile, Biblioteca del Congreso Nacional. Consultada el ${fecha(data?.consulta || n.consulta)}.</p>
     </div>`;
-    const links = `<a class="btn btn-primary btn-small" href="${esc(n.pagina)}">${ICON.doc}Leer completa</a>`
+    const links = `<a class="btn btn-ink btn-small" href="${esc(n.pagina)}">${ICON.doc}Leer completa</a>`
       + `<a class="btn btn-secondary btn-small" href="${esc(n.pdf)}" download data-doc-pdf>${ICON.pdf}<span>PDF</span></a>`
       + `<a class="btn btn-quiet btn-small" href="${esc(n.fuente)}" target="_blank" rel="noopener noreferrer">Ley Chile${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a>`;
     window.Picker.content({ title: `${n.corto} · ${n.tema}`, sub: `${n.tipo} del ${n.organismo}`, html, links });
@@ -94,13 +108,15 @@
     const terms = () => st.q.trim().split(/\s+/).filter(Boolean);
     const card = (n, i, fresh) => {
       const tt = terms();
-      return `<li class="doc${fresh ? ' is-new' : ''}" data-slug="${n.slug}" style="--i:${Math.min(i, 8)}">`
-        + `<p class="doc-kind">${esc(n.tipo)} · ${esc(n.organismo)}<span class="doc-state">${n.vigente ? 'Vigente' : 'Derogada'}</span></p>`
+      const t = n.temas[0];
+      return `<li class="doc${fresh ? ' is-new' : ''}" data-slug="${n.slug}" data-tema="${t}" style="--i:${Math.min(i, 8)}">`
+        + `<div class="doc-top"><span class="doc-icon">${temaIcon(t)}</span><p class="doc-kind">${esc(n.tipo)} · ${esc(n.organismo)}</p></div>`
         + `<h3><a href="${esc(n.pagina)}" data-doc-open>${mark(n.corto, tt)}</a></h3>`
         + `<p class="doc-topic">${mark(n.tema, tt)}</p>`
         + `<p class="doc-rel">${mark(n.rel, tt)}</p>`
-        + `<div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view>${ICON.eye}Ver</button>`
-        + `<a class="btn btn-quiet btn-small" href="${esc(n.pdf)}" download data-doc-pdf>${ICON.pdf}<span>PDF</span></a></div></li>`;
+        + `<div class="doc-foot"><span class="doc-meta"><span class="doc-state${n.vigente ? '' : ' is-off'}">${n.vigente ? 'Vigente' : 'Derogada'}</span> · ${n.articulos} artículos</span>`
+        + `<div class="doc-actions"><button class="btn btn-ink btn-small" type="button" data-doc-view>${ICON.eye}Ver</button>`
+        + `<a class="btn btn-quiet btn-small" href="${esc(n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a></div></div></li>`;
     };
     const matches = (n) => {
       if (st.tema !== '*' && !n.temas.includes(st.tema)) return false;
@@ -152,6 +168,14 @@
       setCount(data.normas.length);
     });
 
+    /* Atajo de teclado: «/» lleva a la búsqueda (como en muchos buscadores) */
+    d.addEventListener('keydown', (e) => {
+      if (e.key !== '/' || e.target.closest('input, textarea, select, [contenteditable]') || d.querySelector('dialog[open]')) return;
+      const r = lib.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      e.preventDefault();
+      input.focus();
+    });
     let typing = 0;
     input.addEventListener('input', () => {
       st.q = input.value;
@@ -221,11 +245,11 @@
         </div>
         ${p.imagen ? `<div class="post-media"><img src="${esc(p.imagen)}" alt="" loading="lazy" decoding="async"></div>` : ''}
         <p class="post-text">${esc(p.texto)}</p>
-        ${n ? `<div class="post-norm" data-slug="${n.slug}">
-          <span class="post-norm-icon" aria-hidden="true">${ICON.doc}</span>
+        ${n ? `<div class="post-norm" data-slug="${n.slug}" data-tema="${n.temas[0]}">
+          <span class="post-norm-icon doc-icon" aria-hidden="true">${temaIcon(n.temas[0])}</span>
           <small>Norma relacionada</small>
           <strong>${esc(n.corto)} · ${esc(n.tema)}</strong>
-          <div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view>${ICON.eye}Ver</button><a class="btn btn-quiet btn-small" href="${esc(n.pdf)}" download data-doc-pdf>${ICON.pdf}<span>PDF</span></a></div>
+          <div class="doc-actions"><button class="btn btn-ink btn-small" type="button" data-doc-view>${ICON.eye}Ver</button><a class="btn btn-quiet btn-small" href="${esc(n.pdf)}" download data-doc-pdf>${ICON.pdf}<span>PDF</span></a></div>
         </div>` : ''}
         <div class="post-foot"><a class="link" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver en LinkedIn ${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a></div>
       </li>`;
