@@ -97,6 +97,11 @@ def fecha_larga(iso):
     return f'{d} de {MESES[m - 1]} de {y}'
 
 
+def fecha_corta(iso):
+    y, m, d = map(int, iso.split('-'))
+    return f'{d} {MESES[m - 1][:3]}. {y}'
+
+
 def fetch(id_norma):
     url = f'https://www.bcn.cl/leychile/Consulta/obtxml?opt=7&idNorma={id_norma}'
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (biblioteca de normativa)'})
@@ -259,34 +264,26 @@ def pagina(n, cuerpo, toc, version):
     <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#normativa">Documentos y normativa</a><span aria-hidden="true">/</span><span aria-current="page">{esc(n["corto"])}</span></nav>
     <header class="norm-head">
       <p class="norm-kind">{esc(n["tipo"])} · {esc(n["organismo"])}</p>
-      <h1 class="title">{esc(n["corto"])} · {esc(n["tema"])}</h1>
-      <p class="lead">{esc(n["titulo"].capitalize())}.</p>
+      <h1 class="norm-title">{esc(n["corto"])} · {esc(n["tema"])}</h1>
+      <p class="norm-lead">{esc(n["titulo"].capitalize())}.</p>
+      <ul class="norm-meta">
+        <li><span class="norm-state{"" if n["vigente"] else " is-off"}">{estado}</span></li>
+        <li>Promulgada el <time datetime="{n["promulgacion"]}">{fecha_corta(n["promulgacion"])}</time></li>
+        <li>Publicada el <time datetime="{n["publicacion"]}">{fecha_corta(n["publicacion"])}</time></li>
+        <li>Texto al <time datetime="{n["version"]}">{fecha_corta(n["version"])}</time></li>
+        <li>{n["articulos"]} artículos</li>
+      </ul>
       <div class="norm-actions">
-        <a class="btn btn-ink" href="../{n["pdf"]}" download>{ICON["pdf"]}Descargar PDF</a>
-        <a class="btn btn-secondary" href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ver en Ley Chile{ICON["out"]}<span class="sr-only"> (pestaña nueva)</span></a>
+        <a class="btn btn-ink btn-small" href="../{n["pdf"]}" download>{ICON["pdf"]}Descargar PDF</a>
+        <a class="btn btn-quiet btn-small" href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ley Chile{ICON["out"]}<span class="sr-only"> (pestaña nueva)</span></a>
       </div>
+      <p class="norm-why"><strong>Para el retiro:</strong> {esc(n["rel"])}</p>
     </header>
 
-    <dl class="norm-facts">
-      <div><dt>Estado</dt><dd><span class="norm-state{"" if n["vigente"] else " is-off"}">{estado}</span> según Ley Chile al {fecha_larga(HOY)}</dd></div>
-      <div><dt>Organismo</dt><dd>{esc(n["organismo"])}</dd></div>
-      <div><dt>Promulgación</dt><dd>{fecha_larga(n["promulgacion"])}</dd></div>
-      <div><dt>Publicación</dt><dd>{fecha_larga(n["publicacion"])}</dd></div>
-      <div><dt>Versión del texto</dt><dd>{fecha_larga(n["version"])}</dd></div>
-      <div><dt>Temas</dt><dd><ul class="norm-tags">{temas}</ul></dd></div>
-    </dl>
-
-    <section class="norm-why" aria-labelledby="por-que">
-      <h2 id="por-que">Por qué importa para el retiro de residuos</h2>
-      <p>{esc(n["rel"])}</p>
-      <h3>Objeto de la norma</h3>
-      <blockquote cite="{esc(n["fuente"])}"><p>{esc(n["objeto"])}</p><footer>Artículo 1 · texto oficial</footer></blockquote>
-    </section>
-
     <div class="norm-layout">
-      {f'<details class="norm-toc" open><summary>Índice</summary><ol>{indice}</ol></details>' if indice else ''}
+      {f'<details class="norm-toc" data-toc><summary>Índice <small>{len(toc)} partes</small></summary><ol>{indice}</ol></details>' if indice else ''}
       <section class="norm-text" aria-labelledby="texto">
-        <h2 id="texto">Texto de la norma</h2>
+        <h2 id="texto" class="sr-only">Texto de la norma</h2>
         {cuerpo}
       </section>
     </div>
@@ -297,6 +294,7 @@ def pagina(n, cuerpo, toc, version):
     </footer>
   </article>
 </main>
+<script>matchMedia('(min-width: 901px)').matches && document.querySelectorAll('[data-toc]').forEach((d) => {{ d.open = true; }});</script>
 
 <script src="../assets/site/site.js?v={version}" defer></script>
 </body>

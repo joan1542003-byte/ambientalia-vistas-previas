@@ -243,8 +243,8 @@
           <div><strong>${esc(org.nombre)}</strong><small><time datetime="${esc(p.fecha)}">${when(p.fecha)}</time></small></div>
           <a class="post-in" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" aria-label="Ver la publicación en LinkedIn (pestaña nueva)">${ICON.li}</a>
         </div>
-        ${p.imagen ? `<div class="post-media"><img src="${esc(p.imagen)}" alt="" loading="lazy" decoding="async"></div>` : ''}
-        <p class="post-text">${esc(p.texto)}</p>
+        ${p.imagen ? `<a class="post-media" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img src="${esc(p.imagen)}" alt="" width="645" height="806" loading="lazy" decoding="async">${p.documento ? `<span class="post-doc">${ICON.doc}${p.documento.paginas} páginas</span>` : ''}</a>` : ''}
+        <p class="post-text${p.imagen ? ' has-media' : ''}">${esc(p.imagen ? p.texto.split(/\n\s*\n/)[0] : p.texto)}</p>
         ${n ? `<div class="post-norm" data-slug="${n.slug}" data-tema="${n.temas[0]}">
           <span class="post-norm-icon doc-icon" aria-hidden="true">${temaIcon(n.temas[0])}</span>
           <small>Norma relacionada</small>
@@ -260,6 +260,7 @@
       if (!items.length) { track.innerHTML = empty(org); return; }
       const list = norms?.normas || [];
       track.innerHTML = items.map((p, i) => post(p, org, list.find((n) => n.slug === (p.normas || [])[0]) || related(p.texto, list), i)).join('');
+      track.querySelectorAll('.post-media img').forEach((img) => { const on = () => img.classList.add('is-loaded'); if (img.complete) on(); else { img.addEventListener('load', on, { once: true }); img.addEventListener('error', () => img.closest('.post-media').remove(), { once: true }); } });
       /* Carrusel: flechas en escritorio, puntos de avance y deslizamiento con el dedo */
       const cards = [...track.children];
       dots.innerHTML = cards.map(() => '<i></i>').join('');

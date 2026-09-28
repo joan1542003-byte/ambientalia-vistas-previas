@@ -86,6 +86,11 @@ for (const p of elements) {
       }
     } catch (e) { console.warn('Imagen omitida', media, e.message); }
   }
+  // Documentos (carruseles PDF): la API no entrega portada; se conserva la que ya estaba guardada para esa publicación
+  const old = (prev.posts || []).find((o) => o.id === p.id || o.urn === p.id);
+  if (!item.imagen && old?.imagen) item.imagen = old.imagen;
+  if (old?.documento) item.documento = old.documento;
+  if (old?.url && !old.url.includes('/feed/update/')) item.url = old.url;
   posts.push(item);
   if (posts.length >= 8) break;
 }
