@@ -13,3 +13,5 @@ Contexto, normativa y procedimientos que sustentan las vistas previas. Empieza p
 | [procedimientos/informe-tecnico-campanas-recoleccion.md](procedimientos/informe-tecnico-campanas-recoleccion.md) | Informe técnico sobre campañas de recolección según el DS 29/2024. |
 | [procedimientos/originales/](procedimientos/originales/) | Archivos .docx originales. Son la fuente oficial; los .md son conversiones para leerlos más fácil. |
 | [activos-visuales.md](activos-visuales.md) | Catálogo de imágenes de categorías de residuos usadas como recursos ilustrativos de Transporte Autorizado. |
+| [linkedin.md](linkedin.md) | Publicaciones de LinkedIn en Transporte: API, secretos y actualización automática. |
+| `../normativa/`, `../tools/normativa.py` | Biblioteca de normativa: páginas por norma con texto oficial de Ley Chile (BCN) y PDF. |

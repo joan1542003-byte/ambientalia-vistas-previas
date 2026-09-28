@@ -220,14 +220,14 @@
         <label class="picker-search" hidden>${ICON.search}<span class="sr-only">Buscar</span><input type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"></label>
         <div class="picker-tabs" role="tablist" hidden></div>
         <div class="picker-body"></div>
-        <footer class="picker-foot" hidden><button class="btn btn-quiet btn-small" type="button" data-action hidden></button><span class="picker-count" aria-live="polite"></span><button class="btn btn-primary btn-small" type="button" data-done>Listo</button></footer>
+        <footer class="picker-foot" hidden><div class="picker-links" hidden></div><button class="btn btn-quiet btn-small" type="button" data-action hidden></button><span class="picker-count" aria-live="polite"></span><button class="btn btn-primary btn-small" type="button" data-done>Listo</button></footer>
       </div>`;
     d.body.append(dlg);
     el = {
       title: dlg.querySelector('h2'), sub: dlg.querySelector('.picker-titles p'), back: dlg.querySelector('[data-back]'),
       searchWrap: dlg.querySelector('.picker-search'), search: dlg.querySelector('.picker-search input'),
       body: dlg.querySelector('.picker-body'), foot: dlg.querySelector('.picker-foot'), tabs: dlg.querySelector('.picker-tabs'),
-      done: dlg.querySelector('[data-done]'), count: dlg.querySelector('.picker-count'), action: dlg.querySelector('[data-action]')
+      done: dlg.querySelector('[data-done]'), count: dlg.querySelector('.picker-count'), action: dlg.querySelector('[data-action]'), links: dlg.querySelector('.picker-links')
     };
     hint(el.body);
     el.card = dlg.querySelector('.picker-card');
@@ -280,6 +280,8 @@
     el.done.disabled = false;
     el.count.textContent = '';
     el.action.hidden = true;
+    el.links.hidden = true;
+    el.links.innerHTML = '';
     el.tabs.hidden = true;
     el.tabs.innerHTML = '';
     el.body.innerHTML = '';
@@ -488,5 +490,18 @@
     return p;
   };
 
-  window.Picker = { choose, chooseEach, commune, text, dates, time, options, communes, calendar, hint, drag, MODES, close: () => finish() };
+  /* Ventana de contenido (p. ej., vista previa de una norma): contenido libre y enlaces de acción al pie, sobre el pulgar */
+  const content = ({ title, sub = '', html = '', links = '' }) => {
+    const p = open({ title, sub });
+    el.body.innerHTML = html;
+    if (links) {
+      el.foot.hidden = false;
+      el.done.hidden = true;
+      el.links.hidden = false;
+      el.links.innerHTML = links;
+    }
+    return p;
+  };
+
+  window.Picker = { content, choose, chooseEach, commune, text, dates, time, options, communes, calendar, hint, drag, MODES, close: () => finish() };
 })();

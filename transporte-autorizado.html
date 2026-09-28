@@ -23,8 +23,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/transporte/transporte-hero-flota-derecha.webp" fetchpriority="high">
-<link rel="stylesheet" href="assets/site/site.css?v=20260926i">
-<link rel="stylesheet" href="assets/site/transporte.css?v=20260926i">
+<link rel="stylesheet" href="assets/site/site.css?v=20260928">
+<link rel="stylesheet" href="assets/site/transporte.css?v=20260928">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {
@@ -109,6 +109,7 @@
       <a href="#servicios">Servicios</a>
       <a href="#modalidades">Modalidades</a>
       <a href="#buscar">Buscar transportista</a>
+      <a href="#normativa">Normativa</a>
       <a href="#preguntas">Preguntas</a>
       <a class="btn btn-primary btn-small" href="#cotizar">Cotizar retiro</a>
     </nav>
@@ -547,31 +548,75 @@
     </div>
   </section>
 
+  <section class="section section-alt" id="novedades" aria-labelledby="novedades-title">
+    <div class="container">
+      <div class="posts-head reveal">
+        <div class="section-head">
+          <h2 class="title" id="novedades-title">Publicaciones recientes.</h2>
+          <p class="lead">Lo último de Vínculo Verde en LinkedIn, con la norma relacionada para leerla o descargarla.</p>
+        </div>
+        <div class="posts-nav" data-posts-nav hidden>
+          <button type="button" data-posts-prev aria-label="Publicaciones anteriores"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" data-posts-next aria-label="Publicaciones siguientes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <div class="posts" data-posts data-src="assets/transporte/linkedin.json" data-company="https://www.linkedin.com/company/vinculo-verde/">
+        <ul class="posts-track" data-posts-track aria-label="Publicaciones de LinkedIn" tabindex="0">
+          <li class="post post-skeleton" aria-hidden="true"></li><li class="post post-skeleton" aria-hidden="true"></li><li class="post post-skeleton" aria-hidden="true"></li>
+        </ul>
+        <div class="posts-dots" data-posts-dots aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="normativa" aria-labelledby="normativa-title">
     <div class="container">
       <div class="section-head reveal">
-        <h2 class="title" id="normativa-title">Documentación y normativa.</h2>
-        <p class="lead">Los requisitos se revisan según el tipo de residuo, su condición y la operación.</p>
+        <h2 class="title" id="normativa-title">Documentos y normativa.</h2>
+        <p class="lead">Las normas chilenas que ordenan la gestión y el transporte de residuos, con su texto oficial para ver o descargar.</p>
       </div>
-      <div class="laws reveal-group">
-        <article class="law">
-          <p class="law-kind">Decreto supremo</p>
-          <h3>D.S. 148</h3>
-          <p>Regula la gestión de residuos peligrosos y las condiciones aplicables a su transporte. La clasificación, el embalaje y la documentación se revisan con los antecedentes del caso.</p>
-          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=226458" target="_blank" rel="noopener noreferrer">Ver en BCN <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (pestaña nueva)</span></a>
-        </article>
-        <article class="law">
-          <p class="law-kind">Decreto supremo</p>
-          <h3>D.S. 29</h3>
-          <p>Regula campañas de recolección, recepción y almacenamiento de residuos de productos prioritarios. En una campaña, el transporte se coordina dentro del alcance y las condiciones autorizadas.</p>
-          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=1220286" target="_blank" rel="noopener noreferrer">Ver en BCN <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (pestaña nueva)</span></a>
-        </article>
-        <article class="law">
-          <p class="law-kind">Decreto supremo</p>
-          <h3>D.S. 57</h3>
-          <p>Regula sustancias y mezclas peligrosas, no residuos peligrosos. Una HDS del producto puede aportar antecedentes, pero no sustituye la revisión del residuo que se retira.</p>
-          <a class="link" href="https://www.bcn.cl/leychile/navegar?idNorma=1155752" target="_blank" rel="noopener noreferrer">Ver en BCN <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg><span class="sr-only"> (pestaña nueva)</span></a>
-        </article>
+      <div class="lib" data-lib data-src="assets/transporte/normativa.json">
+        <div class="lib-tools">
+          <label class="lib-search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+            <span class="sr-only">Buscar en la normativa</span>
+            <input type="search" data-lib-q placeholder="Busca por número, tema o palabra" autocomplete="off" enterkeyhint="search">
+            <button class="lib-clear" type="button" data-lib-clear aria-label="Borrar búsqueda"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </label>
+          <div class="picks picks-row lib-filters">
+            <div class="pick"><button type="button" class="pick-btn" aria-haspopup="dialog" data-lib-pick="tema">
+              <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg></span>
+              <span class="pick-text"><span class="pick-label">Tema</span><span class="pick-value" data-lib-value="tema">Todos</span></span>
+              <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+            </button></div>
+            <div class="pick"><button type="button" class="pick-btn" aria-haspopup="dialog" data-lib-pick="organismo">
+              <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M6 20V10M18 20V10M10 20v-6h4v6M3 10l9-6 9 6"/></svg></span>
+              <span class="pick-text"><span class="pick-label">Organismo</span><span class="pick-value" data-lib-value="organismo">Todos</span></span>
+              <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+            </button></div>
+          </div>
+        </div>
+        <div class="lib-bar">
+          <p class="lib-count" data-lib-count aria-live="polite"></p>
+          <button class="lib-reset" type="button" data-lib-reset hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/></svg>Quitar filtros</button>
+        </div>
+        <ul class="lib-grid reveal-group" data-lib-list>
+<!-- normativa:inicio -->
+          <li class="doc" data-slug="ds-148-2003-minsal" style="--i:0"><p class="doc-kind">Decreto · Ministerio de Salud<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-148-2003-minsal.html" data-doc-open>D.S. 148/2003</a></h3><p class="doc-topic">Residuos peligrosos</p><p class="doc-rel">Es la base para identificar, almacenar, transportar y eliminar residuos peligrosos, y para la documentación que acompaña su traslado.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-148-2003-minsal.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-298-1994-mtt" style="--i:1"><p class="doc-kind">Decreto · Ministerio de Transportes y Telecomunicaciones<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-298-1994-mtt.html" data-doc-open>D.S. 298/1994</a></h3><p class="doc-topic">Transporte de cargas peligrosas</p><p class="doc-rel">Fija las condiciones para transportar sustancias peligrosas por calles y caminos: vehículos, rotulación y operación.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-298-1994-mtt.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ley-20920" style="--i:2"><p class="doc-kind">Ley · Ministerio del Medio Ambiente<span class="doc-state">Vigente</span></p><h3><a href="normativa/ley-20920.html" data-doc-open>Ley 20.920</a></h3><p class="doc-topic">Ley REP</p><p class="doc-rel">Marco de la gestión de residuos y de la responsabilidad extendida del productor (REP) para productos prioritarios.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ley-20920.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-12-2020-mma" style="--i:3"><p class="doc-kind">Decreto · Ministerio del Medio Ambiente<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-12-2020-mma.html" data-doc-open>D.S. 12/2020</a></h3><p class="doc-topic">Metas REP de envases y embalajes</p><p class="doc-rel">Metas de recolección y valorización y obligaciones asociadas para envases y embalajes.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-12-2020-mma.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-8-2019-mma" style="--i:4"><p class="doc-kind">Decreto · Ministerio del Medio Ambiente<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-8-2019-mma.html" data-doc-open>D.S. 8/2019</a></h3><p class="doc-topic">Metas REP de neumáticos</p><p class="doc-rel">Metas de recolección y valorización y obligaciones asociadas para neumáticos.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-8-2019-mma.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-29-2024-minsal" style="--i:5"><p class="doc-kind">Decreto · Ministerio de Salud<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-29-2024-minsal.html" data-doc-open>D.S. 29/2024</a></h3><p class="doc-topic">Residuos de productos prioritarios</p><p class="doc-rel">Requisitos sanitarios para recibir y almacenar residuos de productos prioritarios, también en campañas de recolección.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-29-2024-minsal.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-6-2009-minsal" style="--i:6"><p class="doc-kind">Decreto · Ministerio de Salud<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-6-2009-minsal.html" data-doc-open>D.S. 6/2009</a></h3><p class="doc-topic">Residuos de establecimientos de salud (REAS)</p><p class="doc-rel">Condiciones para manejar los residuos que se generan en establecimientos de atención de salud.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-6-2009-minsal.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-43-2015-minsal" style="--i:7"><p class="doc-kind">Decreto · Ministerio de Salud<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-43-2015-minsal.html" data-doc-open>D.S. 43/2015</a></h3><p class="doc-topic">Almacenamiento de sustancias peligrosas</p><p class="doc-rel">Condiciones de las instalaciones donde se almacenan sustancias peligrosas.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-43-2015-minsal.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-57-2019-minsal" style="--i:8"><p class="doc-kind">Decreto · Ministerio de Salud<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-57-2019-minsal.html" data-doc-open>D.S. 57/2019</a></h3><p class="doc-topic">Clasificación y etiquetado de sustancias</p><p class="doc-rel">Clasificación, etiquetado y comunicación de peligros de sustancias y mezclas (HDS). No clasifica por sí solo un residuo.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-57-2019-minsal.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-594-1999-minsal" style="--i:8"><p class="doc-kind">Decreto · Ministerio de Salud<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-594-1999-minsal.html" data-doc-open>D.S. 594/1999</a></h3><p class="doc-topic">Condiciones sanitarias en lugares de trabajo</p><p class="doc-rel">Condiciones sanitarias y ambientales básicas de los lugares de trabajo, incluido el manejo de residuos industriales.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-594-1999-minsal.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ds-1-2013-mma" style="--i:8"><p class="doc-kind">Decreto · Ministerio del Medio Ambiente<span class="doc-state">Vigente</span></p><h3><a href="normativa/ds-1-2013-mma.html" data-doc-open>D.S. 1/2013</a></h3><p class="doc-topic">Registro RETC</p><p class="doc-rel">Declaración de emisiones, residuos y transferencias de contaminantes en el RETC.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ds-1-2013-mma.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+          <li class="doc" data-slug="ley-19300" style="--i:8"><p class="doc-kind">Ley · Ministerio Secretaría General de la Presidencia<span class="doc-state">Vigente</span></p><h3><a href="normativa/ley-19300.html" data-doc-open>Ley 19.300</a></h3><p class="doc-topic">Bases generales del medio ambiente</p><p class="doc-rel">Ley marco ambiental: principios, instrumentos de gestión y fiscalización ambiental.</p><div class="doc-actions"><button class="btn btn-secondary btn-small" type="button" data-doc-view><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button><a class="btn btn-quiet btn-small" href="assets/transporte/normativa/ley-19300.pdf" download data-doc-pdf><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>PDF</span></a></div></li>
+<!-- normativa:fin -->
+        </ul>
+        <div class="lib-empty" data-lib-empty hidden><strong>No encontramos normas con esa búsqueda.</strong>Prueba con otra palabra o quita los filtros.<br><button class="btn btn-secondary btn-small" type="button" data-lib-reset>Quitar filtros</button></div>
       </div>
       <div class="law-note reveal">
         <span class="law-note-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
@@ -656,6 +701,7 @@
           <li><a href="#modalidades">Modalidades de retiro</a></li>
           <li><a href="#buscar">Buscar transportista</a></li>
           <li><a href="#cotizar">Cotizar retiro</a></li>
+          <li><a href="#normativa">Documentos y normativa</a></li>
         </ul>
       </div>
       <div>
@@ -687,12 +733,13 @@
 </div>
 
 
-<script src="assets/site/site.js?v=20260926i" defer></script>
-<script src="assets/site/pickers.js?v=20260926i" defer></script>
-<script src="assets/site/seleccion.js?v=20260926i" defer></script>
-<script src="assets/site/interpretar.js?v=20260926i" defer></script>
-<script src="assets/site/transporte.js?v=20260926i" defer></script>
-<script src="assets/site/transporte-ui.js?v=20260926i" defer></script>
-<script src="assets/site/asistente.js?v=20260926i" defer></script>
+<script src="assets/site/site.js?v=20260928" defer></script>
+<script src="assets/site/pickers.js?v=20260928" defer></script>
+<script src="assets/site/seleccion.js?v=20260928" defer></script>
+<script src="assets/site/interpretar.js?v=20260928" defer></script>
+<script src="assets/site/transporte.js?v=20260928" defer></script>
+<script src="assets/site/transporte-ui.js?v=20260928" defer></script>
+<script src="assets/site/asistente.js?v=20260928" defer></script>
+<script src="assets/site/normativa.js?v=20260928" defer></script>
 </body>
 </html>

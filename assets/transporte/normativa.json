@@ -1,0 +1,635 @@
+{
+ "consulta": "2026-09-28",
+ "fuente": "Ley Chile, Biblioteca del Congreso Nacional",
+ "temas": {
+  "peligrosos": "Residuos peligrosos",
+  "transporte": "Transporte",
+  "rep": "REP y reciclaje",
+  "almacenamiento": "Almacenamiento",
+  "sustancias": "Sustancias peligrosas",
+  "salud": "Residuos de salud",
+  "trabajo": "Lugares de trabajo",
+  "registro": "Reportes y registros",
+  "marco": "Marco ambiental"
+ },
+ "normas": [
+  {
+   "id": 226458,
+   "slug": "ds-148-2003-minsal",
+   "tipo": "Decreto",
+   "numero": "148",
+   "corto": "D.S. 148/2003",
+   "tema": "Residuos peligrosos",
+   "temas": [
+    "peligrosos",
+    "transporte",
+    "almacenamiento"
+   ],
+   "rel": "Es la base para identificar, almacenar, transportar y eliminar residuos peligrosos, y para la documentación que acompaña su traslado.",
+   "nombre": "Decreto 148 de 2003: Aprueba reglamento sanitario sobre manejo de residuos peligrosos",
+   "titulo": "APRUEBA REGLAMENTO SANITARIO SOBRE MANEJO DE RESIDUOS PELIGROSOS",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "2003-06-12",
+   "publicacion": "2004-06-16",
+   "version": "2004-06-16",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=226458",
+   "pagina": "normativa/ds-148-2003-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-148-2003-minsal.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?148\\b",
+     3
+    ],
+    [
+     "\\bsidrep\\b",
+     2
+    ],
+    [
+     "residuos? peligrosos?",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1 Este Reglamento establece las condiciones sanitarias y de seguridad mínimas a que deberá someterse la generación, tenencia, almacenamiento, transporte, tratamiento, reuso, reciclaje, disposición final y otras formas de eliminación de los residuos peligrosos.",
+   "articulos": 93,
+   "indice": [
+    "TITULO I Disposiciones generales",
+    "TITULO II De la Identificación y Clasificación",
+    "TITULO III De la Generación",
+    "TITULO IV Del Almacenamiento",
+    "TITULO V Del Transporte",
+    "TITULO VI De la Eliminación",
+    "TITULO VII Del sistema de Declaración y Seguimiento de Residuos Peligrosos",
+    "TITULO VIII De las Sanciones y Procedimientos",
+    "TITULO IX Disposiciones Complementarias y Referenciales",
+    "TITULO FINAL"
+   ]
+  },
+  {
+   "id": 12087,
+   "slug": "ds-298-1994-mtt",
+   "tipo": "Decreto",
+   "numero": "298",
+   "corto": "D.S. 298/1994",
+   "tema": "Transporte de cargas peligrosas",
+   "temas": [
+    "transporte"
+   ],
+   "rel": "Fija las condiciones para transportar sustancias peligrosas por calles y caminos: vehículos, rotulación y operación.",
+   "nombre": "Decreto 298 de 1994: Reglamenta transporte de cargas peligrosas por calles y caminos",
+   "titulo": "REGLAMENTA TRANSPORTE DE CARGAS PELIGROSAS POR CALLES Y CAMINOS",
+   "organismo": "Ministerio de Transportes y Telecomunicaciones",
+   "promulgacion": "1994-11-25",
+   "publicacion": "1995-02-11",
+   "version": "2022-07-21",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=12087",
+   "pagina": "normativa/ds-298-1994-mtt.html",
+   "pdf": "assets/transporte/normativa/ds-298-1994-mtt.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?298\\b",
+     3
+    ],
+    [
+     "cargas? peligrosas?",
+     2
+    ],
+    [
+     "transporte de (sustancias|mercancias) peligrosas",
+     2
+    ]
+   ],
+   "objeto": "Artículo 1°.- El presente reglamento establece las condiciones, normas y procedimientos aplicables al transporte de carga, por calles y caminos, de sustancias peligrosas. Las disposiciones del presente decreto son sin perjuicio de la reglamentación especial que sea aplicable a cada producto peligroso en particular. El transporte de productos explosivos y materiales radiactivos debe efectuarse conforme a las normas específicas dictadas por el Ministerio de Defensa Nacional y el Ministerio de Minería, respectivamente, y por las disposiciones del presente reglamento, siempre que no sean incompatibles con dichas normas específicas. Las sustancias peligrosas que se transporten en remolques o semirremolques, deberán cumplir todos los requisitos contemplados en el presente reglamento y, en particular, no podrán transportar dichas sustancias, conjuntamente en el vehículo tractor o el remolque con los bienes señalados en el artículo 9º.",
+   "articulos": 38,
+   "indice": [
+    "Disposiciones Preliminares",
+    "De los vehículos y su equipamiento",
+    "De la carga, su acondicionamiento, estiba, descarga y manipulación",
+    "De la circulación y estacionamiento",
+    "De las personas que participan en las operaciones de transporte",
+    "De las obligaciones del transportista",
+    "De la fiscalización",
+    "De la vigencia"
+   ]
+  },
+  {
+   "id": 1090894,
+   "slug": "ley-20920",
+   "tipo": "Ley",
+   "numero": "20920",
+   "corto": "Ley 20.920",
+   "tema": "Ley REP",
+   "temas": [
+    "rep",
+    "marco"
+   ],
+   "rel": "Marco de la gestión de residuos y de la responsabilidad extendida del productor (REP) para productos prioritarios.",
+   "nombre": "Ley 20920 de 2016: Establece marco para la gestión de residuos, la responsabilidad extendida del productor y fomento al reciclaje",
+   "titulo": "ESTABLECE MARCO PARA LA GESTIÓN DE RESIDUOS, LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR Y FOMENTO AL RECICLAJE",
+   "organismo": "Ministerio del Medio Ambiente",
+   "promulgacion": "2016-05-17",
+   "publicacion": "2016-06-01",
+   "version": "2016-06-01",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1090894",
+   "pagina": "normativa/ley-20920.html",
+   "pdf": "assets/transporte/normativa/ley-20920.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(ley\\s?(n[°º.o]?\\s?)?)?20\\.?920\\b",
+     3
+    ],
+    [
+     "\\bley rep\\b",
+     2
+    ],
+    [
+     "responsabilidad extendida del productor",
+     2
+    ],
+    [
+     "\\brep\\b",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1º.- Objeto. La presente ley tiene por objeto disminuir la generación de residuos y fomentar su reutilización, reciclaje y otro tipo de valorización, a través de la instauración de la responsabilidad extendida del productor y otros instrumentos de gestión de residuos, con el fin de proteger la salud de las personas y el medio ambiente.",
+   "articulos": 50,
+   "indice": [
+    "TÍTULO I DISPOSICIONES GENERALES",
+    "TÍTULO II DE LA GESTIÓN DE LOS RESIDUOS",
+    "TÍTULO III DE LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR",
+    "TÍTULO IV MECANISMOS DE APOYO A LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR",
+    "TÍTULO V SISTEMA DE INFORMACIÓN",
+    "TÍTULO VI RÉGIMEN DE FISCALIZACIÓN Y SANCIONES",
+    "TÍTULO VII MODIFICACIONES DE OTROS CUERPOS NORMATIVOS",
+    "DISPOSICIONES TRANSITORIAS",
+    "Anexos"
+   ]
+  },
+  {
+   "id": 1157019,
+   "slug": "ds-12-2020-mma",
+   "tipo": "Decreto",
+   "numero": "12",
+   "corto": "D.S. 12/2020",
+   "tema": "Metas REP de envases y embalajes",
+   "temas": [
+    "rep"
+   ],
+   "rel": "Metas de recolección y valorización y obligaciones asociadas para envases y embalajes.",
+   "nombre": "Decreto 12 de 2020: Establece metas de recolección y valorización y otras obligaciones asociadas de envases y embalajes",
+   "titulo": "ESTABLECE METAS DE RECOLECCIÓN Y VALORIZACIÓN Y OTRAS OBLIGACIONES ASOCIADAS DE ENVASES Y EMBALAJES",
+   "organismo": "Ministerio del Medio Ambiente",
+   "promulgacion": "2020-06-08",
+   "publicacion": "2021-03-16",
+   "version": "2021-03-16",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1157019",
+   "pagina": "normativa/ds-12-2020-mma.html",
+   "pdf": "assets/transporte/normativa/ds-12-2020-mma.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?12\\b",
+     3
+    ],
+    [
+     "envases? y embalajes?",
+     2
+    ]
+   ],
+   "objeto": "Artículo 1º. Objeto. El presente decreto tiene por objeto establecer metas de recolección y valorización y otras obligaciones asociadas al producto prioritario envases y embalajes, a fin de prevenir la generación de tales residuos y fomentar su reutilización o valorización.",
+   "articulos": 53,
+   "indice": [
+    "TÍTULO I DISPOSICIONES GENERALES",
+    "TÍTULO II OBLIGACIONES DE LOS PRODUCTORES DE ENVASES Y EMBALAJES",
+    "TÍTULO III METAS DE RECOLECCIÓN Y VALORIZACIÓN DE RESIDUOS DE ENVASES Y EMBALAJES",
+    "TÍTULO IV OBLIGACIONES ASOCIADAS",
+    "TÍTULO V OTROS ACTORES",
+    "TÍTULO VI OTRAS DISPOSICIONES"
+   ]
+  },
+  {
+   "id": 1154847,
+   "slug": "ds-8-2019-mma",
+   "tipo": "Decreto",
+   "numero": "8",
+   "corto": "D.S. 8/2019",
+   "tema": "Metas REP de neumáticos",
+   "temas": [
+    "rep"
+   ],
+   "rel": "Metas de recolección y valorización y obligaciones asociadas para neumáticos.",
+   "nombre": "Decreto 8 de 2019: Establece metas de recolección y valorización y otras obligaciones asociadas de neumáticos",
+   "titulo": "ESTABLECE METAS DE RECOLECCIÓN Y VALORIZACIÓN Y OTRAS OBLIGACIONES ASOCIADAS DE NEUMÁTICOS",
+   "organismo": "Ministerio del Medio Ambiente",
+   "promulgacion": "2019-05-28",
+   "publicacion": "2021-01-20",
+   "version": "2021-01-20",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1154847",
+   "pagina": "normativa/ds-8-2019-mma.html",
+   "pdf": "assets/transporte/normativa/ds-8-2019-mma.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?8\\b",
+     3
+    ],
+    [
+     "neumaticos?",
+     2
+    ],
+    [
+     "\\bnfu\\b",
+     2
+    ]
+   ],
+   "objeto": "Artículo 1º. Objeto. El presente decreto tiene por objeto establecer metas de recolección y valorización y otras obligaciones asociadas al producto prioritario neumáticos, a fin de prevenir la generación de tales residuos y fomentar su reutilización, reciclaje u otro tipo de valorización.",
+   "articulos": 39,
+   "indice": [
+    "TÍTULO I Disposiciones Generales",
+    "TÍTULO II Obligaciones de los productores de neumáticos",
+    "TÍTULO III Metas de recolección y valorización de NFU",
+    "TÍTULO IV Obligaciones asociadas",
+    "TÍTULO V Otras disposiciones",
+    "TÍTULO VI Disposiciones transitorias",
+    "Anexos"
+   ]
+  },
+  {
+   "id": 1220286,
+   "slug": "ds-29-2024-minsal",
+   "tipo": "Decreto",
+   "numero": "29",
+   "corto": "D.S. 29/2024",
+   "tema": "Residuos de productos prioritarios",
+   "temas": [
+    "rep",
+    "almacenamiento"
+   ],
+   "rel": "Requisitos sanitarios para recibir y almacenar residuos de productos prioritarios, también en campañas de recolección.",
+   "nombre": "Decreto 29 de 2024: Aprueba reglamento sanitario sobre labores de recepción y almacenamiento de residuos de productos prioritarios",
+   "titulo": "APRUEBA REGLAMENTO SANITARIO SOBRE LABORES DE RECEPCIÓN Y ALMACENAMIENTO DE RESIDUOS DE PRODUCTOS PRIORITARIOS",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "2024-07-22",
+   "publicacion": "2026-01-14",
+   "version": "2026-01-14",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1220286",
+   "pagina": "normativa/ds-29-2024-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-29-2024-minsal.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?29\\b",
+     3
+    ],
+    [
+     "productos? prioritarios?",
+     1
+    ],
+    [
+     "campanas? de (recoleccion|reciclaje)",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1°.- El presente reglamento tiene por objeto establecer la regulación específica del procedimiento simplificado para la autorización sanitaria de las labores de recolección, de las instalaciones de recepción y almacenamiento de residuos de productos prioritarios y de las instalaciones de pretratamiento de residuos no peligrosos, desarrolladas por gestores autorizados y registrados acorde a lo establecido en la ley N° 20.920. Este procedimiento simplificado establece los plazos, condiciones y requisitos que los sujetos obligados deberán cumplir para la obtención de la autorización sanitaria correspondiente.",
+   "articulos": 48,
+   "indice": [
+    "TÍTULO PRIMERO DISPOSICIONES GENERALES",
+    "TÍTULO SEGUNDO DE LAS INSTALACIONES DE RECEPCIÓN Y ALMACENAMIENTO",
+    "TÍTULO TERCERO DE LA RECOLECCIÓN Y TRANSPORTE",
+    "TÍTULO CUARTO DE LOS PROCEDIMIENTOS DE APROBACIÓN Y AUTORIZACIÓN SANITARIA",
+    "TÍTULO QUINTO DEL PROCEDIMIENTO Y LAS SANCIONES",
+    "TÍTULO FINAL DE LA VIGENCIA",
+    "ARTÍCULOS TRANSITORIOS",
+    "Anexos"
+   ]
+  },
+  {
+   "id": 1008725,
+   "slug": "ds-6-2009-minsal",
+   "tipo": "Decreto",
+   "numero": "6",
+   "corto": "D.S. 6/2009",
+   "tema": "Residuos de establecimientos de salud (REAS)",
+   "temas": [
+    "salud",
+    "peligrosos"
+   ],
+   "rel": "Condiciones para manejar los residuos que se generan en establecimientos de atención de salud.",
+   "nombre": "Decreto 6 de 2009: Aprueba reglamento sobre manejo de residuos de establecimientos de atención de salud (reas)",
+   "titulo": "APRUEBA REGLAMENTO SOBRE MANEJO DE RESIDUOS DE ESTABLECIMIENTOS DE ATENCIÓN DE SALUD (REAS)",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "2009-02-23",
+   "publicacion": "2009-12-04",
+   "version": "2017-03-10",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1008725",
+   "pagina": "normativa/ds-6-2009-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-6-2009-minsal.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?6\\b",
+     3
+    ],
+    [
+     "\\breas\\b",
+     2
+    ],
+    [
+     "establecimientos? de (atencion de )?salud",
+     2
+    ]
+   ],
+   "objeto": "Artículo 1º.- El presente reglamento establece las condiciones sanitarias y de seguridad básicas a las que deberá someterse el manejo de los residuos generados en establecimientos de atención de salud.",
+   "articulos": 53,
+   "indice": [
+    "TÍTULO I Disposiciones generales",
+    "TÍTULO II De la identificación y clasificación",
+    "TÍTULO III De la generación",
+    "TÍTULO IV Del manejo interno",
+    "TÍTULO V De la eliminación",
+    "TÍTULO VI Del transporte",
+    "TÍTULO VII De los planes de contingencia",
+    "TÍTULO VIII Del personal",
+    "TÍTULO IX Sistema de seguimiento de residuos especiales",
+    "TÍTULO X De la fiscalización y sanciones",
+    "TÍTULO FINAL"
+   ]
+  },
+  {
+   "id": 1088802,
+   "slug": "ds-43-2015-minsal",
+   "tipo": "Decreto",
+   "numero": "43",
+   "corto": "D.S. 43/2015",
+   "tema": "Almacenamiento de sustancias peligrosas",
+   "temas": [
+    "sustancias",
+    "almacenamiento"
+   ],
+   "rel": "Condiciones de las instalaciones donde se almacenan sustancias peligrosas.",
+   "nombre": "Decreto 43 de 2015: Aprueba el reglamento de almacenamiento de sustancias peligrosas",
+   "titulo": "APRUEBA EL REGLAMENTO DE ALMACENAMIENTO DE SUSTANCIAS PELIGROSAS",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "2015-07-27",
+   "publicacion": "2016-03-29",
+   "version": "2022-08-17",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1088802",
+   "pagina": "normativa/ds-43-2015-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-43-2015-minsal.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?43\\b",
+     3
+    ],
+    [
+     "almacenamiento de sustancias peligrosas",
+     2
+    ],
+    [
+     "bodegas? de sustancias",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1°.- El presente reglamento establece las condiciones de seguridad de las instalaciones de almacenamiento de sustancias peligrosas. Estas disposiciones regirán preferentemente sobre lo establecido en materias de almacenamiento en el decreto Nº 157 de 2005, del Ministerio de Salud, Reglamento de Pesticidas de Uso Sanitario y Doméstico y de lo establecido en el artículo 42 del decreto Nº 594 de 1999, del Ministerio de Salud, Reglamento sobre Condiciones Sanitarias y Ambientales Básicas en los Lugares de Trabajo.",
+   "articulos": 194,
+   "indice": [
+    "TÍTULO I DISPOSICIONES GENERALES",
+    "TÍTULO II DEL ALMACENAMIENTO DE SUSTANCIAS PELIGROSAS",
+    "TÍTULO III ZONA DE CARGA Y DESCARGA DE PRODUCTOS ENVASADOS",
+    "TÍTULO IV ALMACENAMIENTO DE GASES ENVASADOS",
+    "TÍTULO V ALMACENAMIENTO DE LÍQUIDOS INFLAMABLES EN ENVASES",
+    "TÍTULO VI ALMACENAMIENTO DE SÓLIDOS INFLAMABLES EN ENVASES",
+    "TÍTULO VII ALMACENAMIENTO DE COMBURENTES Y PERÓXIDOS ORGÁNICOS EN ENVASES",
+    "TÍTULO VIII ALMACENAMIENTO DE SUSTANCIAS TÓXICAS, CORROSIVAS Y VARIAS EN ENVASES",
+    "TÍTULO IX ALMACENAMIENTO A GRANEL",
+    "TÍTULO X ALMACENAMIENTO EN CONTENEDORES E ISOTANQUES",
+    "TÍTULO XI ALMACENAMIENTO DE SUSTANCIAS PELIGROSAS EN LOCALES COMERCIALES",
+    "TÍTULO XII DEL ETIQUETADO",
+    "TÍTULO XIII DEL PLAN DE EMERGENCIAS",
+    "TÍTULO XIV DE LA FISCALIZACIÓN Y SANCIONES",
+    "TÍTULO FINAL",
+    "DISPOSICIONES TRANSITORIAS",
+    "Anexos"
+   ]
+  },
+  {
+   "id": 1155752,
+   "slug": "ds-57-2019-minsal",
+   "tipo": "Decreto",
+   "numero": "57",
+   "corto": "D.S. 57/2019",
+   "tema": "Clasificación y etiquetado de sustancias",
+   "temas": [
+    "sustancias"
+   ],
+   "rel": "Clasificación, etiquetado y comunicación de peligros de sustancias y mezclas (HDS). No clasifica por sí solo un residuo.",
+   "nombre": "Decreto 57 de 2019: Aprueba reglamento de clasificación, etiquetado y notificación de sustancias químicas y mezclas peligrosas",
+   "titulo": "APRUEBA REGLAMENTO DE CLASIFICACIÓN, ETIQUETADO Y NOTIFICACIÓN DE SUSTANCIAS QUÍMICAS Y MEZCLAS PELIGROSAS",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "2019-11-26",
+   "publicacion": "2021-02-09",
+   "version": "2021-02-09",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1155752",
+   "pagina": "normativa/ds-57-2019-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-57-2019-minsal.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?57\\b",
+     3
+    ],
+    [
+     "\\bhds\\b",
+     2
+    ],
+    [
+     "hojas? de (datos de )?seguridad",
+     2
+    ],
+    [
+     "\\bsga\\b|\\bghs\\b",
+     2
+    ],
+    [
+     "etiquetado",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1.- El presente reglamento establece los criterios y obligaciones relativas a la clasificación, etiquetado, notificación y evaluación de riesgo de sustancias y mezclas peligrosas, que deberán cumplir los fabricantes e importadores de ellas, con el fin de proteger la salud humana y el medio ambiente. Para clasificar como peligrosas las sustancias y mezclas se considerarán los peligros físicos, los peligros para la salud y los peligros para el medio ambiente, descritos en el Título III \"De las características y criterios de peligrosidad para la clasificación de sustancias y mezclas\" del presente reglamento. Este reglamento se aplica a las sustancias y mezclas clasificadas como peligrosas de acuerdo a esta normativa, y que no estén reguladas por normativas especiales.",
+   "articulos": 308,
+   "indice": [
+    "TÍTULO I DISPOSICIONES GENERALES",
+    "TÍTULO II DE LA CLASIFICACIÓN DE PELIGROS",
+    "TÍTULO III DE LAS CARACTERÍSTICAS Y CRITERIOS DE PELIGROSIDAD PARA LA CLASIFICACIÓN DE SUSTANCIAS Y MEZCLAS",
+    "TÍTULO IV DEL ETIQUETADO DE SEGURIDAD DE SUSTANCIAS Y MEZCLAS",
+    "TITULO V DE LA FICHA U HOJA DE DATOS DE SEGURIDAD",
+    "TÍTULO VI DE LA NOTIFICACIÓN DE LAS SUSTANCIAS PELIGROSAS",
+    "TÍTULO VII DE LA EVALUACIÓN DE RIESGOS",
+    "TÍTULO VIII DE LA FISCALIZACIÓN Y SANCIONES",
+    "Anexos"
+   ]
+  },
+  {
+   "id": 167766,
+   "slug": "ds-594-1999-minsal",
+   "tipo": "Decreto",
+   "numero": "594",
+   "corto": "D.S. 594/1999",
+   "tema": "Condiciones sanitarias en lugares de trabajo",
+   "temas": [
+    "trabajo",
+    "peligrosos"
+   ],
+   "rel": "Condiciones sanitarias y ambientales básicas de los lugares de trabajo, incluido el manejo de residuos industriales.",
+   "nombre": "Decreto 594 de 1999: Aprueba reglamento sobre condiciones sanitarias y ambientales basicas en los lugares de trabajo",
+   "titulo": "APRUEBA REGLAMENTO SOBRE CONDICIONES SANITARIAS Y AMBIENTALES BASICAS EN LOS LUGARES DE TRABAJO",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "1999-09-15",
+   "publicacion": "2000-04-29",
+   "version": "2026-01-16",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=167766",
+   "pagina": "normativa/ds-594-1999-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-594-1999-minsal.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?594\\b",
+     3
+    ],
+    [
+     "lugares? de trabajo",
+     2
+    ],
+    [
+     "residuos? industriales?",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1°: El presente reglamento establece las condiciones sanitarias y ambientales básicas que deberá cumplir todo lugar de trabajo, sin perjuicio de la reglamentación específica que se haya dictado o se dicte para aquellas faenas que requieren condiciones especiales. Establece, además, los límites permisibles de exposición ambiental a agentes químicos y agentes físicos, y aquellos límites de tolerancia biológica para trabajadores expuestos a riesgo ocupacional.",
+   "articulos": 155,
+   "indice": [
+    "TITULO I Disposiciones Generales",
+    "TITULO II Del Saneamiento Básico de los Lugares de Trabajo",
+    "TITULO III De las Condiciones Ambientales",
+    "TITULO IV De la Contaminación Ambiental",
+    "TITULO V De los Límites de Tolerancia Biológica",
+    "TITULO VI Del Laboratorio Nacional de Referencia",
+    "TITULO VII NORMAS ESPECIALES PARA ACTIVIDADES PRIMARIAS AGRICOLAS, PECUARIAS Y FORESTALES A CAMPO ABIERTO",
+    "T I T U L O VIII De la Fiscalización y Sanciones",
+    "TITULO FINAL",
+    "ARTICULOS TRANSITORIOS"
+   ]
+  },
+  {
+   "id": 1050536,
+   "slug": "ds-1-2013-mma",
+   "tipo": "Decreto",
+   "numero": "1",
+   "corto": "D.S. 1/2013",
+   "tema": "Registro RETC",
+   "temas": [
+    "registro"
+   ],
+   "rel": "Declaración de emisiones, residuos y transferencias de contaminantes en el RETC.",
+   "nombre": "Decreto 1 de 2013: Aprueba reglamento del registro de emisiones y transferencias de contaminantes, retc",
+   "titulo": "APRUEBA REGLAMENTO DEL REGISTRO DE EMISIONES Y TRANSFERENCIAS DE CONTAMINANTES, RETC",
+   "organismo": "Ministerio del Medio Ambiente",
+   "promulgacion": "2013-01-02",
+   "publicacion": "2013-05-02",
+   "version": "2018-12-11",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1050536",
+   "pagina": "normativa/ds-1-2013-mma.html",
+   "pdf": "assets/transporte/normativa/ds-1-2013-mma.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?1\\b(?![.,]\\d)",
+     3
+    ],
+    [
+     "\\bretc\\b",
+     2
+    ],
+    [
+     "ventanilla unica",
+     2
+    ]
+   ],
+   "objeto": "Artículo 1º.- Objeto. El Registro de Emisiones y Transferencias de Contaminantes, en adelante RETC, es una base de datos accesible al público, destinada a capturar, recopilar, sistematizar, conservar, analizar y difundir la información sobre emisiones, residuos y transferencias de contaminantes potencialmente dañinos para la salud y el medio ambiente que son emitidos al entorno, generados en actividades industriales o no industriales o transferidos para su valorización o eliminación. El presente reglamento regula el RETC, el cual dispondrá de manera sistematizada, por fuente o agrupación de fuentes, la naturaleza, caudal y concentración de emisiones de contaminantes que sean objeto de una norma de emisión. Además, el registro contemplará la declaración o estimación de emisiones, residuos y transferencias de aquellos contaminantes que no se encuentran regulados en una norma de emisión, plan de descontaminación, u otra regulación vigente, cuando se trate de emisiones que corresponden a fuentes difusas, o que se estiman debido a que se encuentran en convenios internacionales suscritos por Chile. Las estimaciones las realizará el Ministerio del Medio Ambiente mediante la información que entreguen los diferentes órganos de la Administración del Estado. Asimismo, el registro contemplará la cantidad, naturaleza, características, origen, destino y la gestión de los residuos generados por los establecimientos, de conformidad a lo dispuesto en el presente reglamento y, en particular, de los residuos de productos prioritarios. Por último, se deberán registrar los establecimientos afectos a pagar impuestos por las emisiones de fuentes fijas de acuerdo al artículo 8º de la ley Nº 20.780.",
+   "articulos": 32,
+   "indice": [
+    "TÍTULO I Disposiciones generales",
+    "TÍTULO II Del Registro de Emisiones y Transferencias de Contaminantes",
+    "TÍTULO III Deberes de los organismos del Estado",
+    "TÍTULO IV Ventanilla Única",
+    "TÍTULO V Acceso público a la información",
+    "TÍTULO VI Otras disposiciones",
+    "TÍTULO VII Disposición final",
+    "TÍTULO VIII Disposición transitoria"
+   ]
+  },
+  {
+   "id": 30667,
+   "slug": "ley-19300",
+   "tipo": "Ley",
+   "numero": "19300",
+   "corto": "Ley 19.300",
+   "tema": "Bases generales del medio ambiente",
+   "temas": [
+    "marco"
+   ],
+   "rel": "Ley marco ambiental: principios, instrumentos de gestión y fiscalización ambiental.",
+   "nombre": "Ley 19300 de 1994: Aprueba ley sobre bases generales del medio ambiente",
+   "titulo": "APRUEBA LEY SOBRE BASES GENERALES DEL MEDIO AMBIENTE",
+   "organismo": "Ministerio Secretaría General de la Presidencia",
+   "promulgacion": "1994-03-01",
+   "publicacion": "1994-03-09",
+   "version": "2024-04-10",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=30667",
+   "pagina": "normativa/ley-19300.html",
+   "pdf": "assets/transporte/normativa/ley-19300.pdf",
+   "consulta": "2026-09-28",
+   "alias": [
+    [
+     "(ley\\s?(n[°º.o]?\\s?)?)?19\\.?300\\b",
+     3
+    ],
+    [
+     "\\bseia\\b",
+     2
+    ],
+    [
+     "evaluacion de impacto ambiental",
+     2
+    ]
+   ],
+   "objeto": "Artículo 1°.- El derecho a vivir en un medio ambiente libre de contaminación, la protección del medio ambiente, la preservación de la naturaleza y la conservación del patrimonio ambiental se regularán por las disposiciones de esta ley, sin perjuicio de lo que otras normas legales establezcan sobre la materia.",
+   "articulos": 125,
+   "indice": [
+    "TITULO I Disposiciones Generales",
+    "TITULO II De los Instrumentos de Gestión Ambiental",
+    "TITULO III De la Responsabilidad por Daño Ambiental",
+    "TITULO IV De la Fiscalización",
+    "TITULO V Del Fondo de Protección Ambiental",
+    "TÍTULO FINAL DEL MINISTERIO DEL MEDIO AMBIENTE",
+    "ARTICULOS TRANSITORIOS",
+    "Anexos"
+   ]
+  }
+ ]
+}
