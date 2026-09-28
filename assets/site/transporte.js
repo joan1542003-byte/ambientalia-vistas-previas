@@ -16,7 +16,7 @@
   const comunaValue = root.querySelector('[data-finder-value="comuna"]');
   const count = root.querySelector('[data-count]');
   const list = root.querySelector('[data-results]');
-  const more = root.querySelector('[data-more]');
+  const more = root.querySelector('button[data-more]');  // el contenedor con desplazamiento también lleva data-more (seleccion.js)
   const state = { kind: 'safe', type: '*', place: '*', shown: PAGE };
   let rows = null;
   let loading = null;
@@ -27,7 +27,7 @@
   const ALIASES = { 'p a cerda': 'pedro aguirre cerda', 'san bernarso': 'san bernardo', 'san vernardo': 'san bernardo', 'b uin': 'buin', 'c': '', 'sin comuna informada': '' };
   const LABELS = { 'pedro aguirre cerda': 'Pedro Aguirre Cerda', 'san bernardo': 'San Bernardo', 'til til': 'Til Til', 'calera de tango': 'Calera de Tango', 'isla de maipo': 'Isla de Maipo', 'penalolen': 'Peñalolén', 'alhue': 'Alhué', 'buin': 'Buin', '': 'Sin comuna informada' };
   const placeKey = (v) => { const k = normalize(v); return k in ALIASES ? ALIASES[k] : k; };
-  const titleCase = (s) => s.toLocaleLowerCase('es-CL').replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase('es-CL')).replace(/(?<=\s)(De|Del|La|Las|Los|Y)\b/g, (w) => w.toLowerCase());
+  const titleCase = (s) => s.toLocaleLowerCase('es-CL').replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase('es-CL')).replace(/(\s)(De|Del|La|Las|Los|Y)\b/g, (m, sp, w) => sp + w.toLowerCase());  // sin lookbehind: Safari < 16.4
 
   const el = (tag, props = {}, ...children) => {
     const node = Object.assign(document.createElement(tag), props);

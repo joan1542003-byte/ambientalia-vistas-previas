@@ -34,7 +34,7 @@
   /* ---------- Datos de normativa (compartidos por la biblioteca y las publicaciones) ---------- */
   const src = lib?.dataset.src || 'assets/transporte/normativa.json';
   let normasPromise = null;
-  const normas = () => (normasPromise ||= fetch(src).then((r) => r.json()).catch(() => null));
+  const normas = () => (normasPromise ||= fetch(src, { cache: 'no-cache' }).then((r) => r.json()).catch(() => null));
   /* Norma relacionada con un texto: puntaje por número (3), sigla o tema propio (2) y tema compartido (1) */
   const related = (text, list) => {
     const t = fold(text);
@@ -47,22 +47,15 @@
     return best;
   };
 
-  /* Descarga: el ícono se transforma en ✓ (se dibuja) y aparece un aviso */
-  const CHECK = '<svg class="done-mark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-  d.addEventListener('click', (e) => {
-    const a = e.target.closest('[data-doc-pdf]');
-    if (!a || a.classList.contains('is-downloading')) return;
-    a.classList.add('is-downloading');
-    a.insertAdjacentHTML('beforeend', CHECK);
-    window.SITE?.toast?.('Descargando el PDF de la norma');
-    setTimeout(() => { a.classList.remove('is-downloading'); a.querySelector('.done-mark')?.remove(); }, 2000);
-  });
+  /* La confirmación de las descargas está en documentos.js (sirve en todas las páginas) */
 
   /* ---------- Biblioteca ---------- */
   if (lib) {
     const list = lib.querySelector('[data-lib-list]');
     const input = lib.querySelector('[data-lib-q]');
     const search = lib.querySelector('.lib-search');
+    /* Toda la caja del buscador lleva al campo (salvo el botón de borrar) */
+    search.addEventListener('click', (e) => { if (!e.target.closest('button, input')) input.focus(); });
     const count = lib.querySelector('[data-lib-count]');
     const live = lib.querySelector('[data-lib-live]');
     const topics = lib.querySelector('[data-lib-topics]');

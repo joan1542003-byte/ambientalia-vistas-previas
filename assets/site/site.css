@@ -68,6 +68,7 @@ img { height: auto; }
 a { color: inherit; }
 a, button, label, summary, input { -webkit-tap-highlight-color: transparent; }
 button, input, select, textarea { font: inherit; color: inherit; }
+select { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }  /* Safari suma el texto de las opciones al ancho de la página */
 h1, h2, h3, h4, p, ul, ol, dl, dd, figure, fieldset { margin: 0; }
 ul, ol { padding: 0; }
 h1, h2, h3, h4 { font-weight: 800; line-height: 1.15; letter-spacing: -.018em; text-wrap: balance; }
@@ -259,7 +260,7 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
 @media (max-width: 860px) { .feature { grid-template-columns: 1fr; } .feature-media img { aspect-ratio: 16 / 9; } }
 
 /* Pestañas */
-.doc-picker { display: grid; gap: 22px; }
+.doc-picker { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }  /* columna acotada: en Safari la fila de pestañas ensanchaba todo el panel */
 .doc-panel { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px clamp(28px, 5vw, 56px); }
 .doc-panel p { margin-top: 8px; color: var(--ink-2); font-size: .9375rem; }
 .doc-panel .btn { margin-top: 18px; }
@@ -554,6 +555,7 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
 
 .toast {
   position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+  width: max-content; max-width: calc(100vw - 32px); text-align: center;  /* sin esto, left: 50% lo limita a media pantalla */
   padding: 10px 16px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: .875rem;
   transform: translate(-50%, 16px); opacity: 0; pointer-events: none; transition: transform .4s var(--spring), opacity .25s;
 }

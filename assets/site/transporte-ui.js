@@ -60,8 +60,8 @@
 
     const MODE_HINT = {
       '': 'Elige qué tan pronto lo necesitas.',
-      express: 'Priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad.',
-      programado: 'Eliges el día y coordinamos el retiro.',
+      express: 'Priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna.',
+      programado: 'Eliges el día del primer retiro y lo organizamos mes a mes.',
       flexible: 'Tú propones hasta tres días y coordinamos según disponibilidad.'
     };
     /* Texto visible de cada fila */
@@ -223,7 +223,8 @@
     form.transition = (update) => transition(update);
 
     /* Recibe lo que ya se respondió en la conversación, para seguir en el formulario sin repetir nada */
-    const DOC_MAP = { 'HDS/FDS': 'HDS/FDS del producto original', 'Análisis': 'Análisis o caracterización', 'No tengo': 'Sin documentos por ahora' };
+    /* El asistente ya usa los valores del formulario (PICK.DOCS); se aceptan también los nombres cortos antiguos */
+    const DOC_MAP = { 'HDS/FDS': 'HDS/FDS del producto original', 'Análisis': 'Análisis o caracterización', 'No tengo': 'Sin documentos por ahora', 'FDSR u hoja del residuo': 'HDSR u hoja del residuo' };
     window.QUOTE = {
       fill: ({ answers: a = {}, meta = {} } = {}) => {
         const known = [...PICK.CATEGORIES.safe, ...PICK.CATEGORIES.hazard].some(([n]) => n === a.residuo);
@@ -247,7 +248,7 @@
           writeWhen();
         }
         if (a.almacenamiento) set('almacenamiento', a.almacenamiento);
-        if (a.documentos) set('documentos', a.documentos.split(', ').map((x) => DOC_MAP[x]).filter(Boolean).join(', '));
+        if (a.documentos) set('documentos', a.documentos.split(', ').map((x) => DOC_MAP[x] || (PICK.DOCS.includes(x) ? x : null)).filter(Boolean).join(', '));
         ['empresa', 'nombre', 'telefono', 'correo'].forEach((k) => { if (a[k]) field(k).value = a[k]; });
         field('tipo').dispatchEvent(new Event('change', { bubbles: true }));
       }
@@ -281,6 +282,8 @@
     let sheet = null;
     let panel = null;  // lo que sube: el <dialog> queda quieto a pantalla completa
     let sheetInstant = false;
+    let codeClose = false;
+    let dockReturn = null;  // al cerrar lo abierto desde la burbuja, el foco vuelve a la burbuja
     let sheetTimer = 0;
     const buildSheet = () => {
       sheet = d.createElement('dialog');
@@ -291,12 +294,17 @@
       sheet.innerHTML = '<span class="dialog-start" tabindex="-1" autofocus></span><div class="sheet-panel"><span class="sheet-grab" aria-hidden="true"></span></div>';
       panel = sheet.querySelector('.sheet-panel');
       d.body.append(sheet);
+      let downOnVeil = false;  // el fondo cierra solo si el toque empezó ahí (arrastrar al seleccionar texto no cierra)
+      sheet.addEventListener('pointerdown', (e) => { downOnVeil = e.target === sheet; });
       sheet.addEventListener('click', (e) => {
-        if (e.target === sheet || e.target.closest('[data-hero-close]')) close();  // fondo velado o X
+        if ((e.target === sheet && downOnVeil) || e.target.closest('[data-hero-close]')) close();  // fondo velado o X
       });
       sheet.addEventListener('cancel', (e) => { e.preventDefault(); close(); });  // Escape
       /* Si el sistema la cierra por su cuenta (p. ej., gesto «atrás» en Android), el hero se pone al día */
-      sheet.addEventListener('close', () => { if (view !== 'inicio') { sheetInstant = true; close(); } });
+      sheet.addEventListener('close', () => {
+        if (codeClose) { codeClose = false; return; }  // la cerró el propio código (p. ej., al girar una tablet)
+        if (view !== 'inicio') { sheetInstant = true; close(); }
+      });
       Picker?.drag?.(panel, { handles: '.sheet-grab, .hcard-head', dismiss: () => { sheetInstant = true; close(); } });
       /* Al tocar un campo para escribir, su fila sube al inicio de la lista antes de que abra el teclado: así el teléfono
          no desplaza la pantalla para mostrarlo (en iPhone eso movía toda la hoja) */
@@ -333,7 +341,7 @@
     const closeSheet = () => {
       if (!sheet) return;
       const end = () => {
-        if (sheet.open) sheet.close();
+        if (sheet.open) { codeClose = true; sheet.close(); }
         sheet.classList.remove('is-closing');
         panel.style.transform = panel.style.transition = '';
         d.documentElement.classList.remove('sheet-open');
@@ -385,7 +393,7 @@
     const show = (name, { from = 'hero', tab: active } = {}) => {
       if (name !== 'inicio' && !panels[name]) return Promise.resolve();
       if (name === 'buscar') window.FINDER_LOAD?.();
-      if (from === 'dock' && name !== 'inicio') floating = true;
+      if (from === 'dock' && name !== 'inicio') { floating = true; dockReturn = d.querySelector('[data-dock] .dock-toggle'); }
       const move = from !== 'hero' && from !== 'dock';
       const before = view;
       const target = active || (name === 'asistente' ? tab || 'cotizar' : name);
@@ -421,13 +429,16 @@
     });
     let refocus = null;
     let closing = 0;
+    let backToClose = false;
+    /* El foco vuelve a lo que abrió la opción; si era la burbuja, cuando la hoja ya se fue y la burbuja volvió */
+    const giveFocus = (el) => { if (el) setTimeout(() => el.focus({ preventScroll: true }), el === dockReturn ? 300 : 0); };
     const close = () => {
       if (view === 'inicio' || Date.now() - closing < 400) return;  // un solo cierre aunque lleguen varios avisos juntos
       closing = Date.now();
-      const was = tabs.find((t) => t.dataset.route === tab);
+      const was = floating || floatOnly ? dockReturn : tabs.find((t) => t.dataset.route === tab);
       /* Si la opción se abrió con su propia entrada, cerrar es lo mismo que «atrás» */
-      if (history.state?.pushed) { refocus = was; history.back(); return; }
-      show('inicio').then(() => was?.focus({ preventScroll: true }));
+      if (history.state?.pushed) { refocus = was; backToClose = true; history.back(); return; }
+      show('inicio').then(() => giveFocus(was));
     };
     hero.addEventListener('click', (e) => { if (e.target.closest('[data-hero-close]')) close(); });
     wrap.addEventListener('keydown', (e) => {
@@ -447,10 +458,12 @@
     /* Atrás y adelante del navegador: muestran la opción de esa entrada (otros anclajes, como #servicios, no tocan el hero) */
     addEventListener('popstate', () => {
       /* Con una opción abierta, volver a una entrada sin opción (p. ej., #art-12 en una norma) la cierra */
-      const name = HASH[location.hash] || (!location.hash || (view !== 'inicio' && sheetMode()) ? 'inicio' : null);
+      /* Si el «atrás» lo pidió el cierre (X, Escape), se vuelve al inicio aunque la entrada anterior tenga otro anclaje (#normativa) */
+      const name = HASH[location.hash] || (!location.hash || backToClose || (view !== 'inicio' && sheetMode()) ? 'inicio' : null);
+      backToClose = false;
       if (!name || name === view) return;
       show(name, { from: 'history' }).then(() => {
-        if (name === 'inicio') refocus?.focus({ preventScroll: true });
+        if (name === 'inicio') giveFocus(refocus);
         refocus = null;
       });
     });
@@ -463,6 +476,8 @@
       if (name === 'asistente' && window.GUIDE) { window.GUIDE.open('dock'); return; }
       show(name, { from: 'dock' });
     });
+    /* En las normas no hay hero: un anclaje de opción que quedó en la dirección (recarga, pestaña restaurada) se limpia */
+    if (floatOnly && HASH[location.hash]) history.replaceState(null, '', location.pathname + location.search);
     if (HASH[location.hash] && !floatOnly) {
       apply(HASH[location.hash], HASH[location.hash] === 'asistente' ? 'cotizar' : HASH[location.hash]);
       if (location.hash === '#buscar') window.FINDER_LOAD?.();

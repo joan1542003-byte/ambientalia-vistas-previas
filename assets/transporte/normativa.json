@@ -270,9 +270,10 @@
    "tema": "Residuos de productos prioritarios",
    "temas": [
     "rep",
+    "transporte",
     "almacenamiento"
    ],
-   "rel": "Requisitos sanitarios para recibir y almacenar residuos de productos prioritarios, también en campañas de recolección.",
+   "rel": "Requisitos sanitarios para recolectar, transportar, recibir y almacenar residuos de productos prioritarios, incluidas las campañas de recolección.",
    "nombre": "Decreto 29 de 2024: Aprueba reglamento sanitario sobre labores de recepción y almacenamiento de residuos de productos prioritarios",
    "titulo": "APRUEBA REGLAMENTO SANITARIO SOBRE LABORES DE RECEPCIÓN Y ALMACENAMIENTO DE RESIDUOS DE PRODUCTOS PRIORITARIOS",
    "organismo": "Ministerio de Salud",
@@ -323,7 +324,7 @@
     "peligrosos"
    ],
    "rel": "Condiciones para manejar los residuos que se generan en establecimientos de atención de salud.",
-   "nombre": "Decreto 6 de 2009: Aprueba reglamento sobre manejo de residuos de establecimientos de atención de salud (reas)",
+   "nombre": "Decreto 6 de 2009: Aprueba reglamento sobre manejo de residuos de establecimientos de atención de salud (REAS)",
    "titulo": "APRUEBA REGLAMENTO SOBRE MANEJO DE RESIDUOS DE ESTABLECIMIENTOS DE ATENCIÓN DE SALUD (REAS)",
    "organismo": "Ministerio de Salud",
    "promulgacion": "2009-02-23",
@@ -433,7 +434,7 @@
    "temas": [
     "sustancias"
    ],
-   "rel": "Clasificación, etiquetado y comunicación de peligros de sustancias y mezclas (HDS). No clasifica por sí solo un residuo.",
+   "rel": "Clasificación, etiquetado y comunicación de peligros de sustancias y mezclas (HDS). No se aplica a los residuos peligrosos (art. 2, letra h), que se rigen por el D.S. 148.",
    "nombre": "Decreto 57 de 2019: Aprueba reglamento de clasificación, etiquetado y notificación de sustancias químicas y mezclas peligrosas",
    "titulo": "APRUEBA REGLAMENTO DE CLASIFICACIÓN, ETIQUETADO Y NOTIFICACIÓN DE SUSTANCIAS QUÍMICAS Y MEZCLAS PELIGROSAS",
    "organismo": "Ministerio de Salud",
@@ -493,7 +494,7 @@
     "peligrosos"
    ],
    "rel": "Condiciones sanitarias y ambientales básicas de los lugares de trabajo, incluido el manejo de residuos industriales.",
-   "nombre": "Decreto 594 de 1999: Aprueba reglamento sobre condiciones sanitarias y ambientales basicas en los lugares de trabajo",
+   "nombre": "Decreto 594 de 1999: Aprueba reglamento sobre condiciones sanitarias y ambientales básicas en los lugares de trabajo",
    "titulo": "APRUEBA REGLAMENTO SOBRE CONDICIONES SANITARIAS Y AMBIENTALES BASICAS EN LOS LUGARES DE TRABAJO",
    "organismo": "Ministerio de Salud",
    "promulgacion": "1999-09-15",
@@ -544,7 +545,7 @@
     "registro"
    ],
    "rel": "Declaración de emisiones, residuos y transferencias de contaminantes en el RETC.",
-   "nombre": "Decreto 1 de 2013: Aprueba reglamento del registro de emisiones y transferencias de contaminantes, retc",
+   "nombre": "Decreto 1 de 2013: Aprueba reglamento del registro de emisiones y transferencias de contaminantes, RETC",
    "titulo": "APRUEBA REGLAMENTO DEL REGISTRO DE EMISIONES Y TRANSFERENCIAS DE CONTAMINANTES, RETC",
    "organismo": "Ministerio del Medio Ambiente",
    "promulgacion": "2013-01-02",

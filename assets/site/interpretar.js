@@ -6,7 +6,8 @@
   const PICK = window.PICK;
   if (!PICK) return;
   /* Minúsculas sin tildes; la puntuación se quita salvo los separadores dentro de números (1.500, 2,5) */
-  const fold = (v) => PICK.fold(v).replace(/(?<!\d)[.,](?!\d)|[.,](?!\d)|(?<!\d)[.,]|[¿?¡!;:()"]/g, ' ').replace(/\s+/g, ' ').trim();
+  /* Sin lookbehind (Safari anterior a 16.4 no lo entiende): «1.5», «1,5» y «9:30» se conservan; el resto de la puntuación se quita */
+  const fold = (v) => PICK.fold(v).replace(/(\d)([.,:])(?=\d)|[.,:]|[¿?¡!;()"]/g, (m, dg, sep) => (dg ? dg + sep : ' ')).replace(/\s+/g, ' ').trim();
 
   /* Categorías: primero las peligrosas más específicas, luego las no peligrosas */
   const CATEGORY_RULES = [
@@ -79,7 +80,7 @@
     const shift = (n) => { const dt = new Date(today); dt.setDate(dt.getDate() + n); return dt; };
     let dt = null;
     if (/pasado manana/.test(t)) dt = shift(2);
-    else if (/(?<!\bla )\bmanana\b/.test(t)) dt = shift(1);
+    else if (/\bmanana\b/.test(t.replace(/\bla manana\b/g, ''))) dt = shift(1);
     else {
       const w = t.match(/\b(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/);
       const m = t.match(/\b(\d{1,2}) de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\b/) || t.match(/\b(\d{1,2})[/-](\d{1,2})\b/);
@@ -111,7 +112,7 @@
 
   const mode = (t) => {
     if (/sin apuro|no es urgente|no urge|sin prisa|flexible|cuando puedan|ahorr|mas barato|economic/.test(t)) return 'flexible';
-    if (/urgent|urgencia|emergencia|lo antes posible|cuanto antes|\bhoy\b|inmediat|\bya\b|rapido|pronto/.test(t)) return 'express';
+    if (/urgent|urgencia|emergencia|lo antes posible|cuanto antes|\bhoy\b|inmediat|\bya\b(?!\s+(?:tengo|tenemos|tiene|tienen|hay|esta|estan|fue|hice|hicimos|lo|la|los|las|se|no|que)\b)|rapido|pronto/.test(t)) return 'express';
     if (/mensual|cada mes|todos los meses|periodic|programad|contrato|semanal|cada semana/.test(t)) return 'programado';
     return '';
   };
@@ -127,9 +128,12 @@
 
   const docs = (t) => {
     const out = [];
-    if (/\bhds\b|\bfds\b|hoja de (?:datos de )?seguridad|ficha de seguridad/.test(t)) out.push('HDS/FDS');
-    if (/analisis|caracterizacion/.test(t)) out.push('Análisis');
-    if (/no tengo|sin (?:documento|papel|hds)|ningun documento/.test(t)) return ['No tengo'];
+    /* Mismos valores que el formulario (PICK.DOCS) */
+    if (/no tengo|sin (?:documento|papel|hds)|ningun documento/.test(t)) return ['Sin documentos por ahora'];
+    const delResiduo = /\b[fh]dsr\b|hoja (?:de seguridad )?(?:del|para el transporte de(?:l)?) residuos?/.test(t);
+    if (delResiduo) out.push('HDSR u hoja del residuo');
+    if (!delResiduo && /\bhds\b|\bfds\b|hoja de (?:datos de )?seguridad|ficha de seguridad/.test(t)) out.push('HDS/FDS del producto original');
+    if (/analisis|caracterizacion/.test(t)) out.push('Análisis o caracterización');
     return out;
   };
 

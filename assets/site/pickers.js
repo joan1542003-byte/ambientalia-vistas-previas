@@ -108,7 +108,7 @@
     ['Otro', ic('<circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>')]
   ];
   const STATES = ['Sólido', 'Líquido', 'Lodo', 'Mixto'];
-  const DOCS = ['HDS/FDS del producto original', 'FDSR u hoja del residuo', 'Análisis o caracterización', 'Sin documentos por ahora'];
+  const DOCS = ['HDS/FDS del producto original', 'HDSR u hoja del residuo', 'Análisis o caracterización', 'Sin documentos por ahora'];
   const ACCESS = ['Acceso restringido para camión', 'Bodega subterránea', 'Altura máxima', 'Grúa requerida', 'Horario de carga definido'];
   const SERVICES = [['retiro', 'Retiro de residuos'], ['rep', 'Gestión REP y productos prioritarios'], ['marcas', 'Destrucción de marcas'], ['reas', 'Gestión de REAS'], ['patios', 'Limpieza y patios de residuos']];
   const TIPO_LABEL = { 'no-peligroso': 'No peligroso', peligroso: 'Peligroso', 'no-se': 'No lo sé' };

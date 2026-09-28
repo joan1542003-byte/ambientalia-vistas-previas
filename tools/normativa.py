@@ -49,14 +49,14 @@ NORMAS = [
      'Metas de recolección y valorización y obligaciones asociadas para envases y embalajes.'),
     (1154847, 'ds-8-2019-mma', 'Metas REP de neumáticos', ['rep'],
      'Metas de recolección y valorización y obligaciones asociadas para neumáticos.'),
-    (1220286, 'ds-29-2024-minsal', 'Residuos de productos prioritarios', ['rep', 'almacenamiento'],
-     'Requisitos sanitarios para recibir y almacenar residuos de productos prioritarios, también en campañas de recolección.'),
+    (1220286, 'ds-29-2024-minsal', 'Residuos de productos prioritarios', ['rep', 'transporte', 'almacenamiento'],
+     'Requisitos sanitarios para recolectar, transportar, recibir y almacenar residuos de productos prioritarios, incluidas las campañas de recolección.'),
     (1008725, 'ds-6-2009-minsal', 'Residuos de establecimientos de salud (REAS)', ['salud', 'peligrosos'],
      'Condiciones para manejar los residuos que se generan en establecimientos de atención de salud.'),
     (1088802, 'ds-43-2015-minsal', 'Almacenamiento de sustancias peligrosas', ['sustancias', 'almacenamiento'],
      'Condiciones de las instalaciones donde se almacenan sustancias peligrosas.'),
     (1155752, 'ds-57-2019-minsal', 'Clasificación y etiquetado de sustancias', ['sustancias'],
-     'Clasificación, etiquetado y comunicación de peligros de sustancias y mezclas (HDS). No clasifica por sí solo un residuo.'),
+     'Clasificación, etiquetado y comunicación de peligros de sustancias y mezclas (HDS). No se aplica a los residuos peligrosos (art. 2, letra h), que se rigen por el D.S. 148.'),
     (167766, 'ds-594-1999-minsal', 'Condiciones sanitarias en lugares de trabajo', ['trabajo', 'peligrosos'],
      'Condiciones sanitarias y ambientales básicas de los lugares de trabajo, incluido el manejo de residuos industriales.'),
     (1050536, 'ds-1-2013-mma', 'Registro RETC', ['registro'],
@@ -190,6 +190,15 @@ def oracion(s):
         else:
             out.append(w[:1] + w[1:].lower() if k == 0 else w.lower())
     return ' '.join(out)
+
+
+TILDES = {'BASICAS': 'BÁSICAS', 'BASICA': 'BÁSICA'}
+
+
+def titulo_oracion(t):
+    """Título oficial (en mayúsculas en Ley Chile) a tipo oración: conserva siglas (RETC, REAS) y corrige tildes que faltan."""
+    t = ' '.join(TILDES.get(w, w) for w in re.sub(r'\s+', ' ', t or '').strip().split(' '))
+    return oracion(t)
 
 
 def titulo_parte(t):
@@ -332,6 +341,7 @@ ICON = {
 
 
 def pagina(n, cuerpo, toc, version, tools=('', '')):
+    from documentos import menu_html as docs_menu, boton_documentos as docs_boton  # panel «Documentos» de la cabecera
     ld = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -359,8 +369,9 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
                 '@type': 'BreadcrumbList',
                 'itemListElement': [
                     {'@type': 'ListItem', 'position': 1, 'name': 'Transporte Autorizado', 'item': f'{SITE}/'},
-                    {'@type': 'ListItem', 'position': 2, 'name': 'Documentos y normativa', 'item': f'{SITE}/#normativa'},
-                    {'@type': 'ListItem', 'position': 3, 'name': n['corto']},
+                    {'@type': 'ListItem', 'position': 2, 'name': 'Documentos', 'item': f'{SITE}/#documentos'},
+                    {'@type': 'ListItem', 'position': 3, 'name': 'Normativa', 'item': f'{SITE}/#normativa'},
+                    {'@type': 'ListItem', 'position': 4, 'name': n['corto']},
                 ],
             },
         ],
@@ -376,7 +387,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
         f'<li data-tip="Versión del texto que muestra esta página">{DATO["version"]}<span class="fact"><span class="fact-l">Texto al</span> <time datetime="{n["version"]}">{fecha_corta(n["version"])}</time></span></li>'
         f'<li>{DATO["articulos"]}{n["articulos"]} artículos</li>'
     )
-    desc = f'{n["corto"]}: {n["titulo"].capitalize()}. Texto oficial, datos clave y descarga en PDF. Fuente: Ley Chile (BCN).'
+    desc = f'{n["corto"]}: {titulo_oracion(n["titulo"])}. Texto oficial, datos clave y descarga en PDF. Fuente: Ley Chile (BCN).'
     return f'''<!doctype html>
 <html lang="es-CL">
 <head>
@@ -391,7 +402,13 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 <meta property="og:site_name" content="Transporte Autorizado">
 <meta property="og:title" content="{esc(n["corto"])} · {esc(n["tema"])}">
 <meta property="og:description" content="{esc(desc)}">
+<meta property="og:url" content="{SITE}/normativa/{n["slug"]}.html">
+<meta property="og:image" content="{SITE}/assets/truck-stock.jpg">
+<meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff">
 <link rel="icon" href="../assets/transporte/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -404,18 +421,23 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 </head>
 <body data-site="transporte" class="norm-page" data-tema="{n["temas"][0]}">
 <a class="skip" href="#contenido">Saltar al contenido</a>
-<header class="site-header norm-bar" data-reader>
+<header class="site-header norm-bar has-docs" data-reader>
   <div class="container">
     <a class="brand" href="../transporte-autorizado.html" aria-label="Transporte Autorizado, inicio">
       <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#2f5bd3"/><path d="M9 14h14v12H9zM23 18h5l4 4v4h-9M13 30a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm14 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
       Transporte Autorizado
     </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
+      <svg width="20" height="20" class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+      <svg width="20" height="20" class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
     <nav class="nav" id="nav" aria-label="Principal">
-      <a href="../transporte-autorizado.html#normativa">Normativa</a>
+      {docs_boton('../', actual=True)}
       <a class="btn btn-primary btn-small" href="../transporte-autorizado.html#cotizar" data-dock-open="cotizar">Cotizar retiro</a>
     </nav>
+    {docs_menu('../')}
     <div class="reader" data-reader-bar inert>
-      <a class="reader-back" href="../transporte-autorizado.html#normativa" aria-label="Volver a la biblioteca">{ICON["back"]}</a>
+      <a class="reader-back" href="../transporte-autorizado.html#normativa" aria-label="Volver a la normativa">{ICON["back"]}</a>
       <p class="reader-where"><small>{esc(n["corto"])}</small><strong data-reader-now>{esc(n["tema"])}</strong></p>
       <button class="reader-btn" type="button" data-find-open aria-label="Buscar en esta norma">{DATO["buscar"]}</button>
       <button class="reader-btn reader-toc" type="button" data-toc-open aria-label="Índice">{DATO["indice"]}</button>
@@ -436,7 +458,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 
 <main id="contenido">
   <article class="container norm">
-    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#normativa">Documentos y normativa</a><span aria-hidden="true">/</span><span aria-current="page">{esc(n["corto"])}</span></nav>
+    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#documentos">Documentos</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#normativa">Normativa</a><span aria-hidden="true">/</span><span aria-current="page">{esc(n["corto"])}</span></nav>
     <header class="norm-head">
       <p class="norm-kind"><span class="doc-icon">{icono_tema(n["temas"][0])}</span>{esc(n["tipo"])} · {esc(n["organismo"])}</p>
       <h1 class="norm-title">{esc(n["corto"])} · {esc(n["tema"])}</h1>
@@ -459,7 +481,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 
     <footer class="norm-source">
       <p><strong>Fuente:</strong> <a href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ley Chile, Biblioteca del Congreso Nacional</a>. Texto obtenido el {fecha_larga(HOY)} (versión del {fecha_larga(n["version"])}). Esta copia es referencial: para efectos legales, consulta siempre la fuente oficial y el Diario Oficial.</p>
-      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#normativa">{ICON["back"]}Volver a la biblioteca</a>
+      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#normativa">{ICON["back"]}Volver a la normativa</a>
     </footer>
   </article>
 </main>
@@ -478,6 +500,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 <script src="../assets/site/transporte-ui.js?v={version}" defer></script>
 <script src="../assets/site/asistente.js?v={version}" defer></script>
 <script src="../assets/site/norma.js?v={version}" defer></script>
+<script src="../assets/site/documentos.js?v={version}" defer></script>
 </body>
 </html>
 '''
@@ -543,7 +566,7 @@ def herramientas():
     """Tarjeta de cotizar, buscar y conversar, y la burbuja «?», tal como están en la página de Transporte.
     En cada norma quedan ocultas y se abren desde la burbuja en el mismo lugar (transporte-ui.js, modo data-float-only)."""
     s = (ROOT / 'transporte-autorizado.html').read_text(encoding='utf-8')
-    tarjeta_html = bloque(s, '<div class="hcard">')
+    tarjeta_html = re.sub(r' role="tabpanel" aria-labelledby="tab-[\w-]+"', '', bloque(s, '<div class="hcard">'))
     burbuja = bloque(s, '<div class="dock" data-dock>').replace('<div class="dock" data-dock>', '<div class="dock" data-dock data-dock-always>', 1)
     return tarjeta_html, burbuja
 
@@ -577,7 +600,7 @@ def main():
             'id': id_norma, 'slug': slug, 'tipo': tipo, 'numero': numero,
             'corto': titulo_corto(tipo, numero, ident.get('fechaPromulgacion')),
             'tema': tema, 'temas': temas, 'rel': rel,
-            'nombre': f'{tipo} {numero} de {ident.get("fechaPromulgacion")[:4]}: {titulo.capitalize()}',
+            'nombre': f'{tipo} {numero} de {ident.get("fechaPromulgacion")[:4]}: {titulo_oracion(titulo)}',
             'titulo': titulo,
             'organismo': ORG_CORTO.get(org, org.title()),
             'promulgacion': ident.get('fechaPromulgacion'), 'publicacion': ident.get('fechaPublicacion'),

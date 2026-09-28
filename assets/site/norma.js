@@ -94,12 +94,17 @@
 
   /* ---------- Modo lectura y avance ---------- */
   let finding = false;
+  const syncInert = () => {
+    const on = bar.classList.contains('is-reading');
+    reader.inert = !on || finding;
+    bar.querySelectorAll('.brand, .nav, .menu-toggle').forEach((el) => { el.inert = on; });
+  };
+  const readingNow = () => head.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom;
   const setReading = (on) => {
     on = on || finding;
     if (bar.classList.contains('is-reading') === on) return;
     bar.classList.toggle('is-reading', on);
-    reader.inert = !on || finding;
-    bar.querySelectorAll('.brand, .nav').forEach((el) => { el.inert = on; });
+    syncInert();
   };
   let ticking = false;
   const onScroll = () => {
@@ -191,8 +196,14 @@
     if (!sheet || !sheetOpen) return Promise.resolve();
     sheetOpen = false;
     sheet.classList.remove('is-in');
-    if (!fromHistory && history.state?.tocSheet) history.back();
-    return new Promise((r) => setTimeout(() => { sheet.close(); r(); }, motion.matches ? 280 : 0));
+    /* Se espera a que termine el «atrás»: si no, el navegador restaura la posición anterior después de saltar al destino */
+    let popped = Promise.resolve();
+    if (!fromHistory && history.state?.tocSheet) {
+      popped = new Promise((r) => { addEventListener('popstate', () => r(), { once: true }); setTimeout(r, 600); });
+      history.back();
+    }
+    const gone = new Promise((r) => setTimeout(() => { sheet.close(); r(); }, motion.matches ? 280 : 0));
+    return Promise.all([popped, gone]);
   };
   const openSheet = () => {
     if (!tocNav) return;
@@ -300,7 +311,7 @@
     bar.classList.add('is-finding', 'is-reading');
     finder.inert = false;
     reader.inert = true;
-    bar.querySelectorAll('.brand, .nav').forEach((el) => { el.inert = true; });
+    bar.querySelectorAll('.brand, .nav, .menu-toggle').forEach((el) => { el.inert = true; });
     q.focus({ preventScroll: true });
     if (q.value) q.select();
   };
@@ -310,10 +321,13 @@
     out.textContent = '';
     bar.classList.remove('is-finding');
     finder.inert = true;
-    bar.classList.remove('is-reading');
+    /* El estado de lectura se decide ya (no en el próximo cuadro), para que la cabecera responda y el foco vuelva cerca */
+    bar.classList.toggle('is-reading', readingNow());
+    syncInert();
+    const back = opener && opener.isConnected && !opener.closest('[inert]') ? opener
+      : bar.classList.contains('is-reading') ? reader.querySelector('[data-find-open]') : d.querySelector('.norm-actions [data-find-open]');
+    back?.focus({ preventScroll: true });
     onScroll();
-    requestAnimationFrame(() => { reader.inert = !bar.classList.contains('is-reading'); });
-    (opener && opener.isConnected && !opener.closest('[inert]') ? opener : d.querySelector('.norm-actions [data-find-open]'))?.focus({ preventScroll: true });
   };
   d.querySelectorAll('[data-find-open]').forEach((b) => b.addEventListener('click', openFinder));
   finder.querySelector('[data-textfind-close]').addEventListener('click', closeFinder);
@@ -328,6 +342,6 @@
   });
   /* Ctrl/⌘ + F abre la búsqueda propia (una segunda vez deja la del navegador) */
   d.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f' && !finding) { e.preventDefault(); openFinder(); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f' && !finding && !d.querySelector('dialog[open]')) { e.preventDefault(); openFinder(); }
   });
 })();

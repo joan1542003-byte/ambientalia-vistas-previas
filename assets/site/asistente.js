@@ -22,7 +22,8 @@
   const bar = panel.querySelector('.stepper-bar i');
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-  const later = (fn) => setTimeout(fn, 160); // deja ver la selección antes de avanzar
+  /* Deja ver la selección antes de avanzar; un doble toque no avanza dos veces (solo si la pregunta sigue siendo la misma) */
+  const later = (fn) => { const at = index; setTimeout(() => { if (index === at) fn(); }, 160); };
 
   const POPULAR = [
     ['no-peligroso', 'Papel y cartón', 'np-papel-carton'], ['no-peligroso', 'Plásticos', 'np-plasticos'],
@@ -47,10 +48,10 @@
     { id: 'fechas', label: 'Fechas posibles', type: 'calendar', multi: 3, sub: true, when: (a) => a.modalidad === 'Espera y ahorra',
       ask: '¿Qué días te acomodan?', help: 'Elige hasta tres; coordinamos según nuestra disponibilidad.', hint: 'Ej.: lunes 5 de octubre' },
     { id: 'horario', label: 'Horario', type: 'options', layout: 'cards', sub: true, ask: '¿En qué horario se puede retirar?', hint: 'Ej.: en la mañana', options: SLOT_OPTIONS },
-    { id: 'documentos', label: 'Documentación del residuo', type: 'multi', layout: 'list', exclusive: 'No tengo', hint: 'Ej.: tengo la HDS',
+    { id: 'documentos', label: 'Documentación del residuo', type: 'multi', layout: 'list', exclusive: 'Sin documentos por ahora', hint: 'Ej.: tengo la HDS',
       ask: '¿Tienes algún antecedente o documento del residuo?', help: 'Si tienes HDS/FDS, análisis u otra documentación, podrás adjuntarla por WhatsApp.',
-      options: ['HDS/FDS', 'Análisis', 'Otros documentos', 'No tengo'].map((x) => ({ value: x, label: x })) },
-    { id: 'contacto', type: 'contact', ask: 'Necesito algunos datos para preparar tu solicitud.', help: 'Te enviaremos la propuesta a estos datos.',
+      options: PICK.DOCS.map((x) => ({ value: x, label: x })) },
+    { id: 'contacto', type: 'contact', ask: 'Necesito algunos datos para preparar tu solicitud.', help: 'Usaremos estos datos para enviarte la propuesta.',
       fields: [
         { id: 'empresa', label: 'Empresa', autocomplete: 'organization' },
         { id: 'nombre', label: 'Nombre de contacto', autocomplete: 'name' },
@@ -59,7 +60,7 @@
       ] }
   ];
   const TITLE = 'Solicitud de cotización — Transporte Autorizado';
-  const CLOSING = 'Adjuntaré fotografías del residuo, su contenedor y el lugar donde está almacenado.';
+  const CLOSING = 'Adjuntaré fotografías del residuo, su envase y el lugar donde está almacenado.';
   const GREETING = 'Hola, te ayudo a gestionar tu residuo. Te haré algunas preguntas para preparar una solicitud de cotización.';
 
   const answers = {};
@@ -200,11 +201,11 @@
       : answers[s.id] ? [{ label: s.label, value: shown(s), i }] : []));
     body.innerHTML = `<div class="guide-step guide-final">
       <div class="guide-done"><svg width="28" height="28" class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>
-        <div><h3 class="guide-q" tabindex="-1">Listo. Tenemos los antecedentes principales.</h3><p class="guide-help">Revisaremos el residuo, cobertura, disponibilidad y condiciones del retiro para preparar una propuesta.</p></div></div>
+        <div><h3 class="guide-q" tabindex="-1">Tu solicitud está lista.</h3><p class="guide-help">Envíala por WhatsApp con las fotografías; con eso revisamos el residuo, la cobertura, la disponibilidad y las condiciones del retiro para preparar la propuesta.</p></div></div>
       <dl class="review">${rows.map((r) => `<div><dt>${esc(r.label)}</dt><dd>${esc(r.value)}</dd><button type="button" class="text-link" data-edit="${r.i}">Cambiar<span class="sr-only"> ${esc(r.label)}</span></button></div>`).join('')}</dl>
       <p class="guide-note">Se abrirá WhatsApp con tu solicitud escrita. Revísala, adjunta las fotografías y envíala.</p>
     </div>`;
-    actions.innerHTML = `<button type="button" class="btn btn-secondary btn-small" data-copy>${ICON.copy}${ICON.done}<span>Copiar</span></button><a class="btn btn-primary btn-small" href="${window.SITE.whatsapp(summaryText())}" target="_blank" rel="noopener noreferrer">${ICON.send}Solicitar cotización<span class="sr-only"> (abre WhatsApp)</span></a>`;
+    actions.innerHTML = `<button type="button" class="btn btn-secondary btn-small" data-copy>${ICON.copy}${ICON.done}<span>Copiar</span></button><a class="btn btn-primary btn-small" href="${window.SITE.whatsapp(summaryText())}" target="_blank" rel="noopener noreferrer">${ICON.send}Enviar por WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></a>`;
   };
 
   const render = () => {
@@ -249,19 +250,21 @@
       exchange = { user: raw, bot: 'Hola. Cuéntame qué necesitas retirar, dónde está y para cuándo; o elige una opción.' };
       return;
     }
-    if (r.categoria) { answers.residuo = r.categoria; meta.tipo = r.tipo; got.push(r.categoria); }
-    if (r.cantidad) { answers.cantidad = r.cantidad.label; got.push(r.cantidad.label); }
-    if (r.comuna) { answers.comuna = r.comuna.commune; got.push(r.comuna.commune); }
-    if (r.almacenamiento) {
+    /* Lo escrito completa lo que falta o responde la pregunta actual; no cambia respuestas anteriores (para eso están los «Cambiar») */
+    const may = (...ids) => ids.some((id) => !(id in answers) || step?.id === id);
+    if (r.categoria && may('residuo')) { answers.residuo = r.categoria; meta.tipo = r.tipo; got.push(r.categoria); }
+    if (r.cantidad && may('cantidad')) { answers.cantidad = r.cantidad.label; got.push(r.cantidad.label); }
+    if (r.comuna && may('comuna')) { answers.comuna = r.comuna.commune; got.push(r.comuna.commune); }
+    if (r.almacenamiento && may('almacenamiento')) {
       answers.almacenamiento = r.almacenamiento;
       if (!PICK.fold(r.cantidad?.label || '').includes(PICK.fold(r.almacenamiento).slice(0, 4))) got.push(`en ${r.almacenamiento.toLowerCase()}`);
     }
-    if (r.modalidad) {
+    if (r.modalidad && may('modalidad')) {
       const label = PICK.MODE_LABEL[r.modalidad];
       if (answers.modalidad !== label) { delete answers.fecha; delete answers.fechas; meta.dates = {}; }
       answers.modalidad = label;
     }
-    if (r.fecha) {
+    if (r.fecha && may('fecha', 'fechas')) {
       if (answers.modalidad === 'Espera y ahorra') {
         const list = [...new Set([...(meta.dates.fechas || []), r.fecha])].sort().slice(-3);
         meta.dates.fechas = list;
@@ -273,11 +276,11 @@
       }
       got.push(PICK.shortDate(r.fecha));
     }
-    if (r.horario) {
+    if (r.horario && may('horario')) {
       answers.horario = SLOT_OPTIONS.find((o) => o.label === r.horario)?.value || r.horario;
       got.push(r.horario.toLowerCase());
     }
-    if (r.documentos.length) { answers.documentos = r.documentos.join(', '); got.push(r.documentos.join(', ')); }
+    if (r.documentos.length && may('documentos')) { answers.documentos = r.documentos.join(', '); got.push(r.documentos.join(', ')); }
     const understood = got.length || r.modalidad || r.fueraDeCobertura;
 
     /* Si no se reconoció nada, el texto se toma como respuesta a la pregunta actual */
@@ -299,7 +302,7 @@
     if (!reply) {
       const parts = [];
       if (got.length) parts.push(`Anoté: ${got.join(' · ')}.`);
-      if (r.modalidad === 'express') parts.push('Lo tratamos como Retiro Express: priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad.');
+      if (r.modalidad === 'express') parts.push('Lo tratamos como Retiro Express: priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna.');
       else if (r.modalidad === 'programado') parts.push('Lo coordinamos como Retiro Programado.');
       else if (r.modalidad === 'flexible') parts.push('Lo coordinamos como Espera y ahorra, según nuestra disponibilidad.');
       if (r.fechaError && !r.fecha) parts.push(r.fechaError);

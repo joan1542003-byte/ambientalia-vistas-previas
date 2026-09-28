@@ -397,7 +397,6 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 }
 
 /* ---------- Entradas del hero: suaves y sin rebote. El alto de la tarjeta lo anima transporte-ui.js ---------- */
-}
 @media (prefers-reduced-motion: no-preference) {
   @keyframes hero-card-in { from { opacity: 0; transform: translateY(10px); } }
   @keyframes hero-fade-in { from { opacity: 0; } }
@@ -1025,6 +1024,8 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
     transition: opacity .16s var(--ease), translate .2s var(--ease);
   }
   [data-tip]:hover::after { opacity: 1; translate: -50% 0; transition-delay: .45s; }
+  .norm-facts li:first-child[data-tip]::after { left: 0; translate: 0 4px; }
+  .norm-facts li:first-child[data-tip]:hover::after { translate: 0 0; }
   .is-warm [data-tip]:hover::after { transition-delay: 0s; }
 }
 .norm-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
@@ -1090,8 +1091,8 @@ mark.find-hit.is-current { background: #f59e0b; box-shadow: 0 0 0 2px #f59e0b; c
 .norm-source { display: grid; gap: 12px; justify-items: start; margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: var(--fs-small); }
 
 /* Barra de lectura: la misma píldora del sitio cambia de contenido al bajar (sin cambiar de tamaño) */
-.norm-bar .brand, .norm-bar .nav { transition: opacity .25s var(--ease), translate .3s var(--ease); }
-.norm-bar.is-reading .brand, .norm-bar.is-reading .nav { opacity: 0; translate: 0 -6px; pointer-events: none; }
+.norm-bar .brand, .norm-bar .nav, .norm-bar .menu-toggle { transition: opacity .25s var(--ease), translate .3s var(--ease); }
+.norm-bar.is-reading .brand, .norm-bar.is-reading .nav, .norm-bar.is-reading .menu-toggle { opacity: 0; translate: 0 -6px; pointer-events: none; }
 .reader, .textfind { position: absolute; inset: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px; opacity: 0; translate: 0 6px; pointer-events: none; transition: opacity .25s var(--ease), translate .3s var(--ease); }
 .norm-bar.is-reading:not(.is-finding) .reader, .norm-bar.is-finding .textfind { opacity: 1; translate: 0 0; pointer-events: auto; }
 .reader-back { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 999px; color: var(--ink); transition: background-color .2s; }
@@ -1167,10 +1168,162 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
   .reader-progress { left: 24px; right: 24px; }
 }
 
+/* ---------- «Documentos» en la cabecera: la misma píldora se expande con las guías y su explicación (documentos.js) ---------- */
+/* La cabecera conserva su alto: la píldora crece hacia abajo por encima del contenido (sin empujar la página) */
+.site-header.has-docs { height: 66px; }  /* 10 px de margen + 56 px de píldora (el borde seguro va en «top») */
+.site-header.has-docs .container { flex-wrap: wrap; border-radius: 28px; }  /* 28 px = píldora a 56 px de alto; al crecer queda redondeada */
+.nav-docs { display: inline-flex; align-items: center; gap: 4px; }
+.nav-docs-chev { display: grid; place-items: center; transition: rotate .3s var(--ease); }
+.nav-docs-chev svg { width: 16px; height: 16px; }
+.docs-open .nav-docs-chev { rotate: 180deg; }
+.docs-open .nav .nav-docs { color: var(--ink); background: rgb(21 26 45 / .07); }
+.docs-open .container::before { background: rgb(255 255 255 / .97); box-shadow: 0 30px 60px -30px rgb(21 26 45 / .45), 0 0 0 1px rgb(21 26 45 / .06); }
+.docs-panel { flex: 0 0 100%; display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.32, .72, 0, 1); }
+.docs-open .docs-panel { grid-template-rows: 1fr; }
+.docs-inner { min-height: 0; overflow: hidden; }
+.docs-scroll { max-height: calc(100dvh - 120px); overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.docs-grid { position: relative; isolation: isolate; display: grid; grid-template-columns: 320px minmax(0, 1fr); column-gap: 32px; align-items: start; margin: 4px 10px 0 0; padding: 12px 0 14px; border-top: 1px solid var(--line); }
+.docs-item { display: contents; }
+.docs-tab {
+  grid-column: 1; display: grid; grid-template-columns: 40px minmax(0, 1fr) 18px; align-items: center; gap: 12px; width: 100%; margin-bottom: 2px; padding: 10px 12px;
+  border: 0; border-radius: 14px; background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+}
+.docs-tab .doc-icon { width: 40px; height: 40px; border-radius: 12px; }
+.docs-tab-text strong { display: block; font-size: var(--fs-body-sm); font-weight: 800; line-height: 1.3; }
+.docs-tab-text small { display: block; margin-top: 1px; color: var(--muted); font-size: var(--fs-small); font-weight: 600; line-height: 1.35; }
+.docs-chev { display: grid; place-items: center; color: var(--line-strong); transition: color .25s var(--ease), rotate .3s var(--ease); }
+.docs-item.is-on .docs-chev { color: var(--ink); }
+.docs-tab:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.docs-glide { position: absolute; left: 0; top: 0; z-index: -1; width: 320px; border-radius: 14px; background: #f3f2ee; opacity: 0; pointer-events: none; transition: transform .35s var(--ease), height .35s var(--ease), opacity .2s; }
+.docs-glide.is-on { opacity: 1; }
+.docs-glide.is-instant { transition: opacity .2s; }
+.docs-detail { grid-column: 2; grid-row: 1 / span 4; display: none; padding: 8px 8px 4px 0; }
+.docs-item.is-on .docs-detail { display: block; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes docs-in { from { opacity: 0; transform: translateY(4px); } }
+  .docs-open .docs-item.is-on .docs-detail { animation: docs-in .32s var(--ease) both; }
+}
+.docs-kicker { color: var(--tc); font-size: var(--fs-small); font-weight: 800; }
+.docs-detail h3 { margin-top: 2px; font-size: var(--fs-subtitle); line-height: 1.25; letter-spacing: -.012em; }
+.docs-lead { max-width: 62ch; margin-top: 6px; color: var(--ink-2); font-size: var(--fs-body-sm); line-height: 1.55; }
+.docs-points { list-style: none; display: grid; gap: 8px; max-width: 64ch; margin-top: 12px; }
+.docs-points li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; color: var(--ink); font-size: var(--fs-body-sm); line-height: 1.5; }
+.docs-points svg { margin-top: 2px; color: var(--tc); }
+.docs-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.docs-actions .btn { max-width: 100%; white-space: normal; text-align: left; }
+.docs-actions .btn svg { width: 18px; height: 18px; flex: none; }
+.docs-quick { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; max-width: 640px; margin-top: 12px; }
+.docs-quick a { display: grid; grid-template-columns: minmax(0, 1fr) 18px; align-items: center; gap: 2px 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 14px; color: var(--ink); text-decoration: none; transition: border-color .2s, background-color .2s; }
+.docs-quick a:hover { border-color: var(--line-strong); background: var(--bg-alt); }
+.docs-quick strong { font-size: var(--fs-small); }
+.docs-quick span { grid-column: 1; color: var(--muted); font-size: var(--fs-small); font-weight: 600; }
+.docs-quick svg { grid-column: 2; grid-row: 1 / span 2; color: var(--line-strong); }
+/* La barra de lectura de las normas ocupa solo la fila de la píldora */
+.norm-bar .reader, .norm-bar .textfind { bottom: auto; height: 56px; }
+@media (max-width: 860px) {
+  .docs-scroll { max-height: calc(100dvh - 96px); }
+  .docs-grid { display: block; margin: 2px 10px 0 0; padding: 4px 0 6px; }
+  .docs-glide { display: none; }
+  .docs-item { display: block; }
+  .docs-item + .docs-item { border-top: 1px solid var(--line); }
+  .docs-tab { margin: 0; padding: 12px 4px; border-radius: 0; }
+  .docs-item.is-on .docs-chev { rotate: 90deg; }
+  .docs-detail { padding: 0 4px 16px 56px; }
+  .docs-detail h3 { font-size: var(--fs-card); }
+  .docs-quick { grid-template-columns: minmax(0, 1fr); }
+  /* El botón del menú cierra los documentos mientras están abiertos */
+  .docs-open .menu-toggle .icon-open { display: none; }
+  .docs-open .menu-toggle .icon-close { display: block; }
+}
+
+/* ---------- Sección Documentos: guías y descarga, sobre la biblioteca de normativa ---------- */
+.guias { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.guia-card {
+  display: grid; grid-template-rows: auto 1fr auto; gap: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: #fff; color: var(--ink); text-decoration: none;
+  transition: border-color .25s var(--ease), box-shadow .25s var(--ease);
+}
+@media (hover: hover) { .guia-card:hover { border-color: color-mix(in srgb, var(--tc) 35%, var(--line)); box-shadow: 0 14px 28px -20px rgb(21 26 45 / .35); } }
+.guia-card-text strong { display: block; font-size: var(--fs-card); line-height: 1.3; letter-spacing: -.01em; }
+.guia-card-text small { display: block; margin-top: 6px; color: var(--ink-2); font-size: var(--fs-body-sm); line-height: 1.5; }
+.guia-card-go { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-small); font-weight: 800; }
+.guia-card-go svg { width: 18px; height: 18px; transition: transform .3s var(--ease); }
+@media (hover: hover) { .guia-card:hover .guia-card-go svg { transform: translateX(2px); } }
+.download-strip { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 14px; margin-top: 12px; padding: 14px 16px; border-radius: 18px; background: #f6f5f2; }
+.download-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 13px; background: #e8f3ec; color: #2f7a4f; }
+.download-strip strong { display: block; font-size: var(--fs-body-sm); }
+.download-strip small { display: block; color: var(--muted); font-size: var(--fs-small); font-weight: 600; }
+.download-strip .btn svg { width: 18px; height: 18px; }
+.lib-heading { margin: 40px 0 14px; font-size: var(--fs-subtitle); letter-spacing: -.012em; scroll-margin-top: 96px; }
+@media (max-width: 860px) {
+  .guias { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .guia-card { grid-template-columns: 40px minmax(0, 1fr); grid-template-rows: none; align-items: start; gap: 12px; padding: 14px; }
+  .guia-card .doc-icon { width: 40px; height: 40px; border-radius: 12px; }
+  .guia-card-text strong { font-size: var(--fs-body); }
+  .guia-card-text small { font-size: var(--fs-small); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .guia-card-go { display: none; }
+}
+@media (max-width: 560px) {
+  .download-strip { grid-template-columns: 40px minmax(0, 1fr); }
+  .download-strip .btn { grid-column: 1 / -1; justify-self: start; }
+  .download-icon { width: 40px; height: 40px; }
+}
+
+/* ---------- Página de cada guía (documentos/*.html) ---------- */
+.guia { max-width: 820px; padding-block: 14px 72px; }
+.guia-head { display: grid; gap: 12px; }
+.guia-head .norm-lead { max-width: 68ch; }
+.guia-sec { margin-top: 44px; }
+.guia-sec h2 { margin-bottom: 14px; font-size: var(--fs-subtitle); letter-spacing: -.012em; scroll-margin-top: 96px; }
+.guia-sub { margin: -6px 0 14px; color: var(--muted); font-size: var(--fs-small); line-height: 1.5; }
+.guia-points { list-style: none; display: grid; gap: 16px; }
+.guia-points li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; color: var(--ink); font-size: 1.0625rem; line-height: 1.65; }
+.guia-points li > svg { width: 20px; height: 20px; margin-top: 4px; color: var(--tc); }
+.law-refs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.law-ref { display: inline-flex; align-items: center; min-height: 30px; padding: 0 12px; border-radius: 999px; background: var(--bg-sunk); color: var(--ink-2); font-size: var(--fs-small); font-weight: 800; line-height: 1.2; text-decoration: none; transition: background-color .2s, color .2s; }
+.law-ref:hover { background: var(--tc-soft); color: var(--tc); }
+.guia-steps { list-style: none; counter-reset: paso; display: grid; gap: 14px; }
+.guia-steps li { counter-increment: paso; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; color: var(--ink); font-size: 1.0625rem; line-height: 1.6; }
+.guia-steps li::before { content: counter(paso); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 99px; background: var(--tc-soft); color: var(--tc); font-size: var(--fs-small); font-weight: 800; }
+.guia-errors { list-style: none; display: grid; gap: 12px; padding: 18px 20px; border-radius: 18px; background: #fbf6f4; }
+.guia-errors li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; color: var(--ink); font-size: 1rem; line-height: 1.55; }
+.guia-errors svg { width: 18px; height: 18px; margin-top: 3px; color: var(--hazard); }
+.guia-matrix { overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.guia-matrix table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); line-height: 1.5; }
+.guia-matrix th, .guia-matrix td { padding: 12px 14px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.guia-matrix thead th { border-top: 0; background: var(--bg-alt); color: var(--ink-2); font-size: var(--fs-caption); font-weight: 800; }
+.guia-matrix tbody th { width: 22%; color: var(--ink); font-weight: 800; }
+.guia-matrix td .law-refs { margin-top: 0; }
+.gm-ans { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: var(--fs-caption); font-weight: 800; line-height: 1.4; }
+.gm-ans.is-si { background: #fbeee9; color: #b4432a; }
+.gm-ans.is-no { background: #e8f3ec; color: #2f7a4f; }
+.gm-ans.is-quizas { background: #f8f0df; color: #93620f; }
+.gm-ans.is-revisar { background: #eef0f4; color: #4b5563; }
+.guia-links { list-style: none; display: grid; gap: 8px; }
+.guia-links a { display: grid; grid-template-columns: 40px minmax(0, 1fr) 18px; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); text-decoration: none; transition: border-color .2s, background-color .2s; }
+.guia-links a:hover { border-color: var(--line-strong); background: var(--bg-alt); }
+.guia-links .doc-icon { width: 40px; height: 40px; border-radius: 12px; }
+.guia-links strong { display: block; font-size: var(--fs-body-sm); line-height: 1.35; }
+.guia-links small { display: block; margin-top: 2px; color: var(--muted); font-size: var(--fs-small); font-weight: 600; line-height: 1.45; }
+.guia-links a > svg:last-child { color: var(--line-strong); }
+@media (max-width: 720px) {
+  .guia-matrix { overflow: visible; border: 0; background: none; }
+  .guia-matrix thead { display: none; }
+  .guia-matrix table, .guia-matrix tbody, .guia-matrix tr, .guia-matrix th, .guia-matrix td { display: block; width: auto; }
+  .guia-matrix tr { margin-bottom: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+  .guia-matrix th, .guia-matrix td { padding: 0; border: 0; }
+  .guia-matrix tbody th { width: auto; margin-bottom: 4px; font-size: var(--fs-body-sm); }
+  .guia-matrix td { margin-top: 10px; }
+  .guia-matrix td::before { content: attr(data-label); display: block; margin-bottom: 4px; color: var(--muted); font-size: var(--fs-small); font-weight: 700; }
+}
+@media (max-width: 640px) {
+  .guia-points li, .guia-steps li { font-size: 1rem; }
+  .guia-actions { display: flex; flex-wrap: wrap; }
+}
+
 /* PDF: la misma página, limpia (se imprime con tools/normativa-pdf.mjs, que abre los bloques plegados) */
 @media print {
   @page { size: A4; margin: 18mm 16mm 20mm; }
-  .site-header, .skip, .norm-crumbs, .norm-actions, .norm-toc, .norm-source .btn, .dock, .art-link, .toc-sheet { display: none !important; }
+  .site-header, .skip, .norm-crumbs, .norm-actions, .norm-toc, .norm-source .btn, .dock, .art-link, .toc-sheet, .docs-panel { display: none !important; }
   [data-tip]::after { display: none; }
   body { background: #fff; }
   .norm { max-width: none; padding: 0; }

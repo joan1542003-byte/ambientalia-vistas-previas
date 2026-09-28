@@ -118,7 +118,9 @@
     const draw = () => {
       if (months > 1) {
         const start = new Date(min.getFullYear(), min.getMonth(), 1, 12);
-        host.innerHTML = `<div class="cal-months">${Array.from({ length: months }, (_, i) => {
+        /* Hasta el mes del último día permitido (92 días): el chat y el formulario aceptan las mismas fechas */
+        const span = Math.max(months, (lim.getFullYear() - start.getFullYear()) * 12 + lim.getMonth() - start.getMonth() + 1);
+        host.innerHTML = `<div class="cal-months">${Array.from({ length: span }, (_, i) => {
           const d0 = new Date(start.getFullYear(), start.getMonth() + i, 1, 12);
           return month(d0.getFullYear(), d0.getMonth(), false);
         }).join('')}</div>`;
@@ -232,8 +234,11 @@
     hint(el.body);
     el.card = dlg.querySelector('.picker-card');
     drag(el.card, { handles: '.picker-grab, .picker-head', enabled: () => sheet.matches, dismiss: () => finish(undefined, { instant: true }) });
+    /* El fondo cierra solo si el toque empezó en el fondo (seleccionar texto y soltar fuera no cierra) */
+    let downOnVeil = false;
+    dlg.addEventListener('pointerdown', (e) => { downOnVeil = e.target === dlg; });
     dlg.addEventListener('click', (e) => {
-      if (e.target === dlg || e.target.closest('[data-close]')) finish();
+      if ((e.target === dlg && downOnVeil) || e.target.closest('[data-close]')) finish();
       else if (e.target.closest('[data-back]')) hooks.back?.();
       else if (e.target.closest('[data-done]')) hooks.done?.();
       else if (e.target.closest('[data-action]')) hooks.action?.();

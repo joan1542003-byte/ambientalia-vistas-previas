@@ -13,6 +13,9 @@
   d.body.append(toast);
   let toastTimer;
   window.SITE.toast = (text) => {
+    /* Con una ventana modal abierta (hoja, panel o selector), el aviso va dentro de la última: si no, quedaría tapado */
+    const host = [...d.querySelectorAll('dialog[open]')].pop() || d.body;
+    if (toast.parentElement !== host) host.append(toast);
     toast.textContent = text;
     toast.classList.add('is-on');
     clearTimeout(toastTimer);
