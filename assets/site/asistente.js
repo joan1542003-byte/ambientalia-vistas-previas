@@ -387,7 +387,7 @@
   });
 
   window.GUIDE = {
-    open: () => open('hero', 'cotizar'),
+    open: (from = 'hero') => Promise.resolve(open(from, 'cotizar')).then(() => body.querySelector('.guide-q')?.focus({ preventScroll: true })),
     /* Desde el campo de texto del hero: abre el asistente y procesa lo escrito */
     ingest: (text) => {
       if (window.HERO?.view === 'asistente') return go(() => interpret(text));

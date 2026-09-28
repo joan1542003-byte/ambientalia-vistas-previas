@@ -13,7 +13,7 @@
   const fold = (s) => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const head = d.querySelector('.norm-head');
   const reader = bar.querySelector('[data-reader-bar]');
-  const finder = bar.querySelector('[data-finder]');
+  const finder = bar.querySelector('[data-textfind]');
   const now = bar.querySelector('[data-reader-now]');
   const where = now.previousElementSibling;
   const short = where.textContent;
@@ -143,9 +143,10 @@
   };
   d.addEventListener('click', (e) => {
     const a = e.target.closest('a[href^="#"]');
-    if (!a || a.closest('.toc-sheet') || a.classList.contains('skip')) return;
+    if (!a || a.closest('.toc-sheet, .hero-sheet, [data-hero], [data-dock]') || a.classList.contains('skip')) return;
     const id = decodeURIComponent(a.hash.slice(1));
-    if (!id || !d.getElementById(id)) return;
+    const target = id && d.getElementById(id);
+    if (!target || target.closest('[data-hero], .hero-sheet')) return;
     e.preventDefault();
     go(id);
   });
@@ -230,10 +231,10 @@
   d.querySelectorAll('[data-toc-open]').forEach((b) => b.addEventListener('click', openSheet));
 
   /* ---------- Buscar en el texto ---------- */
-  const q = finder.querySelector('[data-finder-q]');
-  const out = finder.querySelector('[data-finder-count]');
-  const prev = finder.querySelector('[data-finder-prev]');
-  const next = finder.querySelector('[data-finder-next]');
+  const q = finder.querySelector('[data-textfind-q]');
+  const out = finder.querySelector('[data-textfind-count]');
+  const prev = finder.querySelector('[data-textfind-prev]');
+  const next = finder.querySelector('[data-textfind-next]');
   let hits = [];
   let cur = -1;
   let opener = null;
@@ -315,7 +316,7 @@
     (opener && opener.isConnected && !opener.closest('[inert]') ? opener : d.querySelector('.norm-actions [data-find-open]'))?.focus({ preventScroll: true });
   };
   d.querySelectorAll('[data-find-open]').forEach((b) => b.addEventListener('click', openFinder));
-  finder.querySelector('[data-finder-close]').addEventListener('click', closeFinder);
+  finder.querySelector('[data-textfind-close]').addEventListener('click', closeFinder);
   prev.addEventListener('click', () => show(cur - 1));
   next.addEventListener('click', () => show(cur + 1));
   let typing = 0;

@@ -7,7 +7,7 @@
 
   /* Listado compacto (tools/compactar-transportistas.py): cada registro una vez y, por categoría, los registros que la atienden.
      Al regenerarlo, sube la versión para que el teléfono no use el anterior en caché */
-  const DATA_URL = 'assets/transporte/transportistas.json?v=2025-12-31';
+  const DATA_URL = `${window.SITE_ROOT || ''}assets/transporte/transportistas.json?v=2025-12-31`;
   const PAGE = matchMedia('(max-width: 640px)').matches ? 4 : 6;
   const CATEGORIES = window.PICK.CATEGORIES;
   const KIND_LABEL = { safe: 'No peligroso', hazard: 'Peligroso' };
@@ -235,7 +235,8 @@
     img.decode?.().catch(() => {});
     warm.push(img);
   });
-  const prefetch = () => { if (!navigator.connection?.saveData) idle(() => { load(); warmImages(); }, { timeout: 4000 }); };
+  /* En las páginas de normativa (sin hero) no se adelanta nada: se carga al abrir el buscador desde la burbuja */
+  const prefetch = () => { if (!navigator.connection?.saveData && !document.querySelector('[data-float-only]')) idle(() => { load(); warmImages(); }, { timeout: 4000 }); };
   if (document.readyState === 'complete') prefetch(); else addEventListener('load', prefetch, { once: true });
 
   /* Eventos */

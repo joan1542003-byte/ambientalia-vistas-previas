@@ -114,7 +114,7 @@
   const TIPO_LABEL = { 'no-peligroso': 'No peligroso', peligroso: 'Peligroso', 'no-se': 'No lo sé' };
   const MODE_LABEL = { express: 'Retiro Express', programado: 'Retiro Programado', flexible: 'Espera y ahorra' };
   const SLOT_ICONS = { 'Mañana': ICONS.sun, 'Tarde': ICONS.sunset, 'Cualquier horario': ICONS.clock };
-  const thumb = (file) => `assets/transporte/cat/residuo-${file}.webp`;
+  const thumb = (file) => `${window.SITE_ROOT || ''}assets/transporte/cat/residuo-${file}.webp`;
   const WD_SHORT = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
   const MONTH_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   const shortDate = (value) => {

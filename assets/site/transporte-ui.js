@@ -259,12 +259,17 @@
     window.SITE.refresh?.();
   }
 
-  /* ---------- Hero: en escritorio la opción elegida cambia el propio hero; en móvil se abre en una hoja inferior ---------- */
+  /* ---------- Hero: en escritorio la opción elegida cambia el propio hero; en móvil se abre en una hoja inferior ----------
+     Desde la burbuja «?» (en cualquier punto de la página, y en las páginas de cada norma) la opción se abre en el mismo
+     lugar: en móvil, la misma hoja a pantalla completa; en escritorio, un panel que nace de la burbuja. Así nadie vuelve
+     al hero. En las páginas de normativa no hay hero: la tarjeta viene oculta en [data-hero][data-float-only]. */
   const hero = d.querySelector('[data-hero]');
   if (hero) {
     const routes = hero.querySelector('[data-routes]');
-    const tabs = [...routes.querySelectorAll('[data-route]')];
-    const pill = routes.querySelector('.routes-pill');
+    const tabs = routes ? [...routes.querySelectorAll('[data-route]')] : [];
+    const pill = routes?.querySelector('.routes-pill');
+    const floatOnly = hero.hasAttribute('data-float-only');
+    let floating = false;  // abierta desde la burbuja
     const wrap = hero.querySelector('[data-panel]');
     const panels = { cotizar: d.getElementById('cotizar'), buscar: d.getElementById('buscar'), especialista: d.getElementById('especialista'), asistente: d.getElementById('asistente') };
     let view = 'inicio';
@@ -272,7 +277,7 @@
     const card = wrap.querySelector('.hcard');
 
     /* Hoja inferior (móvil): la misma tarjeta, con su estado, pasa a un <dialog> que sube desde abajo sobre el hero */
-    const sheetMode = () => mobile.matches;
+    const sheetMode = () => mobile.matches || floating || floatOnly;
     let sheet = null;
     let panel = null;  // lo que sube: el <dialog> queda quieto a pantalla completa
     let sheetInstant = false;
@@ -317,6 +322,7 @@
       sheet.classList.remove('is-closing');
       panel.style.transform = panel.style.transition = '';
       if (card.parentElement !== panel) panel.append(card);
+      sheet.classList.toggle('is-float', !mobile.matches);
       const label = panels[view]?.querySelector('h2')?.textContent;
       if (label) sheet.setAttribute('aria-label', label.replace(/\.$/, ''));
       if (!sheet.open) {
@@ -340,6 +346,7 @@
     };
 
     const placePill = () => {
+      if (!pill) return;
       const on = tabs.find((t) => t.dataset.route === tab);
       pill.hidden = !on;
       if (!on) return;
@@ -364,6 +371,7 @@
         t.tabIndex = on || !tab ? 0 : -1;
       });
       Object.entries(panels).forEach(([k, p]) => { if (p) p.hidden = k !== name; });
+      if (name === 'inicio') floating = false;
       placePill();
       window.SITE.refresh?.();
     };
@@ -377,7 +385,8 @@
     const show = (name, { from = 'hero', tab: active } = {}) => {
       if (name !== 'inicio' && !panels[name]) return Promise.resolve();
       if (name === 'buscar') window.FINDER_LOAD?.();
-      const move = from !== 'hero';
+      if (from === 'dock' && name !== 'inicio') floating = true;
+      const move = from !== 'hero' && from !== 'dock';
       const before = view;
       const target = active || (name === 'asistente' ? tab || 'cotizar' : name);
       return transition(() => {
@@ -402,7 +411,7 @@
       t.addEventListener('click', () => { if (view !== t.dataset.route) show(t.dataset.route); });
       if (t.dataset.route === 'buscar') t.addEventListener('pointerenter', () => window.FINDER_LOAD?.(), { once: true });
     });
-    routes.addEventListener('keydown', (e) => {
+    routes?.addEventListener('keydown', (e) => {
       const i = tabs.indexOf(d.activeElement);
       if (i < 0 || !['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) return;
       e.preventDefault();
@@ -437,14 +446,24 @@
     });
     /* Atrás y adelante del navegador: muestran la opción de esa entrada (otros anclajes, como #servicios, no tocan el hero) */
     addEventListener('popstate', () => {
-      const name = HASH[location.hash] || (location.hash ? null : 'inicio');
+      /* Con una opción abierta, volver a una entrada sin opción (p. ej., #art-12 en una norma) la cierra */
+      const name = HASH[location.hash] || (!location.hash || (view !== 'inicio' && sheetMode()) ? 'inicio' : null);
       if (!name || name === view) return;
       show(name, { from: 'history' }).then(() => {
         if (name === 'inicio') refocus?.focus({ preventScroll: true });
         refocus = null;
       });
     });
-    if (HASH[location.hash]) {
+    /* Burbuja «?»: cotizar, buscar o conversar se abren donde está la persona */
+    d.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-dock-open]');
+      if (!b) return;
+      e.preventDefault();
+      const name = b.dataset.dockOpen;
+      if (name === 'asistente' && window.GUIDE) { window.GUIDE.open('dock'); return; }
+      show(name, { from: 'dock' });
+    });
+    if (HASH[location.hash] && !floatOnly) {
       apply(HASH[location.hash], HASH[location.hash] === 'asistente' ? 'cotizar' : HASH[location.hash]);
       if (location.hash === '#buscar') window.FINDER_LOAD?.();
       requestAnimationFrame(align);
@@ -456,7 +475,7 @@
     });
     /* Al girar una tablet o cambiar el ancho, la opción abierta pasa a la hoja o vuelve al hero */
     mobile.addEventListener('change', () => { if (view !== 'inicio') apply(view, tab); });
-    if ('ResizeObserver' in window) new ResizeObserver(placePill).observe(routes);
+    if (routes && 'ResizeObserver' in window) new ResizeObserver(placePill).observe(routes);
   }
 
   /* ---------- Especialista: el tema se elige en una ventana y va escrito en WhatsApp ---------- */

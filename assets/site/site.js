@@ -422,7 +422,8 @@
       if (!open && focus) button.focus();
     };
     const refresh = () => {
-      const past = hero ? hero.getBoundingClientRect().bottom < 80 : scrollY > innerHeight * .6;
+      /* En las páginas de lectura (data-dock-always) está siempre a mano */
+      const past = dock.hasAttribute('data-dock-always') || (hero ? hero.getBoundingClientRect().bottom < 80 : scrollY > innerHeight * .6);
       const show = past && blockers.size === 0 && !nav?.classList.contains('is-open');
       if (!show) setOpen(false);
       dock.classList.toggle('is-visible', show);

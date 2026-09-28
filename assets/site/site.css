@@ -544,8 +544,9 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
   }
   .dock-caption { --d: .06s; }
   .dock-action { --d: .1s; }
-  .dock-action:nth-child(2) { --d: .15s; }
-  .dock-action:nth-child(1) { --d: .2s; }
+  .dock-action:nth-child(3) { --d: .14s; }
+  .dock-action:nth-child(2) { --d: .18s; }
+  .dock-action:nth-child(1) { --d: .22s; }
 }
 @media (prefers-reduced-motion: reduce) { .dock, .dock.is-visible, .dock.is-open { transition: none; } }
 /* Sin desenfoque disponible, el vidrio se vuelve casi opaco para que el texto de atrás no compita */

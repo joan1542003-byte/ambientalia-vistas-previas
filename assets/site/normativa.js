@@ -17,14 +17,7 @@
     out: svg('<path d="M5 11l6-6M6 5h5v5"/>', 16, 16, 2),
     li: '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>'
   };
-  /* Íconos de los datos de una norma (los mismos en tools/normativa.py) */
-  const DATO = {
-    vigente: svg('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'),
-    derogada: svg('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/>'),
-    organismo: svg('<path d="M4 20h16M6 20V10M18 20V10M10 20v-6h4v6M3 10l9-6 9 6"/>'),
-    articulos: svg('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>'),
-    leer: svg('<path d="M5 12h14M13 6l6 6-6 6"/>')
-  };
+  const DATO = { leer: svg('<path d="M5 12h14M13 6l6 6-6 6"/>') };
   /* Ícono de cada tema (el mismo mapa está en tools/normativa.py) */
   const TEMA_ICON = {
     peligrosos: '<path d="M12 3.5l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
@@ -97,17 +90,23 @@
       return out + esc(raw.slice(at));
     };
     const terms = () => st.q.trim().split(/\s+/).filter(Boolean);
+    /* ¿La búsqueda coincide solo con la descripción? Entonces se muestra esa línea, para que se entienda por qué apareció */
+    const inRel = (n) => {
+      const tt = terms().map(fold).filter((t) => t.length > 1);
+      if (!tt.length) return false;
+      const head = fold(`${n.tema} ${n.corto} ${n.organismo}`);
+      return tt.some((t) => !head.includes(t) && fold(n.rel).includes(t));
+    };
     const row = (n, i, fresh) => {
       const tt = terms();
       const t = n.temas[0];
       return `<li class="doc${fresh ? ' is-new' : ''}" data-slug="${n.slug}" data-tema="${t}" style="--i:${Math.min(i, 8)}">`
         + `<span class="doc-icon">${temaIcon(t)}</span>`
-        + `<div class="doc-body"><h3 class="doc-title"><a href="${esc(n.pagina)}">${mark(n.corto, tt)}</a><span class="doc-topic">${mark(n.tema, tt)}</span></h3>`
-        + `<p class="doc-rel">${mark(n.rel, tt)}</p>`
-        + `<ul class="doc-meta"><li class="doc-state${n.vigente ? '' : ' is-off'}">${n.vigente ? DATO.vigente : DATO.derogada}${n.vigente ? 'Vigente' : 'Derogada'}</li>`
-        + `<li>${DATO.organismo}${mark(n.organismo, tt)}</li><li>${DATO.articulos}${n.articulos} artículos</li></ul></div>`
-        + `<div class="doc-actions"><span class="doc-go" aria-hidden="true">Leer${DATO.leer}</span>`
-        + `<a class="doc-pdf" href="${esc(n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a></div></li>`;
+        + `<div class="doc-body"><h3 class="doc-title"><a href="${esc(n.pagina)}">${mark(n.tema, tt)}</a></h3>`
+        + `<p class="doc-sub"><strong>${mark(n.corto, tt)}</strong><span class="doc-org"> · ${mark(n.organismo, tt)}</span>${n.vigente ? '' : ' · <span class="doc-off">Derogada</span>'}</p>`
+        + `${inRel(n) ? `<p class="doc-rel">${mark(n.rel, tt)}</p>` : ''}</div>`
+        + `<a class="doc-pdf" href="${esc(n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a>`
+        + `<span class="doc-chev" aria-hidden="true">${svg('<path d="M9 6l6 6-6 6"/>', 20, 24, 2)}</span></li>`;
     };
     const byText = (n) => {
       const q = fold(st.q).trim();
@@ -145,7 +144,7 @@
     const drawTopics = () => {
       const base = data.normas.filter(byText);
       const chip = (value, label, k) => `<button type="button" role="radio" class="lib-topic" data-topic="${value}" ${value === '*' ? '' : `data-tema="${value}"`} aria-checked="${st.tema === value}"${k ? '' : ' disabled'}>`
-        + `${value === '*' ? '' : '<i aria-hidden="true"></i>'}${esc(label)}<small>${k}</small></button>`;
+        + `${value === '*' ? '' : '<i aria-hidden="true"></i>'}${esc(label)}</button>`;
       const html = chip('*', 'Todas', base.length) + Object.entries(data.temas)
         .map(([k, label]) => [k, label, base.filter((n) => n.temas.includes(k)).length])
         .map(([k, label, c]) => chip(k, label, c)).join('');
@@ -155,7 +154,6 @@
       tmp.innerHTML = html;
       tmp.querySelectorAll('.lib-topic').forEach((b) => {
         const cur = topics.querySelector(`[data-topic="${b.dataset.topic}"]`);
-        cur.querySelector('small').textContent = b.querySelector('small').textContent;
         cur.disabled = b.disabled;
         cur.hidden = b.disabled && b.getAttribute('aria-checked') !== 'true';
         cur.setAttribute('aria-checked', b.getAttribute('aria-checked'));

@@ -315,8 +315,6 @@ DATO = {
     'version': _i('<path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/><path d="M12 8v4l3 2"/>'),
     'articulos': _i('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>'),
     'organismo': _i('<path d="M4 20h16M6 20V10M18 20V10M10 20v-6h4v6M3 10l9-6 9 6"/>'),
-    'fuente': _i('<path d="M4 20h16M6 20V10M18 20V10M10 20v-6h4v6M3 10l9-6 9 6"/>'),
-    'retiro': _i('<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>'),
     'buscar': _i('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>', 20),
     'indice': _i('<path d="M4 6h16M4 12h10M4 18h13"/>', 20),
     'arriba': _i('<path d="M6 15l6-6 6 6"/>', 20),
@@ -333,7 +331,7 @@ ICON = {
 }
 
 
-def pagina(n, cuerpo, toc, version):
+def pagina(n, cuerpo, toc, version, tools=('', '')):
     ld = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -367,23 +365,16 @@ def pagina(n, cuerpo, toc, version):
             },
         ],
     }
-    def rango(e):
-        a, b = e['desde'], e['hasta']
-        if a is None or b is None or b <= a:
-            return ''
-        num = lambda k: (lambda v: v.lower() if v.isalpha() else v)(re.sub(r'^(?:art[íi]culo|art\.)\s*', '', n['_arts'][k][1], flags=re.I) or str(k + 1))
-        return f'Art. {num(a)}' if b - a == 1 else f'Arts. {num(a)}–{num(b - 1)}'
     indice = ''.join(
         f'<li><a href="#{e["ancla"]}">{f"<small>{esc(e["rotulo"])}</small>" if e["rotulo"] and e["nombre"] else ""}'
-        f'<span>{esc(e["nombre"] or e["rotulo"])}</span>{f"<em>{rango(e)}</em>" if rango(e) else ""}</a></li>' for e in toc)
+        f'<span>{esc(e["nombre"] or e["rotulo"])}</span></a></li>' for e in toc)
     estado = 'Vigente' if n['vigente'] else 'Derogada'
     datos = (
         f'<li class="norm-state{"" if n["vigente"] else " is-off"}" data-tip="Estado según Ley Chile al {fecha_larga(HOY)}">{DATO["vigente" if n["vigente"] else "derogada"]}{estado}</li>'
-        f'<li data-tip="Fecha en que se firmó">{DATO["promulgada"]}<span>Promulgada el <time datetime="{n["promulgacion"]}">{fecha_corta(n["promulgacion"])}</time></span></li>'
-        f'<li data-tip="Fecha de publicación en el Diario Oficial">{DATO["publicada"]}<span>Publicada el <time datetime="{n["publicacion"]}">{fecha_corta(n["publicacion"])}</time></span></li>'
-        f'<li data-tip="Versión del texto que muestra esta página">{DATO["version"]}<span>Texto al <time datetime="{n["version"]}">{fecha_corta(n["version"])}</time></span></li>'
+        f'<li data-tip="Fecha en que se firmó">{DATO["promulgada"]}<span class="fact"><span class="fact-l">Promulgada<span class="lg"> el</span></span> <time datetime="{n["promulgacion"]}">{fecha_corta(n["promulgacion"])}</time></span></li>'
+        f'<li data-tip="Fecha de publicación en el Diario Oficial">{DATO["publicada"]}<span class="fact"><span class="fact-l">Publicada<span class="lg"> el</span></span> <time datetime="{n["publicacion"]}">{fecha_corta(n["publicacion"])}</time></span></li>'
+        f'<li data-tip="Versión del texto que muestra esta página">{DATO["version"]}<span class="fact"><span class="fact-l">Texto al</span> <time datetime="{n["version"]}">{fecha_corta(n["version"])}</time></span></li>'
         f'<li>{DATO["articulos"]}{n["articulos"]} artículos</li>'
-        f'<li><a href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">{DATO["fuente"]}Ley Chile{ICON["out"]}<span class="sr-only"> (fuente oficial, pestaña nueva)</span></a></li>'
     )
     desc = f'{n["corto"]}: {n["titulo"].capitalize()}. Texto oficial, datos clave y descarga en PDF. Fuente: Ley Chile (BCN).'
     return f'''<!doctype html>
@@ -421,7 +412,7 @@ def pagina(n, cuerpo, toc, version):
     </a>
     <nav class="nav" id="nav" aria-label="Principal">
       <a href="../transporte-autorizado.html#normativa">Normativa</a>
-      <a class="btn btn-primary btn-small" href="../transporte-autorizado.html#cotizar">Cotizar retiro</a>
+      <a class="btn btn-primary btn-small" href="../transporte-autorizado.html#cotizar" data-dock-open="cotizar">Cotizar retiro</a>
     </nav>
     <div class="reader" data-reader-bar inert>
       <a class="reader-back" href="../transporte-autorizado.html#normativa" aria-label="Volver a la biblioteca">{ICON["back"]}</a>
@@ -430,14 +421,14 @@ def pagina(n, cuerpo, toc, version):
       <button class="reader-btn reader-toc" type="button" data-toc-open aria-label="Índice">{DATO["indice"]}</button>
       <a class="reader-btn" href="../{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF">{ICON["pdf"]}</a>
     </div>
-    <form class="finder" data-finder role="search" inert>
-      <span class="finder-icon" aria-hidden="true">{DATO["buscar"]}</span>
+    <form class="textfind" data-textfind role="search" inert>
+      <span class="textfind-icon" aria-hidden="true">{DATO["buscar"]}</span>
       <label class="sr-only" for="finder-q">Buscar en el texto de {esc(n["corto"])}</label>
-      <input id="finder-q" type="search" placeholder="Buscar en el texto" autocomplete="off" enterkeyhint="search" data-finder-q>
-      <output class="finder-count" data-finder-count aria-live="polite"></output>
-      <button class="reader-btn" type="button" data-finder-prev aria-label="Resultado anterior" disabled>{DATO["arriba"]}</button>
-      <button class="reader-btn" type="button" data-finder-next aria-label="Resultado siguiente" disabled>{DATO["abajo"]}</button>
-      <button class="reader-btn" type="button" data-finder-close aria-label="Cerrar búsqueda">{DATO["cerrar"]}</button>
+      <input id="finder-q" type="search" placeholder="Buscar en el texto" autocomplete="off" enterkeyhint="search" data-textfind-q>
+      <output class="textfind-count" data-textfind-count aria-live="polite"></output>
+      <button class="reader-btn" type="button" data-textfind-prev aria-label="Resultado anterior" disabled>{DATO["arriba"]}</button>
+      <button class="reader-btn" type="button" data-textfind-next aria-label="Resultado siguiente" disabled>{DATO["abajo"]}</button>
+      <button class="reader-btn" type="button" data-textfind-close aria-label="Cerrar búsqueda">{DATO["cerrar"]}</button>
     </form>
     <span class="reader-progress" aria-hidden="true"><i data-reader-progress></i></span>
   </div>
@@ -449,14 +440,13 @@ def pagina(n, cuerpo, toc, version):
     <header class="norm-head">
       <p class="norm-kind"><span class="doc-icon">{icono_tema(n["temas"][0])}</span>{esc(n["tipo"])} · {esc(n["organismo"])}</p>
       <h1 class="norm-title">{esc(n["corto"])} · {esc(n["tema"])}</h1>
-      <p class="norm-lead">{esc(n["titulo"].capitalize())}.</p>
+      <p class="norm-lead">{esc(n["rel"])}</p>
       <ul class="norm-facts" data-tips>{datos}</ul>
       <div class="norm-actions">
         <a class="btn btn-ink btn-small" href="../{n["pdf"]}" download data-doc-pdf>{ICON["pdf"]}<span><span class="lg">Descargar </span>PDF</span></a>
         <button class="btn btn-quiet btn-small" type="button" data-find-open>{DATO["buscar"]}<span>Buscar<span class="lg"> en el texto</span></span></button>
         {f'<button class="btn btn-quiet btn-small norm-toc-btn" type="button" data-toc-open>{DATO["indice"]}Índice</button>' if indice else ''}
       </div>
-      <p class="norm-why">{DATO["retiro"]}<span><strong>Para el retiro:</strong> {esc(n["rel"])}</span></p>
     </header>
 
     <div class="norm-layout">
@@ -474,7 +464,19 @@ def pagina(n, cuerpo, toc, version):
   </article>
 </main>
 
+<div data-hero data-view="inicio" data-float-only hidden><div data-panel hidden>
+{tools[0]}
+</div></div>
+{tools[1]}
+
+<script>window.SITE_ROOT = '../';</script>
 <script src="../assets/site/site.js?v={version}" defer></script>
+<script src="../assets/site/pickers.js?v={version}" defer></script>
+<script src="../assets/site/seleccion.js?v={version}" defer></script>
+<script src="../assets/site/interpretar.js?v={version}" defer></script>
+<script src="../assets/site/transporte.js?v={version}" defer></script>
+<script src="../assets/site/transporte-ui.js?v={version}" defer></script>
+<script src="../assets/site/asistente.js?v={version}" defer></script>
 <script src="../assets/site/norma.js?v={version}" defer></script>
 </body>
 </html>
@@ -495,22 +497,23 @@ TEMA_ICON = {
 }
 
 
+CHEV = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>'
+
+
 def icono_tema(t):
     return f'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{TEMA_ICON.get(t, TEMA_ICON["marco"])}</svg>'
 
 
 def tarjeta(n, i=0):
-    """Fila de la biblioteca (la misma que dibuja assets/site/normativa.js al filtrar)."""
-    estado = 'Vigente' if n['vigente'] else 'Derogada'
+    """Fila de la biblioteca (la misma que dibuja assets/site/normativa.js al filtrar): tema, número y organismo."""
     t = n['temas'][0]
+    off = '' if n['vigente'] else ' · <span class="doc-off">Derogada</span>'
     return (f'          <li class="doc" data-slug="{n["slug"]}" data-tema="{t}" style="--i:{min(i, 8)}">'
             f'<span class="doc-icon">{icono_tema(t)}</span>'
-            f'<div class="doc-body"><h3 class="doc-title"><a href="{n["pagina"]}">{esc(n["corto"])}</a><span class="doc-topic">{esc(n["tema"])}</span></h3>'
-            f'<p class="doc-rel">{esc(n["rel"])}</p>'
-            f'<ul class="doc-meta"><li class="doc-state{"" if n["vigente"] else " is-off"}">{DATO["vigente" if n["vigente"] else "derogada"]}{estado}</li>'
-            f'<li>{DATO["organismo"]}{esc(n["organismo"])}</li><li>{DATO["articulos"]}{n["articulos"]} artículos</li></ul></div>'
-            f'<div class="doc-actions"><span class="doc-go" aria-hidden="true">Leer{DATO["leer"]}</span>'
-            f'<a class="doc-pdf" href="{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICON["pdf"]}<span>PDF</span></a></div></li>')
+            f'<div class="doc-body"><h3 class="doc-title"><a href="{n["pagina"]}">{esc(n["tema"])}</a></h3>'
+            f'<p class="doc-sub"><strong>{esc(n["corto"])}</strong><span class="doc-org"> · {esc(n["organismo"])}</span>{off}</p></div>'
+            f'<a class="doc-pdf" href="{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICON["pdf"]}<span>PDF</span></a>'
+            f'<span class="doc-chev" aria-hidden="true">{CHEV}</span></li>')
 
 
 def escribir_tarjetas(normas):
@@ -525,6 +528,26 @@ def escribir_tarjetas(normas):
     p.write_text(s, encoding='utf-8')
 
 
+def bloque(s, inicio):
+    """Devuelve el elemento <div …> que empieza en «inicio», con sus divs anidados."""
+    i = s.index(inicio)
+    k, depth = i, 0
+    for m in re.finditer(r'<(/?)div\b', s[i:]):
+        depth += -1 if m.group(1) else 1
+        if depth == 0:
+            return s[i:s.index('>', i + m.end()) + 1]
+    raise ValueError(inicio)
+
+
+def herramientas():
+    """Tarjeta de cotizar, buscar y conversar, y la burbuja «?», tal como están en la página de Transporte.
+    En cada norma quedan ocultas y se abren desde la burbuja en el mismo lugar (transporte-ui.js, modo data-float-only)."""
+    s = (ROOT / 'transporte-autorizado.html').read_text(encoding='utf-8')
+    tarjeta_html = bloque(s, '<div class="hcard">')
+    burbuja = bloque(s, '<div class="dock" data-dock>').replace('<div class="dock" data-dock>', '<div class="dock" data-dock data-dock-always>', 1)
+    return tarjeta_html, burbuja
+
+
 def version_actual():
     s = (ROOT / 'transporte-autorizado.html').read_text(encoding='utf-8')
     m = re.search(r'assets/site/site\.css\?v=([\w.-]+)"', s)
@@ -534,6 +557,7 @@ def version_actual():
 def main():
     solo = set(sys.argv[1:])
     version = version_actual()
+    tools = herramientas()
     (ROOT / 'normativa').mkdir(exist_ok=True)
     indice_path = ROOT / 'assets/transporte/normativa.json'
     previo = {d['slug']: d for d in json.loads(indice_path.read_text(encoding='utf-8'))['normas']} if indice_path.exists() else {}
@@ -589,9 +613,7 @@ def main():
         toc = [dict(zip(('nivel', 'ancla', 'rotulo', 'nombre', 'desde', 'hasta'), e)) for e in toc if e[0] == nivel_toc or e[0] == -1]
         n['articulos'] = len(arts)
         n['indice'] = [' · '.join(x for x in (e['rotulo'], e['nombre']) if x) for e in toc][:40]
-        n['_arts'] = arts
-        (ROOT / n['pagina']).write_text(pagina(n, ''.join(partes), toc, version), encoding='utf-8')
-        del n['_arts']
+        (ROOT / n['pagina']).write_text(pagina(n, ''.join(partes), toc, version, tools), encoding='utf-8')
         normas.append(n)
         print(f'{n["corto"]:<16} {len(arts):>4} artículos  {n["pagina"]}')
     escribir_tarjetas(normas)
