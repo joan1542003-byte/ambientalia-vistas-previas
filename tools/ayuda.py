@@ -1,15 +1,15 @@
-"""Documentos de Transporte Autorizado: guías rápidas, checklist descargable y acceso a la normativa.
+"""«Ayuda» de Transporte Autorizado: guías rápidas, checklist descargable y normativa, todo dentro de la barra de navegación.
 
 Fuente del contenido: «Documentos Página Transporte» del cliente (28-09-2026): tres guías en versión para la web y el
 checklist de autorización de transporte (se publica la versión con casillas en assets/transporte/documentos/).
 Las citas legales se verificaron en el texto oficial de Ley Chile (normativa/*.html) y enlazan al artículo exacto.
 
 Genera:
-- documentos/<slug>.html: una página por guía (lectura directa, datos estructurados, enlaces a los artículos citados).
-- El panel «Documentos» de la cabecera (se abre desde el menú; la propia cabecera se expande) en transporte-autorizado.html
-  y en las páginas de guías y normas (tools/normativa.py lo inserta con menu_html('../')).
-- El bloque de guías y descarga de la sección #documentos en transporte-autorizado.html.
-Uso: python3 tools/documentos.py   (después de cambiar la tarjeta del hero o la burbuja, corre también tools/normativa.py)
+- ayuda/<slug>.html: una página por guía (lectura directa, datos estructurados, enlaces a los artículos citados).
+- El panel «Ayuda» de la cabecera (la propia cabecera se expande): guías rápidas y documentos (checklist y normativa con
+  búsqueda). Va en transporte-autorizado.html (entre <!-- ayuda:menu:inicio --> y <!-- ayuda:menu:fin -->), en cada guía
+  y en cada norma (tools/normativa.py lo inserta con menu_html('../')). No hay sección «Documentos» en la página.
+Uso: python3 tools/ayuda.py   ·   tools/normativa.py lo ejecuta al final, así todo queda al día con un solo comando.
 """
 import json
 import re
@@ -47,6 +47,11 @@ CHECKLIST = {
     'archivo': 'assets/transporte/documentos/checklist-autorizacion-transporte.xlsx',
     'titulo': 'Checklist de autorización de transporte',
     'sub': '50 puntos en 9 bloques para revisar un caso antes del retiro · Excel',
+    'menu': 'Checklist de autorización', 'menu_sub': 'Planilla para revisar un caso antes del retiro',
+    'resumen': '50 puntos para revisar un caso antes del retiro. Cada punto se marca como pendiente, por confirmar, cumple, no cumple o no aplica.',
+    'bloques': ['Identificación del residuo', 'Clasificación de peligrosidad', 'Producto prioritario', 'Identificación del transportista',
+                'Determinación de autorización sanitaria', 'Requisitos del vehículo y operación', 'Documentación para residuos peligrosos',
+                'Destino y trazabilidad', 'Cierre de revisión'],
 }
 
 TEMA_NORMA = {'ds-148-2003-minsal': 'peligrosos', 'ds-29-2024-minsal': 'rep', 'ley-20920': 'rep', 'ds-298-1994-mtt': 'transporte', 'ds-57-2019-minsal': 'sustancias'}
@@ -189,10 +194,47 @@ GUIAS = [
 
 NORMATIVA_MENU = {
     'menu': 'Normativa', 'menu_sub': 'D.S. 148, Ley REP y más, con su texto oficial',
-    'resumen': 'Las normas chilenas que ordenan la gestión y el transporte de residuos, con su texto oficial para leer, buscar dentro o descargar.',
-    'rapidas': [('ds-148-2003-minsal', 'D.S. 148/2003', 'Residuos peligrosos'), ('ds-298-1994-mtt', 'D.S. 298/1994', 'Transporte de cargas peligrosas'),
-                ('ley-20920', 'Ley 20.920', 'Ley REP'), ('ds-29-2024-minsal', 'D.S. 29/2024', 'Residuos de productos prioritarios')],
+    'resumen': 'El texto oficial de cada norma, para leerlo, buscar dentro o descargarlo en PDF.',
 }
+
+
+def normas():
+    """Normas de la biblioteca (las escribe tools/normativa.py en assets/transporte/normativa.json)."""
+    p = ROOT / 'assets/transporte/normativa.json'
+    return json.loads(p.read_text(encoding='utf-8'))['normas'] if p.exists() else []
+
+
+def fila_norma(n, root, i=0):
+    """Fila de una norma en la biblioteca del panel (la misma que dibuja assets/site/normativa.js al filtrar)."""
+    t = n['temas'][0]
+    off = '' if n['vigente'] else ' · <span class="doc-off">Derogada</span>'
+    return (f'<li class="doc" data-slug="{n["slug"]}" data-tema="{t}" style="--i:{min(i, 8)}">'
+            f'<span class="doc-icon">{N.icono_tema(t)}</span>'
+            f'<div class="doc-body"><p class="doc-title"><a href="{root}{n["pagina"]}">{esc(n["tema"])}</a></p>'
+            f'<p class="doc-sub"><strong>{esc(n["corto"])}</strong><span class="doc-org"> · {esc(n["organismo"])}</span>{off}</p></div>'
+            f'<a class="doc-pdf" href="{root}{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICO["descarga"]}<span>PDF</span></a></li>')
+
+
+BUSCAR = _i('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>', 20, 2)
+CERRAR = _i('<path d="M6 6l12 12M18 6L6 18"/>', 20, 2)
+
+
+def biblioteca(root):
+    """Buscador y lista de normas (assets/site/normativa.js agrega la búsqueda y el filtro por tema)."""
+    filas = ''.join(fila_norma(n, root, i) for i, n in enumerate(normas()))
+    return (f'<div class="lib" data-lib data-src="{root}assets/transporte/normativa.json">'
+            f'<div class="lib-search"><span class="lib-search-icon" aria-hidden="true">{BUSCAR}</span>'
+            f'<label class="sr-only" for="lib-q">Buscar en la normativa</label>'
+            f'<input id="lib-q" type="search" data-lib-q placeholder="Busca: 148, REP, RETC…" autocomplete="off" enterkeyhint="search">'
+            f'<span class="lib-count" data-lib-count aria-hidden="true"></span>'
+            f'<button class="lib-clear" type="button" data-lib-clear aria-label="Borrar búsqueda">{CERRAR}</button></div>'
+            f'<p class="sr-only" data-lib-live aria-live="polite"></p>'
+            f'<div class="lib-topics" data-lib-topics role="radiogroup" aria-label="Filtrar por tema"></div>'
+            f'<ul class="lib-list" data-lib-list>{filas}</ul>'
+            f'<div class="lib-empty" data-lib-empty hidden><strong data-lib-empty-title>No encontramos normas con esa búsqueda.</strong>'
+            f'<span>Prueba con un número, una sigla o un tema:</span><div class="lib-try"><button type="button" data-lib-try>148</button>'
+            f'<button type="button" data-lib-try>REP</button><button type="button" data-lib-try>RETC</button><button type="button" data-lib-try>transporte</button></div>'
+            f'<button class="btn btn-quiet btn-small" type="button" data-lib-reset>Ver todas las normas</button></div></div>')
 
 
 def enlace_norma(r, root):
@@ -214,7 +256,7 @@ def validar_anclas():
         raise SystemExit('Citas sin destino:\n' + '\n'.join(faltan))
 
 
-# ---------- Panel «Documentos» de la cabecera ----------
+# ---------- Panel «Ayuda» de la cabecera ----------
 def accion(clave, texto, root, clase='btn btn-quiet btn-small'):
     if clave == 'descarga':
         return f'<a class="{clase}" href="{root}{CHECKLIST["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar checklist</span></a>'
@@ -222,61 +264,54 @@ def accion(clave, texto, root, clase='btn btn-quiet btn-small'):
     return f'<button class="{clase}" type="button" data-dock-open="{clave}">{icon}<span>{esc(texto)}</span></button>'
 
 
+def _item(clave, tema, icono, titulo, sub, detalle, clase=''):
+    return (f'<div class="docs-item{clase}" data-docs-item="{clave}" data-tema="{tema}">'
+            f'<button class="docs-tab" type="button" id="docs-t-{clave}" aria-expanded="false" aria-controls="docs-d-{clave}" data-docs-tab>'
+            f'<span class="doc-icon">{icono}</span><span class="docs-tab-text"><strong>{esc(titulo)}</strong><small>{esc(sub)}</small></span>'
+            f'<span class="docs-chev">{ICO["chev"]}</span></button>'
+            f'<div class="docs-detail" id="docs-d-{clave}" role="region" aria-labelledby="docs-t-{clave}"><div class="docs-detail-in">{detalle}</div></div></div>')
+
+
 def menu_html(root=''):
-    """Panel que se abre dentro de la cabecera al elegir «Documentos». Lista a la izquierda y explicación a la derecha
-    (escritorio); en el teléfono, cada tema se despliega en su lugar."""
-    items = []
+    """Panel que se abre dentro de la cabecera al elegir «Ayuda»: guías rápidas y documentos (checklist y normativa).
+    Lista a la izquierda y explicación a la derecha (escritorio); en el teléfono, cada tema se despliega en su lugar."""
+    guias = []
     for g in GUIAS:
         k = g['slug']
         extra = accion('descarga', '', root) if g.get('descarga') else accion(*g['accion'], root)
-        items.append(
-            f'<div class="docs-item" data-docs-item data-tema="{g["tema"]}">'
-            f'<button class="docs-tab" type="button" id="docs-t-{k}" aria-expanded="false" aria-controls="docs-d-{k}" data-docs-tab>'
-            f'<span class="doc-icon">{ICO[g["icono"]]}</span><span class="docs-tab-text"><strong>{esc(g["menu"])}</strong><small>{esc(g["menu_sub"])}</small></span>'
-            f'<span class="docs-chev">{ICO["chev"]}</span></button>'
-            f'<div class="docs-detail" id="docs-d-{k}" role="region" aria-labelledby="docs-t-{k}">'
+        guias.append(_item(
+            k, g['tema'], ICO[g['icono']], g['menu'], g['menu_sub'],
             f'<p class="docs-kicker">Guía rápida</p><h3>{esc(g["titulo"])}</h3><p class="docs-lead">{esc(g["resumen"])}</p>'
             f'<ul class="docs-points">{"".join(f"<li>{ICO["check"]}<span>{esc(c)}</span></li>" for c in g["claves"])}</ul>'
-            f'<div class="docs-actions"><a class="btn btn-ink btn-small" href="{root}documentos/{k}.html">Leer la guía{ICO["flecha"]}</a>{extra}</div>'
-            f'</div></div>')
+            f'<div class="docs-actions"><a class="btn btn-ink btn-small" href="{root}ayuda/{k}.html">Leer la guía{ICO["flecha"]}</a>{extra}</div>'))
+    c = CHECKLIST
+    checklist = _item(
+        'checklist', 'rep', ICO['hoja'], c['menu'], c['menu_sub'],
+        f'<p class="docs-kicker">Descargable</p><h3>{esc(c["titulo"])}</h3><p class="docs-lead">{esc(c["resumen"])}</p>'
+        f'<ol class="docs-blocks">{"".join(f"<li>{esc(b)}</li>" for b in c["bloques"])}</ol>'
+        f'<div class="docs-actions"><a class="btn btn-ink btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar en Excel</span></a>'
+        f'<a class="btn btn-quiet btn-small" href="{root}ayuda/autorizacion-sanitaria-transporte.html">Ver la guía de autorización{ICO["flecha"]}</a></div>')
     nm = NORMATIVA_MENU
-    rapidas = ''.join(f'<li><a href="{root}normativa/{s}.html"><strong>{esc(c)}</strong><span>{esc(t)}</span>{ICO["chev"]}</a></li>' for s, c, t in nm['rapidas'])
-    items.append(
-        f'<div class="docs-item" data-docs-item data-tema="marco">'
-        f'<button class="docs-tab" type="button" id="docs-t-normativa" aria-expanded="false" aria-controls="docs-d-normativa" data-docs-tab>'
-        f'<span class="doc-icon">{ICO["normativa"]}</span><span class="docs-tab-text"><strong>{nm["menu"]}</strong><small>{esc(nm["menu_sub"])}</small></span>'
-        f'<span class="docs-chev">{ICO["chev"]}</span></button>'
-        f'<div class="docs-detail" id="docs-d-normativa" role="region" aria-labelledby="docs-t-normativa">'
-        f'<p class="docs-kicker">Biblioteca</p><h3>Normativa chilena de residuos</h3><p class="docs-lead">{esc(nm["resumen"])}</p>'
-        f'<ul class="docs-quick">{rapidas}</ul>'
-        f'<div class="docs-actions"><a class="btn btn-ink btn-small" href="{root + "transporte-autorizado.html" if root else ""}#normativa" data-docs-close>Ver toda la normativa{ICO["flecha"]}</a></div>'
-        f'</div></div>')
+    normativa = _item(
+        'normativa', 'marco', ICO['normativa'], nm['menu'], nm['menu_sub'],
+        f'<p class="docs-kicker">Documentos</p><h3>Normativa chilena de residuos</h3><p class="docs-lead">{esc(nm["resumen"])}</p>{biblioteca(root)}',
+        clase=' is-fill')
+    filas = 2 + len(guias) + 2  # dos rótulos de grupo y los temas
     return (f'<div class="docs-panel" id="docs-panel" data-docs-panel inert><div class="docs-inner"><div class="docs-scroll">'
-            f'<div class="docs-grid"><span class="docs-glide" aria-hidden="true"></span>{"".join(items)}</div>'
+            f'<div class="docs-grid" style="--n:{filas}"><span class="docs-glide" aria-hidden="true"></span>'
+            f'<p class="docs-group">Guías rápidas</p>{"".join(guias)}<p class="docs-group">Documentos</p>{checklist}{normativa}</div>'
             f'</div></div></div>')
 
 
-def boton_documentos(root='', actual=False):
-    href = f'{root}transporte-autorizado.html#documentos' if root else '#documentos'
+def boton_ayuda(root='', actual=False):
+    href = f'{root}transporte-autorizado.html#ayuda' if root else '#ayuda'
     return (f'<a href="{href}" class="nav-docs" data-docs-open aria-controls="docs-panel" aria-expanded="false"{" aria-current=\"true\"" if actual else ""}>'
-            f'Documentos<span class="nav-docs-chev">{ICO["abajo"]}</span></a>')
-
-
-# ---------- Bloque de la sección #documentos (página principal) ----------
-def bloque_landing():
-    tarjetas = ''.join(
-        f'<a class="guia-card" href="documentos/{g["slug"]}.html" data-tema="{g["tema"]}">'
-        f'<span class="doc-icon">{ICO[g["icono"]]}</span>'
-        f'<span class="guia-card-text"><strong>{esc(g["titulo"])}</strong><small>{esc(g["resumen"])}</small></span>'
-        f'<span class="guia-card-go">Leer la guía{ICO["flecha"]}</span></a>' for g in GUIAS)
-    return (f'        <div class="guias reveal-group">{tarjetas}</div>\n'
-            f'        {franja_descarga("")}\n')
+            f'Ayuda<span class="nav-docs-chev">{ICO["abajo"]}</span></a>')
 
 
 def franja_descarga(root):
-    size = (ROOT / CHECKLIST['archivo']).stat().st_size
     return (f'<div class="download-strip"><span class="download-icon">{ICO["hoja"]}</span>'
-            f'<p><strong>{esc(CHECKLIST["titulo"])}</strong><small>{esc(CHECKLIST["sub"])} · {round(size / 1024)} KB</small></p>'
+            f'<p><strong>{esc(CHECKLIST["titulo"])}</strong><small>{esc(CHECKLIST["sub"])}</small></p>'
             f'<a class="btn btn-ink btn-small" href="{root}{CHECKLIST["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar</span></a></div>')
 
 
@@ -296,7 +331,7 @@ def citas(refs, root):
 
 def pagina(g, version, tools):
     root = '../'
-    url = f'{SITE}/documentos/{g["slug"]}.html'
+    url = f'{SITE}/ayuda/{g["slug"]}.html'
     otras = [x for x in GUIAS if x is not g]
     ld = {
         '@context': 'https://schema.org',
@@ -316,7 +351,7 @@ def pagina(g, version, tools):
                 '@type': 'BreadcrumbList',
                 'itemListElement': [
                     {'@type': 'ListItem', 'position': 1, 'name': 'Transporte Autorizado', 'item': f'{SITE}/'},
-                    {'@type': 'ListItem', 'position': 2, 'name': 'Documentos', 'item': f'{SITE}/#documentos'},
+                    {'@type': 'ListItem', 'position': 2, 'name': 'Ayuda', 'item': f'{SITE}/#ayuda'},
                     {'@type': 'ListItem', 'position': 3, 'name': g['corto']},
                 ],
             },
@@ -383,7 +418,7 @@ def pagina(g, version, tools):
       <svg width="20" height="20" class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <nav class="nav" id="nav" aria-label="Principal">
-      {boton_documentos(root, actual=True)}
+      {boton_ayuda(root, actual=True)}
       <a class="btn btn-primary btn-small" href="../transporte-autorizado.html#cotizar" data-dock-open="cotizar">Cotizar retiro</a>
     </nav>
     {menu_html(root)}
@@ -392,7 +427,7 @@ def pagina(g, version, tools):
 
 <main id="contenido">
   <article class="container guia">
-    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#documentos">Documentos</a><span aria-hidden="true">/</span><span aria-current="page">{esc(g["corto"])}</span></nav>
+    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#ayuda" data-docs-open>Ayuda</a><span aria-hidden="true">/</span><span aria-current="page">{esc(g["corto"])}</span></nav>
     <header class="guia-head">
       <p class="norm-kind"><span class="doc-icon">{ICO[g["icono"]]}</span>{esc(g["kicker"])}</p>
       <h1 class="norm-title">{esc(g["titulo"])}</h1>
@@ -410,7 +445,7 @@ def pagina(g, version, tools):
 
     <footer class="norm-source">
       <p>Orientación general para preparar un retiro: no reemplaza la revisión técnica ni legal de cada caso. Las citas enlazan al texto oficial publicado en Ley Chile (Biblioteca del Congreso Nacional).</p>
-      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#documentos">{ICO["volver"]}Volver a Documentos</a>
+      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#ayuda" data-docs-open>{ICO["volver"]}Ver más ayuda</a>
     </footer>
   </article>
 </main>
@@ -425,10 +460,13 @@ def pagina(g, version, tools):
 <script src="../assets/site/pickers.js?v={version}" defer></script>
 <script src="../assets/site/seleccion.js?v={version}" defer></script>
 <script src="../assets/site/interpretar.js?v={version}" defer></script>
+<script src="../assets/site/geo.js?v={version}" defer></script>
+<script src="../assets/site/mapa.js?v={version}" defer></script>
 <script src="../assets/site/transporte.js?v={version}" defer></script>
 <script src="../assets/site/transporte-ui.js?v={version}" defer></script>
 <script src="../assets/site/asistente.js?v={version}" defer></script>
-<script src="../assets/site/documentos.js?v={version}" defer></script>
+<script src="../assets/site/normativa.js?v={version}" defer></script>
+<script src="../assets/site/ayuda.js?v={version}" defer></script>
 </body>
 </html>
 '''
@@ -438,16 +476,23 @@ def main():
     validar_anclas()
     version = N.version_actual()
     tools = N.herramientas()
+    (ROOT / 'ayuda').mkdir(exist_ok=True)
     (ROOT / 'documentos').mkdir(exist_ok=True)
     for g in GUIAS:
-        (ROOT / 'documentos' / f'{g["slug"]}.html').write_text(pagina(g, version, tools), encoding='utf-8')
-        print(f'documentos/{g["slug"]}.html')
+        (ROOT / 'ayuda' / f'{g["slug"]}.html').write_text(pagina(g, version, tools), encoding='utf-8')
+        print(f'ayuda/{g["slug"]}.html')
+        # Las guías estuvieron publicadas en documentos/: esa dirección lleva a la nueva
+        destino = f'../ayuda/{g["slug"]}.html'
+        (ROOT / 'documentos' / f'{g["slug"]}.html').write_text(
+            f'<!doctype html>\n<html lang="es-CL">\n<head>\n<meta charset="utf-8">\n<title>{esc(g["titulo"])}</title>\n'
+            f'<meta name="robots" content="noindex,nofollow">\n<link rel="canonical" href="{destino}">\n'
+            f'<meta http-equiv="refresh" content="0; url={destino}">\n</head>\n'
+            f'<body>\n<p>Esta guía ahora está en <a href="{destino}">Ayuda</a>.</p>\n</body>\n</html>\n', encoding='utf-8')
     p = ROOT / 'transporte-autorizado.html'
     s = p.read_text(encoding='utf-8')
-    s = reemplazar(s, 'documentos:menu', '    ' + menu_html('') + '\n')
-    s = reemplazar(s, 'documentos:guias', bloque_landing())
+    s = reemplazar(s, 'ayuda:menu', '    ' + menu_html('') + '\n')
     p.write_text(s, encoding='utf-8')
-    print('transporte-autorizado.html: panel de Documentos y bloque de guías')
+    print('transporte-autorizado.html: panel de Ayuda')
 
 
 if __name__ == '__main__':

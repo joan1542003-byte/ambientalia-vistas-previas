@@ -65,6 +65,7 @@
 
   const answers = {};
   const meta = { tipo: '', region: '', dates: {}, search: '' };
+  let geoPicked = null;  // calle elegida entre las sugerencias de dirección
   let index = 0;
   let done = false;
   let editing = false;
@@ -88,6 +89,7 @@
     active().forEach((s) => {
       if (s.type === 'contact') s.fields.forEach((f) => { if (answers[f.id]) rows.push(`• ${f.label}: ${answers[f.id]}`); });
       else if (answers[s.id]) rows.push(`• ${s.label}: ${s.id === 'residuo' ? shown(s) : answers[s.id]}`);
+      if (s.id === 'direccion' && answers.direccion && meta.punto && window.MAPA) rows.push(`• Ubicación en el mapa: ${window.MAPA.enlace(meta.punto)}`);
     });
     return [`*${TITLE}*`, '', ...rows, '', CLOSING].join('\n');
   };
@@ -183,8 +185,13 @@
       return;
     }
     if (s.type === 'text') {
-      body.innerHTML = `<div class="guide-step">${heading(s)}</div>`;
+      /* En la dirección aparecen calles reales mientras se escribe abajo (geo.js) */
+      const geo = s.id === 'direccion' && window.GEO;
+      if (geo) window.GEO.prepare();
+      const mapa = s.id === 'direccion' && window.MAPA && Picker.map;
+      body.innerHTML = `<div class="guide-step">${heading(s)}${geo ? `<ul class="text-suggest" data-geo aria-label="Sugerencias" hidden></ul><p class="text-source" hidden>${esc(window.GEO.fuente)}</p>` : ''}${mapa ? `<div class="text-map" data-guide-map><button type="button" class="map-open" data-guide-map-open aria-haspopup="dialog"><span class="map-open-icon" aria-hidden="true">${PIN}</span><span class="map-open-text"><strong></strong><small></small></span><span class="map-open-chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button></div>` : ''}</div>`;
       input.value = value || '';
+      paintMapRow();
       return;
     }
     if (s.type === 'contact') {
@@ -198,7 +205,7 @@
     actions.hidden = false;
     const rows = active().flatMap((s, i) => (s.type === 'contact'
       ? [{ label: 'Contacto', value: s.fields.map((f) => answers[f.id]).filter(Boolean).join(' · '), i }]
-      : answers[s.id] ? [{ label: s.label, value: shown(s), i }] : []));
+      : answers[s.id] ? [{ label: s.label, value: shown(s), i }, ...(s.id === 'direccion' && meta.punto ? [{ label: 'Ubicación en el mapa', value: 'Punto marcado (va como enlace de Google Maps)', i }] : [])] : []));
     body.innerHTML = `<div class="guide-step guide-final">
       <div class="guide-done"><svg width="28" height="28" class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>
         <div><h3 class="guide-q" tabindex="-1">Tu solicitud está lista.</h3><p class="guide-help">Envíala por WhatsApp con las fotografías; con eso revisamos el residuo, la cobertura, la disponibilidad y las condiciones del retiro para preparar la propuesta.</p></div></div>
@@ -238,7 +245,12 @@
     /* En la pregunta de dirección, lo escrito es la dirección (no se busca nada más en el texto) */
     if (step?.id === 'direccion') {
       answers.direccion = raw;
-      exchange = { user: raw, bot: 'Perfecto, anoté la dirección.' };
+      /* Si se eligió una calle sugerida, la comuna queda la de esa calle */
+      const g = geoPicked && raw.startsWith(geoPicked.label) ? geoPicked : null;
+      const cambia = Boolean(g?.comuna) && g.comuna !== answers.comuna;
+      if (cambia) answers.comuna = g.comuna;
+      geoPicked = null;
+      exchange = { user: raw, bot: cambia ? `Perfecto, anoté la dirección y la comuna: ${g.comuna}.` : 'Perfecto, anoté la dirección.' };
       firstMissing();
       return;
     }
@@ -313,6 +325,72 @@
     if (got.length || r.modalidad) firstMissing();
   };
 
+  /* Dirección: sugerencias de calles reales mientras se escribe; al tocar una queda escrita abajo para completarla y enviarla */
+  /* Punto en el mapa (opcional): se marca en una ventana aparte y viaja como enlace de Google Maps */
+  const paintMapRow = () => {
+    const zone = body.querySelector('[data-guide-map]');
+    if (!zone) return;
+    zone.classList.toggle('has-point', Boolean(meta.punto));
+    zone.querySelector('strong').textContent = meta.punto ? 'Punto marcado en el mapa' : 'Marcar el punto en el mapa';
+    zone.querySelector('small').textContent = meta.punto ? 'Toca para verlo o cambiarlo' : 'Opcional: ayuda a llegar al lugar exacto';
+  };
+  body.addEventListener('click', async (e) => {
+    if (!e.target.closest('[data-guide-map-open]')) return;
+    const r = await Picker.map({
+      title: 'Marca el punto del retiro', sub: 'Mueve el mapa hasta dejar el marcador sobre el lugar.', value: meta.punto || null,
+      vista: window.GEO?.locate(input.value || answers.direccion || '', { comuna: answers.comuna || '' }) ?? null
+    });
+    if (r === undefined) return;  // cerró sin confirmar
+    meta.punto = r;
+    paintMapRow();
+  });
+  const PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
+  let geoItems = [];
+  let geoCtrl = null;
+  let geoTimer = 0;
+  let geoTurn = 0;
+  const geoDraw = (list) => {
+    const box = body.querySelector('[data-geo]');
+    if (!box) return;
+    box.classList.toggle('is-fresh', box.hidden && list.length > 0);
+    const same = list.length === geoItems.length && list.every((it, i) => it.label === geoItems[i].label && it.sub === geoItems[i].sub);
+    geoItems = list;
+    if (same && !box.hidden) return;
+    box.innerHTML = list.map((it, i) => `<li><button type="button" class="suggest" data-i="${i}"><span class="suggest-pin">${PIN}</span><span class="suggest-text"><strong>${esc(it.label)}</strong><small>${esc(it.sub)}</small></span></button></li>`).join('');
+    box.hidden = !list.length;
+    box.nextElementSibling.hidden = !list.length;
+    /* Con el teclado abierto queda poco espacio: la lista sube hasta quedar a la vista (sin mover la página) */
+    if (list.length) requestAnimationFrame(() => {
+      const area = body.getBoundingClientRect();
+      const r = box.getBoundingClientRect();
+      const falta = Math.min(r.bottom + 28 - area.bottom, r.top - area.top - 8);
+      if (falta > 0) body.scrollTo({ top: body.scrollTop + falta, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+  };
+  input.addEventListener('input', () => {
+    if (!window.GEO || done || active()[index]?.id !== 'direccion') return;
+    clearTimeout(geoTimer);
+    const q = input.value.trim();
+    if (q.length < 3 || (geoPicked && q.startsWith(geoPicked.label))) { geoCtrl?.abort(); geoTurn += 1; geoDraw([]); return; }
+    geoTimer = setTimeout(async () => {
+      geoCtrl?.abort();
+      geoCtrl = new AbortController();
+      const mine = ++geoTurn;
+      let list = [];
+      try { list = await window.GEO.suggest(q, { comuna: answers.comuna || '', signal: geoCtrl.signal }); } catch { list = []; }
+      if (mine === geoTurn) geoDraw(list || []);
+    }, 140);
+  });
+  body.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-geo] .suggest');
+    const it = b && geoItems[Number(b.dataset.i)];
+    if (!it) return;
+    geoPicked = it;
+    input.value = it.value;
+    geoDraw([]);
+    input.focus({ preventScroll: true });
+  });
+
   composer.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = input.value;
@@ -361,9 +439,8 @@
     exchange = null;
     if (done) { done = false; index = active().length - 1; } else index = Math.max(0, index - 1);
   }));
-  /* Formulario ⇄ Conversación: al pasar al formulario se lleva todo lo respondido */
-  panel.querySelector('.mode-toggle')?.addEventListener('click', (e) => {
-    if (!e.target.closest('[data-mode="form"]')) return;
+  /* «Ir al formulario»: se lleva todo lo respondido */
+  panel.querySelector('[data-mode="form"]')?.addEventListener('click', () => {
     window.QUOTE?.fill({ answers, meta });
     window.HERO?.show('cotizar');
   });

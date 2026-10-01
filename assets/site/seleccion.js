@@ -389,25 +389,138 @@
 
   /* Texto en su propia ventana (p. ej., la dirección): el campo queda arriba, así el teclado nunca lo tapa
      y la pantalla no se mueve; «Listo» queda sobre el teclado. El foco se da en el mismo toque para que el teclado abra. */
-  const text = ({ title, sub = '', label = title, value = '', placeholder = '', hint = '', autocomplete = 'off', maxlength = 200, done = 'Listo' }) => {
+  /* Ventana de texto. Con `suggest` (función async que recibe lo escrito y una señal para cancelar) muestra sugerencias
+     bajo el campo mientras se escribe; al elegir una, queda escrita y se puede seguir completando (bodega, piso…). */
+  const PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
+  /* Fila que despliega el mapa para marcar el punto exacto (mapa.js). `map`: { value, locate(texto), onDone(punto) } */
+  const MAP_ROW = `<div class="text-map" data-map>
+      <button type="button" class="map-open" data-map-open aria-expanded="false" aria-controls="picker-map">
+        <span class="map-open-icon" aria-hidden="true">${PIN}</span>
+        <span class="map-open-text"><strong></strong><small></small></span>
+        <span class="map-open-chev" aria-hidden="true">${ICON.next}</span>
+      </button>
+      <div class="map-fold" id="picker-map"><div class="map-fold-in"><div data-map-slot></div></div></div>
+    </div>`;
+  const text = ({ title, sub = '', label = title, value = '', placeholder = '', hint = '', autocomplete = 'off', maxlength = 200, done = 'Listo', suggest = null, onSuggest = null, source = '', map = null }) => {
     const p = open({ title, sub, done, still: true });
+    const withMap = Boolean(map && window.MAPA);
+    let point = map?.value || null;
     el.body.innerHTML = `<div class="text-field">
       <label class="sr-only" for="picker-text">${esc(label)}</label>
-      <textarea id="picker-text" rows="3" maxlength="${maxlength}" autocomplete="${esc(autocomplete)}" enterkeyhint="done" placeholder="${esc(placeholder)}">${esc(value)}</textarea>
+      <textarea id="picker-text" rows="3" maxlength="${maxlength}" autocomplete="${esc(autocomplete)}" enterkeyhint="done" placeholder="${esc(placeholder)}"${suggest ? ' aria-controls="picker-suggest" aria-autocomplete="list"' : ''}>${esc(value)}</textarea>
       ${hint ? `<p class="text-hint">${esc(hint)}</p>` : ''}
+      ${suggest ? `<ul class="text-suggest" id="picker-suggest" aria-label="Sugerencias" hidden></ul><p class="text-source" hidden>${esc(source)}</p>` : ''}
+      ${withMap ? MAP_ROW : ''}
     </div>`;
     const input = el.body.querySelector('textarea');
     const sync = () => { el.done.disabled = !input.value.trim(); };
+    /* «Listo» (o Enter) guarda el texto y, si hay mapa, el punto marcado */
+    const commit = () => {
+      if (!input.value.trim()) return;
+      if (withMap) map.onDone?.(point);
+      finish(input.value.trim().replace(/\s+/g, ' '));
+    };
     input.addEventListener('input', sync);
     input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' && el.body.querySelector('.suggest')) { e.preventDefault(); el.body.querySelector('.suggest').focus(); return; }
       if (e.key !== 'Enter' || e.shiftKey) return;
       e.preventDefault();
-      if (input.value.trim()) finish(input.value.trim().replace(/\s+/g, ' '));
+      commit();
     });
-    hooks.done = () => finish(input.value.trim().replace(/\s+/g, ' '));
+    let hideSuggest = () => {};
+    if (withMap) {
+      const zone = el.body.querySelector('[data-map]');
+      const opener = zone.querySelector('[data-map-open]');
+      let ctl = null;
+      const paintRow = () => {
+        zone.classList.toggle('has-point', Boolean(point));
+        opener.querySelector('strong').textContent = point ? 'Punto marcado en el mapa' : 'Marcar el punto en el mapa';
+        opener.querySelector('small').textContent = point ? 'Toca para verlo o cambiarlo' : 'Opcional: ayuda a llegar al lugar exacto';
+      };
+      opener.addEventListener('click', () => {
+        const on = opener.getAttribute('aria-expanded') !== 'true';
+        opener.setAttribute('aria-expanded', String(on));
+        zone.classList.toggle('is-open', on);
+        if (!on) return;
+        input.blur();  // se cierra el teclado: el mapa necesita el espacio
+        hideSuggest();
+        /* El mapa parte en la calle escrita (o en la comuna); se crea la primera vez que se abre */
+        ctl ||= window.MAPA.mount(zone.querySelector('[data-map-slot]'), { value: point, vista: map.locate?.(input.value), onChange: (x) => { point = x; paintRow(); } });
+        requestAnimationFrame(() => el.body.scrollTo({ top: zone.offsetTop - 6, behavior: motion.matches ? 'smooth' : 'auto' }));
+      });
+      paintRow();
+      p.finally?.(() => ctl?.destroy());
+    }
+    if (suggest) {
+      const box = el.body.querySelector('.text-suggest');
+      const note = el.body.querySelector('.text-source');
+      let items = [];
+      let ctrl = null;
+      let timer = 0;
+      let turn = 0;
+      let chosen = '';
+      const draw = (list) => {
+        /* La entrada escalonada solo al aparecer: mientras se sigue escribiendo, la lista cambia sin volver a animarse */
+        box.classList.toggle('is-fresh', box.hidden && list.length > 0);
+        const same = list.length === items.length && list.every((it, i) => it.label === items[i].label && it.sub === items[i].sub);
+        items = list;
+        if (same && !box.hidden) return;
+        box.innerHTML = list.map((it, i) => `<li><button type="button" class="suggest" data-i="${i}"><span class="suggest-pin">${PIN}</span><span class="suggest-text"><strong>${esc(it.label)}</strong><small>${esc(it.sub)}</small></span></button></li>`).join('');
+        box.hidden = !list.length;
+        note.hidden = !list.length || !source;
+      };
+      const ask = () => {
+        clearTimeout(timer);
+        const q = input.value.trim();
+        /* Elegida una calle, lo que se agrega después (oficina, bodega, referencia) no vuelve a abrir la lista */
+        if (q.length < 3 || (chosen && q.startsWith(chosen))) { ctrl?.abort(); turn += 1; draw([]); return; }
+        timer = setTimeout(async () => {
+          ctrl?.abort();
+          ctrl = new AbortController();
+          const mine = ++turn;
+          let list = [];
+          try { list = await suggest(q, ctrl.signal); } catch { list = []; }
+          if (mine === turn && dlg.open) draw(list || []);
+        }, 140);
+      };
+      input.addEventListener('input', ask);
+      box.addEventListener('click', (e) => {
+        const b = e.target.closest('.suggest');
+        if (!b) return;
+        const it = items[Number(b.dataset.i)];
+        chosen = it.label;
+        input.value = it.value;
+        onSuggest?.(it);
+        draw([]);
+        sync();
+        input.focus({ preventScroll: true });
+        input.setSelectionRange(input.value.length, input.value.length);
+      });
+      box.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        const all = [...box.querySelectorAll('.suggest')];
+        const k = all.indexOf(d.activeElement);
+        e.preventDefault();
+        if (e.key === 'ArrowUp' && k <= 0) input.focus(); else all[Math.min(all.length - 1, k + (e.key === 'ArrowDown' ? 1 : -1))]?.focus();
+      });
+      hideSuggest = () => { clearTimeout(timer); ctrl?.abort(); turn += 1; draw([]); };
+      p.finally?.(() => { clearTimeout(timer); ctrl?.abort(); });
+    }
+    hooks.done = commit;
     sync();
     input.focus({ preventScroll: true });
     input.setSelectionRange(input.value.length, input.value.length);
+    return p;
+  };
+
+  /* Solo el mapa: devuelve el punto marcado ({ lat, lng }), null si se quitó o undefined si se cerró sin confirmar */
+  const map = ({ title, sub = '', value = null, vista = null, done = 'Listo' }) => {
+    const p = open({ title, sub, done, still: true });
+    el.body.innerHTML = '<div class="text-map is-solo"><div data-map-slot></div></div>';
+    let point = value;
+    const ctl = window.MAPA.mount(el.body.querySelector('[data-map-slot]'), { value, vista, onChange: (x) => { point = x; } });
+    hooks.done = () => finish(point || null);
+    p.finally?.(() => ctl.destroy());
     return p;
   };
 
@@ -508,5 +621,5 @@
     return p;
   };
 
-  window.Picker = { content, choose, chooseEach, commune, text, dates, time, options, communes, calendar, hint, drag, MODES, close: () => finish() };
+  window.Picker = { content, choose, chooseEach, commune, text, map, dates, time, options, communes, calendar, hint, drag, MODES, close: () => finish() };
 })();

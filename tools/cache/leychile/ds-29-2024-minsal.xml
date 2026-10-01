@@ -1,0 +1,898 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="1220286" esTratado="no tratado" fechaVersion="2026-01-14" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="2024-07-22" fechaPublicacion="2026-01-14">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Decreto</Tipo>
+        <Numero>29</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE SALUD</Organismo>
+      <Organismo>SUBSECRETAR&#205;A DE SALUD P&#218;BLICA</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>APRUEBA REGLAMENTO SANITARIO SOBRE LABORES DE RECEPCI&#211;N Y ALMACENAMIENTO DE RESIDUOS DE PRODUCTOS PRIORITARIOS</TituloNorma>
+    
+    
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>44348</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2026-01-14" derogado="no derogado">
+    <Texto>APRUEBA REGLAMENTO SANITARIO SOBRE LABORES DE RECEPCI&#211;N Y ALMACENAMIENTO DE RESIDUOS DE PRODUCTOS PRIORITARIOS
+     
+     N&#250;m. 29.- Santiago, 22 de julio de 2024.
+     
+     Visto:
+     
+     Lo dispuesto en los art&#237;culos 19 N&#176; 8, 9, y 24, 32 N&#176; 6 y 35 de la Constituci&#243;n Pol&#237;tica de la Rep&#250;blica; en los art&#237;culos 1&#176;, 2&#176;, 3&#176;, 5&#176;, 121&#176; y en el Libro X del C&#243;digo Sanitario, aprobado por decreto con fuerza de ley N&#176; 725, de 1967, del Ministerio de Salud; en los art&#237;culos 1&#176;, 4&#176; y 7&#176; del decreto con fuerza de ley N&#176; 1, de 2005, del Ministerio de Salud, que fija el texto refundido, coordinado y sistematizado del decreto ley N&#176; 2.763, de 1979, y de las leyes N&#176; 18.933 y N&#176; 18.469; en los art&#237;culos 5, 6, 8 y 9 del decreto supremo N&#176; 136, de 2004, del Ministerio de Salud; el art&#237;culo 35 de la ley N&#176; 20.920; los art&#237;culos 69 y 70 de la ley N&#176; 19.300; en la resoluci&#243;n N&#176; 7, de 2019, de la Contralor&#237;a General de la Rep&#250;blica, que fija normas sobre exenci&#243;n del tr&#225;mite de toma de raz&#243;n, y
+     
+     Considerando:
+     
+     1. Que, al Estado le corresponde velar que se haga efectivo el derecho de las personas a vivir en un medio ambiente libre de contaminaci&#243;n, as&#237; como garantizar su derecho a la protecci&#243;n de la salud.
+     2. Que, con fecha 1 de junio del a&#241;o 2016, se public&#243; en el Diario Oficial la ley N&#176; 20.920, que Establece Marco para la Gesti&#243;n de Residuos, la Responsabilidad Extendida del Productor y Fomento al Reciclaje.
+     3. Que, de acuerdo a lo dispuesto en el art&#237;culo 35 del aludido texto legal, un reglamento establecer&#225; la regulaci&#243;n espec&#237;fica de un procedimiento simplificado, los plazos, las condiciones y los requisitos para la autorizaci&#243;n sanitaria de las labores de recolecci&#243;n y las instalaciones de recepci&#243;n y almacenamiento de residuos, peligrosos y no peligrosos, de productos prioritarios, desarrolladas por un gestor autorizado y registrado acorde a lo establecido en la ley N&#176; 20.920.
+     4. Que, asimismo, el reglamento prev&#233; la posibilidad de que el Ministerio de Salud identifique un determinado residuo peligroso de producto prioritario como de bajo riesgo, estableciendo requisitos especiales para su manejo.
+     5. Que, en raz&#243;n de lo se&#241;alado y para realizar una tarea exhaustiva, fue necesario hacer m&#250;ltiples consultas en el proceso de redacci&#243;n del mencionado reglamento, lo que implic&#243; un trabajo extenso.
+     6. Que, el reglamento establece disposiciones transitorias que permitir&#225;n adecuarse a las nuevas exigencias que se disponen.
+     7. Que esta propuesta de decreto supremo fue remitida al Consejo de Ministros para la Sustentabilidad y el Cambio Clim&#225;tico para su conocimiento, el que se pronunci&#243; favorablemente sobre la propuesta, seg&#250;n consta en el acta de la sesi&#243;n ordinaria N&#176;4/2024, y en el Acuerdo N&#176; 9/2024, ambos de 3 de mayo de 2024.
+     8. Que, en base a lo expresado anteriormente,
+     
+     Decreto:</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578270">
+      <Texto>     
+     Art&#237;culo &#250;nico.- Apru&#233;base el siguiente Reglamento Sanitario sobre Labores de Recepci&#243;n y Almacenamiento de Residuos de Productos Prioritarios.</Texto>
+      <Metadatos>
+        <NombreParte presente="si">&#250;nico</NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Doble Articulado" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578271">
+          <Texto>     </Texto>
+          <Metadatos>
+            <NombreParte presente="si">del Art&#237;culo &#250;nico</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578272">
+              <Texto>
+     T&#205;TULO PRIMERO
+     DISPOSICIONES GENERALES</Texto>
+              <Metadatos>
+                <NombreParte presente="no">&#160;</NombreParte>
+                <TituloParte presente="si">T&#205;TULO PRIMERO DISPOSICIONES GENERALES</TituloParte>
+                
+              </Metadatos>
+              <EstructurasFuncionales>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578273">
+                  <Texto>     
+     Art&#237;culo 1&#176;.- El presente reglamento tiene por objeto establecer la regulaci&#243;n espec&#237;fica del procedimiento simplificado para la autorizaci&#243;n sanitaria de las labores de recolecci&#243;n, de las instalaciones de recepci&#243;n y almacenamiento de residuos de productos prioritarios y de las instalaciones de pretratamiento de residuos no peligrosos, desarrolladas por gestores autorizados y registrados acorde a lo establecido en la ley N&#176; 20.920.
+     Este procedimiento simplificado establece los plazos, condiciones y requisitos que los sujetos obligados deber&#225;n cumplir para la obtenci&#243;n de la autorizaci&#243;n sanitaria correspondiente.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">1&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578274">
+                  <Texto>
+     Art&#237;culo 2&#176;.- La Secretar&#237;a Regional Ministerial de Salud respectiva ser&#225; responsable de fiscalizar y controlar el cumplimiento de las disposiciones de este reglamento. Adem&#225;s, tendr&#225; la facultad de autorizar las labores de recolecci&#243;n, aprobar proyectos y autorizar el funcionamiento de las instalaciones destinadas a la recepci&#243;n, pretratamiento y almacenamiento de residuos de productos prioritarios, de acuerdo con lo establecido en el presente reglamento y en las normas e instrucciones generales que imparta el Ministerio de Salud.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">2&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578275">
+                  <Texto>
+     Art&#237;culo 3&#176;.- Para los efectos del presente reglamento, se entender&#225; por:
+     
+     a) Autoridad Sanitaria: Secretar&#237;a Regional Ministerial de Salud.
+     b) Almacenamiento: acumulaci&#243;n de residuos en un lugar espec&#237;fico por un tiempo determinado.
+     c) Campa&#241;a de Recolecci&#243;n: conjunto de actividades de car&#225;cter temporal y espor&#225;dico, que tienen por objeto exclusivo recibir o recoger residuos de productos prioritarios para su env&#237;o a Centros de Acopio o instalaciones de valorizaci&#243;n y/o de eliminaci&#243;n.
+     d) Cart&#243;n para l&#237;quidos: material compuesto por capas de celulosa, pl&#225;stico y eventualmente aluminio, que sirve para contener alimentos l&#237;quidos, esterilizados y sellados.
+     e) Centro de Acopio: instalaci&#243;n donde se reciben residuos de productos prioritarios provenientes de otras Instalaciones de Recepci&#243;n y Almacenamiento, de la recolecci&#243;n selectiva, de campa&#241;as de recolecci&#243;n y de la industria, para su almacenamiento previo a su env&#237;o a instalaciones de valorizaci&#243;n y/o de eliminaci&#243;n. Adem&#225;s, en estas instalaciones se pueden realizar operaciones de pretratamiento.
+     f) Gestor: persona natural o jur&#237;dica, p&#250;blica o privada, que realiza cualquiera de las operaciones de manejo de residuos y que se encuentra autorizada y registrada en conformidad a la normativa vigente.
+     g) Instalaci&#243;n de Recepci&#243;n y Almacenamiento: lugar o establecimiento de recepci&#243;n y acumulaci&#243;n selectiva de residuos, debidamente autorizado, tales como Puntos Verdes, Puntos Limpios y Centros de Acopio.
+     h) Instalaci&#243;n m&#243;vil: instalaci&#243;n de recepci&#243;n y almacenamiento de residuos de productos prioritarios ubicada en lugares de acceso p&#250;blico en forma transitoria y en fechas y horarios preestablecidos.
+     i) Pretratamiento: operaciones f&#237;sicas preparatorias o previas a la valorizaci&#243;n y/o eliminaci&#243;n, tales como separaci&#243;n, desembalaje, corte, trituraci&#243;n, compactaci&#243;n, mezclado, lavado y empaque, entre otros, destinadas a reducir su volumen, facilitar su manipulaci&#243;n o potenciar su valorizaci&#243;n.
+     j) Producto prioritario: sustancia u objeto que una vez transformado en residuo, por su volumen, peligrosidad o presencia de recursos aprovechables, queda sujeto a las obligaciones de la responsabilidad extendida del productor, en conformidad con lo establecido en la ley N&#176; 20.920.
+     k) Punto Limpio: instalaci&#243;n fija o m&#243;vil ubicada en lugares de acceso p&#250;blico que cuenta con personal permanente para la atenci&#243;n del p&#250;blico, destinada a recibir determinados residuos de productos prioritarios entregados por la poblaci&#243;n y por recicladores de base, para su almacenamiento, posible pretratamiento y env&#237;o a Centros de Acopio o a instalaciones de valorizaci&#243;n y/o de eliminaci&#243;n.
+     l) Punto Verde: uno o m&#225;s contenedores, fijos o m&#243;viles, ubicados en lugares de acceso p&#250;blico destinados a recibir determinados residuos de productos prioritarios entregados por la poblaci&#243;n, para su almacenamiento y env&#237;o a Centros de Acopio o a instalaciones de valorizaci&#243;n y/o de eliminaci&#243;n.
+     m) Recolecci&#243;n: operaci&#243;n consistente en recoger residuos, incluido su almacenamiento inicial, con el objeto de transportarlos a una instalaci&#243;n de almacenamiento, de valorizaci&#243;n y/o de eliminaci&#243;n, seg&#250;n corresponda. La recolecci&#243;n de residuos separados en origen se denomina diferenciada o selectiva.
+     n) Residuo: sustancia u objeto que su generador desecha o tiene la intenci&#243;n u obligaci&#243;n de desechar de acuerdo con la normativa vigente.
+     o) Residuo peligroso: residuo o mezcla de residuos que presenta riesgo para la salud p&#250;blica y/o efectos adversos al medio ambiente, ya sea directamente o debido a su manejo actual o previsto, como consecuencia de presentar alguna de las caracter&#237;sticas de peligrosidad se&#241;aladas en el Reglamento sobre Manejo Sanitario de Residuos Peligrosos, oficializado mediante decreto supremo N&#176; 148, de 2003, del Ministerio de Salud, o la norma que lo reemplace.
+     p) Residuo peligroso de bajo riesgo: residuo peligroso generado en viviendas e identificado por el Ministerio de Salud como de bajo riesgo, por no presentar riesgo significativo para la salud de la poblaci&#243;n durante su entrega y almacenamiento en Puntos Verdes o Limpios, identificados como tales mediante una resoluci&#243;n del Ministerio de Salud publicada en www.minsal.cl.
+     q) RETC: Registro de Emisiones y Transferencias de Contaminantes.
+     r) Sistema de gesti&#243;n: mecanismo instrumental para que los productores, individual o colectivamente, den cumplimiento a las obligaciones establecidas en el marco de la responsabilidad extendida del productor, a trav&#233;s de la implementaci&#243;n de un plan de gesti&#243;n.
+     
+     En todo lo dem&#225;s, regir&#225;n las definiciones contenidas en la ley N&#176; 20.920, de 2016.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">3&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578276">
+                  <Texto>     
+     Art&#237;culo 4&#176;.- Los contenedores utilizados en Instalaciones de Recepci&#243;n y Almacenamiento de residuos de productos prioritarios deber&#225;n ser resistentes a los residuos contenidos y a los esfuerzos a los que ser&#225;n sometidos durante las operaciones de carga y descarga, y deber&#225;n impedir el derrame de los mismos. Adem&#225;s, los contenedores deber&#225;n ser dise&#241;ados y construidos de forma tal que permitan un aseo adecuado. Deben mantenerse limpios y en buen estado, reemplazando oportunamente aquellos que presenten deterioro.
+     Los contenedores destinados a la recepci&#243;n de residuos de productos prioritarios cuyo uso o manejo inadecuado pueda presentar riesgo para la salud, deber&#225;n incluir dispositivos que impidan su retiro por personas no autorizadas. El Ministerio de Salud podr&#225;, mediante resoluci&#243;n, identificar residuos cuyo manejo deba estar sometido a dicha obligaci&#243;n.
+     Los contenedores para residuos peligrosos deber&#225;n estar etiquetados y rotulados conforme a lo establecido en el decreto supremo N&#176; 148, de 2003, del Ministerio de Salud, o la norma que lo reemplace. Por su parte, los contenedores de residuos no peligrosos deber&#225;n contar con una etiqueta que indique el tipo de residuo que pueden almacenar.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">4&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578277">
+                  <Texto>     
+     Art&#237;culo 5&#176;.- Los productores de productos prioritarios o los respectivos sistemas de gesti&#243;n podr&#225;n solicitar justificadamente al Ministerio de Salud declarar a un determinado residuo de producto prioritario como residuo peligroso de bajo riesgo, debiendo proponer el manejo que tendr&#225;n estos residuos.
+     Luego de considerar los antecedentes que se le hayan presentado, el Ministerio de Salud podr&#225;, mediante resoluci&#243;n, declararlo residuo peligroso de bajo riesgo y establecer requerimientos especiales para el manejo del mismo, considerando en las etapas siguientes de manejo de estos residuos el cumplimiento del decreto supremo N&#176; 148, de 2003, del Ministerio de Salud, o la norma que lo reemplace.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">5&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578278">
+                  <Texto>     Art&#237;culo 6&#176;.- Toda instalaci&#243;n destinada a la recepci&#243;n y almacenamiento de residuos de productos prioritarios deber&#225; ser manejada de forma de controlar los riesgos para la salud de las personas y el medio ambiente.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">6&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578279">
+                  <Texto>     Art&#237;culo 7&#176;.- El Gestor responsable de una instalaci&#243;n de recepci&#243;n y almacenamiento de residuos de productos prioritarios deber&#225; informar anualmente las cantidades recibidas de cada tipo de residuo y la respectiva instalaci&#243;n de destino a la que han sido enviados. Por su parte, todo responsable de una Campa&#241;a de Recolecci&#243;n de residuos de productos prioritarios deber&#225; reportar la informaci&#243;n antes se&#241;alada, luego de transcurrido un mes del t&#233;rmino de esta.
+     La informaci&#243;n deber&#225; ser proporcionada a trav&#233;s del Registro de Emisi&#243;n y Transferencia de Contaminantes, RETC, de acuerdo a lo establecido en el respectivo reglamento y utilizando los formatos de entrega de informaci&#243;n que ser&#225;n formalizados por el Ministerio de Salud mediante una resoluci&#243;n publicada en www.minsal.cl.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">7&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+              </EstructurasFuncionales>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578280">
+              <Texto>
+     T&#205;TULO SEGUNDO
+     DE LAS INSTALACIONES DE RECEPCI&#211;N Y ALMACENAMIENTO</Texto>
+              <Metadatos>
+                <NombreParte presente="no">&#160;</NombreParte>
+                <TituloParte presente="si">T&#205;TULO SEGUNDO DE LAS INSTALACIONES DE RECEPCI&#211;N Y ALMACENAMIENTO</TituloParte>
+                
+              </Metadatos>
+              <EstructurasFuncionales>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578281">
+                  <Texto>     
+     Art&#237;culo 8&#176;.- Las Instalaciones de Recepci&#243;n y Almacenamiento de residuos de productos prioritarios requerir&#225;n de autorizaci&#243;n sanitaria.
+     Excepcionalmente, no requerir&#225;n de autorizaci&#243;n sanitaria adicional:
+     
+     a) Las Instalaciones de Recepci&#243;n y Almacenamiento a las que alude el art&#237;culo 33 de la ley N&#176; 20.920.
+     b) Todo establecimiento en el que se distribuyan o comercialicen determinados productos prioritarios, cuando las Instalaciones de Recepci&#243;n y Almacenamiento sean dispuestas en el mismo lugar de almacenamiento de los productos y estos correspondan a aquellos de car&#225;cter no peligroso y/o peligroso de bajo riesgo.
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">8&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578282">
+                  <Texto>     Art&#237;culo 9&#176;.- El Gestor que considera instalar dos o m&#225;s Puntos Verdes o Puntos Limpios en una misma regi&#243;n, podr&#225; solicitar una &#250;nica autorizaci&#243;n sanitaria por cada tipo de instalaci&#243;n.
+     El Gestor a que se hace referencia en el p&#225;rrafo precedente que cuente con autorizaci&#243;n sanitaria y pretenda agregar nuevos Puntos Verdes que cumplan las mismas caracter&#237;sticas t&#233;cnicas de los Puntos Verdes previamente autorizados, deber&#225; informar a la Autoridad Sanitaria competente la incorporaci&#243;n de &#233;stos dentro del plazo de 1 mes contado desde su instalaci&#243;n. Lo anterior no ser&#225; aplicable a la incorporaci&#243;n de nuevos Puntos Limpios a los contenidos en una autorizaci&#243;n sanitaria.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">9&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578283">
+                  <Texto>     
+     Art&#237;culo 10.- En el caso de que un sistema de gesti&#243;n de residuos de productos prioritarios considere la habilitaci&#243;n de Instalaciones de Recepci&#243;n y Almacenamiento en establecimientos que comercialicen o distribuyan productos prioritarios y no requieran autorizaci&#243;n sanitaria para ello, tendr&#225; un plazo de 1 mes contado desde su habilitaci&#243;n, para solicitar la autorizaci&#243;n sanitaria de dichas instalaciones, seg&#250;n el tipo de Instalaci&#243;n de Recepci&#243;n y Almacenamiento de que se trate.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">10 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578284">
+                  <Texto>     
+     P&#225;rrafo I
+     De los Puntos Verdes</Texto>
+                  <Metadatos>
+                    <NombreParte presente="no">&#160;</NombreParte>
+                    <TituloParte presente="si">P&#225;rrafo I De los Puntos Verdes</TituloParte>
+                    
+                  </Metadatos>
+                  <EstructurasFuncionales>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578285">
+                      <Texto>     
+     Art&#237;culo 11.- Los Puntos Verdes s&#243;lo podr&#225;n recibir residuos de productos prioritarios generados en viviendas y entregados directamente por la poblaci&#243;n.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">11 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578286">
+                      <Texto>     
+     Art&#237;culo 12.- La solicitud de autorizaci&#243;n sanitaria de Puntos Verdes deber&#225; contener lo siguiente:
+     
+     a) Nombre, domicilio y correo electr&#243;nico del Gestor y de su representante legal si corresponde.
+     b) Nombre, domicilio y correo electr&#243;nico de la persona natural o jur&#237;dica que realiza la solicitud en representaci&#243;n del Gestor.
+     c) Listado de los residuos de productos prioritarios a manejar, incluyendo una estimaci&#243;n de la cantidad a ser recibida anualmente de cada residuo.
+     d) Ubicaci&#243;n.
+     e) Horario de funcionamiento, cuando corresponda.
+     f) Descripci&#243;n de los contenedores a utilizar, incluyendo tipo, material y dimensiones, para cada residuo.
+     g) Condiciones y mecanismos para determinar el retiro oportuno de los contenedores una vez alcanzada la capacidad de almacenamiento.
+     h) Convenio, acuerdo, autorizaci&#243;n o contrato con municipalidades, organismos p&#250;blicos, propietarios de terrenos o establecimientos de acceso p&#250;blico, que permita la instalaci&#243;n de el o los Puntos Verdes.
+     i) Procedimiento y frecuencia de limpieza de la instalaci&#243;n.
+     
+     En caso de tratarse de una solicitud de autorizaci&#243;n de un Punto Verde de car&#225;cter m&#243;vil, la informaci&#243;n solicitada en los literales d) y e) deber&#225; especificar la planificaci&#243;n de las ubicaciones y las respectivas fechas y horarios de operaci&#243;n, cuando corresponda.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">12 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578287">
+                      <Texto>     Art&#237;culo 13.- El cambio de localizaci&#243;n de un Punto Verde, siempre y cuando sea mayor a 100 metros de su localizaci&#243;n original, deber&#225; ser informado a la Autoridad Sanitaria competente, dentro del plazo de 1 mes contado desde la ocurrencia de dicho cambio.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">13 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578288">
+                      <Texto>
+     Art&#237;culo 14.- Los Puntos Verdes destinados a la recepci&#243;n de residuos de bater&#237;as; aceites lubricantes; neum&#225;ticos; envases y embalajes agroindustriales; envases de plaguicidas sometidos a triple lavado y envases y embalajes que han contenido sustancias peligrosas, s&#243;lo pueden instalarse en locales en donde &#233;stos son comercializados.
+     Los Puntos Verdes destinados a la recepci&#243;n de residuos de pilas y aparatos el&#233;ctricos y electr&#243;nicos podr&#225;n instalarse en locales donde &#233;stos son comercializados, as&#237; como en lugares de uso o acceso p&#250;blico controlado, tales como centros comerciales, edificios p&#250;blicos y supermercados, entre otros.
+     Los Puntos Verdes destinados a la recepci&#243;n de residuos de vidrio, pl&#225;stico, papel y cart&#243;n, metal y cart&#243;n para l&#237;quidos podr&#225;n ser de car&#225;cter fijo o m&#243;vil e instalarse en lugares de uso o acceso p&#250;blico, tales como plazas, parques, aceras y en aquellos lugares indicados en los incisos precedentes.
+     Cuando se trate de residuos de productos prioritarios no se&#241;alados en este art&#237;culo, el Ministerio de Salud establecer&#225; el tipo de Punto Verde destinado a la correspondiente recepci&#243;n mediante una resoluci&#243;n que dictar&#225; para dichos efectos y se publicar&#225; en www.minsal.cl.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">14 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578289">
+                      <Texto>     Art&#237;culo 15.- Durante su operaci&#243;n los Puntos Verdes deber&#225;n cumplir con las siguientes condiciones:
+     
+     a) Los contenedores deber&#225;n mantenerse limpios y en buen estado, reemplazando aquellos que presenten deterioro.
+     b) El retiro de los residuos se deber&#225; realizar antes de que la capacidad del respectivo contenedor sea superada.
+     c) Los residuos deber&#225;n ser transportados hasta un Centro de Acopio o una instalaci&#243;n de valorizaci&#243;n y/o de eliminaci&#243;n autorizada.
+     d) Cada contenedor deber&#225; contar con una etiqueta que identifique el Punto Verde, los residuos que se reciben y el tel&#233;fono y nombre del Gestor que opera el Punto Verde. Las dimensiones de la etiqueta no deber&#225;n ser inferiores a 40 cm por lado.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">15 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                  </EstructurasFuncionales>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578290">
+                  <Texto>     
+     P&#225;rrafo II
+     De los Puntos Limpios
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="no">&#160;</NombreParte>
+                    <TituloParte presente="si">P&#225;rrafo II De los Puntos Limpios</TituloParte>
+                    
+                  </Metadatos>
+                  <EstructurasFuncionales>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578291">
+                      <Texto>
+     Art&#237;culo 16.- Los Puntos Limpios s&#243;lo podr&#225;n recibir residuos de productos prioritarios generados en viviendas y entregados directamente por la poblaci&#243;n y por recicladores de base.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">16 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578292">
+                      <Texto>
+     Art&#237;culo 17.- La solicitud de autorizaci&#243;n sanitaria de un Punto Limpio de car&#225;cter fijo deber&#225; contener lo siguiente:
+     
+     a) Nombre, domicilio y correo electr&#243;nico del Gestor y de su representante legal si corresponde.
+     b) Nombre, domicilio y correo electr&#243;nico de la persona natural o jur&#237;dica que realiza la solicitud y de su representante legal si corresponde.
+     c) Listado de residuos de productos prioritarios a manejar, incluyendo una estimaci&#243;n de la cantidad a ser recibida anualmente de cada residuo.
+     d) Plano de localizaci&#243;n, identificando viviendas, establecimientos de atenci&#243;n de salud, establecimientos de larga estad&#237;a para adultos mayores, establecimientos educacionales de nivel parvulario, b&#225;sico, medio y superior, y otros establecimientos similares ubicados en un radio de 100 metros de los deslindes del Punto Limpio.
+     e) Horario de funcionamiento de la instalaci&#243;n, para usuarios y para veh&#237;culos de carga.
+     f) Descripci&#243;n de los equipos y contenedores a utilizar, seg&#250;n corresponda, incluyendo tipo, material y dimensiones para cada residuo. En especial, se deben identificar los equipos destinados al pretratamiento de los residuos, tales como los destinados a trituraci&#243;n, compactaci&#243;n y empaque.
+     g) Plano de la instalaci&#243;n.
+     h) Se&#241;alar que cuenta con un cierre perimetral y puerta de acceso.
+     i) Indicar que est&#225; construido sobre una superficie que permite una adecuada limpieza.
+     j) Acreditar la existencia de se&#241;al&#233;tica y demarcaciones de tr&#225;nsito, que incluya las indicaciones tanto para los usuarios y sus veh&#237;culos como para los veh&#237;culos de carga que retiren los residuos de productos prioritarios almacenados.
+     k) Acreditar la existencia de un cartel con indicaciones legibles a 5 metros a lo menos y f&#225;ciles de comprender por los usuarios, en las que se se&#241;ale el nombre de la instalaci&#243;n, los residuos de productos prioritarios que se reciben, los horarios de atenci&#243;n y un tel&#233;fono y nombre de contacto.
+     l) En caso de utilizar equipamiento electromec&#225;nico, deber&#225; acreditarse que &#233;ste se encuentra en un lugar cerrado, fuera del alcance de los usuarios.
+     m) Dise&#241;o de v&#237;as internas, considerando tr&#225;nsito separado para veh&#237;culos de carga, veh&#237;culos particulares y peatones seg&#250;n corresponda.
+     n) Convenio, acuerdo, autorizaci&#243;n o contrato con municipalidades, organismos de la Administraci&#243;n del Estado, propietarios de terrenos o establecimientos de acceso p&#250;blico, que permita la instalaci&#243;n de el o los Puntos Limpios.
+     o) Manual de operaci&#243;n, que incluya todos los procedimientos y operaciones de manejo de los residuos, programa de mantenci&#243;n y procedimiento y frecuencia de limpieza de la instalaci&#243;n, incluyendo los contenedores. Asimismo, deber&#225; contemplar procedimientos para la entrega, recepci&#243;n y retiro de residuos, incluyendo medidas de seguridad para evitar accidentes de usuarios.
+     p) Identificaci&#243;n de equipos de protecci&#243;n personal de las y los trabajadores.
+     q) Programa de control de vectores de inter&#233;s sanitario, en aquellos casos en que los residuos de productos prioritarios atraigan o favorezcan la proliferaci&#243;n de vectores, tales como moscas, mosquitos, roedores y cucarachas, entre otros.
+     r) Plan de Contingencia, el que debe describir las medidas a implementar frente a eventos no planificados que puedan significar un riesgo para la salud o un deterioro de las condiciones de operaci&#243;n de la instalaci&#243;n. El Plan deber&#225; contener, al menos, lo siguiente:
+     
+     - Identificaci&#243;n y priorizaci&#243;n de posibles eventos que pueden afectar a la instalaci&#243;n, precisando aquellos que pueden estar asociados a situaciones de emergencia.
+     - Medidas que deben ser adoptadas para cada evento identificado.
+     - Identificaci&#243;n del responsable de la implementaci&#243;n del Plan.
+     - Responsabilidades del personal de la instalaci&#243;n.
+     - Sistema de comunicaci&#243;n.
+     - Identificaci&#243;n, ubicaci&#243;n y disponibilidad del equipo destinado a atender el evento.
+     - Listado actualizado de los organismos p&#250;blicos y privados a los que se deber&#225; dar aviso en caso de emergencia.
+     - Programa de capacitaci&#243;n del personal.
+     
+     La solicitud de autorizaci&#243;n de un Punto Limpio de car&#225;cter m&#243;vil no requerir&#225; presentar los antecedentes indicados en el literal q) precedente. En ese caso, la informaci&#243;n solicitada en los literales l) y m) deber&#225; especificar la planificaci&#243;n de las ubicaciones y las respectivas fechas y horarios de operaci&#243;n, cuando corresponda. Finalmente, las instalaciones m&#243;viles, al referirse a la informaci&#243;n referida en la letra h), deber&#225;n se&#241;alar el lugar al que al final de cada jornada se llevar&#225;n los residuos, el que deber&#225; cumplir con lo se&#241;alado en esa letra.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">17 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578293">
+                      <Texto>
+     Art&#237;culo 18.- Durante su operaci&#243;n los Puntos Limpios deber&#225;n cumplir con los siguientes requisitos:
+     
+     a) Contar con la presencia permanente de una persona encargada de recibir los residuos.
+     b) Contar con trabajadores que utilicen los equipos de protecci&#243;n personal identificados.
+     c) Mantener la instalaci&#243;n limpia y en buen estado, con el fin de prevenir accidentes e incendios, controlar vectores, olores y ruidos y evitar condiciones que favorezcan el deterioro ambiental del establecimiento, tales como dispersi&#243;n de los residuos o sus componentes al aire, al agua y su infiltraci&#243;n en el suelo.
+     d) Mantener los contenedores limpios y en buen estado, reemplazando aquellos que presenten deterioro.
+     e) Retirar cada tipo de residuo antes de que la capacidad de almacenamiento en la instalaci&#243;n sea superada.
+     f) Transportar los residuos a un Centro de Acopio o a una instalaci&#243;n de valorizaci&#243;n y/o de eliminaci&#243;n autorizada.
+     g) Los veh&#237;culos motorizados, cuyo peso bruto vehicular sea igual o superior a 3.500 kilogramos, que ingresen a la instalaci&#243;n para la entrega o retiro de residuos, deber&#225;n transitar en v&#237;as u horarios exclusivos para dichas actividades, sin que puedan transitar personas o veh&#237;culos distintos a los indicados.
+     h) Mantener un sistema de registro de la cantidad y tipo de los residuos recibidos y de su destino.
+     i) En caso de recibir residuos peligrosos, cumplir con lo establecido en el decreto supremo N&#176; 148, de 2003, del Ministerio de Salud, o la norma que lo reemplace.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">18 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                  </EstructurasFuncionales>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578294">
+                  <Texto>     P&#225;rrafo III
+     De los Centros de Acopio
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="no">&#160;</NombreParte>
+                    <TituloParte presente="si">P&#225;rrafo III De los Centros de Acopio</TituloParte>
+                    
+                  </Metadatos>
+                  <EstructurasFuncionales>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578295">
+                      <Texto>
+     Art&#237;culo 19.- Los Centros de Acopio s&#243;lo podr&#225;n recibir residuos de productos prioritarios provenientes de recicladores de base, de otras Instalaciones de Recepci&#243;n y Almacenamiento, de la recolecci&#243;n selectiva, de campa&#241;as de recolecci&#243;n de residuos, del comercio y de la industria. Los Centros de Acopio podr&#225;n integrar un Punto Limpio, siempre y cuando ambos se encuentren f&#237;sicamente separados y con accesos y v&#237;as diferenciadas, de manera que la poblaci&#243;n general no tenga acceso al Centro de Acopio. En este caso, la Autoridad Sanitaria podr&#225; hacer entrega de una autorizaci&#243;n sanitaria que incluya ambas instalaciones, la que se tramitar&#225; de acuerdo a lo dispuesto en el art&#237;culo 31 y siguientes del presente reglamento.
+     En caso de manejar residuos peligrosos, se deber&#225; cumplir con lo establecido en el decreto supremo N&#176; 148, de 2003, del Ministerio de Salud, o la norma que lo reemplace.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">19 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578296">
+                      <Texto>
+     Art&#237;culo 20.- El emplazamiento de un Centro de Acopio deber&#225; cumplir con los siguientes requisitos de ubicaci&#243;n:
+     
+     a) Los deslindes del sitio donde est&#233; instalado no podr&#225;n estar a menos de 150 metros de viviendas, establecimientos de atenci&#243;n de salud, establecimientos educacionales de nivel parvulario, b&#225;sico, medio y superior, establecimientos de larga estad&#237;a para personas mayores, o de otros establecimientos similares.
+     Sin perjuicio de lo anterior, la distancia requerida podr&#225; ser de hasta 50 metros, previa aprobaci&#243;n de la Autoridad Sanitaria. Para ello se deber&#225; demostrar, a trav&#233;s de estudios elaborados por profesionales especialistas en el &#225;rea respectiva, que las emisiones de ruido y contaminantes atmosf&#233;ricos generados por la instalaci&#243;n no afectar&#225;n la salud de la poblaci&#243;n ni las operaciones de los establecimientos en cuesti&#243;n.
+     Asimismo, se deber&#225; contar con un programa de verificaci&#243;n de cumplimiento elaborado por un laboratorio de medici&#243;n acreditado de acuerdo a la NCh-ISO IEC 17025:2017 o debidamente autorizado por el organismo competente.
+     b) No deber&#225;n estar ubicados en zonas sometidas a inundaciones, ni a menos de 5 metros del nivel fre&#225;tico m&#225;s alto.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">20 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578297">
+                      <Texto>
+     Art&#237;culo 21.- La construcci&#243;n de un Centro de Acopio requerir&#225; de la aprobaci&#243;n previa de un proyecto por parte de la Autoridad Sanitaria. El posterior inicio de operaci&#243;n requerir&#225; de una autorizaci&#243;n sanitaria de funcionamiento, la cual se otorgar&#225; despu&#233;s que la Autoridad Sanitaria haya verificado que la instalaci&#243;n cumple con lo se&#241;alado en el proyecto previamente aprobado y en la respectiva resoluci&#243;n de aprobaci&#243;n.
+     El proyecto de ingenier&#237;a deber&#225; ser elaborado por un profesional habilitado para tales efectos seg&#250;n lo se&#241;alado en la ley N&#176; 12.851 y contemplar lo siguiente:
+     
+     a) Nombre, domicilio y correo electr&#243;nico del Gestor y de su representante legal si corresponde.
+     b) Nombre, domicilio y correo electr&#243;nico de la persona natural o jur&#237;dica que realiza la solicitud en representaci&#243;n del Gestor.
+     c) Dise&#241;o de la instalaci&#243;n, incluyendo una breve descripci&#243;n de las operaciones que se desarrollar&#225;n, el listado de residuos de productos prioritarios que manejar&#225;, la capacidad m&#225;xima de recepci&#243;n y almacenamiento para cada uno de ellos, dise&#241;o de las &#225;reas de almacenamiento de residuos combustibles y no combustibles, justificaci&#243;n de la maquinaria y equipamiento considerado, as&#237; como v&#237;as de circulaci&#243;n diferenciadas para veh&#237;culos de carga y otros veh&#237;culos.
+     d) Plano de localizaci&#243;n, identificando viviendas, establecimientos de atenci&#243;n de salud, establecimientos de larga estad&#237;a para adultos mayores, establecimientos educacionales de nivel parvulario, b&#225;sico, medio y superior, y otros establecimientos similares ubicados en un radio de 200 metros del deslinde del Centro de Acopio.
+     e) Planos de la instalaci&#243;n, los que deben incluir todas las estructuras y edificaciones, las v&#237;as de circulaci&#243;n de veh&#237;culos de carga y de veh&#237;culos de pasajeros o autom&#243;viles, &#225;reas de espera para camiones de carga, &#225;reas de estacionamiento, v&#237;as de circulaci&#243;n. Ubicaci&#243;n de maquinaria y equipamiento, &#225;reas de almacenamiento por tipo de residuo, ubicaci&#243;n de equipos y sistemas de control de incendios y de control de escorrent&#237;as superficiales.
+     f) Horario de funcionamiento de la instalaci&#243;n.
+     g) Identificaci&#243;n y descripci&#243;n de los equipos, en especial de los equipos destinados al pretratamiento de los residuos. Se deber&#225;n, adem&#225;s, incluir los contenedores que se utilizar&#225;n, incluyendo tipo, material y dimensiones de los contenedores por cada tipo de residuo.
+     h) Prever que en su ingreso exista un cartel con indicaciones legibles a 5 metros a lo menos y f&#225;ciles de comprender por los usuarios, en las que se se&#241;ale el nombre de la instalaci&#243;n, los residuos que se reciben, los horarios de atenci&#243;n y un tel&#233;fono y nombre de contacto.
+     i) Considerar cierre perimetral y accesos controlados.
+     j) Considerar una b&#225;scula para mantener registro de las cantidades de residuos que ingresan y salen de la instalaci&#243;n.
+     k) Estar construido sobre una superficie que permita una adecuada limpieza.
+     l) Contar con se&#241;al&#233;tica y demarcaciones de tr&#225;nsito, que incluya las indicaciones para veh&#237;culos.
+     m) Manual de operaci&#243;n, que incluya todos los procedimientos y operaciones de manejo de los residuos, programa de mantenci&#243;n, procedimiento y frecuencia de limpieza de la instalaci&#243;n, procedimiento de carga y descarga de veh&#237;culos y protocolos de inspecci&#243;n y rechazo de residuos.
+     n) Sistema de registro y control de ingreso de veh&#237;culos y residuos y sistema de inspecci&#243;n de descarga de residuos que permita identificar residuos no contemplados en la respectiva autorizaci&#243;n sanitaria.
+     o) Programa de control de vectores, olores, polvos, ruidos e incendios.
+     p) Dise&#241;o de sistema de control de escorrent&#237;as superficiales y de control de contaminaci&#243;n de aguas subterr&#225;neas y superficiales, seg&#250;n corresponda.
+     q) Plan de Contingencia, el que debe describir las medidas a implementar frente a eventos no planificados que puedan significar un riesgo para la salud o un deterioro de las condiciones de operaci&#243;n de la instalaci&#243;n. El Plan deber&#225; contener, al menos, lo siguiente:
+     
+     - Identificaci&#243;n y priorizaci&#243;n de posibles eventos que pueden afectar a la instalaci&#243;n, precisando aquellos que pueden estar asociados a situaciones de emergencia.
+     - Medidas que deben ser adoptadas para cada evento identificado.
+     - Identificaci&#243;n del responsable de la implementaci&#243;n del Plan.
+     - Responsabilidades del personal de la instalaci&#243;n.
+     - Sistema de comunicaci&#243;n.
+     - Identificaci&#243;n, ubicaci&#243;n y disponibilidad del equipo destinado a atender el evento.
+     - Listado actualizado de los organismos p&#250;blicos y privados a los que se deber&#225; dar aviso en caso de emergencia.
+     - Programa de capacitaci&#243;n del personal.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">21 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578298">
+                      <Texto>
+     Art&#237;culo 22.- Todo lugar en los Centros de Acopio destinado al almacenamiento de residuos de productos prioritarios, que consistan o contengan sustancias o materiales de car&#225;cter combustible, tales como caucho, pl&#225;sticos, aceites lubricantes, madera, papeles y cartones, deber&#225; ser dise&#241;ado y operado de forma de minimizar los riesgos de incendio y de facilitar su control en caso de que estos ocurran.
+     Previo a la entrada en vigencia del reglamento, el Ministerio de Salud dictar&#225; una gu&#237;a t&#233;cnica que contendr&#225; los requerimientos para estos almacenamientos e incluir&#225; requisitos tales como el dimensionamiento de pilas de residuos, separaci&#243;n entre estas y sistemas de detecci&#243;n y extinci&#243;n de incendios, entre otras materias.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">22 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578299">
+                      <Texto>
+     Art&#237;culo 23.- Los Centros de Acopio deber&#225;n operar de acuerdo a lo establecido en el Manual de operaci&#243;n se&#241;alado en el literal m) del art&#237;culo 21 del presente reglamento y cumplir con los siguientes requisitos:
+     
+     a) Mantener la instalaci&#243;n limpia y en buen estado, con el fin de prevenir accidentes e incendios, controlar vectores, olores y ruidos y evitar condiciones que favorezcan el deterioro ambiental del establecimiento, tales como dispersi&#243;n de los residuos o sus componentes al aire, al agua y su infiltraci&#243;n en el suelo.
+     b) Mantener contenedores aseados y en buen estado, reemplazando los que presenten deterioro.
+     c) Almacenar los residuos de productos prioritarios por un periodo m&#225;ximo de 6 meses contados desde su recepci&#243;n. Sin perjuicio de lo anterior, el interesado podr&#225; solicitar a la Secretar&#237;a Regional Ministerial de Salud respectiva, de forma justificada y con la debida antelaci&#243;n, una autorizaci&#243;n para la ampliaci&#243;n del almacenamiento por un m&#225;ximo de seis meses adicionales.
+     Terminado el per&#237;odo de almacenamiento, los residuos deber&#225;n ser transportados hasta una instalaci&#243;n de valorizaci&#243;n y/o de eliminaci&#243;n que cuente con autorizaci&#243;n sanitaria.
+     d) Mantener un sistema de registro de cantidad, tipo, origen y fecha de recepci&#243;n de los residuos y fecha de env&#237;o e identificaci&#243;n de la instalaci&#243;n de valorizaci&#243;n y/o de eliminaci&#243;n destinataria.
+     e) En caso de rechazar una carga por contener residuos para los que la instalaci&#243;n no est&#225; autorizada, se deber&#225; dejar registro del tipo de residuo rechazado, cantidad, patente del veh&#237;culo, y nombre y c&#233;dula de identidad del conductor. El responsable de la instalaci&#243;n deber&#225; dar aviso inmediato de lo ocurrido a la respectiva Secretar&#237;a Regional Ministerial de Salud.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">23 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                  </EstructurasFuncionales>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578300">
+                  <Texto>     P&#225;rrafo IV
+     De las Campa&#241;as de Recolecci&#243;n
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="no">&#160;</NombreParte>
+                    <TituloParte presente="si">P&#225;rrafo IV De las Campa&#241;as de Recolecci&#243;n</TituloParte>
+                    
+                  </Metadatos>
+                  <EstructurasFuncionales>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578301">
+                      <Texto>
+     Art&#237;culo 24.- La solicitud de autorizaci&#243;n sanitaria de toda Campa&#241;a de Recolecci&#243;n de residuos de productos prioritarios deber&#225; ser presentada a la Secretar&#237;a Regional Ministerial de Salud correspondiente, a lo menos cuarenta d&#237;as h&#225;biles antes de la fecha en que se iniciar&#225; la Campa&#241;a.
+     La solicitud deber&#225; contener lo siguiente:
+     
+     a) Nombre, domicilio y correo electr&#243;nico del responsable de la Campa&#241;a y de su representante legal si corresponde.
+     b) Listado de los residuos de productos prioritarios a manejar, incluyendo una estimaci&#243;n de la cantidad a ser recibida de cada residuo.
+     c) Descripci&#243;n de todos los equipos y contenedores a utilizar en la Campa&#241;a de Recolecci&#243;n, incluyendo tipo, material y dimensiones. Cuando contemple pretratamiento de los residuos, se deber&#225;n identificar los equipos destinados para dichos efectos, tales como aquellos destinados a trituraci&#243;n, compactaci&#243;n y empaque.
+     d) Cronograma de implementaci&#243;n, indicando los lugares, fechas y horarios de recepci&#243;n de residuos.
+     e) Descripci&#243;n de las actividades y acciones que considera la campa&#241;a para cada residuo a recepcionar.
+     f) Informaci&#243;n que se entregar&#225; a la poblaci&#243;n, la que debe incluir, al menos, la forma en que debe entregar los residuos, recomendaciones para el manejo seguro de los residuos y los riesgos relacionados, informaci&#243;n sobre su destino y acciones de prevenci&#243;n de la generaci&#243;n de estos residuos.
+     g) Convenio, acuerdo, autorizaci&#243;n o contrato con municipalidades, &#243;rganos de la Administraci&#243;n del Estado, propietarios de terrenos o establecimientos de acceso p&#250;blico, que permita la instalaci&#243;n de los lugares de recepci&#243;n, cuando corresponda.
+     h) Plan de Contingencia, el que debe describir las medidas a implementar frente a eventos no planificados que puedan significar un riesgo para la salud o un deterioro de las condiciones de operaci&#243;n de la instalaci&#243;n. El Plan deber&#225; contener, al menos, lo siguiente:
+     
+     - Identificaci&#243;n y priorizaci&#243;n de posibles eventos que pueden afectar a la instalaci&#243;n, precisando aquellos que pueden estar asociados a situaciones de emergencia.
+     - Medidas que deben ser adoptadas para cada evento identificado.
+     - Identificaci&#243;n del responsable de la implementaci&#243;n del Plan.
+     - Responsabilidades del personal de la instalaci&#243;n.
+     - Sistema de comunicaci&#243;n.
+     - Identificaci&#243;n, ubicaci&#243;n y disponibilidad del equipo destinado a atender el evento.
+     - Listado actualizado de los organismos p&#250;blicos y privados a los que se deber&#225; dar aviso en caso de emergencia.
+     - Programa de capacitaci&#243;n del personal.
+     
+     i) Centro de Acopio o instalaci&#243;n de valorizaci&#243;n y/o de eliminaci&#243;n al que se enviar&#225;n los residuos.
+     j) Listado de veh&#237;culos a cargo del transporte.
+     k) La solicitud para Campa&#241;as de Recolecci&#243;n de productos prioritarios que implique el manejo de residuos peligrosos deber&#225; presentar, adicionalmente, aquellos antecedentes que acrediten la realizaci&#243;n de capacitaciones al personal encargado de la recepci&#243;n de los residuos de productos prioritarios. Dicha capacitaci&#243;n deber&#225; considerar, a lo menos, los riesgos de manejo de los respectivos residuos.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">24 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578302">
+                      <Texto>
+     Art&#237;culo 25.- Adicionalmente a lo dispuesto en el art&#237;culo anterior, durante la Campa&#241;a de Recolecci&#243;n los lugares que reciban residuos de productos prioritarios de car&#225;cter peligroso deber&#225;n:
+     
+     a) Estar ubicados sobre una superficie que permita una adecuada limpieza.
+     b) Contar con la presencia permanente de personal capacitado para el manejo de los residuos, el que adem&#225;s deber&#225; recibir, clasificar y disponer los residuos en contenedores apropiados.
+     c) Permanecer cerrados y contar con vigilancia en el caso que se mantengan residuos acopiados fuera del horario de recepci&#243;n.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">25 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578303">
+                      <Texto>
+     Art&#237;culo 26.- Los lugares de recepci&#243;n de las Campa&#241;as de Recolecci&#243;n de residuos de productos prioritarios deber&#225;n:
+     
+     a) Limpiarse al final de la jornada.
+     b) Contar con suficientes contenedores para el acopio de los residuos a recibir.
+     
+     Asimismo, los residuos deber&#225;n ser transportados hasta un Centro de Acopio o una instalaci&#243;n de valorizaci&#243;n y/o de eliminaci&#243;n autorizada.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">26 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                  </EstructurasFuncionales>
+                </EstructuraFuncional>
+              </EstructurasFuncionales>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578304">
+              <Texto>
+     T&#205;TULO TERCERO
+     DE LA RECOLECCI&#211;N Y TRANSPORTE
+     </Texto>
+              <Metadatos>
+                <NombreParte presente="no">&#160;</NombreParte>
+                <TituloParte presente="si">T&#205;TULO TERCERO DE LA RECOLECCI&#211;N Y TRANSPORTE</TituloParte>
+                
+              </Metadatos>
+              <EstructurasFuncionales>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578305">
+                  <Texto>     Art&#237;culo 27.- Quienes recolecten y transporten residuos de productos prioritarios est&#225;n obligados a conducirlos y entregarlos en una instalaci&#243;n de recepci&#243;n y almacenamiento de residuos de productos prioritarios que cumpla con las obligaciones establecidas en este reglamento.
+     Alternativamente, podr&#225;n conducirlos y entregarlos en una instalaci&#243;n de manejo de residuos cuya autorizaci&#243;n sanitaria comprenda tales residuos.
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">27 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578306">
+                  <Texto>
+     Art&#237;culo 28.- Los gestores que realicen transporte de residuos de productos prioritarios clasificados como residuos peligrosos, requerir&#225;n de autorizaci&#243;n sanitaria en los t&#233;rminos exigidos en el art&#237;culo 41 del presente reglamento.
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">28 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578307">
+                  <Texto>
+     Art&#237;culo 29.- Aquel que realice labores de recolecci&#243;n o transporte de residuos de productos prioritarios de car&#225;cter no peligroso no requerir&#225; de autorizaci&#243;n sanitaria para el desarrollo de esta actividad, sin perjuicio de que deber&#225; ser parte del registro de gestores de residuos de productos prioritarios, de acuerdo con lo se&#241;alado en el art&#237;culo 3&#176;, n&#250;mero 10 de la ley N&#176; 20.920.
+     Con todo, las aludidas labores de recolecci&#243;n y transporte deber&#225;n cumplir con todos los requerimientos establecidos en el presente T&#237;tulo.
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">29 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578308">
+                  <Texto>     Art&#237;culo 30.- Para efectos del presente reglamento, el transporte de residuos de productos prioritarios deber&#225; cumplir con los siguientes requisitos:
+     
+     a) La carga no debe superar la altura m&#225;xima del veh&#237;culo ni del contenedor en que se transporten.
+     b) Evitar la dispersi&#243;n de los residuos, cubriendo o tapando el veh&#237;culo y contenedores.
+     c) Impedir el ingreso de aguas lluvia y el escurrimiento de l&#237;quidos desde los veh&#237;culos.
+     d) Controlar los ruidos durante el transporte y evitar la emanaci&#243;n de olores molestos.
+     e) El veh&#237;culo deber&#225; mantenerse limpio.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">30 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+              </EstructurasFuncionales>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578309">
+              <Texto>
+     T&#205;TULO CUARTO
+     DE LOS PROCEDIMIENTOS DE APROBACI&#211;N Y AUTORIZACI&#211;N SANITARIA</Texto>
+              <Metadatos>
+                <NombreParte presente="no">&#160;</NombreParte>
+                <TituloParte presente="si">T&#205;TULO CUARTO DE LOS PROCEDIMIENTOS DE APROBACI&#211;N Y AUTORIZACI&#211;N SANITARIA</TituloParte>
+                
+              </Metadatos>
+              <EstructurasFuncionales>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578310">
+                  <Texto>     
+     P&#225;rrafo I
+     De la aprobaci&#243;n de proyectos de Centros de Acopio</Texto>
+                  <Metadatos>
+                    <NombreParte presente="no">&#160;</NombreParte>
+                    <TituloParte presente="si">P&#225;rrafo I De la aprobaci&#243;n de proyectos de Centros de Acopio</TituloParte>
+                    
+                  </Metadatos>
+                  <EstructurasFuncionales>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578311">
+                      <Texto>     
+     Art&#237;culo 31.- La solicitud de aprobaci&#243;n de los proyectos de Centro de Acopio se presentar&#225; ante la Autoridad Sanitaria de la regi&#243;n donde &#233;ste se emplace.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">31 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578312">
+                      <Texto>     
+     Art&#237;culo 32.- Dentro de los quince d&#237;as h&#225;biles siguientes al ingreso de la solicitud, la Autoridad Sanitaria realizar&#225; un examen de admisibilidad, a fin de verificar que la presentaci&#243;n contenga formalmente los antecedentes indicados en el art&#237;culo 21 del presente reglamento. En caso que falten antecedentes, la Autoridad Sanitaria lo notificar&#225; al solicitante de acuerdo al art&#237;culo 42 de este reglamento, otorgando un plazo de cinco d&#237;as para que se acompa&#241;en los antecedentes faltantes. De no hacerse, la solicitud ser&#225; declarada inadmisible sin m&#225;s tr&#225;mite.
+     </Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">32 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578313">
+                      <Texto>     Art&#237;culo 33.- Una vez que la solicitud haya sido admitida a tr&#225;mite, la Autoridad Sanitaria examinar&#225; el contenido de los antecedentes se&#241;alados en el art&#237;culo 21 del presente reglamento, para lo cual tendr&#225; un plazo de treinta d&#237;as h&#225;biles contados desde la fecha de ingreso de la solicitud o desde la fecha en que se completaron los antecedentes de ser el caso, pudiendo aprobarla o rechazarla, mediante resoluci&#243;n fundada, o bien formular observaciones.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">33 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578314">
+                      <Texto>     
+     Art&#237;culo 34.- En caso de formularse observaciones, &#233;stas deber&#225;n realizarse en t&#233;rminos precisos y claros, a fin de que sean subsanadas correcta y oportunamente. Las observaciones ser&#225;n notificadas al interesado mediante acta o informe de la Autoridad Sanitaria, de acuerdo a lo dispuesto en el art&#237;culo 42 del presente reglamento.
+     El interesado tendr&#225; un plazo m&#225;ximo de cuarenta y cinco d&#237;as h&#225;biles para resolver las observaciones realizadas por la Autoridad Sanitaria, pudiendo solicitar una pr&#243;rroga de hasta por veinte d&#237;as h&#225;biles adicionales. Si el interesado no subsanare las observaciones dentro del per&#237;odo antes indicado, su solicitud se entender&#225; desistida.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">34 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578315">
+                      <Texto>     Art&#237;culo 35.- Una vez remitido el proyecto con las observaciones subsanadas por parte del interesado, la Autoridad Sanitaria tendr&#225; un plazo de treinta d&#237;as h&#225;biles para pronunciarse sobre &#233;stas, pudiendo aprobar o rechazar el proyecto presentado mediante resoluci&#243;n fundada.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">35 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578316">
+                      <Texto>     Art&#237;culo 36.- Todo proyecto que sea aprobado contemplar&#225; la visaci&#243;n del documento que lo contiene por parte de la Autoridad Sanitaria y la dictaci&#243;n de la respectiva resoluci&#243;n aprobatoria.
+     El Gestor deber&#225; tener siempre disponible en la instalaci&#243;n tanto el documento que contiene el proyecto como la resoluci&#243;n que lo aprueba, ante cualquier requerimiento de la Autoridad Sanitaria.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">36 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                  </EstructurasFuncionales>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578317">
+                  <Texto>     
+     P&#225;rrafo II
+     De la autorizaci&#243;n sanitaria de funcionamiento de Puntos Verdes, Puntos Limpios y Centros de Acopio
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="no">&#160;</NombreParte>
+                    <TituloParte presente="si">P&#225;rrafo II De la autorizaci&#243;n sanitaria de funcionamiento de Puntos Verdes, Puntos Limpios y Centros de Acopio</TituloParte>
+                    
+                  </Metadatos>
+                  <EstructurasFuncionales>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578318">
+                      <Texto>     Art&#237;culo 37.- Para iniciar sus operaciones, los Puntos Verdes, Puntos Limpios y Centros de Acopio deber&#225;n contar con autorizaci&#243;n sanitaria de funcionamiento.
+     Habi&#233;ndose habilitado un Punto Verde o Punto Limpio, el interesado deber&#225; presentar, ante la Autoridad Sanitaria competente, una solicitud de autorizaci&#243;n sanitaria de funcionamiento, debiendo incluir los antecedentes se&#241;alados en los art&#237;culos 12 y 16 del presente reglamento, seg&#250;n corresponda.
+     Cuando se trate de una solicitud de autorizaci&#243;n sanitaria de funcionamiento para dos o m&#225;s Puntos Verdes y/o Puntos Limpios ubicados en la misma regi&#243;n se&#241;alados en el art&#237;culo 9&#176; del presente reglamento, &#233;sta deber&#225; incluir los antecedentes de todas las instalaciones involucradas.
+     Trat&#225;ndose de un Centro de Acopio, el interesado deber&#225; presentar ante la Autoridad Sanitaria que aprob&#243; el proyecto, una solicitud de autorizaci&#243;n sanitaria de funcionamiento, indicando la resoluci&#243;n que aprob&#243; el proyecto.
+     A contar de la fecha en que la solicitud de autorizaci&#243;n sanitaria de funcionamiento haya sido ingresada, la Autoridad Sanitaria tendr&#225; un plazo de treinta d&#237;as h&#225;biles para pronunciarse sobre esta, aprob&#225;ndola, rechaz&#225;ndola fundadamente o formulando observaciones respecto de insuficiencias de la instalaci&#243;n en relaci&#243;n al proyecto previamente aprobado. En dicho plazo podr&#225;, adem&#225;s, realizar una o m&#225;s inspecciones en la instalaci&#243;n si as&#237; lo estimare pertinente.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">37 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578319">
+                      <Texto>     Art&#237;culo 38.- En caso de formularse observaciones, &#233;stas deber&#225;n realizarse en t&#233;rminos precisos y claros, a fin de que sean subsanadas correcta y oportunamente. Las observaciones ser&#225;n notificadas al interesado mediante acta o informe de la Autoridad Sanitaria, de acuerdo a lo dispuesto en el art&#237;culo 42 del presente reglamento.
+     El plazo para subsanar dichas observaciones ser&#225; de treinta d&#237;as h&#225;biles contados desde su notificaci&#243;n, prorrogable por una sola vez y hasta por quince d&#237;as h&#225;biles.
+     Una vez subsanadas las observaciones, la Autoridad Sanitaria evaluar&#225; nuevamente la solicitud en un plazo de treinta d&#237;as h&#225;biles, aprob&#225;ndola o rechaz&#225;ndola mediante una resoluci&#243;n fundada que pondr&#225; fin al procedimiento.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">38 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                  </EstructurasFuncionales>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578320">
+                  <Texto>     P&#225;rrafo III
+     De la autorizaci&#243;n sanitaria de campa&#241;as de recolecci&#243;n
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="no">&#160;</NombreParte>
+                    <TituloParte presente="si">P&#225;rrafo III De la autorizaci&#243;n sanitaria de campa&#241;as de recolecci&#243;n</TituloParte>
+                    
+                  </Metadatos>
+                  <EstructurasFuncionales>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578321">
+                      <Texto>     Art&#237;culo 39.- La solicitud de autorizaci&#243;n sanitaria de Campa&#241;as de Recolecci&#243;n de residuos de productos prioritarios deber&#225; presentarse ante la Autoridad Sanitaria de la regi&#243;n donde se implementar&#225;n.
+     Dentro de los treinta d&#237;as h&#225;biles siguientes al ingreso de la solicitud, la Autoridad Sanitaria verificar&#225; que &#233;sta contemple adecuadamente los antecedentes se&#241;alados en el art&#237;culo 24, pudiendo aprobar la campa&#241;a, rechazarla fundadamente o formular observaciones. En dicho plazo podr&#225; adem&#225;s realizar inspecciones a los sitios y establecimientos indicados en la campa&#241;a si as&#237; lo estimare pertinente.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">39 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578322">
+                      <Texto>     Art&#237;culo 40.- En caso de que existan observaciones a la solicitud, &#233;stas ser&#225;n comunicadas al interesado mediante acta o informe de la Autoridad Sanitaria notificada de acuerdo al art&#237;culo 42 de este reglamento.
+     El plazo para subsanar dichas observaciones ser&#225; de cinco d&#237;as h&#225;biles contados desde su notificaci&#243;n, prorrogable por una sola vez y hasta por cinco d&#237;as h&#225;biles adicionales.
+     Una vez subsanadas las observaciones, la Autoridad Sanitaria evaluar&#225; nuevamente la solicitud, para lo cual tendr&#225; un plazo de treinta d&#237;as h&#225;biles para aprobarla o rechazarla, mediante una resoluci&#243;n fundada que pondr&#225; fin al procedimiento.
+     En caso de que la Autoridad Sanitaria no se pronunciare respecto de la solicitud dentro del plazo establecido en el art&#237;culo anterior o una vez transcurrido el plazo indicado en el inciso precedente, la solicitud se dar&#225; por aprobada, salvo que se trate de una campa&#241;a de recolecci&#243;n de residuos de productos prioritarios de car&#225;cter peligroso, en los que el procedimiento finalizar&#225; con la dictaci&#243;n de la resoluci&#243;n respectiva. En tal caso, el interesado podr&#225; solicitar que se certifique que su solicitud no ha sido resuelta dentro del plazo legal, certificado que ser&#225; expedido por la Autoridad Sanitaria sin m&#225;s tr&#225;mite.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">40 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                  </EstructurasFuncionales>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578323">
+                  <Texto>     
+     P&#225;rrafo IV
+     De la autorizaci&#243;n sanitaria de recolecci&#243;n y transporte de residuos de productos prioritarios de car&#225;cter peligroso
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="no">&#160;</NombreParte>
+                    <TituloParte presente="si">P&#225;rrafo IV De la autorizaci&#243;n sanitaria de recolecci&#243;n y transporte de residuos de productos prioritarios de car&#225;cter peligroso</TituloParte>
+                    
+                  </Metadatos>
+                  <EstructurasFuncionales>
+                    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578324">
+                      <Texto>     Art&#237;culo 41.- La solicitud de autorizaci&#243;n sanitaria para la recolecci&#243;n y transporte de residuos de productos prioritarios de car&#225;cter peligroso deber&#225; presentarse ante la Autoridad Sanitaria competente, la que ser&#225; evaluada y resuelta de acuerdo con lo establecido en el decreto supremo N&#176; 148, de 2003, del Ministerio de Salud, o la norma que lo reemplace.</Texto>
+                      <Metadatos>
+                        <NombreParte presente="si">41 </NombreParte>
+                        <TituloParte presente="no">&#160;</TituloParte>
+                        
+                      </Metadatos>
+                    </EstructuraFuncional>
+                  </EstructurasFuncionales>
+                </EstructuraFuncional>
+              </EstructurasFuncionales>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578325">
+              <Texto>
+     T&#205;TULO QUINTO
+     DEL PROCEDIMIENTO Y LAS SANCIONES</Texto>
+              <Metadatos>
+                <NombreParte presente="no">&#160;</NombreParte>
+                <TituloParte presente="si">T&#205;TULO QUINTO DEL PROCEDIMIENTO Y LAS SANCIONES</TituloParte>
+                
+              </Metadatos>
+              <EstructurasFuncionales>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578326">
+                  <Texto>     
+     Art&#237;culo 42.- Las notificaciones se practicar&#225;n de manera electr&#243;nica a la direcci&#243;n de correo que se hubiere indicado al momento de realizar su presentaci&#243;n, entendi&#233;ndose notificadas al d&#237;a siguiente del env&#237;o.
+     Quienes carezcan de medios tecnol&#243;gicos, no tengan acceso a medios electr&#243;nicos o s&#243;lo actuaren excepcionalmente a trav&#233;s de ellos, podr&#225;n solicitar ante la Autoridad Sanitaria correspondiente que la notificaci&#243;n sea practicada mediante carta certificada dirigida al domicilio designado al presentar la solicitud. En este caso, la notificaci&#243;n se entender&#225; practicada a contar del tercer d&#237;a h&#225;bil siguiente a su recepci&#243;n en la oficina de correos que corresponda.
+     
+     Lo anterior, sin perjuicio que el titular o interesado o su representante legal puedan notificarse personalmente conforme a las reglas generales.
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">42 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578327">
+                  <Texto>
+     Art&#237;culo 43.- Las resoluciones reguladas en el presente reglamento podr&#225;n ser impugnadas a trav&#233;s de la interposici&#243;n del recurso de reposici&#243;n, contemplado en el art&#237;culo 59 de la ley N&#176; 19.880, dentro del plazo de cinco d&#237;as contados desde la respectiva notificaci&#243;n.
+     </Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">43 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578328">
+                  <Texto>     Art&#237;culo 44.- Las infracciones a las disposiciones del presente reglamento ser&#225;n sancionadas por la Autoridad Sanitaria, previa instrucci&#243;n del respectivo sumario sanitario, en conformidad con lo establecido en el Libro X del C&#243;digo Sanitario, sin perjuicio de las facultades que, en esta materia, le competen a la Superintendencia del Medio Ambiente.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">44 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+              </EstructurasFuncionales>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578329">
+              <Texto>     
+     T&#205;TULO FINAL
+     DE LA VIGENCIA
+     </Texto>
+              <Metadatos>
+                <NombreParte presente="no">&#160;</NombreParte>
+                <TituloParte presente="si">T&#205;TULO FINAL DE LA VIGENCIA</TituloParte>
+                
+              </Metadatos>
+              <EstructurasFuncionales>
+                <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578330">
+                  <Texto>
+     Art&#237;culo 45.- El presente reglamento entrar&#225; en vigencia en el plazo de seis meses contados desde su publicaci&#243;n en el Diario Oficial.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">45 </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+              </EstructurasFuncionales>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578331">
+              <Texto>
+     ART&#205;CULOS TRANSITORIOS</Texto>
+              <Metadatos>
+                <NombreParte presente="no">&#160;</NombreParte>
+                <TituloParte presente="si">ART&#205;CULOS TRANSITORIOS</TituloParte>
+                
+              </Metadatos>
+              <EstructurasFuncionales>
+                <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578332">
+                  <Texto>     
+     Art&#237;culo 1&#176;.- Los Puntos Verdes que, al momento de la publicaci&#243;n de este reglamento, manejen residuos de productos prioritarios se&#241;alados en el inciso tercero del art&#237;culo 14 podr&#225;n seguir operando sin autorizaci&#243;n sanitaria durante los primeros tres a&#241;os contados desde la entrada en vigencia de este reglamento. Estas instalaciones tendr&#225;n un plazo de seis meses desde la entrada en vigencia del reglamento para informar a la Autoridad Sanitaria competente de su existencia.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">1&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+                <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-01-14" derogado="no derogado" idParte="10578333">
+                  <Texto>
+     Art&#237;culo 2&#176;.- El titular de toda Instalaci&#243;n de Recepci&#243;n y Almacenamiento de Residuos de productos prioritarios, a excepci&#243;n de las se&#241;aladas en el art&#237;culo precedente, que se encuentre en operaci&#243;n a la fecha de entrada en vigencia de este reglamento, tendr&#225; un plazo de un a&#241;o para dar cumplimiento al presente reglamento. Estas instalaciones tendr&#225;n un plazo de seis meses desde la entrada en vigencia del reglamento para informar a la Autoridad Sanitaria competente de su funcionamiento.</Texto>
+                  <Metadatos>
+                    <NombreParte presente="si">2&#176; </NombreParte>
+                    <TituloParte presente="no">&#160;</TituloParte>
+                    
+                  </Metadatos>
+                </EstructuraFuncional>
+              </EstructurasFuncionales>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="2026-01-14" derogado="no derogado">
+    <Texto>
+     An&#243;tese, t&#243;mese de raz&#243;n y publ&#237;quese.- GABRIEL BORIC FONT, Presidente de la Rep&#250;blica.- Ximena Aguilera Sanhueza, Ministra de Salud.- Mar&#237;a Helo&#237;sa Rojas Corradi, Ministra del Medio Ambiente.
+     Transcribo para su conocimiento decreto afecto N&#176; 29, de 22 de julio de 2024.- Por orden de la Subsecretar&#237;a de Salud P&#250;blica.- Saluda atentamente a Ud., Marcelo Olivares Pacheco, Jefe de la Divisi&#243;n Jur&#237;dica (S), Ministerio de Salud.</Texto>
+  </Promulgacion>
+  <Anexos>
+    <Anexo fechaVersion="2026-01-14" derogado="no derogado" idParte="10578335" transitorio="no transitorio">
+      <Metadatos>
+        <Titulo>CONTRALOR&#205;A GENERAL DE LA REP&#218;BLICA</Titulo>
+        
+      </Metadatos>
+      <Texto>     
+     CONTRALOR&#205;A GENERAL DE LA REP&#218;BLICA
+     Divisi&#243;n Jur&#237;dica
+ 
+     Cursa con alcances el decreto N&#176; 29, de 2024, del Ministerio de Salud
+ 
+     N&#176; E211634/2025.- Santiago, 11 de diciembre de 2025.
+     
+     Esta Contralor&#237;a General ha dado curso al documento del ep&#237;grafe, que aprueba el "Reglamento Sanitario sobre Labores de Recepci&#243;n y Almacenamiento de Residuos de Productos Prioritarios", pero cumple con hacer presente que ese texto, como lo precisa su art&#237;culo 1&#176;, tambi&#233;n tiene por objeto regular las labores de recolecci&#243;n de los anotados residuos, lo que se ha omitido se&#241;alar en su t&#237;tulo.
+     Adem&#225;s, cabe indicar que esa cartera de Estado deber&#225; mantener en su sitio electr&#243;nico, a disposici&#243;n permanente del p&#250;blico, el contenido de la norma chilena a que se hace referencia en el art&#237;culo 20, letra a), p&#225;rrafo final, del instrumento en estudio, y las dem&#225;s normas t&#233;cnicas que dicte al efecto, en virtud del principio de publicidad consagrado en el art&#237;culo 8&#176; de la Constituci&#243;n Pol&#237;tica de la Rep&#250;blica (aplica el criterio contenido en el oficio N&#176; E401407, de 2023).
+     Por su parte, debe precisarse que en el art&#237;culo 37, inciso segundo, del decreto de que se trata, la alusi&#243;n a su art&#237;culo 16 debe entenderse efectuada a su art&#237;culo 17.
+     
+     Por &#250;ltimo, se ha estimado pertinente se&#241;alar que el documento que se analiza se dict&#243; el 22 de julio de 2024, esto es, fuera del plazo de un a&#241;o posterior a la publicaci&#243;n en el Diario Oficial de la ley N&#176; 20.920 &#8211;1 de junio de 2016&#8211;, que establece el art&#237;culo tercero transitorio de ese texto legal, lo que no se aviene con los principios de eficacia, econom&#237;a procedimental y celeridad consagrados en los art&#237;culos 5&#176; y 8&#176; de la ley N&#176; 18.575, y 7&#176; de la ley N&#176; 19.880, debiendo dicha cartera ministerial, en lo sucesivo, adoptar las medidas que sean necesarias para que sus instrumentos se dicten oportunamente (aplica el criterio contenido en el oficio N&#176; E148252, de 2025).
+     Con los alcances que anteceden, se ha tomado raz&#243;n del decreto del rubro.
+     
+     Saluda atentamente a Ud., Dorothy P&#233;rez Guti&#233;rrez, Contralora General de la Rep&#250;blica.
+ 
+A la se&#241;ora
+Ministra de Salud
+Presente.</Texto>
+    </Anexo>
+  </Anexos>
+</Norma>

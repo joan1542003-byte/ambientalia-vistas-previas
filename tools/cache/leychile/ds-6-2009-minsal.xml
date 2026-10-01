@@ -1,0 +1,1415 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="1008725" esTratado="no tratado" fechaVersion="2017-03-10" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="2009-02-23" fechaPublicacion="2009-12-04">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Decreto</Tipo>
+        <Numero>6</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE SALUD</Organismo>
+      <Organismo>SUBSECRETAR&#205;A DE SALUD P&#218;BLICA</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>APRUEBA REGLAMENTO SOBRE MANEJO DE RESIDUOS DE ESTABLECIMIENTOS DE ATENCI&#211;N DE SALUD (REAS)</TituloNorma>
+    
+    <NombresUsoComun>
+      <NombreUsoComun>&#160;</NombreUsoComun>
+    </NombresUsoComun>
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>39528</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2009-12-04" derogado="no derogado">
+    <Texto>
+APRUEBA REGLAMENTO SOBRE MANEJO DE RESIDUOS DE
+ESTABLECIMIENTOS DE ATENCI&#211;N DE SALUD (REAS)
+
+     N&#250;m. 6.- Santiago, 23 de febrero de 2009.- Visto: Lo
+dispuesto en los art&#237;culos 67, 78, 80, 81 y 82 del C&#243;digo
+Sanitario, aprobado por decreto con fuerza de ley N&#186; 725 de
+1967, del Ministerio de Salud; en los art&#237;culos 4&#186;, 7&#186; y
+12 del DFL N&#186; 1 de 2005, del Ministerio de Salud y teniendo
+presente las facultades que me confiere el art&#237;culo 32 N&#186;
+6 de la Constituci&#243;n Pol&#237;tica del Estado, y
+
+     Considerando: La necesidad de prevenir y controlar los
+riesgos provenientes de los residuos que se generan en los
+establecimientos de atenci&#243;n de salud respecto de sus
+usuarios, de quienes se desempe&#241;an en ellos, de quienes
+participan directamente en el manejo de los mismos y de la
+poblaci&#243;n en general,
+
+     Decreto:
+
+     Apru&#233;base el siguiente Reglamento sobre Manejo de
+Residuos de Establecimientos de Atenci&#243;n de Salud:</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812313">
+      <Texto>
+     T&#205;TULO I
+
+     Disposiciones generales</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO I Disposiciones generales</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812314">
+          <Texto>
+     Art&#237;culo 1&#186;.- El presente reglamento establece las
+condiciones sanitarias y de seguridad b&#225;sicas a las que
+deber&#225; someterse el manejo de los residuos generados en
+establecimientos de atenci&#243;n de salud.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">1 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812315">
+          <Texto>
+     Art&#237;culo 2&#186;.- Para los efectos del presente
+reglamento, las expresiones que aqu&#237; se indican tendr&#225;n el
+significado que se se&#241;ala:
+
+Almacenamiento: Conservaci&#243;n de residuos en un sitio y por
+un lapso determinado;
+Contenedor: Recipiente port&#225;til o envase, en el cual un
+residuo es almacenado o transportado previo a su
+eliminaci&#243;n;
+Desecho radiactivo: Cualquier sustancia radiactiva o
+material contaminado por dicha sustancia que, habiendo sido
+utilizado con fines m&#233;dicos, sea desechado;
+Eliminaci&#243;n: Conjunto de operaciones mediante las cuales
+los residuos son tratados o dispuestos finalmente mediante
+su dep&#243;sito definitivo, incluy&#233;ndose en estas operaciones
+aquellas destinadas a su reutilizaci&#243;n o reciclaje;
+Establecimientos de Atenci&#243;n de Salud: Establecimientos
+asistenciales en los que se diagnostica, trata o rehabilita
+a las personas;
+Generador: Establecimiento de atenci&#243;n de salud que d&#233;
+origen a residuos correspondientes a las categor&#237;as de
+residuos especiales a que se refiere el presente reglamento;
+Manejo de residuos: Conjunto de operaciones a las que se
+someten los residuos de establecimientos de atenci&#243;n de
+salud luego de su generaci&#243;n, que incluyen su
+almacenamiento, transporte y eliminaci&#243;n;
+Minimizaci&#243;n: Acciones para evitar, reducir o disminuir en
+su origen, la cantidad o peligrosidad de los residuos de
+establecimientos de atenci&#243;n de salud generados. Considera
+medidas tales como la reducci&#243;n de la generaci&#243;n, la
+concentraci&#243;n y el reciclaje;
+REAS: Residuos generados en establecimientos de atenci&#243;n de
+salud;
+Residuo o desecho: Sustancia, elemento u objeto que el
+generador elimina, se propone eliminar o est&#225; obligado a
+eliminar;
+Sustancia radiactiva: Cualquier sustancia que tenga
+actividad espec&#237;fica mayor de dos mil&#233;simas de microcurio
+por gramo o a 74 becquerels por gramo; y
+Tratamiento: Todo proceso destinado a cambiar las
+caracter&#237;sticas f&#237;sicas, qu&#237;micas o biol&#243;gicas de los
+residuos, con el objetiv&#243; de neutralizarlos, recuperar
+energ&#237;a o materiales o eliminar o reducir su peligrosidad.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">2 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812316">
+      <Texto>
+     T&#205;TULO II
+
+     De la identificaci&#243;n y clasificaci&#243;n</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO II De la identificaci&#243;n y clasificaci&#243;n</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812317">
+          <Texto>
+     Art&#237;culo 3&#186;.- Los residuos generados en
+establecimientos de atenci&#243;n de salud, se clasifican en las
+siguientes categor&#237;as seg&#250;n su riesgo:
+
+Categor&#237;a 1: Residuos Peligrosos;
+Categor&#237;a 2: Residuos Radioactivos de Baja Intensidad;
+Categor&#237;a 3: Residuos Especiales; y
+Categor&#237;a 4: Residuos S&#243;lidos Asimilables a Domiciliarios.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">3 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2010-07-17" derogado="no derogado" idParte="8812318">
+          <Texto>
+     Art&#237;culo 4&#186;.- Son residuos peligrosos aquellos que
+presentan una o m&#225;s caracter&#237;sticas de peligrosidad
+definidas en el decreto supremo N&#186; 148, de 2003, del
+Ministerio de Salud, que aprueba el Reglamento Sanitario
+sobre Manejo de Residuos Peligrosos. Los residuos peligrosos
+que se presentan con m&#225;s frecuencia en establecimientos de
+atenci&#243;n de salud son:
+
+1    Residuos consistentes o contaminados por drogas
+citot&#243;xicas, tales como: clorambucil, ciclosporina,
+ciclosfamida, melfalan, semustina, tamoxifeno, tiotepa y
+treosulfan;
+2    Residuos consistentes o contaminados por solventes
+org&#225;nicos halogenados, tales como cloruro de metileno,
+cloroformo y tricloroetileno;
+
+3    Residuos consistentes o contaminados por solventes
+org&#225;nicos no halogenados, tales como xileno, metanol,
+acetona, isapropanol, tolueno, acetato de etilo y
+acetonitrilo;
+4    Residuos consistentes o contaminados por sustancias
+org&#225;nicas peligrosas, tales como: formaldeh&#237;do,
+percloroetileno y soluciones desinfectantes y de limpieza en
+base a fenol;
+5    Residuos consistentes, que contienen o est&#225;n
+contaminados por metales pesados, tales como equipos que
+contienen mercurio y bater&#237;as que contienen cadmio o plomo.
+6    Residuos consistentes o contaminados por sustancias
+qu&#237;micas inorg&#225;nicas peligrosas tales como: &#225;cido
+sulf&#250;rico, clorh&#237;drico, n&#237;trico y cr&#243;mico; soluciones
+alcalinas de hidr&#243;xido de sodio y amoniaco; sustancias
+oxidantes tales como permanganato de potasio y dicromato de
+potasio y, adem&#225;s, agentes reductores tales como bisulfato
+de sodio.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">4 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812319">
+          <Texto>
+     Art&#237;culo 5&#186;.- Residuos radiactivos de baja intensidad
+son aquellos que contienen o est&#225;n contaminados por
+sustancias radiactivas cuya actividad espec&#237;fica, luego de
+su almacenamiento, ha alcanzado un nivel inferior a 74
+becquereles por gramo o a dos mil&#233;simas de microcurio por
+gramo. La segregaci&#243;n, almacenamiento, transporte y
+tratamiento de estos residuos debe realizarse conforme a la
+normativa vigente y el presente reglamento.
+     Los residuos con mayor intensidad que la se&#241;alada
+constituyen residuos radiactivos y deben ser gestionados de
+acuerdo a la normativa que los rige.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">5 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812320">
+          <Texto>
+     Art&#237;culo 6&#186;.- Son residuos especiales aquellos
+residuos de establecimientos de atenci&#243;n de salud
+sospechosos de contener agentes pat&#243;genos en concentraci&#243;n
+o cantidades suficientes para causar enfermedad a un
+hu&#233;sped susceptible. En esta categor&#237;a se incluyen los
+siguientes:
+
+1    Cultivos y muestras almacenadas: Residuos de la
+producci&#243;n de material biol&#243;gico; vacunas de virus vivo,
+placas de cultivo y mecanismos para transferir, inocular o
+mezclar cultivos; residuos de cultivos; muestras almacenadas
+de agentes infecciosos y productos biol&#243;gicos asociados,
+incluyendo cultivos de laboratorios m&#233;dicos y patol&#243;gicos;
+y cultivos y cepas de agentes infecciosos de laboratorios.
+2    Residuos patol&#243;gicos: Restos biol&#243;gicos, incluyendo
+tejidos, &#243;rganos, partes del cuerpo que hayan sido
+removidos de seres o restos humanos, incluidos aquellos
+fluidos corporales que presenten riesgo sanitario.
+3    Sangre y productos derivados incluyendo el plasma, el
+suero y dem&#225;s componentes sangu&#237;neos y elementos tales
+como gasas y algodones, saturados con &#233;stos. Se excluyen de
+esta categor&#237;a la sangre, productos derivados y materiales
+provenientes de bancos de sangre que luego de ser analizados
+se haya demostrado la ausencia de riesgos para la salud.
+Adem&#225;s se excluye el material contaminado que haya sido
+sometido a desinfecci&#243;n.
+4    Cortopunzantes: Residuos resultantes del diagn&#243;stico,
+tratamiento, investigaci&#243;n o producci&#243;n, capaces de
+provocar cortes o punciones. Se incluye en esta categor&#237;a
+residuos tales como agujas, pipetas Pasteur, bistur&#237;s,
+placas de cultivos y dem&#225;s cristaler&#237;a, entre otros.
+5    Residuos de animales: Cad&#225;veres o partes de animales,
+as&#237; como sus camas, que estuvieron expuestos a agentes
+infecciosos durante un proceso de investigaci&#243;n,
+producci&#243;n de material biol&#243;gico o en la evaluaci&#243;n de
+f&#225;rmacos.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">6 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2017-03-10" derogado="no derogado" idParte="9779305">
+          <Texto>     Art&#237;culo 6&#176; bis. Sin perjuicio de lo dispuesto en el
+art&#237;culo 6&#176;, la placenta se entregar&#225; a requerimiento de
+la mujer, en la medida que sea destinada a pr&#225;cticas
+culturales que la mujer considere relevantes. Dicha
+solicitud deber&#225; realizarse con la anticipaci&#243;n tal que
+permita llevar a cabo la evaluaci&#243;n m&#233;dica respectiva. No
+se entregar&#225; la placenta en caso de diagn&#243;stico de
+determinadas enfermedades y/o infecciones transmisibles.
+Asimismo, deber&#225; ser entregada debidamente envasada, de
+acuerdo a las especificaciones t&#233;cnicas correspondientes.
+     Una norma general t&#233;cnica dictada por el Ministerio de
+Salud, establecer&#225; requisitos de entrega, el proceso de
+solicitud y entrega, la gesti&#243;n de informaci&#243;n y/o
+estad&#237;sticas y los responsables del proceso.
+     Las placentas cuya entrega no sea requerida de
+conformidad con lo dispuesto en el inciso anterior, sea que
+tengan o no agentes pat&#243;genos, ser&#225;n consideradas de
+acuerdo a la categor&#237;a se&#241;alada en el art&#237;culo 6 N&#176; 2.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">6 BIS</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812321">
+          <Texto>
+     Art&#237;culo 7&#186;.- Son residuos s&#243;lidos asimilables a
+domiciliarios todos aquellos residuos generados en
+establecimientos de atenci&#243;n de salud que, por sus
+caracter&#237;sticas f&#237;sicas, qu&#237;micas o microbiol&#243;gicas,
+pueden ser entregados a la recolecci&#243;n municipal y
+dispuestos en un relleno sanitario tales como los residuos
+de preparaci&#243;n y servicio de alimentos, material de
+limpieza de pasillo, salas y dependencias de enfermos,
+papeles y materiales de oficina y dem&#225;s similares y los
+materiales absorbentes, tales como gasas y algodones no
+saturados con sangre y sus derivados. Se incluyen en esta
+categor&#237;a los residuos especiales que han sido sometidos a
+tratamiento previo en conformidad a las disposiciones
+espec&#237;ficas establecidas para tal efecto en el presente
+reglamento.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">7 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812322">
+      <Texto>
+     T&#205;TULO III
+
+     De la generaci&#243;n</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO III De la generaci&#243;n</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812323">
+          <Texto>
+     Art&#237;culo 8&#186;.- Al momento de su generaci&#243;n, los
+residuos deber&#225;n ser segregados y almacenados en
+contenedores de acuerdo a las categor&#237;as se&#241;aladas en el
+art&#237;culo 3&#186;. Dicha segregaci&#243;n deber&#225; mantenerse durante
+todas las etapas de manejo de los residuos hasta su
+eliminaci&#243;n o tratamiento.
+     En caso de producirse mezcla de residuos asimilables a
+domiciliarios con residuos de otras categor&#237;as del
+establecimiento de salud, &#233;stos deber&#225;n ser manejados de
+acuerdo a lo prescrito para el residuo de mayor riesgo. Por
+su parte, el manejo de mezclas de residuos que incluyan 2 o
+m&#225;s de las siguientes categor&#237;as: Residuos peligrosos,
+residuos radiactivos de baja intensidad o residuos
+especiales, deber&#225; ser realizado considerando los riesgos
+de todos los residuos presentes en ellos.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">8 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812324">
+          <Texto>
+     Art&#237;culo 9&#186;.- Cada servicio o zona de generaci&#243;n de
+residuos deber&#225; contar con una adecuada cantidad de
+contenedores, seg&#250;n las categor&#237;as y vol&#250;menes de &#233;stos
+que en ella se generan y sus respectivas frecuencias de
+recolecci&#243;n.
+     En cada servicio o zona de generaci&#243;n los contenedores
+se deber&#225;n ubicar en un lugar previamente determinado y
+debidamente identificado.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">9 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812325">
+          <Texto>
+     Art&#237;culo 10.- Todo establecimiento de atenci&#243;n de
+salud que genere m&#225;s de una tonelada mensual de residuos
+especiales deber&#225; presentar, ante la respectiva autoridad
+sanitaria, un Plan de Manejo de Residuos de Establecimientos
+de Atenci&#243;n de Salud dentro del plazo de seis meses
+contados desde su inicio de actividades, desde que alcanzan
+dicha cantidad o desde la entrada en vigencia del presente
+reglamento. Estos establecimientos deber&#225;n designar a un
+responsable de la ejecuci&#243;n del plan y del desempe&#241;o del
+personal encargado del manejo de los residuos.
+     El Plan deber&#225; incluir todos los procedimientos
+t&#233;cnicos y administrativos necesarios para dar cumplimiento
+a las disposiciones del presente reglamento y lograr que el
+manejo interno y la eliminaci&#243;n de los residuos se haga con
+el menor riesgo posible. Dicho plan deber&#225; contemplar al
+menos los siguientes aspectos:
+
+1.-  Estimaci&#243;n de la cantidad diaria generada de REAS en
+cada servicio o zona del establecimiento, desagregada seg&#250;n
+las categor&#237;as se&#241;aladas en el art&#237;culo 3.
+2.-  Planos simplificados del establecimiento indicando la
+ubicaci&#243;n de:
+
+     a.   los sitios designados para la colocaci&#243;n de los
+contenedores en las zonas de generaci&#243;n;
+     b.   sala de almacenamiento;
+     c.   recorridos de recolecci&#243;n; y
+     d.   instalaci&#243;n de eliminaci&#243;n, si corresponde.
+
+3.-  Los procedimientos de manejo interno de los REAS,
+incluyendo segregaci&#243;n, transporte interno y almacenamiento
+para cada una de las categor&#237;as de REAS que se generen en
+el establecimiento. Adem&#225;s, se deber&#225;n establecer los
+procedimientos, de acuerdo a dichas categor&#237;as, para su
+entrega a terceros autorizados para su transporte o
+eliminaci&#243;n y los procedimientos de procesamiento, seg&#250;n
+las categor&#237;as de REAS a procesar, en caso de contar con
+una instalaci&#243;n de eliminaci&#243;n en el lugar.
+4.-  Sistema de registro de contenedores con residuos que
+ingresan al sitio de almacenamiento, que incluya para cada
+uno de ellos la siguiente informaci&#243;n:
+
+     &#8226;   servicio o zona de generaci&#243;n;
+     &#8226;   categor&#237;a de residuos;
+     &#8226;   cantidad almacenada;
+     &#8226;   fecha de ingreso a la sala de almacenamiento; y
+     &#8226;   fecha de env&#237;o y cantidad despachada a
+eliminaci&#243;n.
+
+5.-  Definici&#243;n del perfil y obligaciones del responsable y
+dem&#225;s personal a cargo de la implementaci&#243;n del plan.
+6.-  Programa de capacitaci&#243;n para el personal encargado
+del manejo de REAS.
+7.-  Programa de vigilancia de salud para el personal
+encargado del manejo de REAS.
+8.-  Plan de contingencias.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">10 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812326">
+          <Texto>
+     Art&#237;culo 11.- Los generadores de residuos de
+establecimientos de atenci&#243;n de salud que deban sujetarse a
+un Plan de Manejo de Residuos deber&#225;n cumplir con lo
+se&#241;alado en el T&#237;tulo IX, Sistema de Seguimiento de
+Residuos Especiales.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">11 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812327">
+      <Texto>
+     T&#205;TULO IV
+
+     Del manejo interno</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO IV Del manejo interno</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812328">
+          <Texto>
+     P&#225;rrafo I
+     De los contenedores</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo I De los contenedores</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812329">
+              <Texto>
+     Art&#237;culo 12.- Los contenedores que se utilicen para el
+almacenamiento o cualquier otra etapa de manejo de Residuos
+de Establecimientos de Salud deber&#225;n:
+
+&#8226;    Tener tapa de cierre ajustado.
+&#8226;    Tener bordes romos y superficies lisas.
+&#8226;    Tener asas que faciliten su manejo.
+&#8226;    Ser de material resistente a la manipulaci&#243;n y a los
+residuos contenidos y estancos.
+&#8226;    Tener capacidad no mayor de 110 lts., sin perjuicio
+de lo dispuesto al efecto en el T&#237;tulo V del Libro II del
+C&#243;digo del Trabajo "De la Protecci&#243;n de los Trabajadores
+de Carga y Descarga de Manipulaci&#243;n Manual".
+&#8226;    Cumplir con los est&#225;ndares de color y rotulaci&#243;n
+que se indican en el presente Reglamento.
+
+     Los contenedores destinados a los residuos clasificados
+como Cortopunzantes deber&#225;n ser r&#237;gidos y resistentes al
+corte y la punci&#243;n.
+     Los contenedores reutilizables deber&#225;n ser de material
+lavable y resistente a la corrosi&#243;n y deben ser
+reemplazados cuando muestren deterioro o problemas en su
+capacidad de contenci&#243;n y manipulaci&#243;n.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">12 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812330">
+              <Texto>
+     Art&#237;culo 13.- Los residuos especiales deber&#225;n
+almacenarse en un contenedor de color amarillo y los
+residuos s&#243;lidos asimilables a domiciliarios deber&#225;n
+almacenarse en un contenedor de color gris o negro, sin
+perjuicio de la posibilidad de mantener contenedores
+espec&#237;ficos destinados al reciclado de elementos de
+residuos s&#243;lidos asimilables a domiciliarios.
+     Todo contenedor en uso deber&#225; llevar una etiqueta
+perfectamente legible, visible y resistente al lavado que lo
+identifique con la dependencia que lo utiliza.
+     Los contenedores destinados al almacenamiento de
+residuos peligrosos deber&#225;n dar cumplimiento a lo
+establecido en el decreto supremo N&#186; 148 de 2003, del
+Ministerio de Salud, que aprueba el Reglamento Sanitario
+sobre Manejo de Residuos Peligrosos, o el que lo reemplace,
+y dem&#225;s normativa sanitaria aplicable.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">13 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812331">
+              <Texto>
+     Art&#237;culo 14.- En el interior de cada contenedor
+reutilizable se deber&#225; colocar una bolsa, de pl&#225;stico de
+medidas y espesor adecuados al contenedor, de material
+impermeable, opaco y resistente a los residuos que contiene
+y la manipulaci&#243;n, cuyo extremo superior deber&#225; mantenerse
+plegado hacia el exterior del contenedor durante su uso para
+facilitar su retiro.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">14 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812332">
+          <Texto>
+     P&#225;rrafo II
+
+     Retiro y transporte interno</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo II Retiro y transporte interno</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812333">
+              <Texto>
+     Art&#237;culo 15.- Los REAS deber&#225;n ser trasladados desde
+la zona o servicio de generaci&#243;n a la sala de
+almacenamiento de acuerdo a los requisitos establecidos en
+el presente t&#237;tulo.
+     La recolecci&#243;n y traslado de todos los residuos
+deber&#225; realizarse a trav&#233;s de un procedimiento de trabajo
+seguro. Durante el retiro y transporte interno, los residuos
+depositados en contenedores y bolsas, no podr&#225;n ser
+manipulados de forma diferente a lo establecido en el
+presente p&#225;rrafo.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">15 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812334">
+              <Texto>
+     Art&#237;culo 16.- Los contenedores de residuos asimilables
+a domiciliarios y los de residuos especiales deber&#225;n
+retirarse de la zona de generaci&#243;n a lo menos un vez al
+d&#237;a o cuando se haya completado 3/4 de su capacidad. Cuando
+se trate de contenedores reutilizables, previo a su retiro
+deber&#225; proceder al anudamiento o cierre de las respectivas
+bolsas.
+     El material cortopunzante se deber&#225; retirar cuando el
+contenedor respectivo est&#233; con su capacidad en 3/4, momento
+en que &#233;ste debe cerrarse y sellarse.
+     Los Residuos Peligrosos y los Radioactivos deber&#225;n ser
+removidos de los servicios o zonas de generaci&#243;n de acuerdo
+con la reglamentaci&#243;n espec&#237;fica que los rigen.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">16 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812335">
+              <Texto>
+     Art&#237;culo 17.- El retiro de los REAS, desde los
+servicios o zonas en que &#233;stos son generados, deber&#225;
+practicarse en horarios y condiciones que minimicen
+molestias y riesgos y que no afecten el buen funcionamiento
+del establecimiento, teniendo en cuenta especialmente los
+horarios de alimentaci&#243;n de los pacientes.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">17 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812336">
+              <Texto>
+     Art&#237;culo 18.- Al momento del retiro de los residuos se
+deber&#225;n sustituir los contenedores usados por contenedores
+nuevos o aseados, provistos de sus respectivas bolsas nuevas
+si ello correspondiera.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">18 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812337">
+              <Texto>
+     Art&#237;culo 19.- La recolecci&#243;n de los REAS deber&#225;
+realizarse en un carro que asegure la estabilidad de los
+contenedores, que minimice el ruido, de material que permita
+un f&#225;cil lavado y cuyo dise&#241;o no obstaculice las
+operaciones de carga y descarga de los contenedores.
+     El traslado podr&#225; realizarse directamente en los
+contenedores de los residuos si &#233;stos est&#225;n provistos de
+ruedas y cumplen las condiciones se&#241;aladas en el inciso
+anterior.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">19 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812338">
+              <Texto>
+     Art&#237;culo 20.- El empleo de ductos de gravedad para la
+descarga de residuos s&#243;lo proceder&#225; para la descarga de
+residuos s&#243;lidos asimilables a domiciliarios.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">20 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812339">
+          <Texto>
+     P&#225;rrafo III
+
+     Almacenamiento de residuos</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo III Almacenamiento de residuos</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812340">
+              <Texto>
+     Art&#237;culo 21.- Todo establecimiento que genere REAS
+deber&#225; contar con, al menos, un &#225;rea o sala de
+almacenamiento para los residuos, la que deber&#225; estar
+ubicada y ser operada de forma tal que se minimicen las
+molestias y riesgos. Dicha sala o &#225;rea deber&#225; contar con
+autorizaci&#243;n emitida por la autoridad sanitaria competente,
+a la que asimismo deber&#225; entregarse copia del respectivo
+plan de operaci&#243;n.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">21 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812341">
+              <Texto>
+     Art&#237;culo 22.- El &#225;rea o sala de almacenamiento
+deber&#225; cumplir con las siguientes condiciones:
+
+1.-  Capacidad suficiente para almacenar las diferentes
+categor&#237;as de residuos generadas en el establecimiento,
+considerando el n&#250;mero y tipo de contenedores y las
+frecuencias de recolecci&#243;n y de env&#237;o a eliminaci&#243;n.
+2.-  Contar con:
+     2.1   Un dise&#241;o que permita un trabajo seguro,
+facilitando el acceso del personal, y, cuando corresponda,
+la maniobra de los carros de recolecci&#243;n interna.
+     2.2   Sectores separados y se&#241;alizados para las
+diferentes categor&#237;as de REAS generados en el
+establecimiento.
+     2.3   Puertas de cierre ajustado y provistas de cerrojo
+que permitan el acceso y retiro de los residuos.
+     2.4   Iluminaci&#243;n artificial y ventilaci&#243;n adecuada a
+los residuos almacenados.
+     2.5   Ductos de ventilaci&#243;n, ventanas, pasadas de
+tuber&#237;as y otras aberturas similares, protegidos del
+ingreso de vectores de inter&#233;s sanitario.
+     2.6   Piso y paredes revestidas internamente con
+material liso, resistente, lavable, impermeable y de color
+claro. El piso con una pendiente de, al menos, 2% orientada
+hacia un sumidero conectado al sistema de alcantarillado.
+     2.7   &#193;rea de lavado y desinfecci&#243;n de contenedores
+dotada de los elementos necesarios para realizar esa
+actividad.
+     2.8   Lavamanos suficientes para permitir el aseo del
+personal que all&#237; se desempe&#241;a.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">22 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812342">
+              <Texto>
+     Art&#237;culo 23.- La operaci&#243;n del &#225;rea o sala de
+almacenamiento de residuos deber&#225; cumplir con los
+siguientes requerimientos m&#237;nimos:
+
+1.-  El ingreso ser&#225; permitido s&#243;lo a las personas
+encargadas del manejo de los residuos.
+2.-  Disponibilidad permanente de art&#237;culos para mantener
+el aseo de la sala.
+3.-  Deber&#225; ser lavada diariamente y desinfectada
+semanalmente con una soluci&#243;n de cloro al 0.5% o una
+soluci&#243;n desinfectante de efectividad equivalente.
+4.-  Tener, a lo menos, una persona encargada de la
+operaci&#243;n y mantenimiento de la misma.
+5.-  Disponer de la cantidad de contenedores necesaria para
+el reemplazo de aquellos que sean retirados durante la
+recolecci&#243;n interna.
+6.-  La maniobra de vaciamiento de los contenedores, cuando
+corresponda, se deber&#225; realizar a trav&#233;s de procedimientos
+que respeten los par&#225;metros de trabajo seguro establecidos
+en el T&#237;tulo V del Libro II del C&#243;digo del Trabajo.
+Durante el almacenamiento, los residuos depositados en
+contenedores y bolsas, deber&#225;n ser manipulados acorde al
+respectivo plan de manejo para cada tipo de residuo.
+7.-  Los contenedores reutilizables usados deber&#225;n ser
+sometidos a un proceso de limpieza y desinfecci&#243;n en el
+&#225;rea de lavado, usando para ello agua y detergente,
+aplic&#225;ndoles finalmente una soluci&#243;n de cloro al 0.5% o
+una soluci&#243;n desinfectante de efectividad equivalente, en
+cantidad superior al 10% del volumen del contenedor.
+8.-  Los residuos especiales deber&#225;n mantenerse en bolsas
+cerradas y no podr&#225;n ser almacenados por per&#237;odos
+superiores a 72 hrs., a menos que se almacenen refrigerados
+a temperaturas inferiores a 4&#176;C, caso en el que se podr&#225;n
+mantener almacenados hasta por una semana.
+9.-  Deber&#225; llevarse un registro sobre ingreso y salida de
+los residuos en el cual conste la fecha en que se llev&#243; a
+cabo el env&#237;o a tratamiento o disposici&#243;n final, en peso o
+volumen y por tipo de residuos.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">23 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812343">
+      <Texto>
+     T&#205;TULO V
+
+     De la eliminaci&#243;n</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO V De la eliminaci&#243;n</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812344">
+          <Texto>
+     Art&#237;culo 24.- Todos los Residuos de Establecimientos
+de Salud deber&#225;n ser eliminados en instalaciones que
+cuenten con autorizaci&#243;n sanitaria.
+     No obstante lo anterior, los residuos radiactivos de
+baja intensidad, podr&#225;n ser dispuestos a trav&#233;s de los
+sistemas de alcantarillado o de la recolecci&#243;n municipal,
+seg&#250;n su naturaleza, siempre y cuando &#233;stos hayan sido
+previamente almacenados adecuadamente durante un per&#237;odo
+tal que la actividad radiactiva haya disminuido a 74
+becquereles por gramo o dos mil&#233;simas de microcurio por
+gramo.
+     Los residuos especiales consistentes en sangre y sus
+derivados provenientes de bancos de sangre que luego de ser
+analizados se haya demostrado que no presentan riesgos para
+la salud, podr&#225;n ser eliminados a trav&#233;s del sistema de
+alcantarillado.
+     Los residuos s&#243;lidos asimilables a los domiciliarios,
+incluidos los especiales sometidos a un proceso de
+tratamiento de acuerdo a lo indicado en el presente
+reglamento, podr&#225;n ser entregados al sistema de
+recolecci&#243;n municipal para su disposici&#243;n final o
+reciclaje, en su caso.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">24 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812345">
+          <Texto>
+     Art&#237;culo 25.- La disposici&#243;n final de residuos
+especiales, tanto la efectuada por los propios generadores
+como aquella efectuada por terceros que presten servicio de
+eliminaci&#243;n, s&#243;lo podr&#225; efectuarse si se dispone de
+autorizaci&#243;n sanitaria para ello, la que se otorgar&#225;,
+previa aprobaci&#243;n por la Secretar&#237;a Regional Ministerial
+de Salud competente del respectivo proyecto de ingenier&#237;a
+que deber&#225; contemplar, al menos, los siguientes aspectos:
+
+1.-  Descripci&#243;n t&#233;cnica del proyecto.
+2.-  Plano de las instalaciones.
+3.-  Capacidad de tratamiento de residuos.
+4 -  Descripci&#243;n de las operaciones.
+5.-  Almacenamiento de los residuos, si corresponde.
+6.-  Planes de operaci&#243;n y mantenci&#243;n.
+7-   Plan de contingencia.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">25 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812346">
+          <Texto>
+     Art&#237;culo 26.- El manejo de residuos especiales en las
+instalaciones de eliminaci&#243;n se debe realizar sin que
+exista manipulaci&#243;n directa de &#233;stos por parte de los
+operarios o trabajadores. Durante su manejo debe evitarse
+tanto la rotura de los recipientes o contenedores como el
+derrame de los residuos fuera del sistema de tratamiento.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">26 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812347">
+          <Texto>
+     Art&#237;culo 27.- El sistema de eliminaci&#243;n de residuos
+especiales deber&#225; cumplir con los siguientes
+requerimientos:
+
+1.-  Llevar un registro de origen, categor&#237;a, fecha de
+recepci&#243;n, fecha de eliminaci&#243;n y cantidad en peso o
+volumen de los residuos recibidos.
+2.-  Llevar un registro de los par&#225;metros relevantes
+propios de la operaci&#243;n del equipo de eliminaci&#243;n.
+3.-  El almacenamiento de residuos especiales no deber&#225; ser
+superior a 24 horas, salvo que se cuente con equipos de
+refrigeraci&#243;n.
+4.-  Los equipos deber&#225;n mantenerse en condiciones
+adecuadas de operaci&#243;n.
+5.-  Contar con personal capacitado para la correcta
+operaci&#243;n de la instalaci&#243;n.
+6.-  Mantener los registros mencionados en este art&#237;culo a
+disposici&#243;n de la autoridad sanitaria por un per&#237;odo de al
+menos 2 a&#241;os.
+7.-  Entregar un Informe trimestral a la Autoridad Sanitaria
+Regional que indique el establecimiento de origen y la
+cantidad de residuos especiales eliminados.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">27 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812348">
+          <Texto>
+     Art&#237;culo 28.- Las instalaciones que efect&#250;en
+tratamiento de autoclave de residuos especiales, deben:
+
+1.-  Para los equipos autoclaves de prevac&#237;o, realizar
+mensualmente una prueba de penetraci&#243;n de vapor (test de
+Bowie Dick) en al menos un ciclo. Para autoclaves
+gravitacionales el test se realizar&#225; en forma mensual, con
+la c&#225;mara vac&#237;a, en las condiciones de tiempo, temperatura
+y presi&#243;n, autorizadas para el equipo. Adem&#225;s, se deber&#225;
+realizar dicha prueba luego de toda reparaci&#243;n o
+mantenci&#243;n del equipo.
+2.-  Realizar anualmente un ensayo que demuestre una
+reducci&#243;n de 4 log10 de Bacillus stearothermophillus en las
+condiciones autorizadas de operaci&#243;n del equipo.
+3.-  Llevar un registro continuo de la temperatura, presi&#243;n
+y duracion de los ciclos de tratamiento u operaci&#243;n de
+autoclave.
+
+     En el ciclo de autoclavado de los residuos especiales
+se deber&#225; mantener simult&#225;neamente, durante un lapso de al
+menos 60 minutos, temperaturas iguales o superiores a 121&#176;C
+y una presi&#243;n de vapor no inferior a 1,1 Kpa.
+     La autoridad sanitaria podr&#225; autorizar la utilizaci&#243;n
+de otras combinaciones de tiempo, temperatura y presi&#243;n,
+siempre que se demuestre mediante ensayos que esas
+condiciones son equivalentes a la antes se&#241;alada, en lo que
+a eliminaci&#243;n de microorganismos se refiere.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">28 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812349">
+          <Texto>
+     Art&#237;culo 29.- Las instalaciones que den tratamiento de
+incineraci&#243;n de residuos especiales, sin perjuicio de
+observar la normativa ambiental vigente, deber&#225;n cumplir, a
+lo menos, con los siguientes requerimientos:
+
+1.-  Contar con doble c&#225;mara de combusti&#243;n.
+2.-  Contar con quemadores de combustible auxiliar.
+3.-  Asegurar que en ambas c&#225;maras se alcancen temperaturas
+m&#237;nimas de operaci&#243;n de 850&#176;C y que los tiempos de
+retenci&#243;n de los gases en la c&#225;mara secundaria no sea
+inferior a 1 segundo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">29 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812350">
+          <Texto>
+     Art&#237;culo 30.- Los residuos especiales no tratados
+podr&#225;n ser eliminados en rellenos sanitarios especialmente
+autorizados para dicho efecto, para lo cual deber&#225;n cumplir
+con el decreto N&#186; 189 de 2005, del Ministerio de Salud,
+sobre rellenos sanitarios y los siguientes requerimientos
+especiales:
+
+1.-  Deber&#225; existir una celda o zanja separada en donde
+s&#243;lo se dispongan residuos especiales, en ning&#250;n caso se
+dispondr&#225;n en el frente de trabajo en donde se descargan
+los residuos domiciliarios.
+2.-  El recubrimiento de los residuos especiales deber&#225; ser
+inmediato a su descarga.
+3.-  Los residuos especiales no deber&#225;n someterse a
+compactaci&#243;n previo a su recubrimiento.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">30 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812351">
+          <Texto>
+     Art&#237;culo 31.- Tambi&#233;n los residuos especiales podr&#225;n
+ser eliminados por medio de otros sistemas de tratamiento
+respecto de los cuales se haya demostrado eficacia de
+destrucci&#243;n de pat&#243;genos en residuos de igual o mayor
+efectividad que la de los sistemas de tratamiento
+anteriormente se&#241;alados.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">31 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812352">
+          <Texto>
+     Art&#237;culo 32.- Previa autorizaci&#243;n de la autoridad
+sanitaria competente, los establecimientos que por razones
+justificadas acreditadas ante la misma, no puedan acceder a
+instalaciones de eliminaci&#243;n de residuos de
+establecimientos de la salud, podr&#225;n eliminar los residuos
+especiales se&#241;alados en el art&#237;culo 6&#186; de este reglamento
+en fosas digestoras. En iguales condiciones podr&#225;n eliminar
+los residuos especiales consistentes en residuos
+patol&#243;gicos o en sangre y productos derivados, en el
+cementerio local en fosas comunes o crematorios.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">32 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2013-02-09" derogado="no derogado" idParte="8812353">
+          <Texto>
+     Art&#237;culo 33.- Los elementos cortopunzantes deber&#225;n
+eliminarse en contenedores r&#237;gidos resistentes a la rotura
+por acci&#243;n del material contenido. No obstante las agujas
+se podr&#225;n eliminar en el punto de generaci&#243;n directamente
+en equipos que la destruyan mediante pulverizaci&#243;n o
+fundici&#243;n.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">33 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812354">
+          <Texto>
+     Art&#237;culo 34.- Los residuos consistentes en piezas
+anat&#243;micas reconocibles no podr&#225;n ser entregados a la
+recolecci&#243;n municipal.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">34 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812355">
+      <Texto>
+     T&#205;TULO VI
+
+     Del transporte</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO VI Del transporte</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812356">
+          <Texto>
+     Art&#237;culo 35.- Las empresas de transporte de residuos
+especiales, as&#237; como todo generador que transporte por s&#237;
+mismo m&#225;s de 1 tonelada mensual de tales residuos, deber&#225;n
+contar con autorizaci&#243;n sanitaria y dar cumplimiento a lo
+se&#241;alado en el T&#237;tulo IX Sistema de Seguimiento de
+Residuos Especiales.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">35 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812357">
+          <Texto>
+     Art&#237;culo 36.- Para efectos de lo dispuesto en el
+art&#237;culo anterior, la solicitud de autorizaci&#243;n respectiva
+deber&#225; contener la identificaci&#243;n y las caracter&#237;sticas
+de los veh&#237;culos que se utilicen para ello, as&#237; como la
+ubicaci&#243;n y las caracter&#237;sticas de las instalaciones del
+sistema de transporte y de los equipos de limpieza y
+descontaminaci&#243;n. Adem&#225;s, deber&#225; contemplar un plan de
+contingencia para abordar posibles accidentes que ocurran
+durante el proceso de transporte.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">36 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812358">
+          <Texto>
+     Art&#237;culo 37.- Los veh&#237;culos empleados en el servicio
+de transporte de residuos especiales deber&#225;n ser de uso
+exclusivo para ello y ajustarse a lo siguiente:
+
+1.-  La caja de carga debe ser completamente cerrada y
+estanca para impedir el derrame de s&#243;lidos y/o l&#237;quidos.
+Su interior deber&#225; ser liso, f&#225;cilmente lavable y de
+material impermeable y resistente a la corrosi&#243;n.
+2.-  Contar con equipamiento para el control de derrames,
+que debe consistir, a lo menos, en material absorbente,
+desinfectante, bolsas o contenedores y equipos de
+protecci&#243;n personal.
+3.-  En el caso de utilizarse contenedores en el transporte
+de estos residuos, se deber&#225; dar cumplimiento con lo
+se&#241;alado en el art&#237;culo 12 del presente reglamento.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">37 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812359">
+          <Texto>
+     Art&#237;culo 38.- La caja de carga de los veh&#237;culos
+deber&#225; ser lavada luego de cada traslado de residuos y
+desinfectada semanalmente con una soluci&#243;n de cloro al 0.5%
+o una soluci&#243;n desinfectante de efectividad equivalente.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">38 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812360">
+          <Texto>
+     Art&#237;culo 39.- El transporte de residuos peligrosos
+deber&#225; realizarse conforme al decreto supremo N&#186; 298 de
+1994, del Ministerio de Transportes y Telecomunicaciones, o
+el que lo reemplace, y a lo especificado en el Reglamento
+Sanitario sobre Manejo de Residuos Peligrosos.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">39 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812361">
+          <Texto>
+     Art&#237;culo 40.- El transporte de residuos s&#243;lidos
+asimilables a los domiciliarios podr&#225; ser realizado a
+trav&#233;s del sistema de recolecci&#243;n municipal de residuos
+s&#243;lidos.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">40 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812362">
+      <Texto>
+     T&#205;TULO VII
+
+     De los planes de contingencia</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO VII De los planes de contingencia</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812363">
+          <Texto>
+     Art&#237;culo 41.- Los establecimientos que deben presentar
+plan de manejo, as&#237; como las empresas de transporte y las
+instalaciones de eliminaci&#243;n de REAS, deber&#225;n contar con
+un plan de contingencias, en el que se describir&#225;n todas
+las medidas a desarrollar frente a eventuales emergencias.
+Este plan deber&#225; contemplar al menos lo siguiente:
+
+1.-  Medidas de control o mitigaci&#243;n.
+2.-  Capacitaci&#243;n del personal que maneja residuos.
+3.-  Identificaci&#243;n de las responsabilidades del personal.
+4.-  Sistema de comunicaciones, fijo o port&#225;til, para
+alertar a las autoridades competentes.
+5.-  Identificaci&#243;n, ubicaci&#243;n y disponibilidad de
+personal y equipo necesario para atender las emergencias.
+6.-  Listado actualizado de los organismos p&#250;blicos y
+personas a las que se deber&#225; dar aviso inmediato en el caso
+de ocurrir una emergencia. Considerar, al menos, la
+comunicaci&#243;n con la autoridad sanitaria, Carabineros,
+Bomberos y la Oficina Regional de Emergencia cuando la
+emergencia sea de magnitud tal que pueda afectar la salud
+y/o seguridad de las personas o del ambiente.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">41 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812364">
+          <Texto>
+     Art&#237;culo 42.- Las emergencias asociadas a derrame de
+residuos especiales, que ocurran durante el transporte,
+deber&#225;n ser controladas mediante un procedimiento que, al
+menos, considere lo siguiente:
+
+1.-  El conductor deber&#225; dar aviso inmediato de la
+contingencia ocurrida a las autoridades indicadas en el
+punto N&#186; 6 del art&#237;culo anterior.
+2.-  Deber&#225;n utilizarse los equipos de protecci&#243;n personal
+de acuerdo a los residuos transportados (por ejemplo uso de
+guantes y pechera pl&#225;stica).
+3.-  Deber&#225; delimitarse la zona del derrame.
+4.-  Deber&#225;n recogerse los l&#237;quidos con material
+absorbente.
+5.-  Se deber&#225;n recuperar los residuos derramados en bolsas
+o contenedores especiales.
+6.-  Todo el material utilizado y los residuos recuperados
+deber&#225;n ser manejados como residuos especiales.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">42 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812365">
+      <Texto>
+     T&#205;TULO VIII
+
+     Del personal</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO VIII Del personal</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812366">
+          <Texto>
+     Art&#237;culo 43.- Todo trabajador que realice actividades
+de recolecci&#243;n, selecci&#243;n, transporte o eliminaci&#243;n de
+los residuos generados en establecimientos de atenci&#243;n de
+salud deber&#225; ser capacitado en relaci&#243;n a los riesgos a
+los que est&#225; expuesto y a las medidas de prevenci&#243;n que
+deben adoptarse.
+     El responsable de la aplicaci&#243;n de un Plan de Manejo
+de Residuos deber&#225; estar capacitado tanto en el manejo de
+los residuos como en la resoluci&#243;n de contingencias.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">43 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812367">
+          <Texto>
+     Art&#237;culo 44.- Todo el personal que maneje residuos
+generados en establecimientos de atenci&#243;n de salud deber&#225;
+contar con elementos de protecci&#243;n personal de acuerdo al
+riesgo asociado al tipo de residuos que maneje.
+     El personal que realiza las funciones de retiro de
+residuos especiales deber&#225; contar, al menos, con los
+siguientes elementos de protecci&#243;n personal, los que
+deber&#225; usar de acuerdo a lo se&#241;alado en el respectivo Plan
+de Manejo de Residuos:
+
+1.-  Ropa y zapatos de trabajo
+2.-  Guantes resistentes a desgaste y punci&#243;n.
+3.-  Pechera o delantal impermeable y botas de goma de media
+ca&#241;a, usadas bajo la manga del pantal&#243;n, para personal que
+realiza lavado de recipientes o contenedores.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">44 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812368">
+          <Texto>
+     Art&#237;culo 45.- Todo trabajador a que se refiere el
+art&#237;culo 43 deber&#225; ser objeto de una evaluaci&#243;n m&#233;dica
+al inicio del empleo y estar incluido en los programas de
+prevenci&#243;n de riesgos biol&#243;gicos y ergon&#243;micos.
+     Todo trabajador al cual se refiere este art&#237;culo
+deber&#225; mantenerse vacunado contra la hepatitis B.
+     Ser&#225; obligaci&#243;n del responsable del sistema de manejo
+de REAS mantener copia de los documentos que acrediten el
+cumplimiento de lo establecido en el presente art&#237;culo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">45 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812369">
+          <Texto>
+     Art&#237;culo 46.- A todo trabajador que haya tenido un
+accidente con exposici&#243;n a fluidos corporales de alto
+riesgo biol&#243;gico se le deber&#225; realizar una evaluaci&#243;n
+m&#233;dica y una profilaxis post - exposici&#243;n, si corresponde,
+ello seg&#250;n la Norma T&#233;cnica N&#186; 48, "Norma de Manejo
+Pos-exposici&#243;n Laboral a Sangre en el Contexto de la
+Prevenci&#243;n de la Infecci&#243;n por VIH del Ministerio de
+Salud, aprobada por resoluci&#243;n exenta N&#186; 561 de 2000 del
+Ministerio de Salud.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">46 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812370">
+          <Texto>
+     Art&#237;culo 47.- Ser&#225; obligaci&#243;n del personal a que se
+hace referencia en el art&#237;culo 43 informar de todo
+accidente asociado al manejo de los residuos s&#243;lidos al
+encargado del sistema, el que, en caso de ser necesario,
+deber&#225; informar a la direcci&#243;n del establecimiento para
+que se tomen las acciones correctivas correspondientes.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">47 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812371">
+      <Texto>
+     T&#205;TULO IX
+
+     Sistema de seguimiento de residuos especiales</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO IX Sistema de seguimiento de residuos especiales</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812372">
+          <Texto>
+     Art&#237;culo 48.- Los establecimientos de atenci&#243;n de
+salud que env&#237;an a eliminaci&#243;n residuos especiales en
+cantidad mayor a una tonelada al mes, as&#237; como los
+transportistas y destinatarios de &#233;stos, quedan sujetos a
+las disposiciones de este T&#237;tulo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">48 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812373">
+          <Texto>
+     Art&#237;culo 49.- Deber&#225; llevarse un registro del env&#237;o
+de residuos especiales para su eliminaci&#243;n fuera del
+establecimiento, en que conste la fecha en que se llev&#243; a
+cabo, cantidad enviada en peso o volumen, tipo de residuos,
+lugar al que se env&#237;a, transportista y veh&#237;culo utilizado.
+     Se entregar&#225; al transportista un documento con esta
+informaci&#243;n, con dos copias, una de las cuales &#233;ste
+dejar&#225; en el lugar de eliminaci&#243;n, el original lo
+devolver&#225; al establecimiento generador con timbre de
+recepci&#243;n de la entidad eliminadora, conservando la segunda
+copia para s&#237;.
+     La consolidaci&#243;n de estos registros, en ambos casos,
+se enviar&#225; en forma trimestral, firmada por el responsable
+del sistema de residuos de la instituci&#243;n correspondiente,
+a la autoridad sanitaria competente del lugar en que se
+encuentra ubicado el establecimiento de salud respectivo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">49 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812374">
+          <Texto>
+     Art&#237;culo 50.- El Ministerio de Salud establecer&#225; un
+sistema electr&#243;nico de seguimiento de residuos, el que
+podr&#225; ser empleado por los establecimientos de atenci&#243;n de
+salud sujetos a dicho sistema para efectuar sus
+declaraciones de estas materias.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">50 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812375">
+      <Texto>
+     T&#205;TULO X
+
+     De la fiscalizaci&#243;n y sanciones</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO X De la fiscalizaci&#243;n y sanciones</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812376">
+          <Texto>
+     Art&#237;culo 51.- Corresponde a las Secretar&#237;as
+Regionales Ministeriales de Salud, en su calidad de
+Autoridad Sanitaria, otorgar a las entidades ubicadas en sus
+territorios de su competencia las autorizaciones de que
+trata este reglamento, fiscalizar el cumplimiento de sus
+disposiciones y sancionar las infracciones al mismo, de
+conformidad con las normas que establece el Libro D&#233;cimo
+del C&#243;digo Sanitario.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">51 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2009-12-04" derogado="no derogado" idParte="8812377">
+      <Texto>
+     T&#205;TULO FINAL</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO FINAL</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2010-07-17" derogado="no derogado" idParte="8812378">
+          <Texto>
+     Art&#237;culo 52.- El presente reglamento entrar&#225; en
+vigencia en el plazo de dos a&#241;os contados desde su
+publicaci&#243;n en el Diario Oficial, fecha en la que quedar&#225;n
+derogadas todas las disposiciones reglamentar&#237;as y las
+normas o resoluciones de la Autoridad Sanitaria que sean
+contrarias o incompatibles con el presente reglamento.
+     Dentro de los seis meses siguientes a la entrada en
+vigencia del presente reglamento, las personas naturales y
+jur&#237;dicas que presten servicios de transporte o
+eliminaci&#243;n de residuos especiales de establecimientos de
+atenci&#243;n de salud, deber&#225;n presentar a la Autoridad
+Sanitaria competente un programa de adecuaci&#243;n de su
+actividad a las normas del presente reglamento.
+     Dentro del mismo plazo indicado en el inciso anterior,
+los responsables de presentar un plan de manejo de REAS
+deber&#225;n hacer llegar dicho documento a la Autoridad
+Sanitaria respectiva.
+     Las medidas y acciones de adecuaci&#243;n consultadas en el
+programa de adecuaci&#243;n y/o el Plan de Manejo deber&#225;n
+haberse hecho y completado una vez transcurridos seis meses
+de la  entrada en vigencia del presente reglamento. La
+Autoridad Sanitaria mediante resoluci&#243;n fundada podr&#225;, en
+casos especiales calificados, conceder un plazo adicional no
+superior a 1 a&#241;o para completar dichas medidas y acciones.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">52 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="2009-12-04" derogado="no derogado">
+    <Texto>
+     An&#243;tese, t&#243;mese raz&#243;n y publ&#237;quese. MICHELLE
+BACHELET      JERIA, Presidenta de la Rep&#250;blica.- &#193;lvaro
+Erazo Latorre, Ministro de Salud.
+     Lo que transcribo para su conocimiento.- Saluda
+atentamente a Ud., Jeanette Vega Morales, Subsecretaria de
+Salud P&#250;blica.</Texto>
+  </Promulgacion>
+  
+</Norma>

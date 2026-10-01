@@ -5,18 +5,41 @@ La sección «Publicaciones recientes» muestra las últimas publicaciones de la
 
 ## Cómo se actualiza
 
-LinkedIn no permite leer las publicaciones de una página sin su API, y el sitio es estático (GitHub Pages). Por eso:
+El sitio es estático (GitHub Pages) y el navegador no puede leer LinkedIn directamente, así que lo hace una tarea programada:
 
-1. `.github/workflows/linkedin.yml` corre cada 6 horas (y a pedido, en Actions → «Publicaciones de LinkedIn» → *Run workflow*).
-2. Ejecuta `tools/linkedin.mjs`, que llama a la API de LinkedIn con los secretos del repositorio, guarda las 8 publicaciones
-   públicas más recientes en `assets/transporte/linkedin.json` (y sus imágenes en `assets/transporte/linkedin/`) y las
+1. `.github/workflows/linkedin.yml` corre **cada 6 horas** (y a pedido, en Actions → «Publicaciones de LinkedIn» → *Run workflow*).
+2. Ejecuta `tools/linkedin.mjs`, que guarda las 8 publicaciones más recientes en `assets/transporte/linkedin.json`, copia la
+   portada de cada una en `assets/transporte/linkedin/` (primera página del documento, imagen o carátula del video) y las
    enlaza con su norma según `assets/transporte/normativa.json` (número de la norma, sigla o tema).
-3. Si hay cambios, hace un commit y pide a GitHub Pages que publique. La página lee el JSON al cargar.
+3. Si algo cambió, hace un commit y pide a GitHub Pages que publique. La página lee el JSON al cargar, con la más reciente primero.
 
-Mientras no estén configurados los secretos, la sección muestra «Pronto verás aquí las publicaciones de Vínculo Verde» y el
-botón para seguir la página.
+No hay que tocar el código para cada publicación nueva: basta publicarla en LinkedIn.
 
-## Qué API y cómo obtener el acceso (una vez)
+### De dónde lee
+
+| Vía | Requiere | Cuándo se usa |
+| --- | --- | --- |
+| **Página pública** (`https://cl.linkedin.com/company/vinculo-verde`, lo que ve un visitante sin cuenta) | Nada | Por defecto |
+| **API de LinkedIn** (oficial) | App aprobada y secretos (ver abajo) | Si los secretos están configurados; si falla, se usa la página pública |
+
+Resguardos del script: si LinkedIn no responde, pide iniciar sesión o cambia el formato de su página, **el archivo queda como
+estaba** (nunca se publica una lista vacía) y la tarea deja un aviso en Actions; solo incluye lo publicado por la propia página
+(lo compartido desde otras cuentas no entra); si el texto de una publicación no cambió, respeta la norma que ya tenía asignada.
+
+Límites de la página pública, para tenerlos presentes:
+
+- LinkedIn suele pedir inicio de sesión a servidores de centros de datos, y GitHub Actions corre en uno. Si en Actions aparece
+  el aviso «LinkedIn no mostró la página pública», la lectura automática desde GitHub no está pasando: las opciones son la API
+  oficial (abajo) o ejecutar `node tools/linkedin.mjs --publico` desde un computador de la oficina y subir el cambio.
+- Muestra solo las publicaciones más recientes (las anteriores que ya estaban guardadas se conservan).
+- Las condiciones de uso de LinkedIn no contemplan la lectura automática de sus páginas; la vía prevista por LinkedIn es la API.
+  Aquí se lee una sola página, la propia de la empresa, cuatro veces al día.
+- GitHub pausa las tareas programadas de un repositorio que pasa 60 días sin cambios; se reactivan en Actions → *Enable workflow*.
+
+Prueba local: `node tools/linkedin.mjs --publico` (o `--archivo=pagina.html` con una página guardada; `--estricto` termina con
+error si no se pudo leer).
+
+## API oficial (opcional, más estable)
 
 API: **LinkedIn Community Management API** (producto de LinkedIn Marketing), permiso `r_organization_social`
 (leer las publicaciones de una página que administras). Endpoint usado: `GET https://api.linkedin.com/rest/posts?author=urn:li:organization:{ID}&q=author`.
@@ -34,17 +57,22 @@ API: **LinkedIn Community Management API** (producto de LinkedIn Marketing), per
    - `LINKEDIN_ORG_ID`
    - `LINKEDIN_ACCESS_TOKEN` (si no hay refresh token, renuévalo cada 60 días)
    - `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, `LINKEDIN_REFRESH_TOKEN` (para la renovación automática)
-   - Opcional, en *Variables*: `LINKEDIN_VERSION` (AAAAMM; por defecto se usa la del mes anterior).
-6. En *Actions*, ejecuta «Publicaciones de LinkedIn» a mano para la primera carga y revisa el resultado en la página.
+   - Opcional, en *Variables*: `LINKEDIN_VERSION` (AAAAMM; por defecto se usa la del mes anterior) y `LINKEDIN_PAGE`
+     (nombre de la página en la URL; por defecto `vinculo-verde`).
+6. En *Actions*, ejecuta «Publicaciones de LinkedIn» a mano y revisa el resultado en la página.
 
-Alternativa si LinkedIn demora la aprobación: un servicio de terceros que entregue el feed de la página en JSON (de pago; revisar
-su política de datos). Basta con que `tools/linkedin.mjs` lea esa fuente y escriba el mismo formato de `linkedin.json`.
+Con la API, los documentos (carruseles PDF) no traen portada: se conserva la que ya estaba guardada para esa publicación.
 
 ## Formato de `assets/transporte/linkedin.json`
 
 ```json
-{ "actualizado": "2026-09-28T12:00:00Z",
+{ "actualizado": "2026-10-01T12:00:00Z",
+  "fuente": "Página pública de LinkedIn",
   "organizacion": { "nombre": "Vínculo Verde", "url": "https://www.linkedin.com/company/vinculo-verde/", "logo": "opcional" },
-  "posts": [ { "id": "urn:li:share:…", "url": "https://www.linkedin.com/feed/update/urn:li:share:…/", "fecha": "ISO 8601",
-               "texto": "…", "imagen": "assets/transporte/linkedin/….jpg (opcional)", "normas": ["ds-148-2003-minsal"] } ] }
+  "posts": [ { "id": "urn:li:activity:…", "urn": "urn:li:ugcPost:… (opcional)", "url": "https://…linkedin.com/posts/…",
+               "fecha": "ISO 8601", "texto": "…", "imagen": "assets/transporte/linkedin/….jpg (opcional)",
+               "documento": { "titulo": "…", "paginas": 2 }, "normas": ["ley-20920"] } ] }
 ```
+
+`documento` aparece solo en los carruseles PDF. `normas[0]` es la norma que la tarjeta ofrece ver o descargar; se puede
+corregir a mano y el script la respeta mientras el texto de la publicación no cambie.

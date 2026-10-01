@@ -1,5 +1,6 @@
 # Trae las publicaciones recientes de la página de LinkedIn y actualiza assets/transporte/linkedin.json.
-# Configuración: Settings → Secrets and variables → Actions (ver tools/linkedin.mjs y docs/linkedin.md).
+# No necesita configuración: lee la página pública de la empresa. Si además están los secretos de la API de LinkedIn
+# (Settings → Secrets and variables → Actions), usa primero esa vía. Detalle en tools/linkedin.mjs y docs/linkedin.md.
 name: Publicaciones de LinkedIn
 on:
   schedule:
@@ -27,7 +28,9 @@ jobs:
           LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
           LINKEDIN_REFRESH_TOKEN: ${{ secrets.LINKEDIN_REFRESH_TOKEN }}
           LINKEDIN_VERSION: ${{ vars.LINKEDIN_VERSION }}
-        run: node tools/linkedin.mjs
+          LINKEDIN_PAGE: ${{ vars.LINKEDIN_PAGE }}
+        # A mano (Run workflow) termina con error si LinkedIn no dejó leer; en las pasadas programadas solo deja un aviso
+        run: node tools/linkedin.mjs ${{ github.event_name == 'workflow_dispatch' && '--estricto' || '' }}
       - name: Guardar si hay cambios
         run: |
           if [ -n "$(git status --porcelain assets/transporte/linkedin.json assets/transporte/linkedin)" ]; then

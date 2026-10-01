@@ -1,10 +1,12 @@
-/* Transporte Autorizado: biblioteca de documentos y normativa, y publicaciones recientes de LinkedIn con su norma relacionada.
+/* Transporte Autorizado: biblioteca de normativa (dentro del panel «Ayuda» de la cabecera, en todas las páginas) y
+   publicaciones recientes de LinkedIn con su norma relacionada (página principal).
    Datos: assets/transporte/normativa.json (tools/normativa.py, texto oficial de Ley Chile) y assets/transporte/linkedin.json
-   (tools/linkedin.mjs, lo actualiza GitHub Actions con la API de LinkedIn). Las tarjetas de la biblioteca ya vienen en el HTML
-   (para buscadores); este script agrega búsqueda, filtro por tema y el carrusel de publicaciones. Cada norma se lee en su página. */
+   (tools/linkedin.mjs, lo actualiza GitHub Actions). Las filas de la biblioteca ya vienen en el HTML (tools/ayuda.py, para
+   buscadores); este script agrega la búsqueda, el filtro por tema y el carrusel de publicaciones. Cada norma se lee en su página. */
 (() => {
   const d = document;
   const lib = d.querySelector('[data-lib]');
+  const ROOT = window.SITE_ROOT || '';  // '../' en las páginas de normas y guías
   const postsRoot = d.querySelector('[data-posts]');
   if (!lib && !postsRoot) return;
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
@@ -47,7 +49,7 @@
     return best;
   };
 
-  /* La confirmación de las descargas está en documentos.js (sirve en todas las páginas) */
+  /* La confirmación de las descargas está en ayuda.js (sirve en todas las páginas) */
 
   /* ---------- Biblioteca ---------- */
   if (lib) {
@@ -60,7 +62,6 @@
     const live = lib.querySelector('[data-lib-live]');
     const topics = lib.querySelector('[data-lib-topics]');
     const empty = lib.querySelector('[data-lib-empty]');
-    const KEY = 'ta-normativa';
     const st = { q: '', tema: '*' };
     let data = null;
 
@@ -95,11 +96,10 @@
       const t = n.temas[0];
       return `<li class="doc${fresh ? ' is-new' : ''}" data-slug="${n.slug}" data-tema="${t}" style="--i:${Math.min(i, 8)}">`
         + `<span class="doc-icon">${temaIcon(t)}</span>`
-        + `<div class="doc-body"><h3 class="doc-title"><a href="${esc(n.pagina)}">${mark(n.tema, tt)}</a></h3>`
+        + `<div class="doc-body"><p class="doc-title"><a href="${esc(ROOT + n.pagina)}">${mark(n.tema, tt)}</a></p>`
         + `<p class="doc-sub"><strong>${mark(n.corto, tt)}</strong><span class="doc-org"> · ${mark(n.organismo, tt)}</span>${n.vigente ? '' : ' · <span class="doc-off">Derogada</span>'}</p>`
         + `${inRel(n) ? `<p class="doc-rel">${mark(n.rel, tt)}</p>` : ''}</div>`
-        + `<a class="doc-pdf" href="${esc(n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a>`
-        + `<span class="doc-chev" aria-hidden="true">${svg('<path d="M9 6l6 6-6 6"/>', 20, 24, 2)}</span></li>`;
+        + `<a class="doc-pdf" href="${esc(ROOT + n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a></li>`;
     };
     const byText = (n) => {
       const q = fold(st.q).trim();
@@ -122,7 +122,7 @@
       } else count.textContent = plural(k);
     };
 
-    /* Temas: fichas con un indicador que se desliza hasta la elegida (sin cambiar de tamaño) */
+    /* Temas: pestañas con un subrayado que se desliza hasta la elegida (sin cambiar de tamaño) */
     const glide = d.createElement('span');
     glide.className = 'lib-topics-glide';
     glide.setAttribute('aria-hidden', 'true');
@@ -131,8 +131,7 @@
       if (!on) return;
       glide.classList.toggle('is-instant', Boolean(instant) || !motion.matches);
       glide.style.width = `${on.offsetWidth}px`;
-      glide.style.height = `${on.offsetHeight}px`;
-      glide.style.transform = `translate(${on.offsetLeft}px, ${on.offsetTop}px)`;
+      glide.style.transform = `translate(${on.offsetLeft}px, ${on.offsetTop + on.offsetHeight - 2}px)`;
     };
     const drawTopics = () => {
       const base = data.normas.filter(byText);
@@ -177,6 +176,12 @@
       if (topics.scrollWidth > topics.clientWidth) topics.scrollTo({ left: r, behavior: motion.matches ? 'smooth' : 'auto' });
     };
 
+    /* La lista vive en su propio contenedor: en escritorio se desplaza dentro del panel, y el resaltado se mueve con ella */
+    const scroll = d.createElement('div');
+    scroll.className = 'lib-scroll';
+    list.before(scroll);
+    scroll.append(list);
+
     let fadeTimer = 0;
     const render = (animate = true) => {
       if (!data) return;
@@ -185,11 +190,12 @@
       setCount(found.length);
       drawTopics();
       search.classList.toggle('has-text', Boolean(st.q));
-      try { sessionStorage.setItem(KEY, JSON.stringify(st)); } catch {}
       clearTimeout(fadeTimer);
       const swap = () => {
         list.innerHTML = found.map((n, i) => row(n, i, animate && motion.matches)).join('');
         list.hidden = !found.length;
+        scroll.hidden = !found.length;
+        scroll.scrollTop = 0;
         empty.hidden = Boolean(found.length);
         empty.querySelector('[data-lib-empty-title]').textContent = st.q.trim() ? `No encontramos «${st.q.trim()}».` : 'No hay normas con ese filtro.';
         list.classList.remove('is-updating');
@@ -221,28 +227,17 @@
     normas().then((json) => {
       if (!json) return;
       data = json;
-      let saved = null;
-      try { saved = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch {}
-      if (saved && (saved.q || saved.tema !== '*')) {
-        Object.assign(st, { q: saved.q || '', tema: data.temas[saved.tema] ? saved.tema : '*' });
-        input.value = st.q;
-        render(false);
-      } else {
-        setCount(data.normas.length);
-        drawTopics();
-      }
+      setCount(data.normas.length);
+      drawTopics();
     });
     addEventListener('resize', () => { place(true); edges(); });
     if ('ResizeObserver' in window) new ResizeObserver(() => place(true)).observe(topics);
-    const setPlaceholder = () => { input.placeholder = matchMedia('(max-width: 560px)').matches ? 'Busca: 148, REP, RETC…' : 'Busca por número, tema o palabra: 148, REP, RETC…'; };
-    setPlaceholder();
-    matchMedia('(max-width: 560px)').addEventListener?.('change', setPlaceholder);
 
-    /* Teclado: «/» lleva a la búsqueda; ↓ baja a la lista y ↑ ↓ recorren las normas */
+    /* Teclado: «/» lleva a la búsqueda (con el panel abierto); ↓ baja a la lista y ↑ ↓ recorren las normas */
     d.addEventListener('keydown', (e) => {
       if (e.key !== '/' || e.target.closest('input, textarea, select, [contenteditable]') || d.querySelector('dialog[open]')) return;
-      const r = lib.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) return;
+      /* Solo con la biblioteca a la vista (panel «Ayuda» abierto en Normativa) */
+      if (lib.closest('[inert]') || !lib.closest('.docs-item')?.classList.contains('is-on')) return;
       e.preventDefault();
       input.focus();
     });
@@ -301,25 +296,20 @@
       if (Math.abs(days) < 30) return rel.format(days, 'day');
       return t.toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: t.getFullYear() === new Date().getFullYear() ? undefined : 'numeric' });
     };
-    const initials = (name) => name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
-    const empty = (org) => `<li class="posts-empty" style="grid-column: 1 / -1"><span class="post-avatar">${esc(initials(org.nombre))}</span>`
-      + `<p><strong>Pronto verás aquí las publicaciones de ${esc(org.nombre)}.</strong>Cada una con la norma relacionada para leerla o descargarla.</p>`
-      + `<a class="btn btn-secondary btn-small" href="${esc(org.url || company)}" target="_blank" rel="noopener noreferrer">${ICON.li}Seguir en LinkedIn<span class="sr-only"> (pestaña nueva)</span></a></li>`;
+    const empty = (org) => `<li class="posts-empty"><p><strong>Pronto verás aquí las publicaciones de ${esc(org.nombre)}.</strong>`
+      + `Cada una con la norma relacionada para leerla o descargarla.</p>`
+      + `<a class="btn btn-quiet btn-small" href="${esc(org.url || company)}" target="_blank" rel="noopener noreferrer">${ICON.li}Seguir en LinkedIn<span class="sr-only"> (pestaña nueva)</span></a></li>`;
+    /* Cada publicación: la portada manda; debajo, quién y cuándo, el texto y la norma relacionada como enlace (sin cajas dentro de cajas) */
     const post = (p, org, n, i) => `<li class="post" style="--i:${Math.min(i, 6)}">
-        <div class="post-by">
-          <span class="post-avatar">${org.logo ? `<img src="${esc(org.logo)}" alt="" width="40" height="40" loading="lazy">` : esc(initials(org.nombre))}</span>
-          <div><strong>${esc(org.nombre)}</strong><small><time datetime="${esc(p.fecha)}">${when(p.fecha)}</time></small></div>
-          <a class="post-in" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" aria-label="Ver la publicación en LinkedIn (pestaña nueva)">${ICON.li}</a>
-        </div>
-        ${p.imagen ? `<a class="post-media" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img src="${esc(p.imagen)}" alt="" width="645" height="806" loading="lazy" decoding="async">${p.documento ? `<span class="post-doc">${ICON.doc}${p.documento.paginas} páginas</span>` : ''}</a>` : ''}
-        <p class="post-text${p.imagen ? ' has-media' : ''}">${esc(p.imagen ? p.texto.split(/\n\s*\n/)[0] : p.texto)}</p>
-        ${n ? `<div class="post-norm" data-slug="${n.slug}" data-tema="${n.temas[0]}">
-          <span class="post-norm-icon doc-icon" aria-hidden="true">${temaIcon(n.temas[0])}</span>
+        ${p.imagen ? `<a class="post-cover" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" aria-label="Ver la publicación en LinkedIn (pestaña nueva)"><img src="${esc(p.imagen)}" alt="" width="645" height="806" loading="lazy" decoding="async">${p.documento ? `<span class="post-pages">${ICON.doc}${p.documento.paginas} páginas</span>` : ''}</a>` : ''}
+        <p class="post-meta"><span class="post-org">${org.logo ? `<img src="${esc(org.logo)}" alt="" width="24" height="24" loading="lazy">` : ''}${esc(org.nombre)}</span><time datetime="${esc(p.fecha)}">${when(p.fecha)}</time></p>
+        <p class="post-text">${esc(p.imagen ? p.texto.split(/\n\s*\n/)[0] : p.texto)}</p>
+        ${n ? `<div class="post-rel" data-tema="${n.temas[0]}">
           <small>Norma relacionada</small>
-          <strong>${esc(n.corto)} · ${esc(n.tema)}</strong>
-          <div class="post-norm-actions"><a class="btn btn-ink btn-small" href="${esc(n.pagina)}">Leer norma${DATO.leer}</a><a class="btn btn-quiet btn-small" href="${esc(n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a></div>
+          <a class="post-rel-link" href="${esc(ROOT + n.pagina)}"><span class="doc-icon" aria-hidden="true">${temaIcon(n.temas[0])}</span><span><strong>${esc(n.corto)}</strong> · ${esc(n.tema)}</span>${DATO.leer}</a>
+          <a class="post-rel-pdf" href="${esc(ROOT + n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a>
         </div>` : ''}
-        <div class="post-foot"><a class="link" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver en LinkedIn ${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a></div>
+        <a class="post-li" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver en LinkedIn ${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a>
       </li>`;
 
     Promise.all([fetch(postsRoot.dataset.src, { cache: 'no-cache' }).then((r) => r.json()).catch(() => null), normas()]).then(([feed, norms]) => {
@@ -328,14 +318,17 @@
       if (!items.length) { track.innerHTML = empty(org); return; }
       const list = norms?.normas || [];
       track.innerHTML = items.map((p, i) => post(p, org, list.find((n) => n.slug === (p.normas || [])[0]) || related(p.texto, list), i)).join('');
-      track.querySelectorAll('.post-media img').forEach((img) => { const on = () => img.classList.add('is-loaded'); if (img.complete) on(); else { img.addEventListener('load', on, { once: true }); img.addEventListener('error', () => img.closest('.post-media').remove(), { once: true }); } });
-      /* Carrusel: flechas en escritorio, puntos de avance y deslizamiento con el dedo */
+      track.querySelectorAll('.post-cover img').forEach((img) => { const on = () => img.classList.add('is-loaded'); if (img.complete) on(); else { img.addEventListener('load', on, { once: true }); img.addEventListener('error', () => img.closest('.post-cover').remove(), { once: true }); } });
+      /* Carrusel: flechas en escritorio, deslizamiento con el dedo y una línea fina que muestra el avance */
       const cards = [...track.children];
-      dots.innerHTML = cards.map(() => '<i></i>').join('');
+      dots.innerHTML = '<i></i>';
+      const bar = dots.firstChild;
       const step = () => (cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth);
       const sync = () => {
-        const i = Math.round(track.scrollLeft / step());
-        [...dots.children].forEach((dot, k) => dot.classList.toggle('is-on', k === Math.min(i, cards.length - 1)));
+        const max = track.scrollWidth - track.clientWidth;
+        const part = track.clientWidth / track.scrollWidth;
+        bar.style.width = `${part * 100}%`;
+        bar.style.transform = `translateX(${max > 0 ? (track.scrollLeft / max) * ((1 - part) / part) * 100 : 0}%)`;
         const overflow = track.scrollWidth > track.clientWidth + 4;
         if (nav) {
           nav.hidden = !overflow;

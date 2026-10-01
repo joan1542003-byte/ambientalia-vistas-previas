@@ -5,10 +5,12 @@ https://www.bcn.cl/leychile/Consulta/obtxml?opt=7&idNorma=...) y genera:
 
 - normativa/<slug>.html: una página por norma con sus datos, el objeto (artículo 1, textual), índice y el texto completo,
   con la fuente citada y datos estructurados (schema.org/Legislation). Texto visible = mejor para SEO y GEO.
-- assets/transporte/normativa.json: índice que lee la biblioteca de la página (búsqueda, filtros y vista previa).
+- assets/transporte/normativa.json: índice que lee la biblioteca del panel «Ayuda» (búsqueda y filtro por tema).
 
 Los PDF se generan después desde estas páginas: node tools/normativa-pdf.mjs
 Uso: python3 tools/normativa.py            (todas)   ·   python3 tools/normativa.py ds-148-2003-minsal   (una)
+     python3 tools/normativa.py --actualizar   vuelve a descargar el texto desde Ley Chile (si no, usa la copia de tools/cache/)
+     --aceptar-cambios   publica un texto que cambió sin cambiar de versión oficial (por defecto se conserva el publicado y se avisa)
 Para agregar una norma: súmala a NORMAS con su idNorma de Ley Chile y revisa el texto «rel» (por qué importa).
 """
 import html
@@ -102,10 +104,73 @@ def fecha_corta(iso):
     return f'{d} {MESES[m - 1][:3]}. {y}'
 
 
-def fetch(id_norma):
+CACHE = ROOT / 'tools' / 'cache' / 'leychile'   # copia del XML oficial de cada norma (se actualiza con --actualizar)
+FECHAS = CACHE / 'fechas.json'                      # cuándo se descargó cada copia
+ACTUALIZAR = '--actualizar' in sys.argv
+ACEPTAR = '--aceptar-cambios' in sys.argv            # publica un texto que cambió sin cambiar de versión oficial
+SIN_IMAGENES = re.compile(rb'<((?:\w+:)?DataCodificada)>.*?</\1>', re.S)
+
+
+def descargar(id_norma, intentos=3):
+    """XML oficial desde Ley Chile; reintenta ante cortes pasajeros y respeta el límite de solicitudes del servidor."""
+    import time
     url = f'https://www.bcn.cl/leychile/Consulta/obtxml?opt=7&idNorma={id_norma}'
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (biblioteca de normativa)'})
-    return ET.fromstring(urllib.request.urlopen(req, timeout=60).read())
+    for k in range(intentos):
+        try:
+            data = urllib.request.urlopen(req, timeout=60).read()
+            # Las imágenes incrustadas (base64) no se usan y pesan decenas de MB: no se guardan en la copia local
+            data = SIN_IMAGENES.sub(rb'<\1></\1>', data)
+            ET.fromstring(data)  # debe ser XML válido
+            time.sleep(2)        # pausa entre descargas: el servidor limita las ráfagas (HTTP 429)
+            return data
+        except (OSError, ET.ParseError) as e:
+            if k == intentos - 1:
+                raise
+            print(f'  Ley Chile no respondió ({e.__class__.__name__}: {e}); reintento {k + 2} de {intentos}…')
+            time.sleep(8 * (k + 1))
+
+
+def fetch(id_norma, slug):
+    """Devuelve (XML, fecha en que se obtuvo de Ley Chile). Usa la copia local salvo que falte o se pida --actualizar."""
+    f = CACHE / f'{slug}.xml'
+    fechas = json.loads(FECHAS.read_text(encoding='utf-8')) if FECHAS.exists() else {}
+    if f.exists() and not ACTUALIZAR:
+        return ET.fromstring(f.read_bytes()), fechas.get(slug, HOY)
+    data = descargar(id_norma)
+    CACHE.mkdir(parents=True, exist_ok=True)
+    f.write_bytes(data)
+    fechas[slug] = HOY
+    FECHAS.write_text(json.dumps(dict(sorted(fechas.items())), ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    return ET.fromstring(data), HOY
+
+
+def desde_pagina(slug):
+    """Sin red y sin copia local: texto e índice de la página ya publicada (normativa/<slug>.html)."""
+    p = ROOT / 'normativa' / f'{slug}.html'
+    if not p.exists():
+        return None
+    s = p.read_text(encoding='utf-8')
+    m = re.search(r'<h2 id="texto" class="sr-only">Texto de la norma</h2>\s*(.*?)\s*</section>\s*</div>\s*<footer class="norm-source">', s, re.S)
+    if not m:
+        return None
+    toc = []
+    nav = re.search(r'<nav class="norm-toc"[^>]*>.*?<ol>(.*?)</ol></nav>', s, re.S)
+    if nav:
+        for ancla, rotulo, nombre in re.findall(r'<li><a href="#([^"]+)">(?:<small>(.*?)</small>)?<span>(.*?)</span>', nav.group(1)):
+            toc.append({'nivel': 0, 'ancla': ancla, 'rotulo': html.unescape(rotulo), 'nombre': html.unescape(nombre), 'desde': None, 'hasta': None})
+    return m.group(1), toc
+
+
+def plano(h):
+    """Solo el texto de un HTML, para comparar contenido sin importar el marcado."""
+    return re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', h))).strip()
+
+
+def diferencia(a, b):
+    """Primer punto en que difieren dos textos, con algo de contexto."""
+    i = next((k for k, (x, y) in enumerate(zip(a, b)) if x != y), min(len(a), len(b)))
+    return f'publicado: «…{a[max(0, i - 70):i + 110]}…»\n    Ley Chile hoy: «…{b[max(0, i - 70):i + 110]}…»'
 
 
 def esc(s):
@@ -341,7 +406,7 @@ ICON = {
 
 
 def pagina(n, cuerpo, toc, version, tools=('', '')):
-    from documentos import menu_html as docs_menu, boton_documentos as docs_boton  # panel «Documentos» de la cabecera
+    from ayuda import menu_html as docs_menu, boton_ayuda as docs_boton  # panel «Ayuda» de la cabecera
     ld = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -369,7 +434,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
                 '@type': 'BreadcrumbList',
                 'itemListElement': [
                     {'@type': 'ListItem', 'position': 1, 'name': 'Transporte Autorizado', 'item': f'{SITE}/'},
-                    {'@type': 'ListItem', 'position': 2, 'name': 'Documentos', 'item': f'{SITE}/#documentos'},
+                    {'@type': 'ListItem', 'position': 2, 'name': 'Ayuda', 'item': f'{SITE}/#ayuda'},
                     {'@type': 'ListItem', 'position': 3, 'name': 'Normativa', 'item': f'{SITE}/#normativa'},
                     {'@type': 'ListItem', 'position': 4, 'name': n['corto']},
                 ],
@@ -381,7 +446,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
         f'<span>{esc(e["nombre"] or e["rotulo"])}</span></a></li>' for e in toc)
     estado = 'Vigente' if n['vigente'] else 'Derogada'
     datos = (
-        f'<li class="norm-state{"" if n["vigente"] else " is-off"}" data-tip="Estado según Ley Chile al {fecha_larga(HOY)}">{DATO["vigente" if n["vigente"] else "derogada"]}{estado}</li>'
+        f'<li class="norm-state{"" if n["vigente"] else " is-off"}" data-tip="Estado según Ley Chile al {fecha_larga(n["consulta"])}">{DATO["vigente" if n["vigente"] else "derogada"]}{estado}</li>'
         f'<li data-tip="Fecha en que se firmó">{DATO["promulgada"]}<span class="fact"><span class="fact-l">Promulgada<span class="lg"> el</span></span> <time datetime="{n["promulgacion"]}">{fecha_corta(n["promulgacion"])}</time></span></li>'
         f'<li data-tip="Fecha de publicación en el Diario Oficial">{DATO["publicada"]}<span class="fact"><span class="fact-l">Publicada<span class="lg"> el</span></span> <time datetime="{n["publicacion"]}">{fecha_corta(n["publicacion"])}</time></span></li>'
         f'<li data-tip="Versión del texto que muestra esta página">{DATO["version"]}<span class="fact"><span class="fact-l">Texto al</span> <time datetime="{n["version"]}">{fecha_corta(n["version"])}</time></span></li>'
@@ -437,7 +502,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
     </nav>
     {docs_menu('../')}
     <div class="reader" data-reader-bar inert>
-      <a class="reader-back" href="../transporte-autorizado.html#normativa" aria-label="Volver a la normativa">{ICON["back"]}</a>
+      <a class="reader-back" href="../transporte-autorizado.html#normativa" data-docs-open="normativa" aria-label="Ver toda la normativa">{ICON["back"]}</a>
       <p class="reader-where"><small>{esc(n["corto"])}</small><strong data-reader-now>{esc(n["tema"])}</strong></p>
       <button class="reader-btn" type="button" data-find-open aria-label="Buscar en esta norma">{DATO["buscar"]}</button>
       <button class="reader-btn reader-toc" type="button" data-toc-open aria-label="Índice">{DATO["indice"]}</button>
@@ -458,7 +523,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 
 <main id="contenido">
   <article class="container norm">
-    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#documentos">Documentos</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#normativa">Normativa</a><span aria-hidden="true">/</span><span aria-current="page">{esc(n["corto"])}</span></nav>
+    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#ayuda" data-docs-open>Ayuda</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#normativa" data-docs-open="normativa">Normativa</a><span aria-hidden="true">/</span><span aria-current="page">{esc(n["corto"])}</span></nav>
     <header class="norm-head">
       <p class="norm-kind"><span class="doc-icon">{icono_tema(n["temas"][0])}</span>{esc(n["tipo"])} · {esc(n["organismo"])}</p>
       <h1 class="norm-title">{esc(n["corto"])} · {esc(n["tema"])}</h1>
@@ -480,8 +545,8 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
     </div>
 
     <footer class="norm-source">
-      <p><strong>Fuente:</strong> <a href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ley Chile, Biblioteca del Congreso Nacional</a>. Texto obtenido el {fecha_larga(HOY)} (versión del {fecha_larga(n["version"])}). Esta copia es referencial: para efectos legales, consulta siempre la fuente oficial y el Diario Oficial.</p>
-      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#normativa">{ICON["back"]}Volver a la normativa</a>
+      <p><strong>Fuente:</strong> <a href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ley Chile, Biblioteca del Congreso Nacional</a>. Texto obtenido el {fecha_larga(n["consulta"])} (versión del {fecha_larga(n["version"])}). Esta copia es referencial: para efectos legales, consulta siempre la fuente oficial y el Diario Oficial.</p>
+      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#normativa" data-docs-open="normativa">{ICON["back"]}Ver toda la normativa</a>
     </footer>
   </article>
 </main>
@@ -496,11 +561,14 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 <script src="../assets/site/pickers.js?v={version}" defer></script>
 <script src="../assets/site/seleccion.js?v={version}" defer></script>
 <script src="../assets/site/interpretar.js?v={version}" defer></script>
+<script src="../assets/site/geo.js?v={version}" defer></script>
+<script src="../assets/site/mapa.js?v={version}" defer></script>
 <script src="../assets/site/transporte.js?v={version}" defer></script>
 <script src="../assets/site/transporte-ui.js?v={version}" defer></script>
 <script src="../assets/site/asistente.js?v={version}" defer></script>
+<script src="../assets/site/normativa.js?v={version}" defer></script>
 <script src="../assets/site/norma.js?v={version}" defer></script>
-<script src="../assets/site/documentos.js?v={version}" defer></script>
+<script src="../assets/site/ayuda.js?v={version}" defer></script>
 </body>
 </html>
 '''
@@ -520,35 +588,8 @@ TEMA_ICON = {
 }
 
 
-CHEV = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>'
-
-
 def icono_tema(t):
     return f'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{TEMA_ICON.get(t, TEMA_ICON["marco"])}</svg>'
-
-
-def tarjeta(n, i=0):
-    """Fila de la biblioteca (la misma que dibuja assets/site/normativa.js al filtrar): tema, número y organismo."""
-    t = n['temas'][0]
-    off = '' if n['vigente'] else ' · <span class="doc-off">Derogada</span>'
-    return (f'          <li class="doc" data-slug="{n["slug"]}" data-tema="{t}" style="--i:{min(i, 8)}">'
-            f'<span class="doc-icon">{icono_tema(t)}</span>'
-            f'<div class="doc-body"><h3 class="doc-title"><a href="{n["pagina"]}">{esc(n["tema"])}</a></h3>'
-            f'<p class="doc-sub"><strong>{esc(n["corto"])}</strong><span class="doc-org"> · {esc(n["organismo"])}</span>{off}</p></div>'
-            f'<a class="doc-pdf" href="{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICON["pdf"]}<span>PDF</span></a>'
-            f'<span class="doc-chev" aria-hidden="true">{CHEV}</span></li>')
-
-
-def escribir_tarjetas(normas):
-    p = ROOT / 'transporte-autorizado.html'
-    s = p.read_text(encoding='utf-8')
-    a, b = '<!-- normativa:inicio -->', '<!-- normativa:fin -->'
-    if a not in s or b not in s:
-        print('Aviso: no están las marcas de la biblioteca en transporte-autorizado.html')
-        return
-    html_cards = '\n'.join(tarjeta(n, i) for i, n in enumerate(normas))
-    s = s[:s.index(a) + len(a)] + '\n' + html_cards + '\n' + s[s.index(b):]
-    p.write_text(s, encoding='utf-8')
 
 
 def bloque(s, inicio):
@@ -578,19 +619,35 @@ def version_actual():
 
 
 def main():
-    solo = set(sys.argv[1:])
+    solo = {a for a in sys.argv[1:] if not a.startswith('--')}
+    sin_red = False
     version = version_actual()
     tools = herramientas()
     (ROOT / 'normativa').mkdir(exist_ok=True)
     indice_path = ROOT / 'assets/transporte/normativa.json'
     previo = {d['slug']: d for d in json.loads(indice_path.read_text(encoding='utf-8'))['normas']} if indice_path.exists() else {}
     normas = []
+    pendientes = []
     for id_norma, slug, tema, temas, rel in NORMAS:
         if solo and slug not in solo:
             if slug in previo:
                 normas.append(previo[slug])
             continue
-        root = fetch(id_norma)
+        try:
+            if sin_red:
+                raise OSError('sin conexión con Ley Chile')
+            root, consulta = fetch(id_norma, slug)
+        except (OSError, ET.ParseError) as e:
+            # Ley Chile no responde y no hay copia local: se reutiliza el texto ya publicado (solo cambia el diseño)
+            reuso = desde_pagina(slug) if slug in previo else None
+            if not reuso:
+                raise
+            sin_red = True
+            n = {**previo[slug], 'tema': tema, 'temas': temas, 'rel': rel, 'alias': ALIAS.get(slug, [])}
+            pendientes.append((n, reuso[0], reuso[1]))
+            normas.append(n)
+            print(f'{n["corto"]:<16} sin conexión ({e.__class__.__name__}): se reutiliza el texto publicado')
+            continue
         ident = root.find(f'{NS}Identificador')
         tipo = root.findtext(f'.//{NS}TipoNumero/{NS}Tipo')
         numero = root.findtext(f'.//{NS}TipoNumero/{NS}Numero')
@@ -607,7 +664,7 @@ def main():
             'version': root.get('fechaVersion'), 'vigente': root.get('derogado') != 'derogado',
             'fuente': f'https://www.bcn.cl/leychile/navegar?idNorma={id_norma}',
             'pagina': f'normativa/{slug}.html', 'pdf': f'assets/transporte/normativa/{slug}.pdf',
-            'consulta': HOY, 'alias': ALIAS.get(slug, []),
+            'consulta': consulta, 'alias': ALIAS.get(slug, []),
         }
         n['objeto'] = primer_articulo(root)
         toc, arts = [], []
@@ -636,11 +693,24 @@ def main():
         toc = [dict(zip(('nivel', 'ancla', 'rotulo', 'nombre', 'desde', 'hasta'), e)) for e in toc if e[0] == nivel_toc or e[0] == -1]
         n['articulos'] = len(arts)
         n['indice'] = [' · '.join(x for x in (e['rotulo'], e['nombre']) if x) for e in toc][:40]
-        (ROOT / n['pagina']).write_text(pagina(n, ''.join(partes), toc, version, tools), encoding='utf-8')
+        cuerpo = ''.join(partes)
+        # Resguardo: el texto de una misma versión oficial no debería cambiar. Si Ley Chile entrega otro contenido
+        # (ha pasado: un artículo cortado a mitad de frase), se conserva el publicado hasta que alguien lo revise.
+        publicada = desde_pagina(slug) if previo.get(slug, {}).get('version') == n['version'] else None
+        if publicada and not ACEPTAR and plano(publicada[0]) != plano(cuerpo):
+            print(f'  ⚠ {n["corto"]}: Ley Chile entrega un texto distinto para la misma versión ({n["version"]}). Se conserva el publicado;'
+                  f' revisa la fuente y usa --aceptar-cambios para reemplazarlo.\n    {diferencia(plano(publicada[0]), plano(cuerpo))}')
+            cuerpo = publicada[0]
+            n['consulta'] = previo[slug]['consulta']
+        pendientes.append((n, cuerpo, toc))
         normas.append(n)
         print(f'{n["corto"]:<16} {len(arts):>4} artículos  {n["pagina"]}')
-    escribir_tarjetas(normas)
-    indice_path.write_text(json.dumps({'consulta': HOY, 'fuente': 'Ley Chile, Biblioteca del Congreso Nacional', 'temas': TEMAS, 'normas': normas}, ensure_ascii=False, indent=1), encoding='utf-8')
+    indice_path.write_text(json.dumps({'consulta': max(n['consulta'] for n in normas), 'fuente': 'Ley Chile, Biblioteca del Congreso Nacional', 'temas': TEMAS, 'normas': normas}, ensure_ascii=False, indent=1), encoding='utf-8')
+    for n, cuerpo, toc in pendientes:
+        (ROOT / n['pagina']).write_text(pagina(n, cuerpo, toc, version, tools), encoding='utf-8')
+    # Guías y panel «Ayuda» de la página principal: usan la misma lista de normas
+    import ayuda
+    ayuda.main()
 
 
 if __name__ == '__main__':

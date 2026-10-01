@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="12087" esTratado="no tratado" fechaVersion="2022-07-21" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="1994-11-25" fechaPublicacion="1995-02-11">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Decreto</Tipo>
+        <Numero>298</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE TRANSPORTES Y TELECOMUNICACIONES</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>REGLAMENTA TRANSPORTE DE CARGAS PELIGROSAS POR
+CALLES Y CAMINOS</TituloNorma>
+    
+    
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>35091</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="1995-02-11" derogado="no derogado">
+    <Texto>    REGLAMENTA TRANSPORTE DE CARGAS PELIGROSAS POR CALLES Y
+CAMINOS
+    N&#250;m. 298.- Santiago, 25 de Noviembre de 1994.- Visto:
+El D.L. N&#176; 557 de 1974; las leyes N&#176;s 18.059 y 18.290 y lo
+dispuesto en el art&#237;culo 32&#176; N&#176; 8 de la Constituci&#243;n
+Pol&#237;tica de la Rep&#250;blica de Chile, Decreto:</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Disposiciones Preliminares" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631001">
+      <Texto>    Disposiciones Preliminares </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">Disposiciones Preliminares</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631000">
+          <Texto>    Art&#237;culo 1&#176;.- El presente reglamento establece las
+condiciones, normas y procedimientos aplicables al
+transporte de carga, por calles y caminos, de sustancias
+peligrosas.
+    Las disposiciones del presente decreto son sin perjuicio
+de la reglamentaci&#243;n especial que sea aplicable a cada
+producto peligroso en particular.
+    El transporte de productos explosivos y materiales
+radiactivos debe efectuarse conforme a las normas
+espec&#237;ficas dictadas por el Ministerio de Defensa Nacional
+y el Ministerio de Miner&#237;a, respectivamente, y por las
+disposiciones del presente reglamento, siempre que no sean
+incompatibles con dichas normas espec&#237;ficas.
+     Las sustancias peligrosas que se transporten en
+remolques o semirremolques, deber&#225;n cumplir todos los
+requisitos contemplados en el presente reglamento y, en
+particular, no podr&#225;n transportar dichas sustancias,
+conjuntamente en el veh&#237;culo tractor o el remolque con los
+bienes se&#241;alados en el art&#237;culo 9&#186;.
+
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">1 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631002">
+          <Texto>    Art&#237;culo 2&#176;.- Se consideran sustancias peligrosas
+aquellas que se indican en la Parte 3 del Volumen I de las
+Recomendaciones relativas al Transporte de Mercanc&#237;as
+Peligrosas de la Comisi&#243;n Econ&#243;mica de las Naciones Unidas
+para Europa.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">2 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631004">
+      <Texto>    De los veh&#237;culos y su equipamiento </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">De los veh&#237;culos y su equipamiento</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631003">
+          <Texto>    Art&#237;culo 3&#176;.- Los veh&#237;culos motorizados que se
+utilicen en el transporte de sustancias peligrosas deber&#225;n
+tener una antig&#252;edad m&#225;xima de 15 a&#241;os. Para este efecto,
+la antig&#252;edad se calcular&#225; restando al a&#241;o en que se
+realiza el c&#243;mputo, el a&#241;o de fabricaci&#243;n anotado en el
+Registro de Veh&#237;culos Motorizados.
+    Con veh&#237;culos hechizos, a que se refiere el art&#237;culo
+49&#176; del decreto con fuerza de ley N&#176; 1, de 2007, de los
+Ministerios de Transportes y Telecomunicaciones y de
+Justicia, que "fija texto refundido, coordinado y
+sistematizado de la Ley de Tr&#225;nsito", no se podr&#225;, por
+razones de seguridad, efectuar transporte de sustancias
+peligrosas. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">3 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631005">
+          <Texto>    Art&#237;culo 4&#176;.- Durante las operaciones de carga,
+transporte, descarga, transbordo y limpieza, los veh&#237;culos
+deber&#225;n portar los r&#243;tulos a que se refiere la Parte 5 del
+Volumen II de las Recomendaciones relativas al Transporte de
+Mercanc&#237;as Peligrosas de la Secretar&#237;a de la Comisi&#243;n
+Econ&#243;mica para Europa de las Naciones Unidas, los que
+deber&#225;n ser f&#225;cilmente visibles por personas situadas al
+frente, atr&#225;s o a los costados de los veh&#237;culos.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">4 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2002-02-02" derogado="no derogado" idParte="8631006">
+          <Texto>    Art&#237;culo 5&#176;.- Para el transporte de sustancias
+peligrosas, los veh&#237;culos motorizados deber&#225;n estar
+equipados con tac&#243;grafo u otro dispositivo electr&#243;nico que
+registre en el tiempo, como m&#237;nimo, la velocidad y
+distancia recorrida. Los registros de estos dispositivos
+deber&#225;n quedar en poder del empresario de transporte o
+transportista, a disposici&#243;n del Ministerio de Transportes
+y Telecomunicaciones, de Carabineros de Chile, del expedidor
+y del destinatario, por un per&#237;odo de treinta (30) d&#237;as.
+
+
+    Lo se&#241;alado en el inciso anterior no ser&#225; obligatorio
+trat&#225;ndose de veh&#237;culos motorizados destinados a la
+distribuci&#243;n domiciliaria de cilindros de gas licuado de
+petr&#243;leo.
+    Los veh&#237;culos de transporte de sustancias peligrosas
+deber&#225;n contar con un sistema de radiocomunicaciones o
+portar un aparato de telefon&#237;a m&#243;vil celular de cobertura
+nacional.
+    Los mismos veh&#237;culos, cuando su peso bruto vehicular
+sea de 3.500 kg o m&#225;s, deber&#225;n llevar al menos una luz de
+seguridad. El Ministerio fijar&#225; por resoluci&#243;n las
+caracter&#237;sticas y condiciones de uso de estas luces.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">5 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631007">
+          <Texto>    Art&#237;culo 6&#176;.- En el transporte de sustancias
+peligrosas a granel, los veh&#237;culos deber&#225;n reunir las
+condiciones t&#233;cnicas necesarias para poder soportar
+adem&#225;s, las operaciones de carga, descarga y transbordo,
+siendo el transportista responsable de tales condiciones.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">6 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631009">
+      <Texto>    De la carga, su acondicionamiento, estiba, descarga y
+manipulaci&#243;n </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">De la carga, su acondicionamiento, estiba, descarga y manipulaci&#243;n</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631008">
+          <Texto>    Art&#237;culo 7&#176;.- Las sustancias peligrosas deber&#225;n ser
+acondicionadas de forma de soportar los riesgos de carga,
+transporte, descarga y transbordo.
+    El embalaje externo de estas sustancias deber&#225; estar
+marcado y etiquetado de acuerdo con la correspondiente
+clasificaci&#243;n y tipo de peligro, de conformidad con lo
+establecido en las Recomendaciones relativas al Transporte
+de Mercanc&#237;as Peligrosas de la Comisi&#243;n Econ&#243;mica de las
+Naciones Unidas para Europa, sin perjuicio de la etiqueta a
+la que refiere el art&#237;culo 254 del decreto supremo N&#176; 57,
+de 2019, de los Ministerios de Salud y de Medio Ambiente,
+que "Aprueba Reglamento de Clasificaci&#243;n, Etiquetado y
+Notificaci&#243;n de Sustancias Qu&#237;micas y Mezclas Peligrosas".
+    Ser&#225; responsable del cumplimiento de las obligaciones
+establecidas en los incisos precedentes, el expedidor de la
+carga. Para efectos del presente reglamento, expedidor de la
+carga es la persona natural o jur&#237;dica por cuya cuenta y
+orden se realiza el env&#237;o de la mercanc&#237;a peligrosa, para
+lo cual contrata su transporte.
+    Trat&#225;ndose de productos importados, el importador ser&#225;
+responsable del cumplimiento de lo establecido en los
+incisos primero y segundo anteriores, debiendo adoptar las
+providencias necesarias conjuntamente con el proveedor
+extranjero.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">7 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631010">
+          <Texto>    Art&#237;culo 8&#176;.- Los bultos de un cargamento de productos
+peligrosos deber&#225;n estibarse en forma conveniente en el
+veh&#237;culo y estar sujetos por medios apropiados, de forma
+que se evite el desplazamiento riesgoso de ellos, entre s&#237;
+y con relaci&#243;n a las paredes y plataforma del veh&#237;culo.
+    Se entiende por bulto, al conjunto de componentes
+necesarios para alojar con seguridad una sustancia
+peligrosa, tal como se presenta para el transporte. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">8 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631011">
+          <Texto>    Art&#237;culo 9&#176;.- Queda prohibido el transporte de
+sustancias peligrosas conjuntamente con:
+ a) animales;
+ b) alimentos o medicamentos destinados al consumo humano o
+animal, o con embalajes de productos destinados a estos
+fines;
+ c) otro tipo de carga, salvo de existir compatibilidad
+entre los distintos productos transportados.
+    Se entender&#225; por compatibilidad entre dos o m&#225;s
+sustancias, la ausencia de riesgo potencial de que ocurra
+una explosi&#243;n, desprendimiento de calor o llamas,
+formaci&#243;n de gases, vapores, compuestos o mezclas
+peligrosas, as&#237; como de una alteraci&#243;n de las
+caracter&#237;sticas f&#237;sicas o qu&#237;micas originales de
+cualquiera de los productos transportados, puestos en
+contacto entre s&#237;, por vaciamiento, ruptura del embalaje o
+cualquier otra causa.
+    Igualmente, queda prohibido transportar productos para
+uso humano o animal, en estanques de carga destinados al
+transporte de sustancias peligrosas a granel, que puedan
+contaminar aqu&#233;llos.
+    Las prohibiciones de cargamento com&#250;n en un mismo
+veh&#237;culo se hacen extensivas a los casos de cargas en el
+interior de contenedores.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">9 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631012">
+          <Texto>    Art&#237;culo 10&#176;.- Cuando el cargamento comprenda
+sustancias peligrosas y no peligrosas compatibles entre s&#237;,
+&#233;stas deber&#225;n estibarse separadamente. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">10 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631013">
+          <Texto>    Art&#237;culo 11&#176;.- Para la aplicaci&#243;n de las
+prohibiciones por incompatibilidad de cargamento en com&#250;n
+en un veh&#237;culo, no se tendr&#225; en cuenta los materiales
+contenidos en distintos contenedores apropiados que aseguren
+la imposibilidad de da&#241;o a las personas, cosas o al medio
+ambiente.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">11 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631014">
+          <Texto>    Art&#237;culo 12&#176;.- Se prohibe emplear materiales
+f&#225;cilmente inflamables para estibar los bultos en el
+interior de los veh&#237;culos.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">12 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631015">
+          <Texto>    Art&#237;culo 13&#176;.- Los bultos cuyos embalajes est&#233;n
+constituidos por materiales sensibles a la humedad, deber&#225;n
+cargarse en veh&#237;culos cerrados o en veh&#237;culos abiertos
+debidamente protegidos con lona impermeable o similar.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">13 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631016">
+          <Texto>    Art&#237;culo 14&#176;.- Despu&#233;s de la descarga de un veh&#237;culo
+en que se haya transportado sustancias peligrosas, &#233;ste y
+especialmente el dep&#243;sito o plataforma destinada a la
+carga, deber&#225; limpiarse a la brevedad posible, y en todo
+caso antes de cualquier nuevo cargamento, a menos que se
+haya transportado productos peligrosos a granel y el nuevo
+cargamento est&#233; compuesto del mismo producto que el que
+haya constituido el cargamento precedente.
+    El transportista y el nuevo expedidor responder&#225;n
+solidariamente por los da&#241;os que se puedan ocasionar por
+una inadecuada limpieza de los veh&#237;culos antes de un nuevo
+cargamento, salvo que en el veh&#237;culo se hubiere efectuado
+con antelaci&#243;n transporte de sustancias peligrosas de
+caracter&#237;sticas especiales, que impidan usar dicho
+veh&#237;culo para el transporte de otras sustancias peligrosas
+incompatibles, en cuyo caso la responsabilidad recaer&#225;
+s&#243;lo en el transportista.
+    Las disposiciones relativas a la limpieza de los
+veh&#237;culos se aplicar&#225;n tambi&#233;n a la limpieza de los
+contenedores. Los l&#237;quidos provenientes de la limpieza
+ser&#225;n considerados como residuos industriales l&#237;quidos
+para efectos de su tratamiento.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">14 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631017">
+          <Texto>    Art&#237;culo 15&#176;.- Las normas relativas a la carga y
+descarga de los veh&#237;culos, as&#237; como a la estiba y
+manipulaci&#243;n de los productos peligrosos, se aplicar&#225;n
+igualmente a la carga o descarga de los productos peligrosos
+en los contenedores.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">15 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631018">
+          <Texto>    Art&#237;culo 16&#176;.- El motor del veh&#237;culo deber&#225; estar
+detenido mientras se realizan las operaciones de carga y
+descarga, a menos que su utilizaci&#243;n sea necesaria, bajo
+estrictas condiciones de seguridad, para el funcionamiento
+de bombas y otros mecanismos que permitan la carga o
+descarga del veh&#237;culo.
+    Durante el proceso de carga y descarga el veh&#237;culo
+deber&#225; encontrarse inmovilizado mediante un dispositivo que
+lo asegure, como cu&#241;as u otros elementos, que eviten su
+desplazamiento.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">16 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631020">
+      <Texto>    De la circulaci&#243;n y estacionamiento </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">De la circulaci&#243;n y estacionamiento</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631019">
+          <Texto>    Art&#237;culo 17&#176;.- Los veh&#237;culos que transporten
+sustancias peligrosas deber&#225;n evitar el uso de v&#237;as en
+&#225;reas densamente pobladas y no podr&#225;n circular por
+t&#250;neles cuya longitud sea superior a 500 m, cuando &#233;stos
+tengan una v&#237;a alternativa segura, como es el caso de Lo
+Prado, Zapata y Chacabuco.
+    La autoridad podr&#225; fijar restricciones al uso de las
+v&#237;as, se&#241;alizando los tramos restringidos y asegurando la
+ruta alternativa correspondiente. Igualmente podr&#225;
+establecer restricciones respecto de los lugares y horarios
+de estacionamiento, carga y descarga de los veh&#237;culos que
+transporten sustancias peligrosas.
+    El itinerario deber&#225; programarse de forma de evitar la
+presencia del veh&#237;culo transportando sustancias peligrosas
+en v&#237;as de gran flujo de tr&#225;nsito, en los horarios de
+mayor intensidad de tr&#225;fico.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">17 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631021">
+          <Texto>    Art&#237;culo 18&#176;.- Los veh&#237;culos que transporten
+sustancias peligrosas no deber&#225;n circular cerca de zonas de
+fuego abierto, a menos que el conductor tome previamente las
+precauciones para asegurarse que el veh&#237;culo puede pasar
+seguro la zona sin detenerse. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">18 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631022">
+          <Texto>    Art&#237;culo 19&#176;.- Los veh&#237;culos que transporten
+sustancias peligrosas s&#243;lo podr&#225;n estacionarse para el
+descanso o alojamiento de los conductores en &#225;reas
+previamente determinadas por la autoridad competente y, en
+la inexistencia de tales &#225;reas, deber&#225; evitarse el
+estacionamiento en zonas residenciales, lugares p&#250;blicos o
+de f&#225;cil acceso al p&#250;blico, &#225;reas densamente pobladas o
+de gran concentraci&#243;n de personas o veh&#237;culos.
+    Cuando, por emergencia, parada t&#233;cnica, falla mec&#225;nica
+o accidente, el veh&#237;culo efect&#250;e una parada en un lugar no
+autorizado, deber&#225; permanecer se&#241;alizado y bajo vigilancia
+de su conductor o de la autoridad, salvo que su ausencia
+fuese indispensable para comunicar el hecho, pedido de
+auxilio o ayuda m&#233;dica.
+    S&#243;lo en caso de emergencia el veh&#237;culo podr&#225;
+estacionar o detenerse en la berma de los caminos.
+    Un veh&#237;culo transportando materiales peligrosos s&#243;lo
+deber&#225; estacionar a m&#225;s de cien metros (100 m) de una zona
+de fuego abierto.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">19 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631023">
+          <Texto>    Art&#237;culo 20&#176;.- Todo veh&#237;culo que transporte
+materiales peligrosos deber&#225; estacionarse con su freno de
+estacionamiento accionado.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">20 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2001-02-06" derogado="no derogado" idParte="8631045">
+          <Texto>    Art&#237;culo 20&#176; BIS.- Los veh&#237;culos destinados al
+transporte de sustancias peligrosas deber&#225;n portar uno o
+m&#225;s letreros, visibles para otros usuarios de las v&#237;as,
+con las siguientes indicaciones:
+     * Nombre com&#250;n de la carga peligrosa
+     * Nombre y tel&#233;fono del destinatario de la carga
+     * Nombre del expedidor de la carga
+     * Nombre y tel&#233;fono del transportista''
+     En el caso de ser un solo letrero, deber&#225; ubicarse
+centrado en el costado izquierdo de la zona de carga, sobre
+la carrocer&#237;a del veh&#237;culo, o sobre el empaque de la carga
+cuando las dimensiones del letrero impidan su colocaci&#243;n
+sobre la carrocer&#237;a.
+     Los letreros aludidos anteriormente deber&#225;n tener las
+siguientes caracter&#237;sticas:
+*    La distribuci&#243;n de los datos y su aspecto general
+ser&#225; como se muestra en la figura siguiente:
+Nombre Com&#250;n de la Carga Peligrosa
+Para:               Tel&#233;fono:
+Expedidor     :
+Transportista :     Tel&#233;fono:
+*    El fondo del letrero ser&#225; de color contrastante con el
+texto.
+*    La altura de las letras con los datos del transportista
+y el expedidor ser&#225; de 10 cent&#237;metros.
+*    La altura de las letras con los datos de la carga y el
+destinatario ser&#225; de 20 cent&#237;metros.
+     En el caso de veh&#237;culos que transporten m&#225;s de una
+sustancia peligrosa, el letrero aludido s&#243;lo indicar&#225; el
+nombre gen&#233;rico CARGA PELIGROSA y el nombre del expedidor.
+     No obstante, a los veh&#237;culos con estanques para el
+transporte de carga peligrosa, que cuenten con uno o m&#225;s
+logotipos cuyas letras tengan una altura m&#237;nima de 20 cm, y
+que permitan identificar al expedidor o al destinatario de
+la carga, no se les exigir&#225; el o los letreros antes
+se&#241;alados.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">20 BIS</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631025">
+      <Texto>    De las personas que participan en las operaciones de
+transporte </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">De las personas que participan en las operaciones de transporte</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631024">
+          <Texto>    Art&#237;culo 21&#176;.- El transportista o su representante
+antes de iniciar la operaci&#243;n de transporte, deber&#225;
+inspeccionar el veh&#237;culo asegur&#225;ndose de sus perfectas
+condiciones para el transporte para el cual se destina, con
+especial atenci&#243;n en el estanque, si se tratare de un
+veh&#237;culo de transporte de gases o l&#237;quidos a granel,
+carrocer&#237;a y dem&#225;s elementos que puedan afectar a la
+seguridad de la carga transportada.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">21 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631026">
+          <Texto>    Art&#237;culo 22&#176;.- El conductor del veh&#237;culo es el
+responsable durante el viaje, de la custodia, conservaci&#243;n
+y buen uso de los elementos, equipos y accesorios del
+veh&#237;culo, incluidos los exigidos en funci&#243;n de la
+naturaleza espec&#237;fica de los productos transportados.
+    El conductor deber&#225; examinar regularmente y en lugares
+adecuados, las condiciones generales del veh&#237;culo,
+incluyendo la condici&#243;n de los neum&#225;ticos y la integridad
+de la carga, en aspectos tales como, existencia de p&#233;rdidas
+o fugas del producto, seguridad de las amarras y
+posicionamiento de los r&#243;tulos.
+    Cuando ocurrieren alteraciones respecto de las
+condiciones iniciales del viaje capaces de poner en riesgo
+la seguridad de las personas, de los bienes o del medio
+ambiente, el conductor interrumpir&#225; el viaje y tomar&#225;
+contacto con el transportista, autoridad o entidades cuyo
+tel&#233;fono est&#233; indicado en la Hoja a que se refiere la
+letra b) del art&#237;culo 30&#176;.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">22 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631027">
+          <Texto>    Art&#237;culo 23&#176;.- Se prohibe al conductor y auxiliares
+abrir un bulto que contenga materiales peligrosos. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">23 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631028">
+          <Texto>    Art&#237;culo 24&#176;.- El conductor no participar&#225; en la
+operaci&#243;n de carga, descarga o transbordo, salvo si est&#225;
+debidamente autorizado por el expedidor o por el
+destinatario, y cuente con la anuencia del transportista.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">24 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631029">
+          <Texto>    Art&#237;culo 25&#176;.- Todo el personal que participe en las
+operaciones de carga, descarga y transbordo de cargas
+peligrosas, deber&#225; usar vestimenta adecuada y equipo de
+protecci&#243;n personal, conforme con las normas e
+instrucciones que indican los reglamentos respectivos y en
+la inexistencia de &#233;stos, seg&#250;n las instrucciones del
+expedidor cuando se trate de la carga o el transbordo, o del
+destinatario en la operaci&#243;n de descarga. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">25 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631030">
+          <Texto>    Art&#237;culo 26&#176;.- Durante el transporte, el conductor del
+veh&#237;culo est&#225; obligado a utilizar los elementos de
+protecci&#243;n personal que corresponden, cuando participe en
+una acci&#243;n para la que se requieran estos elementos de
+protecci&#243;n personal.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">26 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631031">
+          <Texto>    Art&#237;culo 27&#176;.- Los conductores sujetos al presente
+reglamento no deber&#225;n ingerir bebidas alcoh&#243;licas durante
+el tiempo de conducci&#243;n ni en las seis horas que preceden
+al mismo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">27 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631032">
+          <Texto>    Art&#237;culo 28&#176;.- El conductor no podr&#225; viajar
+acompa&#241;ado de personas que no hayan sido expresamente
+autorizadas por el transportista.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">28 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631033">
+          <Texto>    Art&#237;culo 29&#176;.- Ni el conductor ni el acompa&#241;ante
+autorizado de un veh&#237;culo que contenga explosivos,
+materiales oxidantes o inflamables, o que haya sido usado
+para transportar l&#237;quidos o gases inflamables, podr&#225;n
+fumar o mantener un cigarrillo u otro producto del tabaco
+encendido a una distancia menor de diez metros (10 m) del
+veh&#237;culo, no pudiendo tampoco mantener productos del
+tabaco, encendedores ni otras fuentes de ignici&#243;n en la
+cabina del veh&#237;culo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">29 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631035">
+      <Texto>    De las obligaciones del transportista </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">De las obligaciones del transportista</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631034">
+          <Texto>    Art&#237;culo 30&#176;.- El transportista deber&#225; exigir del
+expedidor de la carga:
+ a) La Gu&#237;a de Despacho o Factura, que adem&#225;s de los
+contenidos b&#225;sicos establecidos en normas espec&#237;ficas,
+detalle el o los productos peligrosos a transportar con su
+respectiva clasificaci&#243;n y N&#250;mero de Naciones Unidas.
+ b) La Hoja de Datos de Seguridad, de acuerdo a lo
+establecido en el Decreto Supremo N&#176; 57, de 2019, de los
+Ministerios de Salud y de Medio Ambiente, que "Aprueba
+Reglamento de Clasificaci&#243;n, Etiquetado y Notificaci&#243;n de
+Sustancias Qu&#237;micas y Mezclas Peligrosas". Esta deber&#225;
+mantenerse en la cabina del veh&#237;culo.
+ c) Los envases que contienen productos peligrosos
+identificados con su respectiva etiqueta conforme al T&#237;tulo
+IV, Del etiquetado de seguridad de sustancias y mezclas, del
+Decreto Supremo N&#176; 57, de 2019, de los Ministerios de Salud
+y de Medio Ambiente, que "Aprueba Reglamento de
+Clasificaci&#243;n, Etiquetado y Notificaci&#243;n de Sustancias
+Qu&#237;micas y Mezclas Peligrosas".</Texto>
+          <Metadatos>
+            <NombreParte presente="si">30 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631036">
+          <Texto>    Art&#237;culo 31&#176;.- El transportista no deber&#225; recibir
+carga de sustancias peligrosas si el expedidor no le hace
+entrega de la Hoja a que se refiere la letra b) del
+art&#237;culo anterior, debi&#233;ndose dejar constancia de la
+entrega en la Gu&#237;a de Despacho o Factura.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">31 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631037">
+          <Texto>    Art&#237;culo 32&#176;.- Si el transportista no estuviere en
+conocimiento del car&#225;cter peligroso de la mercanc&#237;a por no
+haberse as&#237; consignado en la Gu&#237;a de Despacho o en la
+Factura, el expedidor ser&#225; responsable de todos los
+perjuicios resultantes de la expedici&#243;n de la misma, y
+&#233;sta podr&#225; en cualquier momento ser descargada, destruida
+o transformada en inofensiva, seg&#250;n requieran las
+circunstancias, sin que haya lugar a indemnizaci&#243;n. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">32 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631038">
+          <Texto>    Art&#237;culo 33&#176;.- El transportista no ser&#225; responsable
+por el da&#241;o a personas o cosas que se originen en la
+utilizaci&#243;n de embalajes inapropiados para el transporte de
+productos peligrosos.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">33 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631039">
+          <Texto>    Art&#237;culo 34&#176;.- El transportista es responsable que el
+veh&#237;culo circule portando los r&#243;tulos a que se refieren
+las Recomendaciones relativas al Transporte de Mercanc&#237;as
+Peligrosas de la Secretar&#237;a de la Comisi&#243;n Econ&#243;mica para
+Europa de las Naciones Unidas". 
+
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">34 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="10350453">
+          <Texto>     Art&#237;culo 34&#176; bis: Las normas a las que se hace
+referencia en el presente decreto se mantendr&#225;n a
+disposici&#243;n permanente del p&#250;blico en el sitio web del
+Ministerio de Transportes y Telecomunicaciones
+(www.mtt.gob.cl).".</Texto>
+          <Metadatos>
+            <NombreParte presente="si">34 bis</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631041">
+      <Texto>    De la fiscalizaci&#243;n </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">De la fiscalizaci&#243;n</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631040">
+          <Texto>    Art&#237;culo 35&#176;.- Carabineros de Chile e Inspectores
+Fiscales y Municipales fiscalizar&#225;n el cumplimiento de las
+normas contenidas en el presente decreto. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">35 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="1995-02-11" derogado="no derogado" idParte="8631043">
+      <Texto>    De la vigencia</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">De la vigencia</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-21" derogado="no derogado" idParte="8631042">
+          <Texto>    Art&#237;culo 36&#176;.- El presente reglamento entrar&#225; en
+vigencia 30 d&#237;as despu&#233;s de su fecha de publicaci&#243;n en el
+Diario Oficial.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">36 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="1995-02-11" derogado="no derogado">
+    <Texto>    An&#243;tese, t&#243;mese raz&#243;n y publ&#237;quese.- EDUARDO FREI
+RUIZ-TAGLE, Presidente de la Rep&#250;blica.- Narciso Irureta
+Aburto, Ministro de Transportes y Telecomunicaciones.
+    Lo que transcribo para su conocimiento.- Saluda a Ud.,
+Subsecretario de Transportes.</Texto>
+  </Promulgacion>
+  
+</Norma>

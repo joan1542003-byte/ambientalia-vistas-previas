@@ -1,0 +1,1257 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="1050536" esTratado="no tratado" fechaVersion="2018-12-11" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="2013-01-02" fechaPublicacion="2013-05-02">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Decreto</Tipo>
+        <Numero>1</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DEL MEDIO AMBIENTE</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>APRUEBA REGLAMENTO DEL REGISTRO DE EMISIONES Y TRANSFERENCIAS DE CONTAMINANTES, RETC</TituloNorma>
+    
+    <NombresUsoComun>
+      <NombreUsoComun>&#160;</NombreUsoComun>
+    </NombresUsoComun>
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>40548</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2013-05-02" derogado="no derogado">
+    <Texto>
+APRUEBA REGLAMENTO DEL REGISTRO DE EMISIONES Y
+TRANSFERENCIAS DE CONTAMINANTES, RETC
+
+     N&#250;m. 1.- Santiago, 2 de enero de 2013.- Visto: Lo
+establecido en la Constituci&#243;n Pol&#237;tica de la Rep&#250;blica
+en sus art&#237;culos 19 N&#186;8 y 32 N&#186;6; lo dispuesto en el
+art&#237;culo 70 letras g) y p) de la Ley 19.300; los art&#237;culos
+67 y 89 letra a) del C&#243;digo Sanitario; el Art. segundo de
+la ley 20.417, que fij&#243; la Ley Org&#225;nica de la
+Superintendencia del Medio Ambiente; en la ley 19.880 que
+establece las Bases de los Procedimientos Administrativos
+que rigen los Actos de los &#243;rganos de la Administraci&#243;n
+del Estado; en la ley 19.799, Sobre Documentos
+Electr&#243;nicos, Firma Electr&#243;nica y Servicios de
+Certificaci&#243;n de dicha firma; en el DS N&#186;181 de 2002, del
+Ministerio de Econom&#237;a, Fomento y Reconstrucci&#243;n que
+Aprueba Reglamento de la Ley 19.799 Sobre Documentos
+Electr&#243;nicos, Firma Electr&#243;nica y la Certificaci&#243;n de
+dicha Firma; en el DS N&#186;81 de 2004, del Ministerio
+Secretar&#237;a General de la Presidencia, Sobre
+Interoperabilidad de Documentos Electr&#243;nicos; en la ley
+20.285 Sobre Acceso a la informaci&#243;n p&#250;blica; lo dispuesto
+en la resoluci&#243;n N&#186;1.600 de 2008, de la Contralor&#237;a
+General de la Rep&#250;blica que fija normas sobre exenci&#243;n del
+tr&#225;mite de toma de raz&#243;n; y
+
+     Considerando:
+
+     1.- La relevancia de contar en nuestro pa&#237;s con un
+inventario p&#250;blico de emisiones y transferencias de
+contaminantes que puedan significar un peligro para la salud
+humana y el medio ambiente;
+     2.- Que, a partir de la Conferencia de las Naciones
+Unidas para el Medio Ambiente y el Desarrollo de 1992 y la
+adopci&#243;n de la Agenda 21, comenz&#243; el inter&#233;s entre la
+comunidad internacional y los gobiernos por la creaci&#243;n de
+Registros de Emisiones y Transferencias de Contaminantes
+(RETC) como una herramienta fundamental para la adopci&#243;n de
+decisiones en el ejercicio de la funci&#243;n p&#250;blica en
+materia ambiental, inter&#233;s que ha sido manifestado en
+varios acuerdos y convenios internacionales, destacando la
+importancia de que los gobiernos respeten el derecho de sus
+ciudadanos a tener acceso a esta informaci&#243;n e implementen
+programas de difusi&#243;n p&#250;blica de emisiones y
+transferencias de contaminantes;
+     3.- Que, el Ministerio del Medio Ambiente y su
+antecesora, la Comisi&#243;n Nacional del Medio Ambiente,
+Conama, junto a representantes del sector p&#250;blico, privado,
+acad&#233;mico y organizaciones no gubernamentales, han
+trabajado desde el a&#241;o 2002, en el dise&#241;o de un RETC. En
+este contexto, se han acogido las recomendaciones de la
+Organizaci&#243;n para la Cooperaci&#243;n y el Desarrollo
+Econ&#243;mico (OCDE) y los compromisos adquiridos por Chile en
+el &#225;mbito internacional a trav&#233;s de la suscripci&#243;n y
+aprobaci&#243;n de los acuerdos. En especial, y sin que sean
+excluyentes de otros acuerdos internacionales, se destacan
+el Tratado de Libre Comercio con Estados Unidos, el
+Memor&#225;ndum de acuerdo con Canad&#225; en el marco del Tratado
+de Libre Comercio, y el Convenio de Estocolmo sobre
+Contaminantes Org&#225;nicos Persistentes (COPs);
+     4.- Que, mediante la ley N&#186; 20.417, de 2010, que crea
+el Ministerio del Medio Ambiente, el Servicio de Evaluaci&#243;n
+Ambiental y la Superintendencia del Medio Ambiente, se
+redise&#241;&#243; la institucionalidad ambiental e introdujo una
+serie de modificaciones significativas a la misma, siendo
+una de la m&#225;s relevantes la atribuci&#243;n exclusiva de
+competencias en materia de fiscalizaci&#243;n y sanci&#243;n de los
+instrumentos de car&#225;cter ambiental, entre ellos, de las
+normas de emisi&#243;n, en una sola instituci&#243;n, esto es, en la
+Superintendencia del Medio Ambiente;
+     5.- Que, los Organismos de la Administraci&#243;n del
+Estado deben actuar coordinadamente y propender a la unidad
+de acciones, como asimismo, deben velar por la eficiente e
+id&#243;nea administraci&#243;n de los medios p&#250;blicos y el debido
+cumplimiento de la funci&#243;n p&#250;blica;
+     6.- Que, con el objeto de facilitar el acceso
+igualitario, oportuno y expedito de los ciudadanos y de las
+distintas instituciones a la informaci&#243;n disponible de
+emisiones, residuos y transferencia de contaminantes, es
+necesario contar con un registro de informaci&#243;n de las
+emisiones y transferencias de contaminantes;
+     7.- Que, el crecimiento de la actividad econ&#243;mica de
+nuestro pa&#237;s ha incrementado la generaci&#243;n de residuos de
+todo tipo, as&#237; como la cantidad de emisiones, con las
+consiguientes consecuencias ambientales y sanitarias que
+ello implica;
+     8.- Que, contar con informaci&#243;n relativa a la cantidad
+de residuos generados, as&#237; como el nivel de emisiones,
+contribuir&#225; al dise&#241;o de pol&#237;ticas p&#250;blicas y a
+implementar medidas tendientes a lograr un mejor manejo y
+control de los mismos;
+     9.- Que, finalmente, respondiendo a lo dispuesto en las
+leyes Org&#225;nica Constitucional de Bases de la
+Administraci&#243;n del Estado y de Bases de Procedimiento
+Administrativo, las cuales establecen la necesidad de actuar
+coordinadamente entre los distintos &#243;rganos del Estado, y a
+la facultad de administrar un Registro de Emisiones y
+Transferencias de Contaminantes que le otorga en su
+art&#237;culo 70 letra p), el Ministerio del Medio Ambiente ha
+desarrollado el presente reglamento en coordinaci&#243;n con los
+dem&#225;s servicios p&#250;blicos con competencia en la materia.
+
+     Decreto:
+
+     Apru&#233;base el siguiente Reglamento del Registro de
+Emisiones y Transferencias de Contaminantes.</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349415">
+      <Texto>
+     T&#205;TULO I
+
+     Disposiciones generales</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO I Disposiciones generales</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349416">
+          <Texto>
+     Art&#237;culo 1&#186;.- Objeto. El Registro de Emisiones y
+Transferencias de Contaminantes, en adelante RETC, es una
+base de datos accesible al p&#250;blico, destinada a capturar,
+recopilar, sistematizar, conservar, analizar y difundir la
+informaci&#243;n sobre emisiones, residuos y transferencias de
+contaminantes potencialmente da&#241;inos para la salud y el
+medio ambiente que son emitidos al entorno, generados en
+actividades industriales o no industriales o transferidos
+para su valorizaci&#243;n o eliminaci&#243;n.
+     El presente reglamento regula el RETC, el cual
+dispondr&#225; de manera sistematizada, por fuente o agrupaci&#243;n
+de fuentes, la naturaleza, caudal y concentraci&#243;n de
+emisiones de contaminantes que sean objeto de una norma de
+emisi&#243;n.
+     Adem&#225;s, el registro contemplar&#225; la declaraci&#243;n o
+estimaci&#243;n de emisiones, residuos y transferencias de
+aquellos contaminantes que no se encuentran regulados en una
+norma de emisi&#243;n, plan de descontaminaci&#243;n, u otra
+regulaci&#243;n vigente, cuando se trate de emisiones que
+corresponden a fuentes difusas, o que se estiman debido a
+que se encuentran en convenios internacionales suscritos por
+Chile. Las estimaciones las realizar&#225; el Ministerio del
+Medio Ambiente mediante la informaci&#243;n que entreguen los
+diferentes &#243;rganos de la Administraci&#243;n del Estado.
+     Asimismo, el registro contemplar&#225; la cantidad,
+naturaleza, caracter&#237;sticas, origen, destino y la gesti&#243;n
+de los residuos generados por los establecimientos, de
+conformidad a lo dispuesto en el presente reglamento y, en
+particular, de los residuos de productos prioritarios.
+     Por &#250;ltimo, se deber&#225;n registrar los establecimientos
+afectos a pagar impuestos por las emisiones de fuentes fijas
+de acuerdo al art&#237;culo 8&#186; de la ley N&#186; 20.780.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">1 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349417">
+          <Texto>
+     Art&#237;culo 2&#186;.- Objetivos del RETC. Son objetivos del
+RETC, los siguientes:
+a)   Facilitar el acceso a la informaci&#243;n sobre emisiones,
+residuos y transferencias de contaminantes;
+b)   Promover el conocimiento de la informaci&#243;n, por parte
+de la ciudadan&#237;a;
+c)   Constituir una herramienta de apoyo para la adopci&#243;n
+de pol&#237;ticas p&#250;blicas y de regulaci&#243;n;
+d)   Constituir una herramienta que favorezca la toma de
+decisiones en el dise&#241;o de la pol&#237;tica de gesti&#243;n
+ambiental encaminada a reducir la contaminaci&#243;n, prevenir
+la generaci&#243;n de residuos y promover su valorizaci&#243;n, y
+avanzar hacia un desarrollo sustentable;
+e)   Facilitar a los sujetos regulados la entrega de la
+informaci&#243;n sobre las emisiones, residuos, transferencias
+de contaminantes y productos prioritarios;
+f)   Propender a generar una gesti&#243;n ambiental m&#225;s
+adecuada de las emisiones, residuos y transferencias de
+contaminantes por parte de la industria y municipalidades;
+g)   Generar el Sistema de Ventanilla &#218;nica como formulario
+&#250;nico de acceso y reporte con el fin de concentrar la
+informaci&#243;n objeto de reporte en una base de datos que
+permita la homologaci&#243;n y facilite su entrega por parte de
+los sujetos obligados a reportar.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">2 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349418">
+          <Texto>
+     Art&#237;culo 3&#186;.- Definiciones. Para efectos del presente
+reglamento se entender&#225; por:
+a)   Consumidor Industrial: todo establecimiento industrial,
+de acuerdo a la Ordenanza General de Urbanismo y
+Construcciones, que genere residuos de un producto
+prioritario.
+b)   Destinatarios de Residuos: todo recinto, edificaci&#243;n,
+construcci&#243;n o medio fijo o m&#243;vil, debidamente autorizado,
+donde se realice una valorizaci&#243;n o eliminaci&#243;n de
+residuos, bajo condiciones de operaci&#243;n controladas.
+c)   Eliminaci&#243;n: todo procedimiento cuyo objetivo es
+disponer en forma definitiva o destruir un residuo en
+instalaciones autorizadas.
+d)   Emisi&#243;n: toda introducci&#243;n de contaminantes o
+sustancias en el medio ambiente, regulados o no, producto de
+cualquier actividad humana, sea deliberada o accidental,
+habitual u ocasional, incluidos los derrames, escapes o
+fugas, descargas, inyecciones, eliminaciones o vertidos, o
+descargas al alcantarillado que no cuenten con tratamiento
+final de aguas residuales.
+e)   Emisi&#243;n Normada: aquella que debe ser declarada, en
+virtud de una norma de emisi&#243;n u otro tipo de normativa o
+resoluci&#243;n de la autoridad.
+f)   Emisi&#243;n Estimada: es la magnitud de la descarga de un
+contaminante o sustancia a alg&#250;n medio receptor cuyo valor
+no ha sido determinado mediante una t&#233;cnica anal&#237;tica
+cuantitativa aplicada en el efluente o una muestra de &#233;ste,
+sino utilizando un m&#233;todo indirecto de estimaci&#243;n, ya sea
+mediante un factor de emisi&#243;n, balance de masa, modelo
+matem&#225;tico u otro m&#233;todo de estimaci&#243;n.
+g)   Establecimiento: recinto o local en el que se lleva a
+cabo una o varias actividades econ&#243;micas donde se produce
+una transformaci&#243;n de la materia prima o materiales
+empleados, o que no producen una transformaci&#243;n en su
+esencia pero dan origen a nuevos productos, y que en este
+proceso originan emisiones, residuos y/o transferencias de
+contaminantes; as&#237; como cualesquiera otras actividades
+directamente relacionadas con aqu&#233;llas que guarden una
+relaci&#243;n de &#237;ndole t&#233;cnica con las actividades llevadas a
+cabo en el mismo emplazamiento y puedan tener repercusiones
+sobre generaci&#243;n de emisiones, residuos y/o transferencias
+de contaminantes.
+     Para efectos de la ley N&#186; 20.920 o de la ejecuci&#243;n de
+este reglamento, se entender&#225; que constituyen
+establecimientos tambi&#233;n: los productores de productos
+prioritarios; los sistemas de gesti&#243;n; los distribuidores y
+comercializadores, los gestores de residuos y los
+generadores, cuando corresponda; y los consumidores
+industriales.
+h)   Fuentes difusas: son aquellas fuentes de menores
+dimensiones o dispersas respecto de las cuales no resulta
+posible identificar u obtener informaci&#243;n desglosada de sus
+emisiones, residuos o transferencia de contaminantes.
+i)   Fuentes puntuales: son aquellas fuentes donde la
+ubicaci&#243;n del punto de descarga, generaci&#243;n o emisi&#243;n al
+medio ambiente es plenamente identificable. Las emisiones,
+residuos y/o transferencias de contaminantes de las fuentes
+puntuales al medio ambiente, pueden estar o no sujetas a
+medici&#243;n o cuantificaci&#243;n, a trav&#233;s de una norma de
+emisi&#243;n, plan de monitoreo, plan de manejo u otra
+regulaci&#243;n que as&#237; lo determine. El par&#225;metro deber&#225;
+medirse, cuantificarse o estimarse dependiendo de lo
+establecido en la norma de emisi&#243;n o regulaci&#243;n
+respectiva.
+j)   Generador de residuos: poseedor de un producto,
+sustancia u objeto que lo desecha o tiene la obligaci&#243;n de
+desecharlo de acuerdo a la normativa vigente.
+k)   Gestor de residuos: persona natural o jur&#237;dica,
+p&#250;blica o privada, que realiza cualquiera de las
+operaciones de manejo de residuos y que se encuentra
+autorizada y registrada en conformidad a la normativa
+vigente.
+l)   Producto prioritario: sustancia u objeto que una vez
+transformado en residuo, por su volumen, peligrosidad o
+presencia de recursos aprovechables, queda sujeto a las
+obligaciones de la responsabilidad extendida del productor,
+en conformidad a la ley N&#186; 20.920.
+m)   Productor de un producto prioritario o productor:
+persona que, independientemente de la t&#233;cnica de
+comercializaci&#243;n:
+
+     a) enajena un producto prioritario por primera vez en
+el mercado nacional. 
+     b) enajena bajo marca propia un producto prioritario
+adquirido de un tercero que no es el primer distribuidor.
+     c) importa un producto prioritario para su propio uso
+profesional.
+
+     En el caso de envases y embalajes, el productor es
+aquel que introduce en el mercado el bien de consumo
+envasado y, o embalado.
+n)   Residuo: sustancia u objeto que su generador desecha o
+tiene la intenci&#243;n u obligaci&#243;n de desechar de acuerdo a
+la normativa vigente.
+
+     Para efectos de la aplicaci&#243;n del presente reglamento
+y siempre que la disposici&#243;n final no se realice en
+conjunto con otros residuos, no se considerar&#225;n residuos
+los est&#233;riles, minerales de baja ley, minerales tratados
+por lixiviaci&#243;n, relaves o escorias provenientes de
+operaciones de extracci&#243;n, beneficio o procesamiento de
+minerales.
+o)   Sistema de Ventanilla &#218;nica del RETC: sistema
+electr&#243;nico que contempla un formulario &#250;nico disponible
+en el portal electr&#243;nico del RETC y a trav&#233;s del cual se
+acceder&#225; a los sistemas de declaraci&#243;n de los &#243;rganos
+fiscalizadores para dar cumplimiento a la obligaci&#243;n de
+reporte de los establecimientos emisores o generadores.
+p)   Transferencias de contaminantes: es el traslado de
+contaminantes a un lugar que se encuentra f&#237;sicamente
+separado del establecimiento que lo gener&#243;. Incluye entre
+otros:
+     -    Descarga de aguas residuales al alcantarillado 
+          p&#250;blico que cuentan con tratamiento final;
+     -    Transferencias de residuos para su valorizaci&#243;n 
+          o eliminaci&#243;n;
+     -    Transferencias de aguas residuales para 
+          tratamientos como neutralizaci&#243;n, tratamiento 
+          biol&#243;gico, separaci&#243;n f&#237;sica;
+     -    Transferencias de contaminantes contenidos en 
+          productos;
+     -    Transferencias de insumos para la producci&#243;n 
+          industrial potencialmente da&#241;inos para la salud 
+          y el medio ambiente.
+q)   Sistema de gesti&#243;n: Mecanismo instrumental para que
+los productores, individual o colectivamente, den
+cumplimiento a las obligaciones establecidas en el marco de
+la responsabilidad extendida del productor, a trav&#233;s de la
+implementaci&#243;n de un plan de gesti&#243;n, de acuerdo a la ley
+N&#186; 20.920.
+r)   Valorizaci&#243;n: conjunto de acciones cuyo objetivo es
+recuperar un residuo, uno o varios de los materiales que lo
+componen y/o el poder calor&#237;fico de los mismos. La
+valorizaci&#243;n comprende la preparaci&#243;n para la
+reutilizaci&#243;n, el reciclaje y la valorizaci&#243;n energ&#233;tica.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">3 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349419">
+      <Texto>
+     T&#205;TULO II
+
+     Del Registro de Emisiones y Transferencias de
+Contaminantes</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO II Del Registro de Emisiones y Transferencias de Contaminantes</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349420">
+          <Texto>
+     P&#225;rrafo I
+
+     Administraci&#243;n del RETC</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo I Administraci&#243;n del RETC</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349421">
+              <Texto>
+     Art&#237;culo 4&#186;.- De la administraci&#243;n del RETC.
+Corresponder&#225; al Ministerio del Medio Ambiente, en adelante
+"el Ministerio", la administraci&#243;n del RETC, el que ser&#225;
+de acceso p&#250;blico.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">4 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349422">
+              <Texto>
+     Art&#237;culo 5&#186;.- Facultades del Ministerio. Como
+administrador del RETC, el Ministerio podr&#225;:
+a)   Realizar requerimientos de informaci&#243;n a los &#243;rganos
+de la Administraci&#243;n del Estado, para su an&#225;lisis y
+sistematizaci&#243;n,
+b)   Realizar requerimientos de informaci&#243;n a los
+productores de productos prioritarios, sistemas de gesti&#243;n,
+gestores de residuos y generadores de residuos y
+consumidores industriales, cuando corresponda.
+c)   Comunicar y coordinar las solicitudes de informaci&#243;n
+del RETC con otros &#243;rganos de la Administraci&#243;n del
+Estado,
+d)   Informar, promover y difundir el contenido del RETC,
+e)   Estudiar y proponer normas, instrumentos y medidas que
+permitan fortalecer y promover el RETC,
+f)   Administrar el portal electr&#243;nico del RETC, como
+asimismo realizar las labores de enlace de &#233;ste con otros
+&#243;rganos del Estado,
+g)   Elaborar y mantener el formulario &#250;nico del Sistema de
+Ventanilla &#218;nica del RETC, el cual funcionar&#225; a trav&#233;s de
+su portal electr&#243;nico,
+h)   Examinar peri&#243;dicamente su normativa t&#233;cnica de
+car&#225;cter inform&#225;tico, de car&#225;cter ambiental y est&#225;ndares
+de interoperabilidad de la informaci&#243;n,
+i)   Elaborar y desarrollar los proyectos necesarios para la
+permanente modernizaci&#243;n del RETC,
+j)   Dictar los actos administrativos que estime pertinentes
+para el cumplimiento del presente reglamento,
+k)   Proporcionar capacitaci&#243;n y asistencia a los &#243;rganos
+de la Administraci&#243;n del Estado que participen del RETC,
+l)   Mantener a disposici&#243;n de los &#243;rganos de la
+Administraci&#243;n del Estado la informaci&#243;n contenida en el
+RETC,
+m)   Velar por el cumplimiento de los acuerdos
+internacionales que digan relaci&#243;n con el RETC de los que
+Chile sea parte, sin perjuicio de las facultades del
+Ministerio de Relaciones Exteriores,
+n)   Elaborar anualmente un informe consolidado de las
+emisiones, residuos, transferencias de contaminantes y
+productos prioritarios, en base a la informaci&#243;n recopilada
+de todo el pa&#237;s,
+o)   Difundir en un lenguaje de f&#225;cil comprensi&#243;n la
+informaci&#243;n contenida en el RETC, a trav&#233;s de su sitio
+electr&#243;nico,
+p)   Convocar y presidir las reuniones del Grupo Nacional
+Coordinador (GNC), 
+q)   Informar a los organismos fiscalizadores respecto de
+los titulares que presentan incumplimientos a la normativa.
+</Texto>
+              <Metadatos>
+                <NombreParte presente="si">5 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349423">
+              <Texto>
+     Art&#237;culo 6&#186;.- Grupo Nacional Coordinador o GNC. El
+Ministerio constituir&#225; un comit&#233; operativo, de conformidad
+a lo establecido en la letra x) del art&#237;culo 70 de la ley
+19.300, que se denominar&#225; Grupo Nacional Coordinador, el
+que estar&#225; a cargo de la coordinaci&#243;n, colaboraci&#243;n,
+an&#225;lisis y gesti&#243;n en la operaci&#243;n del RETC, integrado
+por los representantes de distintos servicios o
+instituciones p&#250;blicas.
+     El Grupo Nacional Coordinador podr&#225; invitar a
+participar en las sesiones, en car&#225;cter consultivo, a
+representantes de la sociedad civil.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">6 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349424">
+          <Texto>
+     P&#225;rrafo II
+
+     Del contenido y estructura del RETC</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo II Del contenido y estructura del RETC</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349425">
+              <Texto>
+     Art&#237;culo 7&#186;.- Del contenido. El registro contendr&#225;
+la informaci&#243;n recopilada de las emisiones, residuos,
+transferencias de contaminantes y productos prioritarios,
+que proviene de:
+a)   La informaci&#243;n de reportes de emisi&#243;n, residuos,
+transferencias de contaminantes y productos prioritarios, en
+cumplimiento de lo dispuesto en las normas de emisi&#243;n,
+planes de prevenci&#243;n y/o descontaminaci&#243;n, resoluciones de
+calificaci&#243;n ambiental u otra norma o regulaci&#243;n que
+establezca obligaci&#243;n de informar emisiones, residuos,
+transferencias de contaminantes o productos prioritarios,
+entregada por los &#243;rganos de la Administraci&#243;n del Estado
+competentes para su fiscalizaci&#243;n, como asimismo, la
+informaci&#243;n de igual naturaleza proveniente de las labores
+de control o inspecci&#243;n de los organismos aludidos, la que
+deber&#225; ser entregada al RETC por estos &#250;ltimos.
+b)   Informaci&#243;n entregada por los &#243;rganos de la
+Administraci&#243;n del Estado para obtener las estimaciones de
+fuentes difusas y de fuentes puntuales de emisiones no
+normadas.
+c)   Adem&#225;s, contendr&#225; la informaci&#243;n de emisiones,
+residuos y/o transferencias de contaminantes, respecto de
+los cuales nuestro pa&#237;s haya adquirido la obligaci&#243;n de
+que se midan, cuantifiquen o estimen, en virtud de lo
+establecido en convenios internacionales ratificados por
+Chile y que se encuentren vigentes.
+d)   Los registros de calderas, turbinas y establecimientos
+afectos a impuesto a las emisiones de acuerdo al art&#237;culo
+8&#186; de la ley N&#186; 20.780.
+e)   Informaci&#243;n sobre los productores de productos
+prioritarios; los sistemas de gesti&#243;n autorizados y su plan
+de gesti&#243;n y su actualizaci&#243;n o renovaci&#243;n; los
+distribuidores o comercializadores de productos
+prioritarios, cuando corresponda; las instalaciones de
+recepci&#243;n o almacenamiento; los gestores autorizados; los
+consumidores industriales; el cumplimiento de metas de
+recolecci&#243;n y valorizaci&#243;n; y el movimiento
+transfronterizo de residuos, de acuerdo a lo dispuesto en la
+ley 20.920.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">7 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349426">
+              <Texto>
+     Art&#237;culo 8&#186;.- Componentes esenciales del Registro. El
+RETC deber&#225; al menos cumplir con los siguientes componentes
+y caracter&#237;sticas esenciales:
+a)   Un desglose por establecimiento de la informaci&#243;n que
+corresponda a fuentes puntuales, incluyendo cada unidad de
+emisi&#243;n y descarga;
+b)   Disponer un modo de reporte de informaci&#243;n respecto de
+fuentes difusas;
+c)   Disponer de un modo de reporte de informaci&#243;n respecto
+a productos prioritarios y la gesti&#243;n de residuos;
+d)   Disponer de un desglose de la informaci&#243;n por
+contaminantes, sustancias o residuos, seg&#250;n proceda;
+e)    Abarcar todos los componentes ambientales,
+distinguiendo entre las emisiones a la atm&#243;sfera, el suelo
+o el agua;
+f)   Incluir informaci&#243;n sobre las emisiones, generaci&#243;n
+de residuos y/o transferencias de contaminantes de los
+establecimientos;
+g)   Incluir informaci&#243;n de producci&#243;n de los
+establecimientos que permita generar indicadores de
+desempe&#241;o ambiental, esta informaci&#243;n se mantendr&#225;
+innominada a menos que los sujetos obligados a reportar
+autoricen su publicaci&#243;n;
+h)   Incluir informaci&#243;n de inversi&#243;n, costos de
+operaci&#243;n y mantenci&#243;n, eficiencia de captura y fijaci&#243;n
+de sistema de control de emisiones, residuos y
+transferencias de contaminantes, como asimismo informaci&#243;n
+de inversi&#243;n, operaci&#243;n y mantenci&#243;n de los sistemas de
+monitoreo de las emisiones, residuos y transferencias de
+contaminantes. Esta informaci&#243;n se mantendr&#225; innominada a
+menos que los sujetos obligados a reportar autoricen su
+publicaci&#243;n;
+i)   La informaci&#243;n contenida en el RETC tendr&#225; el
+car&#225;cter de p&#250;blica y estar&#225; a disposici&#243;n de los
+usuarios en el portal electr&#243;nico respectivo y en
+ejemplares impresos disponibles para su consulta en las
+Secretar&#237;as Regionales Ministeriales del Medio Ambiente,
+una vez que haya sido enviada por los &#243;rganos de la
+Administraci&#243;n del Estado competentes para su
+fiscalizaci&#243;n.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">8 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349427">
+              <Texto>
+     Art&#237;culo 9&#186;.- Estructura del Registro. La
+informaci&#243;n del RETC se presentar&#225; de forma agregada y/o
+desagregada, de manera que los datos sobre emisiones,
+generaci&#243;n, gesti&#243;n y destino de residuos, transferencias
+de contaminantes y productos prioritarios puedan buscarse y
+localizarse en el portal electr&#243;nico del RETC por:
+a)   Establecimiento y unidad de emisi&#243;n o descarga;
+b)   Ubicaci&#243;n geogr&#225;fica;
+c)   Divisi&#243;n pol&#237;tico administrativa del pa&#237;s;
+d)   Sectores productivos y rubros;
+e)   Tipo de fuentes, puntuales o difusas;
+f)   Propietarios o titulares de empresas que declaran en el
+sistema de ventanilla &#250;nica del RETC, seg&#250;n proceda;
+g)   Contaminante, sustancia o residuo;
+h)   Componente ambiental receptor del contaminante,
+sustancia o residuos;
+i)   Destino de residuos y transferencias;
+j)   Indicadores de desempe&#241;o ambiental por sector
+productivo;
+k)   Productores de productos prioritarios; 
+l)   Sistemas de gesti&#243;n; 
+m)   Gestores de residuos; 
+n)   Generadores de residuos, incluyendo consumidores
+industriales; 
+o)   Distribuidores y comercializadores de productos
+prioritarios, cuando corresponda; 
+p)   Movimientos transfronterizos de residuos; 
+q)   Instalaciones de recepci&#243;n y almacenamiento de
+residuos.
+</Texto>
+              <Metadatos>
+                <NombreParte presente="si">9 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349428">
+              <Texto>
+     Art&#237;culo 10.- Determinaci&#243;n de los contaminantes,
+sustancias, residuos y productos prioritarios que ser&#225;n
+objeto de registro por el RETC. Los contaminantes y
+productos prioritarios objeto de medici&#243;n, cuantificaci&#243;n
+o estimaci&#243;n podr&#225;n ser excluidos o incluidos de la
+sistematizaci&#243;n del RETC seg&#250;n:
+a)   Las modificaciones que experimenten las normas de
+emisi&#243;n y dem&#225;s regulaciones pertinentes a emisiones,
+residuos y/o transferencias de contaminantes;
+b)   La dictaci&#243;n de nuevas regulaciones relativas a las
+materias objeto de este reglamento;
+c)   Lo establecido en convenios internacionales que Chile
+suscriba o sea parte;
+d)   Si su inserci&#243;n o eliminaci&#243;n sea considerada
+relevante por el Grupo Nacional Coordinador, en el caso de
+contaminantes objeto de estimaci&#243;n.
+</Texto>
+              <Metadatos>
+                <NombreParte presente="si">10 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349429">
+              <Texto>
+     Art&#237;culo 11.- Manejo de la Informaci&#243;n. El Ministerio
+no deber&#225; utilizar la informaci&#243;n recopilada para fines
+distintos a los establecidos en la ley y en el presente
+reglamento. Asimismo, en caso de evidenciar una infracci&#243;n
+a la normativa del presente reglamento pondr&#225; esta
+situaci&#243;n en conocimiento de la autoridad competente para
+que se apliquen las sanciones correspondientes. Adem&#225;s, no
+publicar&#225; informaci&#243;n sujeta a alguna restricci&#243;n legal
+de reserva o secreto, y velar&#225; por que &#233;sta se mantenga en
+ese estado.
+     Por tratarse de informaci&#243;n econ&#243;mica o comercial de
+relevancia, tampoco publicar&#225; la siguiente informaci&#243;n:
+
+     a) La contenida en los informes de avance y finales
+entregados por el sistema de gesti&#243;n, de conformidad con lo
+dispuesto en el art&#237;culo 22, letra c), de la ley N&#186;
+20.920.
+     b) La contenida en el plan de gesti&#243;n, seg&#250;n lo
+dispuesto en el art&#237;culo 26 de la ley N&#176; 20.920.
+     c) La entregada en virtud del requerimiento se&#241;alado
+en los art&#237;culos 11 y segundo transitorio de la ley N&#186;
+20.920.
+
+     Sin perjuicio de lo anterior, el Ministerio podr&#225;
+publicar, con fines estad&#237;sticos, los resultados que
+entrega dicha informaci&#243;n, siempre y cuando se haga de
+forma agregada y de manera consolidada y general.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">11 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349430">
+      <Texto>
+     T&#205;TULO III
+
+     Deberes de los organismos del Estado</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO III Deberes de los organismos del Estado</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349431">
+          <Texto>
+     Art&#237;culo 12.- Deberes de los &#243;rganos de la
+Administraci&#243;n del Estado. Los &#243;rganos de la
+Administraci&#243;n del Estado est&#225;n obligados a entregar al
+RETC:
+a)   Toda aquella informaci&#243;n que obtengan de los sujetos
+obligados a reportar emisiones, residuos y/o transferencias
+de contaminantes;
+b)   La informaci&#243;n generada con ocasi&#243;n de los procesos
+de fiscalizaci&#243;n, en materia de emisiones, residuos,
+transferencia de contaminantes, y productos prioritarios;
+c)   Cualquier otra informaci&#243;n que solicite el Ministerio
+relativa a emisiones, residuos, transferencia de
+contaminantes, y productos prioritarios y cualquier otro
+aspecto que permita estimarlas o cuantificarlas;
+     Lo anterior, sin perjuicio de las excepciones
+establecidas por ley que impidan a los &#243;rganos de la
+Administraci&#243;n del Estado entregar todo o parte de esta
+informaci&#243;n.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">12 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349432">
+          <Texto>
+     Art&#237;culo 13.- Enlaces del RETC. Son Enlaces del RETC
+aquellos funcionarios de un &#243;rgano de la Administraci&#243;n
+del Estado que sean parte del GNC, a los cuales se les
+asigne la labor de enviar, recibir, generar, recopilar,
+obtener y validar la informaci&#243;n de emisiones, residuos,
+transferencias de contaminantes y productos prioritarios.
+     Cada &#243;rgano deber&#225; designar al enlace del RETC, que
+estar&#225; encargado de cumplir con las funciones relativas al
+RETC.
+     Las labores principales del enlace ser&#225;n:
+a)   Env&#237;o y recepci&#243;n de informaci&#243;n de los datos
+procesados de emisiones, residuos, transferencias de
+contaminantes y productos prioritarios que &#233;stos manejen.
+b)   En caso de evidenciar un incumplimiento por parte de
+los establecimientos obligados a la entrega de la
+informaci&#243;n objeto de reporte, deber&#225;n informar de &#233;ste
+al Ministerio.
+c)   Ingresar al nodo central del RETC, a m&#225;s tardar
+durante el mes de mayo de cada a&#241;o, toda la informaci&#243;n
+procesada referente a las emisiones, residuos,
+transferencias de contaminantes y productos prioritarios
+relevantes para el RETC del a&#241;o anterior.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">13 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349433">
+          <Texto>
+     Art&#237;culo 14.- Fuentes difusas y no normadas. La
+informaci&#243;n que posean los &#243;rganos de la Administraci&#243;n
+del Estado sobre fuentes difusas deber&#225; ser entregada al
+Ministerio para que realice las estimaciones de las fuentes
+difusas y no normadas que corresponda. La informaci&#243;n se
+entregar&#225; en la forma, plazo y condiciones establecidas en
+la solicitud de informaci&#243;n.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">14 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349434">
+          <Texto>
+     Art&#237;culo 15.- Estimaciones de Fuentes difusas y no
+normadas. El Ministerio estimar&#225; por tipo de fuente,
+generador o destinatario de residuos, el tipo, caudal,
+cantidad y concentraci&#243;n total de las emisiones, residuos y
+transferencias que no sean materia de una regulaci&#243;n
+vigente, indicando la metodolog&#237;a de medici&#243;n o c&#225;lculo
+utilizada. Las estimaciones deber&#225;n estar ingresadas en la
+base de datos del RETC en el mes de diciembre de cada a&#241;o.
+
+
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">15 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349435">
+          <Texto>
+     Art&#237;culo 16.- Informe Consolidado de Emisiones y
+Transferencias de Contaminantes. El Ministerio elaborar&#225;
+anualmente un Informe Consolidado de Emisiones, el que dar&#225;
+cuenta de la informaci&#243;n recibida.
+     Dicho informe se publicar&#225; en la p&#225;gina web del
+Ministerio y en el portal electr&#243;nico del RETC. 
+     Al momento de enviar a trav&#233;s de la Ventanilla &#218;nica
+la informaci&#243;n sobre emisiones, residuos, transferencias de
+contaminantes y productos prioritarios, el encargado
+designado, seg&#250;n lo establecido en el art&#237;culo 1&#186; de la
+resoluci&#243;n exenta N&#186; 1.139 de 2014 del Ministerio del
+Medio Ambiente, suscribir&#225; electr&#243;nicamente una
+declaraci&#243;n jurada dando fe de la veracidad de la
+informaci&#243;n ingresada como asimismo que no existen
+omisiones al respecto.
+     Lo dispuesto en el inciso anterior no obsta que los
+&#243;rganos de la Administraci&#243;n del Estado competentes puedan
+realizar sus propias publicaciones.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">16 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349436">
+      <Texto>
+     T&#205;TULO IV
+
+     Ventanilla &#218;nica</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO IV Ventanilla &#218;nica</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349437">
+          <Texto>
+     Art&#237;culo 17.- Ventanilla &#218;nica. Los sujetos obligados
+a registrarse y los que reporten o informen sus emisiones,
+residuos, transferencias de contaminantes o productos
+prioritarios, deber&#225;n realizarlo s&#243;lo a trav&#233;s de la
+ventanilla &#250;nica que se encuentra en el portal electr&#243;nico
+del RETC.
+     La informaci&#243;n que las fuentes emisoras deban
+proporcionar a la Superintendencia del Medio Ambiente de
+conformidad a las letras e), f) y h), del art&#237;culo 32 de su
+Ley Org&#225;nica se realizar&#225; a trav&#233;s de la ventanilla
+&#250;nica, accedi&#233;ndose por dicha v&#237;a al Sistema Nacional de
+Informaci&#243;n de Fiscalizaci&#243;n Ambiental de la
+Superintendencia del Medio Ambiente.
+     No obstante, la forma y modo de remisi&#243;n, as&#237; como
+los plazos para la entrega de la informaci&#243;n mencionada en
+el inciso anterior, se regir&#225; por lo dispuesto en las
+instrucciones generales que dicte la Superintendencia del
+Medio Ambiente y en el Reglamento del Sistema Nacional de
+Informaci&#243;n de Fiscalizaci&#243;n Ambiental y de los Registros
+P&#250;blicos de Resoluci�nes de Calificaci&#243;n Ambiental y de
+Sanciones.
+     El ingreso a la ventanilla &#250;nica del RETC se
+realizar&#225; mediante un identificador del establecimiento o
+RUT, seg&#250;n corresponda, y su respectiva contrase&#241;a.
+     Tanto el identificador como la contrase&#241;a ser&#225;n
+entregados por medio de un correo electr&#243;nico. Para ello,
+previamente se debe haber completado un formulario en donde
+se ingresan los datos del establecimiento y cualquier otro
+que se estime necesario. La informaci&#243;n incluida en este
+formulario se mantendr&#225; en la base de datos del RETC.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">17 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349438">
+          <Texto>
+     Art&#237;culo 18.- Sujetos obligados a reportar e informar.
+Se encuentran obligados a reportar o informar a trav&#233;s del
+Sistema de Ventanilla &#218;nica:
+a)   Los establecimientos que deban reportar a otros
+&#243;rganos de la Administraci&#243;n del Estado, la informaci&#243;n
+sobre sus emisiones, residuos y/o transferencias de
+contaminantes, ya sea por una norma de emisi&#243;n, una
+resoluci&#243;n de calificaci&#243;n ambiental, un plan de
+prevenci&#243;n, un plan de descontaminaci&#243;n, o por exigencia
+de la normativa sectorial o general correspondiente.
+b)   Los establecimientos sujetos a calificarse como fuente
+emisora o generadora o destinatario de residuo, seg&#250;n
+alguna norma de emisi&#243;n u otra regulaci&#243;n.
+c)   Los establecimientos sujetos a reportar la informaci&#243;n
+de sus emisiones, residuos y/o transferencias de
+contaminantes conforme a lo establecido en tratados
+internacionales ratificados por Chile.
+d)   Los establecimientos que emitan contaminantes,
+sustancias, generen o reciben residuos y/o transfieran
+contaminantes, respecto de los cuales una regulaci&#243;n
+determinada obligue su reporte.
+e)   Importadores, productores, distribuidores y
+comercializadores de productos que contengan contaminantes y
+sustancias, respecto de los cuales una regulaci&#243;n y/o
+tratados internacionales ratificados por Chile obligue su
+reporte.
+f)   Centros de almacenamiento de insumos para la
+producci&#243;n industrial potencialmente da&#241;inos para la salud
+y el medio ambiente, respecto de los cuales una regulaci&#243;n
+y/o tratados internacionales ratificados por Chile obligue
+su reporte.
+g)   Los establecimientos que generen m&#225;s de 12 toneladas
+de residuos al a&#241;o, las municipalidades, y los
+destinatarios de residuos, de acuerdo a los art&#237;culos 26,
+27 y 28 del presente reglamento.
+h)   Los productores de productos prioritarios; sistemas de
+gesti&#243;n; los gestores de residuos; y los comercializadores
+y distribuidores y los consumidores industriales, cuando
+corresponda, de acuerdo a lo indicado en la Ley N&#186; 20.920.
+i)   Los establecimientos afectos a pagar impuesto a las
+emisiones, de acuerdo a lo indicado en el art&#237;culo 8&#186; de
+la ley 20.780.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">18 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349440">
+          <Texto>
+     Art&#237;culo 19.- M&#233;todo de entrega de la informaci&#243;n
+sujeta de reporte. Los medios electr&#243;nicos que utiliza este
+sistema se ajustar&#225;n a lo establecido en la ley N&#186;19.799 y
+su reglamento, y a lo previsto en el presente decreto.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">19 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349441">
+          <Texto>
+     Art&#237;culo 20.- Fallas del sistema. No se considerar&#225;n
+faltas u omisiones del establecimiento aquellas actuaciones
+que por fallas del medio electr&#243;nico no puedan ejecutarse
+oportunamente, debiendo el Ministerio adoptar las medidas
+necesarias para solucionar prontamente dichas fallas, sin
+provocar menoscabo alguno a los establecimientos.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">2O </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349442">
+          <Texto>
+     Art&#237;culo 21.- Garantizar el funcionamiento del Sistema
+de Ventanilla &#218;nica y RETC. Para garantizar el
+funcionamiento del Sistema de Ventanilla &#218;nica todos los
+datos de emisiones, residuos, transferencias de
+contaminantes y productos prioritarios que deban ser
+informados a una autoridad de acuerdo al presente
+reglamento, se deber&#225;n reportar &#250;nicamente a trav&#233;s de
+este sistema.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">21 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349443">
+      <Texto>
+     T&#205;TULO V
+
+     Acceso p&#250;blico a la informaci&#243;n</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO V Acceso p&#250;blico a la informaci&#243;n</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349444">
+          <Texto>
+     Art&#237;culo 22.- La informaci&#243;n que contiene el RETC
+ser&#225; de car&#225;cter p&#250;blico, pero podr&#225; restringirse su
+entrega y publicaci&#243;n, si corresponde a alguna de las
+causales establecidas en la ley N&#186; 20.285 sobre Acceso a la
+Informaci&#243;n P&#250;blica.
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">22 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349445">
+          <Texto>
+     Art&#237;culo 23.- Acceso electr&#243;nico directo. El RETC
+mantendr&#225; acceso p&#250;blico a los informes consolidados de
+los registros de emisiones, residuos, transferencias de
+contaminantes y productos prioritarios de a&#241;os anteriores,
+el que ser&#225; electr&#243;nico, directo y gratuito a trav&#233;s del
+portal electr&#243;nico del RETC.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">23 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349446">
+          <Texto>
+     Art&#237;culo 24.- Ejemplar impreso. Se mantendr&#225; en las
+Secretar&#237;as Regionales Ministeriales del Medio Ambiente un
+ejemplar impreso del Informe Consolidado de Emisiones y
+Transferencias de Contaminantes, el que deber&#225; ser
+actualizado anualmente.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">24 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349447">
+      <Texto>
+     T&#205;TULO VI
+
+     Otras disposiciones</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO VI Otras disposiciones</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349448">
+          <Texto>
+     Art&#237;culo 25.- Generador de Residuos. Los
+establecimientos que generen anualmente m&#225;s de 12 toneladas
+de residuos no sometidos a reglamentos espec&#237;ficos,
+estar&#225;n obligados a declarar al 30 de marzo de cada a&#241;o
+sus residuos generados el a&#241;o anterior, a trav&#233;s del
+Sistema de Ventanilla &#218;nica del Registro de Emisiones y
+Transferencias de Contaminantes (RETC). Lo anterior, sin
+perjuicio de las obligaciones emanadas de los DS N&#186; 148 de
+2003, y DS N&#186; 6 de 2009, ambos del Ministerio de Salud,
+as&#237; como del DS N&#186; 4 de 2009, del Ministerio Secretar&#237;a
+General de la Presidencia, en relaci&#243;n a lo dispuesto al
+art&#237;culo 18 letra d) del presente reglamento.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">25 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349449">
+          <Texto>
+     Art&#237;culo 26.- Residuos Municipales. Las
+municipalidades deber&#225;n declarar, antes del 30 de marzo de
+cada a&#241;o, los residuos recolectados por &#233;stas o por
+terceros contratados por ella, durante el a&#241;o anterior, a
+trav&#233;s del Sistema de Ventanilla &#218;nica del Registro de
+Emisiones y Transferencias de Contaminantes (RETC).</Texto>
+          <Metadatos>
+            <NombreParte presente="si">26 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349450">
+          <Texto>
+     Art&#237;culo 27.- Destinatarios de Residuos. Los
+destinatarios de residuos, que reciban anualmente m&#225;s de 12
+toneladas de residuos, deber&#225;n declarar los residuos
+recepcionados el a&#241;o anterior a trav&#233;s del Sistema de
+Ventanilla &#218;nica del Registro de Emisiones y Transferencias
+de Contaminantes (RETC), al 30 de marzo de cada a&#241;o. Lo
+anterior, sin perjuicio de las obligaciones emanadas de los
+DS N&#186; 148 de 2003, DS N&#186; 189 de 2005, y DS N&#186; 6 de 2009,
+todos del Ministerio de Salud, as&#237; como el DS N&#186; 4 de
+2009, del Ministerio Secretar&#237;a General de la Presidencia.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">27 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349451">
+          <Texto>
+     Art&#237;culo 28.- Vigencia. El presente Reglamento
+entrar&#225; en vigencia una vez publicado en el Diario Oficial.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">28 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9975860">
+          <Texto>
+     Art&#237;culo 29.- De las modificaciones en el
+Establecimiento. Los establecimientos deber&#225;n informar las
+siguientes modificaciones sociales: cambio de raz&#243;n social;
+cambios en los representantes; transformaci&#243;n, fusi&#243;n,
+absorci&#243;n y divisi&#243;n de las sociedades, as&#237; como el
+cambio en la designaci&#243;n del encargado. Para efectos de
+informar lo anterior, deber&#225;n acompa&#241;ar los antecedentes
+que acrediten dicha modificaci&#243;n, en un plazo que no podr&#225;
+exceder de seis meses.
+
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">29 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9975861">
+          <Texto>
+     Art&#237;culo 30.- Cese de funciones. Los establecimientos
+deber&#225;n informar el cese de funciones del establecimiento
+acompa&#241;ando los antecedentes que acrediten dicha
+finalizaci&#243;n, en un plazo que no podr&#225; exceder de 15 d&#237;as
+h&#225;biles.
+
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">30</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349452">
+      <Texto>
+     T&#205;TULO VII
+
+     Disposici&#243;n final</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO VII Disposici&#243;n final</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2018-12-11" derogado="no derogado" idParte="9349453">
+          <Texto>
+     Art&#237;culo 31.- La obligaci&#243;n de reportar a la
+autoridad correspondiente informaci&#243;n, antecedentes y datos
+asociados a emisiones, contenida en el DS N&#186; 185/1991 del
+Ministerio de Miner&#237;a, que reglamenta funcionamiento de
+establecimientos emisores de anh&#237;drido sulfuroso, material
+particulado y ars&#233;nico en todo el territorio de la
+rep&#250;blica; en el DS N&#186; 4/1992 del Ministerio de Salud, que
+establece norma de emisi&#243;n de material particulado a
+fuentes estacionarias puntuales y grupales, y en la
+resoluci&#243;n N&#186; 15.027/1994, del Ministerio de Salud, que
+establece procedimiento de declaraci&#243;n de emisiones para
+fuentes estacionarias que indica, en el DS N&#186; 165/1998, del
+Ministerio Secretar&#237;a General de la Presidencia, que
+establece norma de emisi&#243;n para la regulaci&#243;n del
+contaminante ars&#233;nico emitido al aire; en el DS N&#186;
+37/2012, del Ministerio del Medio Ambiente, que establece
+norma de emisi&#243;n de compuestos TRS, generadores de olor,
+asociados a la fabricaci&#243;n de pulpa Kraft o al sulfato,
+elaborada a partir de la revisi&#243;n del decreto N&#186; 167, de
+1999, Minsegpres, que establece Norma de emisi&#243;n para
+olores molestos (compuestos sulfuro de hidr&#243;geno y
+mercaptanos: gases TRS) asociados a la fabricaci&#243;n de pulpa
+sulfatada; en el DS N&#186; 609/1998 del Ministerio de Obras
+P&#250;blicas, que establece norma de emisi&#243;n para la
+regulaci&#243;n de contaminantes asociados a las descargas de
+residuos industriales l&#237;quidos a sistemas de
+alcantarillado; en el DS N&#186; 90/2000 del Ministerio
+Secretar&#237;a General de la Presidencia, que establece norma
+de emisi&#243;n para la regulaci&#243;n de contaminantes asociados a
+las descargas de residuos l&#237;quidos a aguas marinas y
+continentales superficiales; en el DS N&#186; 46/2002 del
+Ministerio Secretar&#237;a General de la Presidencia que
+establece norma de emisi&#243;n de residuos l&#237;quidos a aguas
+subterr&#225;neas; en el DS N&#186; 138/2005 del Ministerio de Salud
+que establece obligaci&#243;n de declarar emisiones que indica;
+DS N&#186; 45/2007 del Ministerio Secretar&#237;a General de la
+Presidencia, que establece norma de emisi&#243;n para
+incineraci&#243;n y coincineraci&#243;n y, en el DS N&#186; 13/2011 del
+Ministerio del Medio Ambiente, que establece norma de
+emisi&#243;n para centrales termoel&#233;ctricas, en el DS N&#186;
+3/2012 del Ministerio del Medio Ambiente, que establece
+reglamento para el manejo de lodos provenientes de plantas
+de tratamiento de efluentes de la industria procesadora de
+frutas y hortalizas y en el DS N&#186; 28/2013 del Ministerio
+del Medio Ambiente que establece norma de emisi&#243;n para
+fundiciones de cobre y fuentes emisoras de ars&#233;nico,
+deber&#225; realizarse a trav&#233;s del Sistema de Ventanilla
+&#218;nica del RETC, regulado por el presente Reglamento.
+     Asimismo, la obligaci&#243;n de reportar a la autoridad
+correspondiente informaci&#243;n, asociados a residuos,
+contenida en el DS N&#186; 148/2003 del Ministerio de Salud, que
+aprueba reglamento sanitario sobre manejo de residuos
+peligrosos; en el DS N&#186; 189/2005 del Ministerio de Salud,
+que aprueba reglamento sobre condiciones sanitarias y de
+seguridad b&#225;sicas en los rellenos sanitarios; en el DS N&#186;
+4/2009 del Ministerio Secretar&#237;a General de la Presidencia,
+que establece reglamento para el manejo de lodos generados
+en las plantas de tratamiento de aguas servidas; en el DS
+N&#186; 6/2009 del Ministerio de Salud que aprueba reglamento
+sobre manejo de residuos de establecimientos de atenci&#243;n de
+salud (REAS), deber&#225; realizarse a trav&#233;s del referido
+Sistema de Ventanilla &#218;nica del RETC.
+    Lo anterior, sin perjuicio de las obligaciones de
+registro, reporte o informaci&#243;n contenida en la dem&#225;s
+normativa aplicable.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">31 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349454">
+      <Texto>
+     T&#205;TULO VIII
+
+     Disposici&#243;n transitoria</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO VIII Disposici&#243;n transitoria</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2013-05-02" derogado="no derogado" idParte="9349455">
+          <Texto>
+     Art&#237;culo transitorio.- La obligaci&#243;n de ingresar a
+trav&#233;s del Sistema de Ventanilla &#218;nica para reportar las
+emisiones, residuos y/o transferencias de contaminantes,
+establecida en los art&#237;culos 19, 26, 27, 28 y 30 del
+presente Reglamento, entrar&#225; en vigencia despu&#233;s de 1 a&#241;o
+de publicado el presente Reglamento en el Diario Oficial.
+     En el intertanto, los sujetos obligados a reporte
+cumplir&#225;n con sus obligaciones de reportar informaci&#243;n
+relativa a emisiones, residuos y/o transferencias de
+contaminantes de acuerdo a lo establecido en la legislaci&#243;n
+vigente.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">TRANSITORIO</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="2013-05-02" derogado="no derogado">
+    <Texto>
+     An&#243;tese, t&#243;mese raz&#243;n y publ&#237;quese.- SEBASTI&#193;N
+PI&#209;ERA ECHENIQUE, Presidente de la Rep&#250;blica.- Mar&#237;a
+Ignacia Ben&#237;tez Pereira, Ministra del Medio Ambiente.-
+Cristi&#225;n Larroulet Vignau, Ministro Secretario General de
+la Presidencia.- Loreto Silva Rojas, Ministra de Obras
+P&#250;blicas.- Jaime Ma&#241;alich Muxi, Ministro de Salud.-
+Hern&#225;n de Solminihac Tampier, Ministro de Miner&#237;a.
+     Lo que comunico a Ud. para su conocimiento.- Ricardo
+Irarr&#225;zabal S&#225;nchez, Subsecretario del Medio Ambiente.</Texto>
+  </Promulgacion>
+  
+</Norma>

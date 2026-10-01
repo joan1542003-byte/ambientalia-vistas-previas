@@ -1,0 +1,942 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="1090894" esTratado="no tratado" fechaVersion="2016-06-01" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="2016-05-17" fechaPublicacion="2016-06-01">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Ley</Tipo>
+        <Numero>20920</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DEL MEDIO AMBIENTE</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>ESTABLECE MARCO PARA LA GESTI&#211;N DE RESIDUOS, LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR Y FOMENTO AL RECICLAJE</TituloNorma>
+    <Materias>
+      <Materia>Gesti&#243;n de Residuos</Materia>
+      <Materia>Comisi&#243;n Nacional del Medio Ambiente</Materia>
+      <Materia>Pol&#237;tica de Gesti&#243;n Integral de Residuos S&#243;lidos</Materia>
+      <Materia>Medio Ambiente</Materia>
+      <Materia>Reciclaje</Materia>
+      <Materia>Responsabilidad Extendida del Productor</Materia>
+    </Materias>
+    
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>41472</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2016-06-01" derogado="no derogado">
+    <Texto>
+LEY N&#218;M. 20.920
+ 
+ESTABLECE MARCO PARA LA GESTI&#211;N DE RESIDUOS, LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR Y FOMENTO AL RECICLAJE
+ 
+     Teniendo presente que el H. Congreso Nacional ha dado su aprobaci&#243;n al siguiente
+ 
+     "Proyecto de ley:
+ 
+     Que establece marco para la gesti&#243;n de residuos, la responsabilidad extendida del productor y fomento al reciclaje.</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705075">
+      <Texto> 
+     T&#205;TULO I
+ 
+     DISPOSICIONES GENERALES
+ </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO I DISPOSICIONES GENERALES</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705076">
+          <Texto>
+     Art&#237;culo 1&#186;.- Objeto. La presente ley tiene por objeto disminuir la generaci&#243;n de residuos y fomentar su reutilizaci&#243;n, reciclaje y otro tipo de valorizaci&#243;n, a trav&#233;s de la instauraci&#243;n de la responsabilidad extendida del productor y otros instrumentos de gesti&#243;n de residuos, con el fin de proteger la salud de las personas y el medio ambiente.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">1 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705077">
+          <Texto> 
+     Art&#237;culo 2&#186;.- Principios. Los principios que inspiran la presente ley son los siguientes:
+
+     a) El que contamina paga: el generador de un residuo es responsable de &#233;ste, as&#237; como de internalizar los costos y las externalidades negativas asociados a su manejo.
+     b) Gradualismo: Las obligaciones para prevenir la generaci&#243;n de residuos y fomentar su reutilizaci&#243;n, reciclaje y otro tipo de valorizaci&#243;n ser&#225;n establecidas o exigidas de manera progresiva, atendiendo a la cantidad y peligrosidad de los residuos, las tecnolog&#237;as disponibles, el impacto econ&#243;mico y social y la situaci&#243;n geogr&#225;fica, entre otros.
+     c) Inclusi&#243;n: Conjunto de mecanismos e instrumentos de capacitaci&#243;n, financiaci&#243;n y formalizaci&#243;n orientados a posibilitar la integraci&#243;n plena de los recicladores de base en la gesti&#243;n de los residuos, incluidos los sistemas de gesti&#243;n en el marco de la responsabilidad extendida del productor.
+     d) Jerarqu&#237;a en el manejo de residuos: Orden de preferencia de manejo, que considera como primera alternativa la prevenci&#243;n en la generaci&#243;n de residuos, luego la reutilizaci&#243;n, el reciclaje de los mismos o de uno o m&#225;s de sus componentes y la valorizaci&#243;n energ&#233;tica de los residuos, total o parcial, dejando como &#250;ltima alternativa su eliminaci&#243;n, acorde al desarrollo de instrumentos legales, reglamentarios y econ&#243;micos pertinentes.
+     e) Libre competencia: El funcionamiento de los sistemas de gesti&#243;n y la operaci&#243;n de los gestores en ning&#250;n caso podr&#225; atentar contra la libre competencia.
+     f) Participativo: La educaci&#243;n, opini&#243;n y el involucramiento de la comunidad son necesarios para prevenir la generaci&#243;n de residuos y fomentar su reutilizaci&#243;n, reciclaje y otro tipo de valorizaci&#243;n.
+     g) Precautorio: la falta de certeza cient&#237;fica no podr&#225; invocarse para dejar de implementar las medidas necesarias para disminuir el riesgo de da&#241;os para el medio ambiente y la salud humana derivado del manejo de residuos.
+     h) Preventivo: Conjunto de acciones o medidas que se reflejan en cambios en los h&#225;bitos en el uso de insumos y materias primas utilizadas en procesos productivos, dise&#241;o o en modificaciones en dichos procesos, as&#237; como en el consumo, destinadas a evitar la generaci&#243;n de residuos, la reducci&#243;n en cantidad o la peligrosidad de los mismos.
+     i) Responsabilidad del generador de un residuo: El generador de un residuo es responsable de &#233;ste, desde su generaci&#243;n hasta su valorizaci&#243;n o eliminaci&#243;n, en conformidad a la ley.
+     j) Transparencia y publicidad: La gesti&#243;n de residuos se efectuar&#225; con transparencia, de manera que la comunidad pueda acceder a la informaci&#243;n relevante sobre la materia.
+     k) Trazabilidad: Conjunto de procedimientos preestablecidos y autosuficientes que permiten conocer las cantidades, ubicaci&#243;n y trayectoria de un residuo o lote de residuos a lo largo de la cadena de manejo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">2 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705078">
+          <Texto> 
+     Art&#237;culo 3&#186;.- Definiciones. Para los efectos de esta ley, se entender&#225; por:
+
+     1) Almacenamiento: Acumulaci&#243;n de residuos en un lugar espec&#237;fico por un tiempo determinado.
+     2) Ciclo de vida de un producto: Etapas consecutivas e interrelacionadas de un sistema productivo, desde la adquisici&#243;n de materias primas o su generaci&#243;n a partir de recursos naturales, hasta su eliminaci&#243;n como residuo.
+     3) Comercializador: Toda persona natural o jur&#237;dica, distinta del productor, que vende un producto prioritario al consumidor.
+     En el caso de envases y embalajes, el comercializador es aquel que vende el bien de consumo envasado o embalado al consumidor.
+     4) Consumidor: Todo generador de un residuo de producto prioritario.
+     5) Consumidor industrial: todo establecimiento industrial, de acuerdo a la Ordenanza General de Urbanismo y Construcciones, que genere residuos de un producto prioritario.
+     6) Distribuidor: Toda persona natural o jur&#237;dica, distinta del productor, que comercializa un producto prioritario antes de su venta al consumidor.
+     En el caso de envases y embalajes, el distribuidor es aquel que comercializa el bien de consumo envasado o embalado antes de su venta al consumidor.
+     7) Ecodise&#241;o: Integraci&#243;n de aspectos ambientales en el dise&#241;o del producto, envase, embalaje, etiquetado u otros, con el fin de disminuir las externalidades ambientales a lo largo de todo su ciclo de vida.
+     8) Eliminaci&#243;n: Todo procedimiento cuyo objetivo es disponer en forma definitiva o destruir un residuo en instalaciones autorizadas.
+     9) Generador: Poseedor de un producto, sustancia u objeto que lo desecha o tiene la obligaci&#243;n de desecharlo de acuerdo a la normativa vigente.
+     10) Gestor: Persona natural o jur&#237;dica, p&#250;blica o privada, que realiza cualquiera de las operaciones de manejo de residuos y que se encuentra autorizada y registrada en conformidad a la normativa vigente.
+     11) Gesti&#243;n: Operaciones de manejo y otras acciones de pol&#237;tica, de planificaci&#243;n, normativas, administrativas, financieras, organizativas, educativas, de evaluaci&#243;n, de seguimiento y fiscalizaci&#243;n, referidas a residuos.
+     12) Instalaci&#243;n de recepci&#243;n y almacenamiento: Lugar o establecimiento de recepci&#243;n y acumulaci&#243;n selectiva de residuos, debidamente autorizado.
+     13) Manejo: Todas las acciones operativas a las que se somete un residuo, incluyendo, entre otras, recolecci&#243;n, almacenamiento, transporte, pretratamiento y tratamiento.
+     14) Manejo ambientalmente racional: La adopci&#243;n de todas las medidas posibles para garantizar que los residuos se manejen de manera que el medio ambiente y la salud de las personas queden protegidos contra los efectos perjudiciales que pueden derivarse de tales residuos.
+     15) Mejores pr&#225;cticas ambientales: La aplicaci&#243;n de la combinaci&#243;n m&#225;s exigente y pertinente de medidas y estrategias de control ambiental.
+     16) Mejores t&#233;cnicas disponibles: La etapa m&#225;s eficaz y avanzada en el desarrollo de los procesos, instalaciones o m&#233;todos de operaci&#243;n, que expresan la pertinencia t&#233;cnica, social y econ&#243;mica de una medida particular para limitar los impactos negativos en el medio ambiente y la salud de las personas.
+     17) Ministerio: Ministerio del Medio Ambiente.
+     18) Preparaci&#243;n para la reutilizaci&#243;n: Acci&#243;n de revisi&#243;n, limpieza o reparaci&#243;n, mediante la cual productos o componentes de productos desechados se acondicionan para que puedan reutilizarse sin ninguna otra transformaci&#243;n previa.
+     19) Pretratamiento: Operaciones f&#237;sicas preparatorias o previas a la valorizaci&#243;n o eliminaci&#243;n, tales como separaci&#243;n, desembalaje, corte, trituraci&#243;n, compactaci&#243;n, mezclado, lavado y empaque, entre otros, destinadas a reducir su volumen, facilitar su manipulaci&#243;n o potenciar su valorizaci&#243;n.
+     20) Producto prioritario: Sustancia u objeto que una vez transformado en residuo, por su volumen, peligrosidad o presencia de recursos aprovechables, queda sujeto a las obligaciones de la responsabilidad extendida del productor, en conformidad a esta ley.
+     21) Productor de un producto prioritario o productor: Persona que, independientemente de la t&#233;cnica de comercializaci&#243;n:
+
+     a) enajena un producto prioritario por primera vez en el mercado nacional.
+     b) enajena bajo marca propia un producto prioritario adquirido de un tercero que no es el primer distribuidor.
+     c) importa un producto prioritario para su propio uso profesional.
+ 
+     En el caso de envases y embalajes, el productor es aqu&#233;l que introduce en el mercado el bien de consumo envasado y,o embalado.
+     El decreto supremo que establezca las metas y otras obligaciones asociadas de cada producto prioritario sobre la base de criterios y antecedentes fundados determinar&#225; los productores a los que les ser&#225; aplicable la responsabilidad extendida del productor, previa consideraci&#243;n de su condici&#243;n de micro, peque&#241;a o mediana empresa, seg&#250;n lo dispuesto en la ley N&#186; 20.416.
+ 
+     22) Reciclador de base: Persona natural que, mediante el uso de la t&#233;cnica artesanal y semi industrial, se dedica en forma directa y habitual a la recolecci&#243;n selectiva de residuos domiciliarios o asimilables y a la gesti&#243;n de instalaciones de recepci&#243;n y almacenamiento de tales residuos, incluyendo su clasificaci&#243;n y pretratamiento. Sin perjuicio de lo anterior, se considerar&#225;n tambi&#233;n como recicladores de base las personas jur&#237;dicas que est&#233;n compuestas exclusivamente por personas naturales registradas como recicladores de base, en conformidad al art&#237;culo 37.
+     23) Reciclaje: Empleo de un residuo como insumo o materia prima en un proceso productivo, incluyendo el coprocesamiento y compostaje, pero excluyendo la valorizaci&#243;n energ&#233;tica.
+     24) Recolecci&#243;n: Operaci&#243;n consistente en recoger residuos, incluido su almacenamiento inicial, con el objeto de transportarlos a una instalaci&#243;n de almacenamiento, una instalaci&#243;n de valorizaci&#243;n o de eliminaci&#243;n, seg&#250;n corresponda. La recolecci&#243;n de residuos separados en origen se denomina diferenciada o selectiva.
+     25) Residuo: Sustancia u objeto que su generador desecha o tiene la intenci&#243;n u obligaci&#243;n de desechar de acuerdo a la normativa vigente.
+     26) Reutilizaci&#243;n: Acci&#243;n mediante la cual productos o componentes de productos desechados se utilizan de nuevo, sin involucrar un proceso productivo.
+     27) Sistema de gesti&#243;n: Mecanismo instrumental para que los productores, individual o colectivamente, den cumplimiento a las obligaciones establecidas en el marco de la responsabilidad extendida del productor, a trav&#233;s de la implementaci&#243;n de un plan de gesti&#243;n.
+     28) Superintendencia: Superintendencia del Medio Ambiente.
+     29) Tratamiento: Operaciones de valorizaci&#243;n y eliminaci&#243;n de residuos.
+     30) Valorizaci&#243;n: Conjunto de acciones cuyo objetivo es recuperar un residuo, uno o varios de los materiales que lo componen y,o el poder calor&#237;fico de los mismos. La valorizaci&#243;n comprende la preparaci&#243;n para la reutilizaci&#243;n, el reciclaje y la valorizaci&#243;n energ&#233;tica.
+     31) Valorizaci&#243;n energ&#233;tica: Empleo de un residuo con la finalidad de aprovechar su poder calor&#237;fico.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">3 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705079">
+      <Texto> 
+     T&#205;TULO II
+ 
+     DE LA GESTI&#211;N DE LOS RESIDUOS</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO II DE LA GESTI&#211;N DE LOS RESIDUOS</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705080">
+          <Texto> 
+     Art&#237;culo 4&#186;.- De la prevenci&#243;n y valorizaci&#243;n. Todo residuo potencialmente valorizable deber&#225; ser destinado a tal fin evitando su eliminaci&#243;n.
+     Para tal efecto, el Ministerio, considerando el principio de gradualismo y cuando sea pertinente, deber&#225; establecer mediante decreto supremo los siguientes instrumentos destinados a prevenir la generaci&#243;n de residuos y,o promover su valorizaci&#243;n:
+
+     a) Ecodise&#241;o.
+     b) Certificaci&#243;n, rotulaci&#243;n y etiquetado de uno o m&#225;s productos.
+     c) Sistemas de dep&#243;sito y reembolso.
+     d) Mecanismos de separaci&#243;n en origen y recolecci&#243;n selectiva de residuos.
+     e) Mecanismos para asegurar un manejo ambientalmente racional de residuos.
+     f) Mecanismos para prevenir la generaci&#243;n de residuos, incluyendo medidas para evitar que productos aptos para el uso o consumo, seg&#250;n lo determine el decreto supremo respectivo, se conviertan en residuos.
+ 
+     Un reglamento establecer&#225; el procedimiento para la elaboraci&#243;n de los decretos supremos que establezcan los instrumentos anteriores. Este procedimiento deber&#225; contener a lo menos las siguientes etapas:
+
+     a) Un an&#225;lisis general del impacto econ&#243;mico y social.
+     b) Una consulta a organismos p&#250;blicos competentes y privados, incluyendo a los recicladores de base.
+     c) Una etapa de consulta p&#250;blica, la que tendr&#225; una duraci&#243;n m&#237;nima de treinta d&#237;as h&#225;biles.
+ 
+     La propuesta de decreto supremo que regule alguno de los instrumentos se&#241;alados en las letras anteriores deber&#225; ser sometida al pronunciamiento del Consejo de Ministros para la Sustentabilidad, de conformidad a lo establecido en los art&#237;culos 71 y siguientes de la ley N&#186; 19.300. Tal decreto ser&#225; reclamable en los t&#233;rminos establecidos en el art&#237;culo 16.
+     La Superintendencia ser&#225; competente para fiscalizar el cumplimiento de dichos instrumentos e imponer sanciones, en conformidad a su ley org&#225;nica.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">4 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705081">
+          <Texto> 
+     Art&#237;culo 5&#186;.- Obligaciones de los generadores de residuos. Todo generador de residuos deber&#225; entregarlos a un gestor autorizado para su tratamiento, de acuerdo con la normativa vigente, salvo que proceda a manejarlos por s&#237; mismo en conformidad al art&#237;culo siguiente. El almacenamiento de tales residuos deber&#225; igualmente cumplir con la normativa vigente.
+     Los residuos s&#243;lidos domiciliarios y asimilables deber&#225;n ser entregados a la municipalidad correspondiente o a un gestor autorizado para su manejo.
+     Lo dispuesto en los incisos anteriores ser&#225; sin perjuicio de lo establecido en el art&#237;culo 34.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">5 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705082">
+          <Texto> 
+     Art&#237;culo 6&#186;.- Obligaciones de los gestores de residuos. Todo gestor deber&#225; manejar los residuos de manera ambientalmente racional, aplicando las mejores t&#233;cnicas disponibles y mejores pr&#225;cticas ambientales, en conformidad a la normativa vigente, y contar con la o las autorizaciones correspondientes.
+     Asimismo, todo gestor deber&#225; declarar, a trav&#233;s del Registro de Emisiones y Transferencia de Contaminantes, al menos, el tipo, cantidad, costos, tarifa del servicio, origen, tratamiento y destino de los residuos, de acuerdo a lo dispuesto en el reglamento a que se refiere el art&#237;culo 70, letra p), de la ley N&#186; 19.300.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">6 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705083">
+          <Texto> 
+     Art&#237;culo 7&#186;.- Los gestores de residuos peligrosos que determine el Reglamento Sanitario sobre Manejo de Residuos Peligrosos deber&#225;n contar con un seguro por da&#241;os a terceros y al medio ambiente.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">7 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705084">
+          <Texto> 
+     Art&#237;culo 8&#186;.- Obligaciones de los importadores y exportadores de residuos. Los importadores y exportadores de residuos se regir&#225;n por lo dispuesto en el Convenio de Basilea sobre el control de los movimientos transfronterizos de desechos peligrosos y su eliminaci&#243;n, y por las dem&#225;s normas legales y reglamentarias que regulen la materia.
+     Se proh&#237;be la importaci&#243;n de residuos peligrosos para su eliminaci&#243;n. La importaci&#243;n de residuos peligrosos para su valorizaci&#243;n s&#243;lo ser&#225; autorizada si se acredita ante el Ministerio del Medio Ambiente que aquella ser&#225; efectuada por gestores autorizados que cuenten con una resoluci&#243;n de Calificaci&#243;n Ambiental que los habilite para tal efecto.
+     Mediante decreto supremo, expedido por el Ministerio y firmado adem&#225;s por el Ministro de Salud, se establecer&#225;n los requisitos, exigencias y procedimientos para la autorizaci&#243;n de importaci&#243;n, exportaci&#243;n y tr&#225;nsito de residuos, el que deber&#225; incluir la regulaci&#243;n de las garant&#237;as asociadas.
+     Cuando la autoridad correspondiente advierta que un importador o exportador no cuenta con la autorizaci&#243;n se&#241;alada en el inciso precedente, el Ministerio podr&#225; adoptar las medidas necesarias para el adecuado manejo de los residuos, a costa del infractor, debiendo siempre manejar los residuos de manera que garantice la protecci&#243;n del medio ambiente y la salud de las personas.
+     El Ministerio estar&#225; facultado para denegar fundadamente las autorizaciones de importaci&#243;n y exportaci&#243;n, cuando existan antecedentes de que los residuos no ser&#225;n sometidos a un manejo ambientalmente racional.
+     Todo importador y exportador de residuos deber&#225; informar, al menos, el tipo de residuo, cantidad, origen, tratamiento aplicado, incluyendo el destino de los residuos generados, cuando corresponda, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">8 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705085">
+      <Texto> 
+     T&#205;TULO III
+ 
+     DE LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO III DE LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705086">
+          <Texto> 
+     P&#225;rrafo 1&#186;
+     Disposiciones generales
+ </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 1&#186; Disposiciones generales</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705087">
+              <Texto>
+     Art&#237;culo 9&#186;.- Responsabilidad extendida del productor. La responsabilidad extendida del productor corresponde a un r&#233;gimen especial de gesti&#243;n de residuos, conforme al cual los productores de productos prioritarios son responsables de la organizaci&#243;n y financiamiento de la gesti&#243;n de los residuos de los productos prioritarios que comercialicen en el pa&#237;s.
+     Los productores de productos prioritarios deber&#225;n cumplir con las siguientes obligaciones:
+
+     a) Inscribirse en el registro establecido en el art&#237;culo 37.
+     b) Organizar y financiar la recolecci&#243;n de los residuos de los productos prioritarios en todo el territorio nacional, as&#237; como su almacenamiento, transporte y tratamiento en conformidad a la ley, a trav&#233;s de alguno de los sistemas de gesti&#243;n a que se refiere el p&#225;rrafo 3&#186; de este t&#237;tulo. La presente obligaci&#243;n ser&#225; exigible con la entrada en vigencia de los respectivos decretos supremos que establezcan metas y otras obligaciones asociadas.
+     c) Cumplir con las metas y otras obligaciones asociadas, en los plazos, proporci&#243;n y condiciones establecidos en el respectivo decreto supremo.
+     d) Asegurar que la gesti&#243;n de los residuos de los productos prioritarios se realice por gestores autorizados y registrados.
+     e) Las dem&#225;s que establezca esta ley.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">9 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705088">
+              <Texto> 
+     Art&#237;culo 10.- Productos Prioritarios. La responsabilidad extendida del productor aplicar&#225; a las categor&#237;as o subcategor&#237;as definidas en los respectivos decretos supremos que establezcan metas y otras obligaciones asociadas, para los siguientes productos prioritarios:
+
+     a) Aceites lubricantes.
+     b) Aparatos el&#233;ctricos y electr&#243;nicos.
+     c) Bater&#237;as.
+     d) Envases y embalajes.
+     e) Neum&#225;ticos.
+     f) Pilas.
+ 
+     Para la definici&#243;n de las categor&#237;as y subcategor&#237;as deber&#225; considerarse la efectividad del instrumento para la gesti&#243;n del residuo, su volumen, peligrosidad, potencial de valorizaci&#243;n o el car&#225;cter de domiciliario o no domiciliario del residuo.
+     El Ministerio, a trav&#233;s de los decretos supremos referidos, podr&#225; igualmente aplicar la responsabilidad extendida del productor a las categor&#237;as y subcategor&#237;as de otros productos, los que se entender&#225;n productos prioritarios. Para tal efecto, deber&#225;n considerarse los criterios referidos en el inciso anterior.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">10 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705089">
+              <Texto>
+     Art&#237;culo 11.- Productos prioritarios no sometidos a metas ni obligaciones asociadas. El Ministerio podr&#225; requerir a los productores, cuyos productos prioritarios se encuentren en una categor&#237;a o subcategor&#237;a excluida de la aplicaci&#243;n de la responsabilidad extendida del productor, informar anualmente y respecto al a&#241;o inmediatamente anterior al requerimiento, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes, lo siguiente:
+
+     a) Cantidad de productos comercializados en el pa&#237;s.
+     b) Actividades de recolecci&#243;n, valorizaci&#243;n y eliminaci&#243;n realizadas y su costo.
+     c) Cantidad de residuos recolectados, valorizados y eliminados.
+     d) Indicaci&#243;n de si la gesti&#243;n para las actividades de recolecci&#243;n y valorizaci&#243;n es individual o colectiva.
+ 
+     Los diarios, peri&#243;dicos y revistas se considerar&#225;n productos prioritarios no sometidos a metas ni obligaciones asociadas y quedar&#225;n sujetos a las disposiciones del presente art&#237;culo.
+     La informaci&#243;n referida podr&#225; ser requerida por primera vez en un plazo m&#225;ximo de doce meses, contado desde la entrada en vigencia del decreto supremo respectivo. En el caso de diarios, peri&#243;dicos y revistas, dicho plazo se contar&#225; desde la publicaci&#243;n de la presente ley.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">11 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705090">
+          <Texto> 
+     P&#225;rrafo 2&#186;
+     Metas de recolecci&#243;n y valorizaci&#243;n y otras obligaciones asociadas</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 2&#186; Metas de recolecci&#243;n y valorizaci&#243;n y otras obligaciones asociadas</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705091">
+              <Texto> 
+     Art&#237;culo 12.- Metas de recolecci&#243;n y valorizaci&#243;n. Tanto las metas de recolecci&#243;n como de valorizaci&#243;n de los residuos de productos prioritarios ser&#225;n establecidas mediante decretos supremos dictados por el Ministerio.
+     El establecimiento de tales metas se efectuar&#225; en relaci&#243;n con la cantidad de productos prioritarios introducidos en el mercado nacional por cada productor, aplicando los principios de gradualismo y de jerarqu&#237;a en el manejo de residuos, considerando las mejores t&#233;cnicas disponibles y las mejores pr&#225;cticas ambientales como criterio para tal efecto.
+     Estos decretos supremos podr&#225;n establecer diferencias en las metas en base a consideraciones demogr&#225;ficas, geogr&#225;ficas y de conectividad.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">12 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705092">
+              <Texto> 
+     Art&#237;culo 13.- Obligaciones asociadas. Con el fin de asegurar el cumplimiento de metas, los decretos supremos indicados en el art&#237;culo anterior podr&#225;n regular las siguientes obligaciones:
+
+     a) De etiquetado.
+     b) De informaci&#243;n a distribuidores o comercializadores, gestores y consumidores, incluyendo la tarifa correspondiente al costo de la gesti&#243;n de residuos.
+     c) De dise&#241;o e implementaci&#243;n de estrategias de comunicaci&#243;n y sensibilizaci&#243;n.
+     d) De dise&#241;o e implementaci&#243;n de medidas de prevenci&#243;n en la generaci&#243;n de residuos.
+     e) De entrega separada en origen y recolecci&#243;n selectiva de residuos.
+     f) De limitaciones en la presencia de sustancias peligrosas en los productos.
+     g) De exigencias de ecodise&#241;o.
+     h) De dise&#241;o, cobertura y operaci&#243;n de instalaciones de recepci&#243;n y almacenamiento.
+     i) Especificaci&#243;n de los roles y responsabilidades que corresponden a los diferentes actores involucrados en el cumplimiento de las metas, en virtud de lo dispuesto en la presente ley.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">13 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705093">
+              <Texto> 
+     Art&#237;culo 14.- Procedimiento para el establecimiento de metas y otras obligaciones asociadas. Un reglamento establecer&#225; el procedimiento para la elaboraci&#243;n de los decretos supremos que establezcan metas y otras obligaciones asociadas por producto prioritario, el que deber&#225; contener a lo menos las siguientes etapas:
+
+     a) Un an&#225;lisis general del impacto econ&#243;mico y social.
+     b) Una consulta a organismos p&#250;blicos y privados competentes, quienes conformar&#225;n un comit&#233; operativo ampliado que el Ministerio crear&#225;, de conformidad al art&#237;culo 70, letra x), de la ley N&#186;19.300. Dicho comit&#233; se constituir&#225; por representantes de los ministerios, as&#237; como por personas naturales y jur&#237;dicas ajenas a la Administraci&#243;n del Estado que representen a los productores, los gestores de residuos, las asociaciones de consumidores, los recicladores de base, la academia, las organizaciones no gubernamentales, entre otros.
+     c) Una etapa de consulta p&#250;blica, la que incluir&#225; la opini&#243;n del Consejo Consultivo del Ministerio del Medio Ambiente.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">14 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705094">
+              <Texto>
+     Art&#237;culo 15.- Pronunciamiento del Consejo de Ministros para la Sustentabilidad. La propuesta de decreto supremo que establezca metas y otras obligaciones asociadas deber&#225; ser sometida al pronunciamiento del Consejo de Ministros para la Sustentabilidad, de conformidad a lo establecido en los  art&#237;culo 71 y siguientes de la ley N&#186;19.300.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">15 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705095">
+              <Texto> 
+     Art&#237;culo 16.- Recurso de reclamaci&#243;n. Sin perjuicio de los recursos administrativos que procedan, los decretos supremos que establezcan metas y otras obligaciones asociadas ser&#225;n reclamables ante el Tribunal Ambiental respectivo, por cualquier persona que considere que no se ajustan a esta ley y que le  causan perjuicio.
+     El plazo para interponer el reclamo ser&#225; de treinta d&#237;as, contado desde la fecha de publicaci&#243;n del decreto en el Diario Oficial.
+     Los recursos ser&#225;n conocidos por el tribunal que en primer lugar se avoque a su consideraci&#243;n, excluyendo la competencia de los dem&#225;s.
+     La interposici&#243;n del reclamo no suspender&#225; en caso alguno los efectos del acto impugnado.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">16 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705096">
+              <Texto> 
+     Art&#237;culo 17.- De la revisi&#243;n de las metas y otras obligaciones asociadas. Las metas de recolecci&#243;n y valorizaci&#243;n de residuos de los productos prioritarios, as&#237; como las dem&#225;s obligaciones asociadas, deber&#225;n ser revisadas como m&#225;ximo cada cinco a&#241;os, de conformidad al procedimiento establecido en el reglamento.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">17 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705097">
+              <Texto> 
+     Art&#237;culo 18.- Interpretaci&#243;n administrativa. Corresponder&#225; al Ministerio interpretar administrativamente las disposiciones contenidas en los decretos supremos que establezcan metas y otras obligaciones asociadas.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">18 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705098">
+          <Texto> 
+     P&#225;rrafo 3&#186;
+     De los sistemas de gesti&#243;n</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 3&#186; De los sistemas de gesti&#243;n</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705099">
+              <Texto> 
+     Art&#237;culo 19.- Sistemas de gesti&#243;n. Las obligaciones establecidas en el marco de la responsabilidad extendida del productor deber&#225;n cumplirse a trav&#233;s de un sistema de gesti&#243;n, individual o colectivo.
+     Los decretos supremos que establezcan metas y otras obligaciones asociadas podr&#225;n restringir la aplicaci&#243;n de uno u otro sistema, a fin de evitar distorsiones de mercado que pongan en riesgo la efectividad de la responsabilidad extendida del productor, o afecten la libre competencia en los t&#233;rminos establecidos en el decreto con fuerza de ley N&#186; 1, de 2004, del Ministerio de Econom&#237;a, Fomento y Reconstrucci&#243;n, que fij&#243; el texto refundido, coordinado y sistematizado del decreto ley N&#186; 211, de 1973, oyendo previamente al organismo p&#250;blico competente.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">19 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705100">
+              <Texto> 
+     Art&#237;culo 20.- Sistemas colectivos de gesti&#243;n. Los productores que asuman el cumplimiento de sus obligaciones de manera colectiva, deber&#225;n hacerlo mediante la constituci&#243;n o incorporaci&#243;n a una persona jur&#237;dica que no distribuya utilidades entre sus asociados, la que ser&#225; responsable ante la autoridad. Dicha persona jur&#237;dica tendr&#225; como fin exclusivo la gesti&#243;n de los residuos de los productos prioritarios, y en ning&#250;n caso se entender&#225; como organizaci&#243;n de inter&#233;s p&#250;blico para los efectos de la ley N&#186; 20.500.
+     Asimismo, deber&#225; estar integrada exclusivamente por productores, salvo que el respectivo decreto supremo permita la integraci&#243;n de distribuidores u otros actores relevantes.
+     En caso de incumplimiento de las obligaciones establecidas en el marco de la responsabilidad extendida del productor, cada productor responder&#225; ante el sistema colectivo que integre, en proporci&#243;n a las metas que le apliquen.
+     Sin perjuicio de la normativa aplicable a la persona jur&#237;dica que se constituya, los estatutos deber&#225;n garantizar la incorporaci&#243;n de todo productor del respectivo producto prioritario, en funci&#243;n de criterios objetivos, y la participaci&#243;n equitativa de productores, que aseguren acceso a la informaci&#243;n y respeto a la libre competencia, y podr&#225;n  establecer una remuneraci&#243;n para sus directores.
+     Los productores deber&#225;n financiar los costos en que incurra la referida persona jur&#237;dica en el cumplimiento de su funci&#243;n, en base a criterios objetivos, tales como la cantidad de productos comercializados en el pa&#237;s y la composici&#243;n o dise&#241;o de tales productos, de conformidad a lo dispuesto en el decreto supremo que establezca las metas y otras obligaciones asociadas de cada producto prioritario.
+     En caso de extinci&#243;n de la persona jur&#237;dica, sus bienes pasar&#225;n a otro sistema colectivo de gesti&#243;n o a los productores asociados, seg&#250;n sus estatutos.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">20 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705101">
+              <Texto> 
+     Art&#237;culo 21.- Sistemas individuales de gesti&#243;n. Los productores que asuman el cumplimiento de sus obligaciones de manera individual podr&#225;n contratar directamente con gestores autorizados y registrados.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">21 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705102">
+              <Texto> 
+     Art&#237;culo 22.- Obligaciones de los sistemas de gesti&#243;n. Todo sistema de gesti&#243;n deber&#225;:
+
+     a) Constituir y mantener vigente fianza, seguro u otra garant&#237;a para asegurar el cumplimiento de la obligaci&#243;n a que se refiere el art&#237;culo 9&#186;, letra c), seg&#250;n lo dispuesto en el decreto supremo que establezca las metas y otras obligaciones asociadas a cada producto prioritario, s&#243;lo trat&#225;ndose de un sistema colectivo de gesti&#243;n.
+     b) Celebrar los convenios necesarios con gestores registrados y autorizados, municipalidades y,o asociaciones municipales con personalidad jur&#237;dica en los t&#233;rminos establecidos en los art&#237;culos 24 y 25.
+     c) Entregar al Ministerio los informes de avance o finales, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes, sobre el cumplimiento de las metas y otras obligaciones asociadas, en los t&#233;rminos establecidos en el respectivo decreto supremo. La Superintendencia podr&#225; requerir que los informes sean certificados por un auditor externo. El informe final de cumplimiento deber&#225; contener, al menos, la cantidad de productos prioritarios comercializados por los productores que integran el sistema en el pa&#237;s en el per&#237;odo inmediatamente anterior; una descripci&#243;n de las actividades realizadas; el costo de la gesti&#243;n de residuos, en el caso de un sistema individual, y la tarifa correspondiente al costo de la gesti&#243;n de residuos y su f&#243;rmula de c&#225;lculo, en el caso de un sistema colectivo; y el cumplimiento de las metas de recolecci&#243;n y valorizaci&#243;n, as&#237; como de las obligaciones asociadas, si corresponde.
+     d) Proporcionar al Ministerio o a la Superintendencia toda informaci&#243;n adicional que le sea requerida por &#233;stos, referida al cumplimiento de las obligaciones establecidas en el marco de la responsabilidad extendida del productor.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">22 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705103">
+              <Texto> 
+     Art&#237;culo 23.- Permiso municipal para la utilizaci&#243;n de bienes nacionales de uso p&#250;blico. Sin perjuicio de la celebraci&#243;n de un convenio de acuerdo al art&#237;culo 25, los sistemas de gesti&#243;n autorizados podr&#225;n solicitar a la municipalidad respectiva un permiso no precario para utilizar veredas, plazas, parques y otros bienes nacionales de uso p&#250;blico para el establecimiento y,u operaci&#243;n de instalaciones de recepci&#243;n y almacenamiento.
+     Los antecedentes para solicitar el permiso, los derechos aplicables y las condiciones de operaci&#243;n ser&#225;n establecidos mediante ordenanza municipal, sin perjuicio de la autorizaci&#243;n sanitaria referida en el art&#237;culo 35, en relaci&#243;n al manejo y disposici&#243;n de residuos peligrosos.
+     La municipalidad otorgar&#225; fundadamente el permiso si se comprueba que su ejercicio no perjudica el uso principal de los bienes y se ajusta a lo dispuesto en los respectivos decretos supremos, ordenanzas municipales e instrumentos de planificaci&#243;n territorial.
+     El plazo del permiso no podr&#225; ser inferior a cinco a&#241;os.
+     El establecimiento, operaci&#243;n y mantenci&#243;n de las instalaciones de recepci&#243;n y almacenamiento ser&#225; de responsabilidad del productor o de su sistema de gesti&#243;n.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">23 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705104">
+              <Texto> 
+     Art&#237;culo 24.- Convenios con gestores. Los sistemas de gesti&#243;n s&#243;lo podr&#225;n contratar con gestores autorizados y registrados.
+     Para tal efecto, los sistemas colectivos de gesti&#243;n deber&#225;n realizar una licitaci&#243;n abierta, esto es, un procedimiento concursal, mediante el cual el respectivo sistema de gesti&#243;n realiza un llamado p&#250;blico a trav&#233;s de su sitio electr&#243;nico, convocando a los interesados para que, con sujeci&#243;n a las bases fijadas, formulen propuestas para un servicio de manejo de residuos. Las bases de licitaci&#243;n deber&#225;n ser entregadas de manera gratuita a los recicladores de base que manifiesten inter&#233;s en participar.
+     Los servicios de recolecci&#243;n y tratamiento ser&#225;n licitados por separado. En el caso de la recolecci&#243;n, los contratos deber&#225;n tener una duraci&#243;n m&#225;xima de cinco a&#241;os.
+     Los sistemas colectivos de gesti&#243;n deber&#225;n contar con un informe del Tribunal de Defensa de la Libre Competencia que declare que en dichas bases no existen reglas que impidan, restrinjan o entorpezcan la libre competencia. Las licitaciones se ajustar&#225;n a los t&#233;rminos que establezca el citado informe.
+     Los sistemas colectivos de gesti&#243;n, cuando as&#237; lo requieran, deber&#225;n solicitar al Ministerio que se les except&#250;e de realizar una licitaci&#243;n abierta por razones fundadas, como ausencia o inadmisibilidad de interesados en ella; casos de emergencia, urgencia o imprevisto; circunstancias o caracter&#237;sticas del convenio que as&#237; lo requieran y cuando se trate de la contrataci&#243;n de recicladores de base.
+     Lo establecido en los incisos anteriores no se aplicar&#225; cuando los gestores sean municipalidades o asociaciones de municipalidades con personalidad jur&#237;dica, caso en el cual se regir&#225;n por lo dispuesto en el art&#237;culo siguiente.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">24 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705105">
+              <Texto> 
+     Art&#237;culo 25.- Convenios con municipalidades. Los sistemas de gesti&#243;n podr&#225;n celebrar convenios con las municipalidades o asociaciones de municipalidades con personalidad jur&#237;dica, destinados a la separaci&#243;n en origen, a la recolecci&#243;n selectiva, al establecimiento y,u operaci&#243;n de instalaciones de recepci&#243;n y almacenamiento de residuos de productos prioritarios, o a la ejecuci&#243;n de otras acciones que faciliten la implementaci&#243;n de esta ley en sus comunas.
+     Las municipalidades o asociaciones de municipalidades podr&#225;n ejecutar dichos convenios directamente o a trav&#233;s de terceros, caso en el que deber&#225;n someterse a lo prescrito en el art&#237;culo 24, sin perjuicio de la ley N&#186; 19.886, de Bases sobre Contratos Administrativos de Suministro y Prestaci&#243;n de Servicios.
+     Las diferencias que se presenten a prop&#243;sito de los convenios se&#241;alados en el inciso precedente podr&#225;n someterse al conocimiento de un juez &#225;rbitro que tendr&#225; el car&#225;cter de arbitrador de conformidad a lo establecido en el C&#243;digo Org&#225;nico de Tribunales.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">25 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705106">
+              <Texto> 
+     Art&#237;culo 26.- Autorizaci&#243;n de los sistemas de gesti&#243;n. Los sistemas de gesti&#243;n ser&#225;n autorizados por el Ministerio, para lo cual deber&#225;n presentar, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes, un plan de gesti&#243;n que contenga, al menos, lo siguiente:
+
+     a) La identificaci&#243;n del o los productores, de su o sus representantes e informaci&#243;n de contacto.
+     b) La identificaci&#243;n de la persona jur&#237;dica, copia de sus estatutos e identificaci&#243;n de los asociados, en el caso de un sistema colectivo de gesti&#243;n.
+     c) Las reglas y procedimientos, en el caso de un sistema colectivo de gesti&#243;n, para la incorporaci&#243;n de nuevos asociados y funcionamiento del sistema, que garanticen el respeto a las normas para la defensa de la libre competencia.
+     Para garantizar el cumplimiento de lo anterior, ser&#225; necesario acompa&#241;ar un informe del Tribunal de Defensa de la Libre Competencia que declare que en las reglas y procedimientos, para la incorporaci&#243;n de nuevos asociados y funcionamiento del sistema colectivo de gesti&#243;n, no existen hechos, actos o convenciones que puedan impedir, restringir o entorpecer la libre competencia.
+     d) La estimaci&#243;n anual de los productos prioritarios a ser comercializados en el pa&#237;s, promedio de su vida &#250;til y estimaci&#243;n de los residuos a generar en igual per&#237;odo.
+     e) La estrategia para lograr el cumplimiento de las metas y dem&#225;s obligaciones asociadas en todo el territorio nacional.
+     f) El mecanismo de financiamiento de las operaciones de gesti&#243;n y copia de la garant&#237;a constituida, si corresponde.
+     g) Los procedimientos de licitaci&#243;n, en el caso de un sistema colectivo de gesti&#243;n.
+     h) Los mecanismos de seguimiento y control de funcionamiento de los servicios contratados para el manejo de residuos.
+     i) Los procedimientos para la recolecci&#243;n y entrega de informaci&#243;n al Ministerio.
+     j) Los sistemas de verificaci&#243;n de cumplimiento del plan.
+ 
+     Dicho plan tendr&#225; por objeto dar cumplimiento a las obligaciones establecidas en esta ley y tendr&#225; una vigencia de cinco a&#241;os. El Ministerio autorizar&#225; aquellos planes que garanticen de forma razonable su eficacia para alcanzar dicho objeto.
+     El reglamento respectivo de la presente ley establecer&#225; el procedimiento, los requisitos y criterios para la autorizaci&#243;n de los sistemas de gesti&#243;n, as&#237; como los requisitos de idoneidad de los auditores externos.
+     Los sistemas que sean autorizados ser&#225;n incorporados por el Ministerio en el registro a que se refiere el art&#237;culo 37.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">26 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705107">
+              <Texto> 
+     Art&#237;culo 27.- Renovaci&#243;n de la autorizaci&#243;n. La solicitud de renovaci&#243;n de la autorizaci&#243;n del sistema de gesti&#243;n deber&#225; presentarse ante el Ministerio, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes, con al menos seis meses de antelaci&#243;n al vencimiento del respectivo plan de gesti&#243;n. En lo dem&#225;s se regir&#225; por lo dispuesto en el art&#237;culo anterior.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">27 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705108">
+              <Texto> 
+     Art&#237;culo 28.- Actualizaci&#243;n del plan de gesti&#243;n. Toda modificaci&#243;n del plan de gesti&#243;n deber&#225; ser informada al Ministerio, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes, en el plazo de tres d&#237;as h&#225;biles.
+     Las modificaciones significativas que recaigan sobre los contenidos referidos en las letras b), c), e), f) y g) del art&#237;culo 26 requerir&#225;n la autorizaci&#243;n del Ministerio, en los t&#233;rminos establecidos en el reglamento.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">28 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705109">
+      <Texto> 
+     T&#205;TULO IV
+ 
+     MECANISMOS DE APOYO A LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO IV MECANISMOS DE APOYO A LA RESPONSABILIDAD EXTENDIDA DEL PRODUCTOR</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705110">
+          <Texto> 
+     Art&#237;culo 29.- Educaci&#243;n ambiental. El Ministerio dise&#241;ar&#225; e implementar&#225; programas de educaci&#243;n ambiental, formal e informal, destinados a transmitir conocimientos y crear conciencia en la comunidad sobre la prevenci&#243;n en la generaci&#243;n de residuos y su valorizaci&#243;n, con pertinencia al territorio donde se aplique el programa, cuando corresponda.
+     Los recicladores de base y otro tipo de gestores, as&#237; como los productores de productos prioritarios, podr&#225;n colaborar en la implementaci&#243;n de tales programas.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">29 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705111">
+          <Texto> 
+     Art&#237;culo 30.- Municipalidades. A fin de colaborar con el adecuado cumplimiento del objeto de esta ley, las municipalidades:
+
+     a) Podr&#225;n, de manera individual o asociada, celebrar convenios con sistemas de gesti&#243;n.
+     b) Podr&#225;n celebrar convenios con recicladores de base.
+     c) Se pronunciar&#225;n fundadamente sobre las solicitudes de los sistemas de gesti&#243;n respecto a permisos para el establecimiento y,u operaci&#243;n de instalaciones de recepci&#243;n y almacenamiento en los bienes nacionales de uso p&#250;blico bajo su administraci&#243;n, de acuerdo a lo dispuesto en el art&#237;culo 23, y en conformidad a lo se&#241;alado en el art&#237;culo 65, letra c), de la ley org&#225;nica constitucional de Municipalidades, si correspondiere.
+     d) Deber&#225;n incorporar en sus ordenanzas municipales la obligaci&#243;n de separar los residuos en origen y fomentar el reciclaje, cuando as&#237; lo determine el decreto supremo que establezca metas y otras obligaciones asociadas.
+     e) Promover&#225;n la educaci&#243;n ambiental de la poblaci&#243;n sobre la prevenci&#243;n en la generaci&#243;n de residuos y su valorizaci&#243;n.
+     f) Podr&#225;n dise&#241;ar e implementar estrategias de comunicaci&#243;n y sensibilizaci&#243;n.
+     g) Podr&#225;n dise&#241;ar e implementar medidas de prevenci&#243;n en la generaci&#243;n de residuos.
+ 
+     La funci&#243;n privativa de aseo y ornato de las municipalidades no podr&#225; ser invocada para impedir el manejo de los residuos de productos prioritarios por parte de los sistemas de gesti&#243;n.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">30 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705112">
+          <Texto> 
+     Art&#237;culo 31.- Del fondo para el reciclaje. El Ministerio contar&#225; con un fondo destinado a financiar proyectos, programas y acciones para prevenir la generaci&#243;n de residuos y fomentar su reutilizaci&#243;n, reciclaje y otro tipo de valorizaci&#243;n, ejecutados por municipalidades o asociaciones de &#233;stas.
+
+     Este fondo estar&#225; integrado por:
+
+     a) Los recursos que el Estado reciba por concepto de asistencia t&#233;cnica o cooperaci&#243;n internacional.
+     b) Las donaciones, herencias y legados que reciba, las que estar&#225;n exentas del tr&#225;mite de insinuaci&#243;n prescrito en el art&#237;culo 1401 del C&#243;digo Civil y de toda contribuci&#243;n o impuesto.
+     c) Las transferencias que conforme a su presupuesto realicen los gobiernos regionales.
+     d) Los recursos que para este objeto consulte anualmente la ley de Presupuestos del Sector P&#250;blico.
+     e) Los recursos que le asignen otras leyes.
+     f) En general, cualquier otro aporte proveniente de entidades p&#250;blicas o privadas, nacionales o extranjeras, a cualquier t&#237;tulo.
+
+     El reglamento deber&#225; contener, a lo menos, las siguientes materias:
+
+     a) Criterios de evaluaci&#243;n y selecci&#243;n de los proyectos, programas y acciones, entre ellos, la inclusi&#243;n de los recicladores de base, la localizaci&#243;n o disponibilidad presupuestaria de los municipios y la celebraci&#243;n o ejecuci&#243;n de convenios con sistemas de gesti&#243;n.
+     b) Derechos y obligaciones de los proponentes seleccionados.
+     c) Entrega de los recursos y procedimientos de control.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">31 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705113">
+          <Texto> 
+     Art&#237;culo 32.- Recicladores de base. Los recicladores de base registrados en conformidad al art&#237;culo 37 podr&#225;n participar de la gesti&#243;n de residuos para el cumplimiento de las metas.
+     Para registrarse, deber&#225;n estar debidamente certificados en el marco del Sistema Nacional de Certificaci&#243;n de Competencias Laborales establecido en la ley N&#186; 20.267.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">32 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705114">
+          <Texto> 
+     Art&#237;culo 33.- De las obligaciones de los distribuidores y comercializadores. Los decretos supremos que establezcan metas y otras obligaciones asociadas podr&#225;n disponer que los distribuidores o comercializadores de productos prioritarios cuyas instalaciones tengan una determinada superficie, estar&#225;n obligados a:
+
+     1.- Convenir con un sistema de gesti&#243;n el establecimiento y operaci&#243;n de una instalaci&#243;n de recepci&#243;n y almacenamiento, de acuerdo a lo dispuesto en el decreto supremo. La operaci&#243;n de dicha instalaci&#243;n ser&#225; de cargo del sistema de gesti&#243;n.
+     2.- Aceptar sin costo la entrega de los residuos de productos prioritarios que comercialice de parte de los consumidores. La obligaci&#243;n de aceptar la entrega no podr&#225; supeditarse a la venta de un nuevo producto.
+     3.- Entregar a t&#237;tulo gratuito, al respectivo sistema de gesti&#243;n, todos aquellos residuos recibidos de los consumidores.
+ 
+     Las instalaciones de recepci&#243;n y almacenamiento destinadas a tal efecto no requerir&#225;n de una autorizaci&#243;n sanitaria adicional a la del mismo establecimiento.
+     Asimismo, se proh&#237;be a todo distribuidor y comercializador la enajenaci&#243;n de productos prioritarios cuyo productor no se encuentre adscrito a un sistema de gesti&#243;n, cuando est&#233; en riesgo la salubridad p&#250;blica o la conservaci&#243;n del patrimonio ambiental.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">33 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705115">
+          <Texto>
+     Art&#237;culo 34.- De las obligaciones de los consumidores. Todo consumidor estar&#225; obligado a entregar el residuo de un producto prioritario al respectivo sistema de gesti&#243;n, bajo las condiciones b&#225;sicas establecidas por &#233;stos e informadas a todos los involucrados.
+     Sin perjuicio de lo anterior, los consumidores industriales podr&#225;n valorizar, por s&#237; mismos o a trav&#233;s de gestores autorizados y registrados, los residuos de productos prioritarios que generen. En este caso, deber&#225;n informar al Ministerio, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes, sobre la valorizaci&#243;n efectuada.
+     Los consumidores industriales que generen una cantidad de residuos superior a la se&#241;alada en el decreto supremo que establezca las metas y otras obligaciones asociadas y no den cumplimiento a lo dispuesto en los incisos anteriores ser&#225;n sancionados en conformidad a la presente ley.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">34 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705116">
+          <Texto> 
+     Art&#237;culo 35.- Autorizaci&#243;n Sanitaria. Un reglamento establecer&#225; la regulaci&#243;n espec&#237;fica de un procedimiento simplificado, los plazos, las condiciones y los requisitos para la autorizaci&#243;n sanitaria de las labores de recolecci&#243;n y las instalaciones de recepci&#243;n y almacenamiento de residuos, peligrosos y no peligrosos, de productos prioritarios, desarrolladas por un gestor autorizado y registrado acorde a la presente ley.
+     Las instalaciones de pretratamiento de residuos no peligrosos se someter&#225;n a lo dispuesto en el inciso precedente.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">35 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705117">
+          <Texto> 
+     Art&#237;culo 36.- Permiso de Edificaci&#243;n. La Ordenanza General de Urbanismo y Construcciones regular&#225; un procedimiento simplificado para la obtenci&#243;n de permisos de edificaci&#243;n respecto de aquellas instalaciones de recepci&#243;n y almacenamiento de residuos de productos prioritarios sujetos a la presente ley, que lo requieran.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">36 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705118">
+      <Texto> 
+     T&#205;TULO V
+ 
+     SISTEMA DE INFORMACI&#211;N</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO V SISTEMA DE INFORMACI&#211;N</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705119">
+          <Texto> 
+     Art&#237;culo 37.- Registro. El Registro de Emisiones y Transferencia de Contaminantes, a que se refiere el art&#237;culo 70, letra p), de la ley N&#186; 19.300, contendr&#225; y permitir&#225; gestionar informaci&#243;n sobre:
+
+     a) Los productores de productos prioritarios.
+     b) Los sistemas de gesti&#243;n autorizados y sus integrantes.
+     c) Los distribuidores o comercializadores de productos prioritarios, cuando corresponda.
+     d) Las instalaciones de recepci&#243;n y almacenamiento.
+     e) Los gestores autorizados, incluyendo a las municipalidades y asociaciones de municipalidades que tuvieren convenios vigentes con un sistema de gesti&#243;n, relativos al manejo de residuos de productos prioritarios, y a los recicladores de base, de conformidad con el art&#237;culo 32.
+     f) El cumplimiento de metas de recolecci&#243;n y valorizaci&#243;n.
+     g) Toda otra informaci&#243;n que establezca el respectivo reglamento.
+ 
+     El reglamento establecer&#225; el contenido y funcionamiento del Registro, el que deber&#225; asegurar la confidencialidad comercial e industrial.
+     El Ministerio procurar&#225; que la informaci&#243;n contenida en el registro sea difundida en un lenguaje de f&#225;cil comprensi&#243;n a trav&#233;s de su sitio electr&#243;nico.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">37 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705120">
+      <Texto> 
+     T&#205;TULO VI
+ 
+     R&#201;GIMEN DE FISCALIZACI&#211;N Y SANCIONES</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO VI R&#201;GIMEN DE FISCALIZACI&#211;N Y SANCIONES</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705121">
+          <Texto> 
+     Art&#237;culo 38.- Fiscalizaci&#243;n y seguimiento. Corresponder&#225; a la Superintendencia la fiscalizaci&#243;n del cumplimiento de las metas de recolecci&#243;n y valorizaci&#243;n de residuos de cada producto prioritario y de las obligaciones asociadas, contenidas en el decreto respectivo, como asimismo, del funcionamiento del sistema de gesti&#243;n, el cumplimiento de los deberes de informaci&#243;n y otras obligaciones establecidas en la presente ley.
+     Cuando el Ministerio cuente con antecedentes que permitan presumir una infracci&#243;n, deber&#225; remitirlos a la Superintendencia y solicitar el inicio de un procedimiento sancionatorio.
+     Con el fin de verificar el cumplimiento de las obligaciones establecidas en esta ley, la Superintendencia podr&#225; requerir informaci&#243;n a gestores de residuos, a sistemas de gesti&#243;n, a distribuidores o comercializadores, al Ministerio de Salud, al Servicio Nacional de Aduanas, al Servicio de Impuestos Internos, a municipalidades, entre otros.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">38 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705122">
+          <Texto> 
+     Art&#237;culo 39.- Infracciones. Corresponder&#225; a la Superintendencia sancionar las siguientes infracciones, de conformidad a lo establecido en el P&#225;rrafo 3&#186; del T&#237;tulo III de su ley org&#225;nica.
+
+     Constituir&#225;n infracciones grav&#237;simas:
+
+     a) No inscribirse en el registro establecido en el art&#237;culo 37.
+     b) No contar con un sistema de gesti&#243;n autorizado.
+     c) Celebrar convenios con gestores en contravenci&#243;n a lo dispuesto en el art&#237;culo 24.
+     d) Entregar informaci&#243;n falsa a la Superintendencia o al Ministerio.
+     e) No entregar el informe final de cumplimiento de la meta de recolecci&#243;n y valorizaci&#243;n de residuos de productos prioritarios, dentro del plazo establecido en el decreto respectivo.
+     f) Entregar residuos de productos prioritarios a gestores no registrados ante el Ministerio.
+ 
+     Constituir&#225;n infracciones graves:
+
+     a) No cumplir con las metas de recolecci&#243;n y valorizaci&#243;n de residuos de productos prioritarios.
+     b) No contar con la fianza, seguro u otra garant&#237;a, seg&#250;n lo dispuesto en el art&#237;culo 22, letra a).
+     c) No declarar informaci&#243;n conforme al art&#237;culo 6&#186;.
+     d) No cumplir con lo dispuesto en el art&#237;culo 8&#186;.
+     e) No cumplir con las obligaciones asociadas establecidas en el decreto supremo que establezca metas de recolecci&#243;n y valorizaci&#243;n de residuos de productos prioritarios.
+     f) No cumplir con el requerimiento de informaci&#243;n efectuado por la Superintendencia.
+     g) No renovar la autorizaci&#243;n del sistema de gesti&#243;n.
+     h) Efectuar cambios al plan de gesti&#243;n sin previa autorizaci&#243;n, cuando &#233;sta sea requerida en conformidad al art&#237;culo 28.
+     i) No entregar los informes de avance de cumplimiento de las metas de recolecci&#243;n y valorizaci&#243;n de residuos de productos prioritarios, dentro del plazo establecido en el decreto respectivo.
+     j) No declarar oportunamente, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes, la informaci&#243;n exigida por la presente ley.
+     k) No cumplir con las obligaciones establecidas en el art&#237;culo 33.
+     l) No cumplir con lo dispuesto en el inciso tercero del art&#237;culo 34.
+ 
+     Constituir&#225;n infracciones leves:
+
+     a) No proporcionar al Ministerio informaci&#243;n adicional requerida.
+     b) No informar las modificaciones del plan de gesti&#243;n en los plazos establecidos por la ley, en los casos que no requiera de autorizaci&#243;n expresa.
+     c) No cumplir con la obligaci&#243;n de informar establecida en el art&#237;culo 11.
+     d) No cumplir con la obligaci&#243;n de informar establecida en el art&#237;culo segundo transitorio.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">39 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705123">
+          <Texto> 
+     Art&#237;culo 40.- Sanciones. Las infracciones a esta ley podr&#225;n ser objeto de las siguientes sanciones:
+
+     a) Amonestaci&#243;n por escrito.
+     b) Multa de hasta diez mil unidades tributarias anuales.
+ 
+     La sanci&#243;n que corresponda aplicar a cada infracci&#243;n se determinar&#225;, seg&#250;n su gravedad, dentro de los siguientes rangos:
+
+     a) Las infracciones grav&#237;simas podr&#225;n ser objeto de multa de hasta diez mil unidades tributarias anuales.
+     b) Las infracciones graves podr&#225;n ser objeto de multa de hasta cinco mil unidades tributarias anuales.
+     c) Las infracciones leves podr&#225;n ser objeto de amonestaci&#243;n por escrito o multa de hasta mil unidades tributarias anuales.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">40 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705124">
+          <Texto> 
+     Art&#237;culo 41.- Circunstancias para la determinaci&#243;n de la sanci&#243;n. Para la determinaci&#243;n de las sanciones espec&#237;ficas que en cada caso corresponda aplicar, se considerar&#225;n las siguientes circunstancias:
+
+     a) Beneficio econ&#243;mico del infractor.
+     b) Conducta del infractor.
+     c) Capacidad econ&#243;mica del infractor, excepto en el caso del sistema de gesti&#243;n colectivo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">41 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705125">
+          <Texto> 
+     Art&#237;culo 42.- Recursos. En contra de la resoluci&#243;n de la Superintendencia que aplique una sanci&#243;n, proceder&#225;n los recursos a que se refiere el P&#225;rrafo 4&#186; del T&#237;tulo III de su ley org&#225;nica.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">42 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705126">
+          <Texto> 
+     Art&#237;culo 43.- Responsabilidad civil. Sin perjuicio de las sanciones administrativas establecidas en la ley, el que cause da&#241;os ocasionados por el manejo de residuos peligrosos responder&#225; civilmente de manera objetiva por ellos.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">43 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705127">
+          <Texto> 
+     Art&#237;culo 44.- Responsabilidad penal por tr&#225;fico de residuos peligrosos. El que exporte, importe o maneje residuos peligrosos, prohibidos o sin contar con las autorizaciones para ello ser&#225; sancionado con la pena de presidio menor en su grado m&#237;nimo a medio.
+     Si adem&#225;s la actividad ha generado alg&#250;n tipo de impacto ambiental se aplicar&#225; la pena aumentada en un grado.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">44 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705128">
+      <Texto> 
+     T&#205;TULO VII
+ 
+     MODIFICACIONES DE OTROS CUERPOS NORMATIVOS</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO VII MODIFICACIONES DE OTROS CUERPOS NORMATIVOS</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705129">
+          <Texto> 
+     Art&#237;culo 45.- Agr&#233;gase en la letra h) del art&#237;culo 105 del decreto con fuerza de ley N&#186; 458, de 1975, del Ministerio de Vivienda y Urbanismo, que aprueba la ley General de Urbanismo y Construcciones, a continuaci&#243;n de la palabra "sanitarios", la siguiente frase: ", de reciclaje o separaci&#243;n de residuos en origen".</Texto>
+          <Metadatos>
+            <NombreParte presente="si">45 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705130">
+          <Texto> 
+     Art&#237;culo 46.- Modificaciones a la ley sobre Bases Generales del Medio Ambiente. Modif&#237;case la ley N&#186;19.300, sobre Bases Generales del Medio Ambiente, en el siguiente sentido:
+
+     a) Agr&#233;gase el siguiente p&#225;rrafo 6&#176; bis, a continuaci&#243;n del art&#237;culo 48 bis:
+ 
+     "P&#225;rrafo 6&#176; bis
+     De la certificaci&#243;n, rotulaci&#243;n y etiquetado
+     Art&#237;culo 48 ter.- Corresponder&#225; al Ministerio del Medio Ambiente otorgar certificados, r&#243;tulos o etiquetas a personas naturales o jur&#237;dicas p&#250;blicas o privadas, respecto de tecnolog&#237;as, procesos, productos, bienes, servicios o actividades, que sean voluntariamente solicitados y cumplan con los criterios de sustentabilidad y contribuci&#243;n a la protecci&#243;n del patrimonio ambiental del pa&#237;s, de acuerdo a los requisitos que establezca el reglamento.
+     Asimismo, el reglamento deber&#225; determinar el procedimiento al cual se sujetar&#225; el otorgamiento de los certificados, r&#243;tulos y etiquetas. El Ministerio podr&#225; encomendar a entidades t&#233;cnicas la verificaci&#243;n del cumplimiento de los requisitos que se&#241;ale el reglamento. La acreditaci&#243;n, autorizaci&#243;n y control de dichas entidades se regir&#225; por lo dispuesto en el reglamento a que hace referencia el art&#237;culo 3&#186;, letra c), de la Ley Org&#225;nica de la Superintendencia del Medio Ambiente.
+     Dicha Superintendencia ser&#225; la encargada de fiscalizar el debido cumplimiento de las disposiciones de que trata este art&#237;culo.
+     La infracci&#243;n de esta normativa ser&#225; sancionada de conformidad a lo dispuesto en el T&#237;tulo III de la ley org&#225;nica de la Superintendencia del Medio Ambiente, encontr&#225;ndose &#233;sta facultada, adem&#225;s, para revocar el certificado, r&#243;tulo o etiqueta como sanci&#243;n. Sin perjuicio de lo anterior, la falsificaci&#243;n o utilizaci&#243;n maliciosa de los certificados, r&#243;tulos o etiquetas ser&#225; sancionada seg&#250;n lo establecido en los art&#237;culos 193, 194 y 196, seg&#250;n corresponda, del C&#243;digo Penal.".
+
+     b) Introd&#250;cese la siguiente letra t bis) al art&#237;culo 70:
+
+     "t bis) Otorgar certificados, r&#243;tulos o etiquetas a personas naturales o jur&#237;dicas p&#250;blicas o privadas, respecto de tecnolog&#237;as, procesos, productos, bienes, servicios o actividades, que cumplan con los criterios de sustentabilidad y contribuci&#243;n a la protecci&#243;n del patrimonio ambiental del pa&#237;s, en conformidad a la ley.".</Texto>
+          <Metadatos>
+            <NombreParte presente="si">46 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705131">
+      <Texto>
+     DISPOSICIONES TRANSITORIAS</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">DISPOSICIONES TRANSITORIAS</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705132">
+          <Texto> 
+     Art&#237;culo primero.- Certificaci&#243;n de recicladores de base. Durante los primeros cinco a&#241;os de vigencia de esta ley, los recicladores de base podr&#225;n registrarse sin contar con la certificaci&#243;n exigida en el art&#237;culo 32. Transcurrido dicho plazo sin haber acreditado este requisito ante el Ministerio, caducar&#225; su inscripci&#243;n.
+     El Ministerio impulsar&#225; la creaci&#243;n de un proyecto de competencias laborales destinado a que los recicladores de base adquieran las aptitudes, conocimientos y destrezas necesarias para gestionar los residuos de acuerdo a la normativa vigente y permitirles obtener la certificaci&#243;n exigida en el art&#237;culo 32.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">PRIMERO</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705133">
+          <Texto>
+     Art&#237;culo segundo.- Obligaci&#243;n de informar. Mientras no entren en vigencia los decretos supremos que establezcan las metas y otras obligaciones asociadas de cada producto prioritario, el Ministerio podr&#225; requerir a los productores de productos prioritarios se&#241;alados en el art&#237;culo 10, informar anualmente, a trav&#233;s del Registro de Emisiones y Transferencias de Contaminantes, lo siguiente:
+
+     a) Cantidad de productos prioritarios comercializados en el pa&#237;s durante el a&#241;o inmediatamente anterior.
+     b) Actividades de recolecci&#243;n, valorizaci&#243;n y eliminaci&#243;n realizadas en igual per&#237;odo, y su costo.
+     c) Cantidad de residuos recolectados, valorizados y eliminados en dicho lapso.
+     d) Indicaci&#243;n de si la gesti&#243;n para las actividades de recolecci&#243;n y valorizaci&#243;n es individual o colectiva.
+ 
+     Dicha informaci&#243;n deber&#225; ser entregada por primera vez en un plazo m&#225;ximo de doce meses contado desde la publicaci&#243;n de la presente ley.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">SEGUNDO</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705134">
+          <Texto> 
+     Art&#237;culo tercero.- Plazo para dictar reglamentos. Los reglamentos referidos en esta ley deber&#225;n dictarse o actualizarse, seg&#250;n corresponda, dentro del plazo de un a&#241;o contado desde la publicaci&#243;n de la presente ley.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">TERCERO</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2016-06-01" derogado="no derogado" idParte="9705135">
+          <Texto>
+     Art&#237;culo cuarto.- Gasto fiscal. El mayor gasto fiscal que represente la aplicaci&#243;n esta ley durante el a&#241;o presupuestario de su entrada en vigencia, se financiar&#225; con cargo a la partida presupuestaria del Ministerio del Medio Ambiente. No obstante, el Ministerio de Hacienda, con cargo a la partida presupuestaria del Tesoro P&#250;blico, podr&#225; suplementar dicho presupuesto en la parte del gasto que no se pudiere financiar con esos recursos.
+
+     En los a&#241;os siguientes se financiar&#225; con cargo a los recursos que se establezcan en las respectivas leyes de presupuestos del Sector P&#250;blico.".</Texto>
+          <Metadatos>
+            <NombreParte presente="si">CUARTO</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="2016-06-01" derogado="no derogado">
+    <Texto>
+     Habi&#233;ndose cumplido con lo establecido en el N&#186; 1&#186; del art&#237;culo 93 de la Constituci&#243;n Pol&#237;tica de la Rep&#250;blica y por cuanto he tenido a bien aprobarlo y sancionarlo; por tanto prom&#250;lguese y ll&#233;vese a efecto como Ley de la Rep&#250;blica.
+
+     Santiago, 17 de mayo de 2016.- MICHELLE BACHELET JERIA, Presidenta de la Rep&#250;blica.- Pablo Badenier Mart&#237;nez, Ministro del Medio Ambiente.- Jorge Burgos Varela, Ministro del Interior y Seguridad P&#250;blica.- Rodrigo Vald&#233;s Pulido, Ministro de Hacienda.- Carmen Castillo Taucher, Ministra de Salud.- Paulina Saball
+Astaburuaga, Ministra de Vivienda y Urbanismo.
+
+     Lo que comunico para su conocimiento.- Marcelo Mena Carrasco, Subsecretario del Medio Ambiente.</Texto>
+  </Promulgacion>
+  <Anexos>
+    <Anexo fechaVersion="2016-06-01" derogado="no derogado" idParte="9705137" transitorio="no transitorio">
+      <Metadatos>
+        <Titulo>Tribunal Constitucional Proyecto de ley que establece marco para la gesti&#243;n de residuos y responsabilidad extendida del productor, correspondiente al bolet&#237;n N&#186; 9094-12.</Titulo>
+        
+      </Metadatos>
+      <Texto> 
+     Tribunal Constitucional
+ 
+Proyecto de ley que establece marco para la gesti&#243;n de residuos y responsabilidad extendida del productor, correspondiente al bolet&#237;n N&#186; 9094-12.
+ 
+     El Secretario del Tribunal Constitucional, quien suscribe, certifica que la Honorable C&#225;mara de Diputados env&#237;o el proyecto de ley enunciado en el rubro, aprobado por el Congreso Nacional, a fin de que este Tribunal ejerciera el control preventivo de constitucionalidad respecto de los art&#237;culos 16, 25 y 30 inciso final 30 del proyecto de ley, y por sentencia de 12 de mayo de 2016, en los autos Rol N&#186; 3020-16-CPR,
+ 
+     Se resuelve:
+ 
+     1.- Que son propios de ley org&#225;nica constitucional y constitucionales la oraci&#243;n "Tal decreto ser&#225; reclamable en los t&#233;rminos establecidos en el art&#237;culo 16", contenida en el art&#237;culo 4&#186;, inciso cuarto, y los art&#237;culos 16, incisos primero y tercero; 24, inciso cuarto; 26, inciso segundo; 25, inciso tercero, y 30, inciso final, del proyecto de ley sometido a control.
+     2.- Que no se emitir&#225; pronunciamiento, por no versar sobre materias propias de ley org&#225;nica constitucional respecto de los art&#237;culos 16, incisos segundo y cuarto; 25, incisos primero y segundo; 30, letras a) y b), 42 y 44 del proyecto de ley.
+ 
+     Santiago, 12 de mayo de 2016.- Rodrigo Pica Flores.</Texto>
+    </Anexo>
+  </Anexos>
+</Norma>

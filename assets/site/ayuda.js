@@ -1,8 +1,9 @@
-/* Transporte Autorizado: «Documentos» en la cabecera. Al elegirlo, la misma píldora de la cabecera se expande y muestra
-   las guías (¿peligroso o no?, autorización sanitaria, antes de contratar) y la normativa, cada una con su explicación:
-   en escritorio, lista a la izquierda y explicación a la derecha (se cambia al pasar el puntero); en el teléfono, cada
-   tema se despliega en su lugar. El contenido viene en el HTML (tools/documentos.py), así también lo leen los buscadores.
-   También da la confirmación de las descargas ([data-download], [data-doc-pdf]) en todas las páginas. */
+/* Transporte Autorizado: «Ayuda» en la cabecera. Al elegirlo, la misma píldora de la cabecera se expande y muestra las
+   guías rápidas (¿peligroso o no?, autorización sanitaria, antes de contratar) y los documentos (checklist descargable y
+   normativa con búsqueda), cada uno con su explicación: en escritorio, lista a la izquierda y detalle a la derecha (cambia
+   al pasar el puntero); en el teléfono, cada tema se despliega en su lugar. El contenido viene en el HTML (tools/ayuda.py),
+   así también lo leen los buscadores. Cualquier enlace con [data-docs-open] abre el panel; con valor, en ese tema
+   (p. ej. data-docs-open="normativa"). También da la confirmación de las descargas ([data-download], [data-doc-pdf]). */
 (() => {
   const d = document;
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
@@ -29,8 +30,11 @@
   const items = [...panel.querySelectorAll('[data-docs-item]')];
   const tabOf = (item) => item.querySelector('[data-docs-tab]');
   const toggle = header.querySelector('.menu-toggle');
+  const byKey = (key) => items.find((it) => it.dataset.docsItem === key) || null;
+  const scroller = panel.querySelector('.docs-scroll');
   let open = false;
-  let current = null;
+  /* Parte en el tema de la página en que se está: su guía, o la normativa al leer una norma */
+  let current = items.find((it) => location.pathname.endsWith(`/ayuda/${it.dataset.docsItem}.html`)) || (location.pathname.includes('/normativa/') ? byKey('normativa') : null);
   let opener = null;
 
   const placeGlide = (instant) => {
@@ -41,27 +45,50 @@
     glide.style.transform = `translateY(${on.offsetTop}px)`;
     glide.style.height = `${on.offsetHeight}px`;
   };
+  /* Teléfono: el tema que se abre sube hasta el borde superior del panel, al mismo tiempo que se despliega
+     (la posición se recalcula en cada cuadro porque el tema anterior se está cerrando) */
+  let revealRaf = 0;
+  const reveal = (item) => {
+    cancelAnimationFrame(revealRaf);
+    if (wide.matches || !item || !scroller) return;
+    const tab = tabOf(item);
+    const want = () => tab.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop - 2;
+    const from = scroller.scrollTop;
+    const t0 = performance.now();
+    const D = motion.matches ? 480 : 0;
+    const step = (now) => {
+      const t = D ? Math.min(1, (now - t0) / D) : 1;
+      scroller.scrollTop = from + (want() - from) * (1 - (1 - t) ** 3);
+      if (t < 1) revealRaf = requestAnimationFrame(step);
+    };
+    revealRaf = requestAnimationFrame(step);
+  };
+  ['touchstart', 'wheel'].forEach((ev) => scroller?.addEventListener(ev, () => cancelAnimationFrame(revealRaf), { passive: true }));
   const select = (item, { instant = false } = {}) => {
     current = item;
     items.forEach((it) => {
       const on = it === item;
       it.classList.toggle('is-on', on);
       tabOf(it).setAttribute('aria-expanded', String(on));
+      it.querySelector('.docs-detail').inert = !on;
     });
     placeGlide(instant);
+    reveal(item);
   };
 
-  const setOpen = (next, { focus = false } = {}) => {
-    if (next === open) return;
+  const setOpen = (next, { focus = false, item = null } = {}) => {
+    if (next && item) current = item;
+    if (next === open) { if (open && item) select(item); return; }
     open = next;
     header.classList.toggle('docs-open', open);
+    d.documentElement.classList.toggle('docs-is-open', open);  // la burbuja «?» se aparta mientras el panel está abierto
     panel.inert = !open;
     triggers.forEach((t) => t.setAttribute('aria-expanded', String(open)));
-    if (toggle) toggle.setAttribute('aria-label', open ? 'Cerrar documentos' : 'Abrir menú');
+    if (toggle) toggle.setAttribute('aria-label', open ? 'Cerrar ayuda' : 'Abrir menú');
     if (open) {
       /* En escritorio siempre hay un tema a la vista; en el teléfono la lista parte cerrada */
       if (wide.matches) select(current || items[0], { instant: true });
-      else if (!current) select(null);
+      else select(item || null);
       if (focus) tabOf(current || items[0]).focus({ preventScroll: true });
     } else if (focus) (opener && opener.isConnected ? opener : triggers[0]).focus({ preventScroll: true });
   };
@@ -69,9 +96,20 @@
   triggers.forEach((t) => t.addEventListener('click', (e) => {
     e.preventDefault();
     opener = t.getClientRects().length ? t : toggle;
-    /* Teclado (Enter/Espacio) lleva el foco al primer tema; con puntero, el foco queda donde está */
-    setOpen(!open, { focus: e.detail === 0 });
+    const item = byKey(t.dataset.docsOpen);
+    /* Teclado (Enter/Espacio) lleva el foco al primer tema; con puntero, el foco queda donde está.
+       Repetir el mismo enlace cierra el panel; pedir otro tema lo cambia sin cerrarlo */
+    setOpen(!(open && (!item || item === current)), { focus: e.detail === 0, item });
   }));
+  /* Enlaces que llegan desde otra página: …#ayuda abre el panel y …#normativa lo abre en la normativa */
+  const HASH = { '#ayuda': null, '#documentos': null, '#normativa': 'normativa', '#checklist': 'checklist' };
+  const fromHash = () => {
+    if (!(location.hash in HASH)) return;
+    setOpen(true, { item: byKey(HASH[location.hash]) });
+    history.replaceState(history.state, '', location.pathname + location.search);
+  };
+  fromHash();
+  addEventListener('hashchange', fromHash);
 
   /* Temas: en escritorio, al pasar el puntero (con una breve intención) o al elegirlo; en el teléfono, se despliegan */
   let intent = 0;
@@ -103,9 +141,14 @@
   d.addEventListener('keydown', (e) => { if (open && e.key === 'Escape' && !d.querySelector('dialog[open]')) { e.preventDefault(); setOpen(false, { focus: true }); } });
   d.addEventListener('pointerdown', (e) => { if (open && !header.contains(e.target)) setOpen(false); });
   panel.addEventListener('click', (e) => { if (e.target.closest('a[href], [data-dock-open], [data-docs-close]') && !e.target.closest('[data-download]')) setOpen(false); });
-  /* Si la cabecera pasa a barra de lectura (normas), el panel se cierra */
-  new MutationObserver(() => { if (open && header.classList.contains('is-reading')) setOpen(false); }).observe(header, { attributes: true, attributeFilter: ['class'] });
-  /* En el teléfono, el botón del menú se vuelve «cerrar» mientras los documentos están abiertos */
+  /* Si la cabecera pasa a barra de lectura (normas) con el panel abierto, se cierra; desde la barra de lectura sí se puede abrir */
+  let reading = header.classList.contains('is-reading');
+  new MutationObserver(() => {
+    const now = header.classList.contains('is-reading');
+    if (now && !reading && open) setOpen(false);
+    reading = now;
+  }).observe(header, { attributes: true, attributeFilter: ['class'] });
+  /* En el teléfono, el botón del menú se vuelve «cerrar» mientras la ayuda está abierta */
   if (toggle) d.addEventListener('click', (e) => {
     if (!open || !e.target.closest('.menu-toggle')) return;
     e.preventDefault();

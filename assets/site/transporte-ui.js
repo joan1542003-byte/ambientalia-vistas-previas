@@ -64,6 +64,7 @@
       programado: 'Eliges el día del primer retiro y lo organizamos mes a mes.',
       flexible: 'Tú propones hasta tres días y coordinamos según disponibilidad.'
     };
+    const PIN_FLAG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
     /* Texto visible de cada fila */
     const paint = () => {
       const show = (name, text, placeholder) => {
@@ -80,6 +81,10 @@
       show('cantidad', field('cantidad').value);
       show('comuna', field('comuna').value);
       show('direccion', field('direccion').value);
+      /* Si además se marcó el punto en el mapa, la fila lo dice bajo la dirección */
+      const dirText = form.querySelector('[data-pick="direccion"] .pick-text');
+      dirText?.querySelector('.pick-flag')?.remove();
+      if (dirText && field('ubicacion')?.value && field('direccion').value) dirText.insertAdjacentHTML('beforeend', `<span class="pick-flag">${PIN_FLAG}Punto marcado en el mapa</span>`);
       /* Tipo de retiro: tres botones en la misma fila y una línea que explica el elegido */
       form.querySelectorAll('[data-modalidad]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.modalidad === when.modalidad)));
       const hint = form.querySelector('[data-modalidad-hint]');
@@ -153,13 +158,38 @@
         if (v) set('comuna', v.commune);
         return v;
       },
-      /* La dirección se escribe en su propia ventana: el campo queda arriba y el teclado no mueve la pantalla */
+      /* La dirección se escribe en su propia ventana: el campo queda arriba y el teclado no mueve la pantalla.
+         Mientras se escribe aparecen calles reales (geo.js); al elegir una, la comuna queda puesta también.
+         En la misma ventana se puede marcar el punto exacto en un mapa (mapa.js): viaja como enlace de Google Maps */
       direccion: async () => {
+        let picked = null;
+        const GEO = window.GEO;
+        const MAPA = field('ubicacion') ? window.MAPA : null;
+        const antes = { texto: field('direccion').value, punto: MAPA?.punto(field('ubicacion').value) || null };
+        let punto = antes.punto;
+        GEO?.prepare();  // el índice de calles se descarga al abrir la dirección
         const v = await Picker.text({
           title: '¿Dónde retiramos?', sub: 'Calle y número, y una referencia si ayuda: bodega, portón o piso.',
-          label: 'Dirección del retiro', value: field('direccion').value, placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address'
+          label: 'Dirección del retiro', value: field('direccion').value, placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address',
+          suggest: GEO ? (q, signal) => GEO.suggest(q, { comuna: field('comuna').value, signal }) : null,
+          onSuggest: (it) => { picked = it; }, source: GEO?.fuente || '',
+          map: MAPA ? { value: punto, locate: (texto) => GEO?.locate(texto, { comuna: field('comuna').value }) ?? null, onDone: (p) => { punto = p; } } : null
         });
-        if (v) set('direccion', v);
+        if (v) {
+          set('direccion', v);
+          /* Si cambió la calle y el punto del mapa sigue siendo el de antes, ese punto ya no corresponde: se quita */
+          const calle = (t) => (GEO ? GEO.nucleo(GEO.partes(t).calle) : PICK.fold(t));  // «Av. X 123» y «Avenida X 123, bodega 2» son la misma calle
+          if (punto && punto === antes.punto && antes.texto && calle(v) !== calle(antes.texto)) {
+            punto = null;
+            window.SITE.toast?.('Quitamos el punto del mapa porque cambió la dirección');
+          }
+          if (MAPA) set('ubicacion', MAPA.enlace(punto));
+          if (picked?.comuna && v.startsWith(picked.label) && picked.comuna !== field('comuna').value) {
+            set('comuna', picked.comuna);
+            form.querySelector('[data-pick="comuna"]')?.removeAttribute('data-invalid');
+            window.SITE.toast?.(`Comuna: ${picked.comuna}`);
+          }
+        }
         return v;
       },
       fecha: async () => {
@@ -238,6 +268,7 @@
         if (a.cantidad) set('cantidad', a.cantidad);
         if (a.comuna) set('comuna', a.comuna);
         if (a.direccion) field('direccion').value = a.direccion;
+        if (a.direccion && field('ubicacion') && window.MAPA) set('ubicacion', window.MAPA.enlace(meta.punto || null));
         const mode = Object.entries(PICK.MODE_LABEL).find(([, label]) => label === a.modalidad)?.[0];
         if (mode) {
           when.modalidad = mode;
@@ -251,11 +282,28 @@
         if (a.documentos) set('documentos', a.documentos.split(', ').map((x) => DOC_MAP[x] || (PICK.DOCS.includes(x) ? x : null)).filter(Boolean).join(', '));
         ['empresa', 'nombre', 'telefono', 'correo'].forEach((k) => { if (a[k]) field(k).value = a[k]; });
         field('tipo').dispatchEvent(new Event('change', { bubbles: true }));
+      },
+      /* Desde el campo del hero: completa en el formulario lo que se entiende de la frase («600 kg de cartón en Quilicura»,
+         «necesito un retiro urgente») y deja a la vista lo que falta. Devuelve el aviso de cobertura, si lo hay */
+      fromText: (text) => {
+        const r = window.PARSE.read(text);
+        const a = {};
+        const meta = { dates: {} };
+        const understood = r.categoria || r.cantidad || r.comuna || r.modalidad || r.fecha || r.horario || r.almacenamiento || r.documentos.length;
+        if (r.categoria) a.residuo = r.categoria;
+        else if (!understood && !r.greeting && !r.fueraDeCobertura) a.residuo = text.trim().slice(0, 160);  // descripción libre del residuo
+        if (r.cantidad) a.cantidad = r.cantidad.label;
+        if (r.comuna) a.comuna = r.comuna.commune;
+        if (r.almacenamiento) a.almacenamiento = r.almacenamiento;
+        if (r.documentos.length) a.documentos = r.documentos.join(', ');
+        if (r.fecha && r.modalidad !== 'flexible') { a.modalidad = PICK.MODE_LABEL.programado; meta.dates.fecha = [r.fecha]; }
+        else if (r.fecha) { a.modalidad = PICK.MODE_LABEL.flexible; meta.dates.fechas = [r.fecha]; }
+        else if (r.modalidad) a.modalidad = PICK.MODE_LABEL[r.modalidad];
+        if (r.horario) a.horario = r.horario;
+        window.QUOTE.fill({ answers: a, meta });
+        return r.fueraDeCobertura ? `Por ahora coordinamos retiros en la Región Metropolitana; ${r.fueraDeCobertura} queda fuera.` : (r.fechaError && !r.fecha ? r.fechaError : '');
       }
     };
-    form.closest('.hcard-panel').querySelector('.mode-toggle')?.addEventListener('click', (e) => {
-      if (e.target.closest('[data-mode="chat"]')) window.GUIDE?.open();
-    });
     normalize();
     window.SITE.refresh?.();
   }
@@ -583,7 +631,9 @@
         window.HERO?.show('buscar');
         return;
       }
-      window.GUIDE?.ingest(text);
+      /* Cotizar es siempre el formulario: llega con lo que se entendió ya completado */
+      const aviso = window.QUOTE?.fromText(text);
+      window.HERO?.show('cotizar').then(() => { if (aviso) window.SITE.toast?.(aviso); });
     });
     addEventListener('pagehide', () => clearTimeout(timer));
   }
