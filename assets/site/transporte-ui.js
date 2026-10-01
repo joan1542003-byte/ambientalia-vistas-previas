@@ -160,9 +160,11 @@
       },
       /* La dirección se escribe en su propia ventana: el campo queda arriba y el teclado no mueve la pantalla.
          Mientras se escribe aparecen calles reales (geo.js); al elegir una, la comuna queda puesta también.
-         En la misma ventana se puede marcar el punto exacto en un mapa (mapa.js): viaja como enlace de Google Maps */
+         La misma ventana tiene un mapa conectado con el texto (mapa.js): muestra la dirección escrita y, si se marca un
+         punto en él, escribe su dirección; el punto viaja como enlace de Google Maps */
       direccion: async () => {
         let picked = null;
+        let lugar = null;  // comuna del punto marcado en el mapa
         const GEO = window.GEO;
         const MAPA = field('ubicacion') ? window.MAPA : null;
         const antes = { texto: field('direccion').value, punto: MAPA?.punto(field('ubicacion').value) || null };
@@ -173,7 +175,7 @@
           label: 'Dirección del retiro', value: field('direccion').value, placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address',
           suggest: GEO ? (q, signal) => GEO.suggest(q, { comuna: field('comuna').value, signal }) : null,
           onSuggest: (it) => { picked = it; }, source: GEO?.fuente || '',
-          map: MAPA ? { value: punto, locate: (texto) => GEO?.locate(texto, { comuna: field('comuna').value }) ?? null, onDone: (p) => { punto = p; } } : null
+          map: MAPA?.paraTexto({ comuna: () => field('comuna').value, value: punto, onDone: (p) => { punto = p; }, onPlace: (x) => { lugar = x; } }) || null
         });
         if (v) {
           set('direccion', v);
@@ -184,10 +186,12 @@
             window.SITE.toast?.('Quitamos el punto del mapa porque cambió la dirección');
           }
           if (MAPA) set('ubicacion', MAPA.enlace(punto));
-          if (picked?.comuna && v.startsWith(picked.label) && picked.comuna !== field('comuna').value) {
-            set('comuna', picked.comuna);
+          /* La comuna queda la del punto marcado o, si no hay, la de la calle sugerida */
+          const comuna = (punto && lugar?.comuna) || (picked?.comuna && v.startsWith(picked.label) ? picked.comuna : '');
+          if (comuna && comuna !== field('comuna').value) {
+            set('comuna', comuna);
             form.querySelector('[data-pick="comuna"]')?.removeAttribute('data-invalid');
-            window.SITE.toast?.(`Comuna: ${picked.comuna}`);
+            window.SITE.toast?.(`Comuna: ${comuna}`);
           }
         }
         return v;

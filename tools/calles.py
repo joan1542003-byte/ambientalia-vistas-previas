@@ -84,8 +84,12 @@ def overpass(q, intentos=6):
 
 
 def anillos(rel):
-    """Anillos exteriores del límite de la comuna, como listas de (lat, lon), cosiendo las vías que lo forman."""
-    r = json.loads(overpass(f'[out:json][timeout:90];rel({rel});out geom;'))['elements'][0]
+    """Anillos exteriores del límite de la comuna, como listas de (lat, lon)."""
+    return coser(json.loads(overpass(f'[out:json][timeout:90];rel({rel});out geom;'))['elements'][0])
+
+
+def coser(r):
+    """Anillos exteriores de una relación de límite (con su geometría), cosiendo las vías que la forman."""
     tramos = [[(p['lat'], p['lon']) for p in m['geometry']] for m in r['members']
               if m['type'] == 'way' and m.get('role') in ('outer', '') and m.get('geometry')]
     out = []

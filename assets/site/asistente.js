@@ -188,7 +188,7 @@
       /* En la dirección aparecen calles reales mientras se escribe abajo (geo.js) */
       const geo = s.id === 'direccion' && window.GEO;
       if (geo) window.GEO.prepare();
-      const mapa = s.id === 'direccion' && window.MAPA && Picker.map;
+      const mapa = s.id === 'direccion' && window.MAPA && window.GEO;
       body.innerHTML = `<div class="guide-step">${heading(s)}${geo ? `<ul class="text-suggest" data-geo aria-label="Sugerencias" hidden></ul><p class="text-source" hidden>${esc(window.GEO.fuente)}</p>` : ''}${mapa ? `<div class="text-map" data-guide-map><button type="button" class="map-open" data-guide-map-open aria-haspopup="dialog"><span class="map-open-icon" aria-hidden="true">${PIN}</span><span class="map-open-text"><strong></strong><small></small></span><span class="map-open-chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button></div>` : ''}</div>`;
       input.value = value || '';
       paintMapRow();
@@ -326,23 +326,34 @@
   };
 
   /* Dirección: sugerencias de calles reales mientras se escribe; al tocar una queda escrita abajo para completarla y enviarla */
-  /* Punto en el mapa (opcional): se marca en una ventana aparte y viaja como enlace de Google Maps */
+  /* Mapa (opcional): abre la misma ventana de dirección del formulario, donde el texto y el mapa se completan entre sí.
+     Al confirmar, la dirección queda respondida; el punto marcado viaja como enlace de Google Maps */
   const paintMapRow = () => {
     const zone = body.querySelector('[data-guide-map]');
     if (!zone) return;
     zone.classList.toggle('has-point', Boolean(meta.punto));
-    zone.querySelector('strong').textContent = meta.punto ? 'Punto marcado en el mapa' : 'Marcar el punto en el mapa';
-    zone.querySelector('small').textContent = meta.punto ? 'Toca para verlo o cambiarlo' : 'Opcional: ayuda a llegar al lugar exacto';
+    zone.querySelector('strong').textContent = meta.punto ? 'Punto marcado en el mapa' : 'Ubicar en el mapa';
+    zone.querySelector('small').textContent = meta.punto ? 'Toca para verlo o cambiarlo' : 'Toca el lugar y escribimos la dirección';
   };
   body.addEventListener('click', async (e) => {
     if (!e.target.closest('[data-guide-map-open]')) return;
-    const r = await Picker.map({
-      title: 'Marca el punto del retiro', sub: 'Mueve el mapa hasta dejar el marcador sobre el lugar.', value: meta.punto || null,
-      vista: window.GEO?.locate(input.value || answers.direccion || '', { comuna: answers.comuna || '' }) ?? null
+    const GEO = window.GEO;
+    let punto = meta.punto || null;
+    let elegido = null;
+    let lugar = null;
+    const v = await Picker.text({
+      title: '¿Dónde retiramos?', sub: 'Calle y número, y una referencia si ayuda: bodega, portón o piso.', label: 'Dirección del retiro',
+      value: input.value.trim() || answers.direccion || '', placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address',
+      suggest: (q, signal) => GEO.suggest(q, { comuna: answers.comuna || '', signal }), onSuggest: (it) => { elegido = it; }, source: GEO.fuente,
+      map: window.MAPA.paraTexto({ comuna: () => answers.comuna || '', value: punto, onDone: (p) => { punto = p; }, onPlace: (x) => { lugar = x; } })
     });
-    if (r === undefined) return;  // cerró sin confirmar
-    meta.punto = r;
-    paintMapRow();
+    if (!v) return;  // cerró sin confirmar
+    meta.punto = punto;
+    /* La comuna queda la del punto marcado o, si no hay, la de la calle sugerida (interpret la aplica) */
+    geoPicked = punto && lugar?.comuna ? { label: v, comuna: lugar.comuna } : elegido;
+    input.value = '';
+    geoDraw([]);
+    go(() => interpret(v));
   });
   const PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
   let geoItems = [];

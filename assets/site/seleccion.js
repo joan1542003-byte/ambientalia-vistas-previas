@@ -392,7 +392,8 @@
   /* Ventana de texto. Con `suggest` (función async que recibe lo escrito y una señal para cancelar) muestra sugerencias
      bajo el campo mientras se escribe; al elegir una, queda escrita y se puede seguir completando (bodega, piso…). */
   const PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
-  /* Fila que despliega el mapa para marcar el punto exacto (mapa.js). `map`: { value, locate(texto), onDone(punto) } */
+  /* Fila con el mapa de la dirección (mapa.js). `map` lo arma MAPA.paraTexto(): { value, onDone(punto), onPlace({ comuna }),
+     key(texto), parts(texto), locate(texto, comuna), search(texto, comuna), reverse(punto), near(texto, punto, metros), warm() } */
   const MAP_ROW = `<div class="text-map" data-map>
       <button type="button" class="map-open" data-map-open aria-expanded="false" aria-controls="picker-map">
         <span class="map-open-icon" aria-hidden="true">${PIN}</span>
@@ -428,28 +429,203 @@
       commit();
     });
     let hideSuggest = () => {};
+    let chosen = '';                // calle ya elegida (sugerencia o mapa): lo que se agregue después no reabre la lista
+    let comunaElegida = '';         // comuna de la sugerencia elegida: orienta al mapa mientras la calle siga siendo esa
+    let alCambiarTexto = () => {};  // lo conecta el mapa: muestra en él la dirección escrita
     if (withMap) {
+      /* Texto y mapa se completan entre sí, con estas reglas:
+         - El punto que marca la persona (mover el mapa, tocar un lugar, «Mi ubicación», «Marcar aquí») es suyo: nada
+           de lo que escriba después lo mueve ni lo quita. Solo lo cambia ella, en el mapa.
+         - Al marcar un punto se escribe su dirección. El número que la persona escribió a mano se respeta si el punto
+           quedó en esa misma calle o junto a ella; el que había escrito el mapa se reemplaza por el del nuevo lugar.
+         - Sin punto de la persona, el mapa sigue a lo escrito; si conoce ese número exacto, lo deja marcado.
+         Cada acción (escribir, mover el mapa) deja obsoletas las respuestas que venían en camino. */
       const zone = el.body.querySelector('[data-map]');
       const opener = zone.querySelector('[data-map-open]');
+      const clave = (t) => (map.key ? map.key(t) : t.trim().toLowerCase());
+      const partesDe = (t) => (map.parts ? map.parts(t) : { calle: t.trim(), numero: '', resto: '' });
+      const AVISO = {
+        escrita: 'Escribimos la dirección de ese lugar.',
+        faltaNumero: 'Falta el número: agrégalo a la dirección.',
+        seMantiene: 'Se mantiene la dirección que escribiste.',
+        sinCalle: 'Escribe la dirección de ese lugar.',
+        otraCalle: 'El punto marcado no está en esa calle. Mueve el mapa si el lugar cambió.',
+        tramo: 'No tenemos ese número exacto: el mapa muestra dónde debería estar. Toca el lugar para marcarlo.',
+        zona: 'No tenemos ese número: el mapa muestra la zona aproximada de la calle. Toca el lugar exacto para marcarlo.',
+        comunas: 'Esa calle existe en más de una comuna. Elige la tuya en las sugerencias o toca el lugar para marcarlo.',
+        calles: 'Hay más de una calle con ese nombre en la comuna. Si es aquí, toca el lugar para marcarlo; si no, mueve el mapa.'
+      };
       let ctl = null;
+      let origen = point ? 'persona' : '';  // quién puso el punto: 'persona' o 'busqueda' (el mapa conocía la dirección escrita)
+      let buscado = null;                   // { calle, numero }: dirección a la que corresponde el punto de la búsqueda
+      let delMapa = null;                   // { calle, numero }: lo último que el mapa escribió en el campo (ese número no es de la persona)
+      let turno = 0;
+      let tecleo = 0;
+      let toques = 0;                       // veces que la persona tocó el mapa: desde ahí, lo ya escrito no lo mueve
+      let visto = { t: point ? value.trim() : '', preciso: Boolean(point) };  // última dirección que ya se llevó al mapa
+      let tCalle = 0;
+      let tNumero = 0;
       const paintRow = () => {
         zone.classList.toggle('has-point', Boolean(point));
-        opener.querySelector('strong').textContent = point ? 'Punto marcado en el mapa' : 'Marcar el punto en el mapa';
-        opener.querySelector('small').textContent = point ? 'Toca para verlo o cambiarlo' : 'Opcional: ayuda a llegar al lugar exacto';
+        opener.querySelector('strong').textContent = point ? 'Punto marcado en el mapa' : 'Ubicación en el mapa';
+        opener.querySelector('small').textContent = point ? 'Se enviará como enlace de Google Maps' : 'Escribe la dirección o toca el lugar: se completan entre sí';
       };
-      opener.addEventListener('click', () => {
-        const on = opener.getAttribute('aria-expanded') !== 'true';
-        opener.setAttribute('aria-expanded', String(on));
-        zone.classList.toggle('is-open', on);
-        if (!on) return;
+      const sinPunto = () => { point = null; origen = ''; buscado = null; paintRow(); };
+      /* Mapa → texto: la persona marcó un punto (o lo quitó) y se escribe su dirección */
+      const alMover = (x, como, extra) => {
+        const mine = ++turno;
+        /* Con «Mi ubicación» se dice con qué margen de error quedó el punto: la persona sabe si conviene ajustarlo */
+        const decir = (msg) => ctl?.note(`${como === 'ubicacion' ? `Punto marcado donde estás${extra?.margen ? ` (±${extra.margen})` : ''}` : 'Punto marcado'}. ${msg}`);
+        if (!x) {
+          sinPunto();
+          visto = { t: input.value.trim(), preciso: true };  // quitar el punto no hace que el mapa lo vuelva a buscar
+          return;
+        }
+        point = x;
+        origen = 'persona';
+        buscado = null;
+        paintRow();
+        if (!map.reverse) return;
+        const antes = tecleo;
+        (async () => {
+          let r = null;
+          try { r = await map.reverse(x); } catch { r = null; }
+          if (mine !== turno || !dlg.open || !r) return;
+          if (r.comuna) map.onPlace?.({ comuna: r.comuna });
+          if (tecleo !== antes) return;  // la persona siguió escribiendo: manda su texto
+          const cur = partesDe(input.value);
+          if (!r.calle) { if (!input.value.trim()) decir(AVISO.sinCalle); return; }
+          const manual = Boolean(cur.numero) && !(delMapa && delMapa.numero === cur.numero && delMapa.calle === clave(cur.calle));
+          const misma = clave(cur.calle) === clave(r.calle);
+          if (manual && !misma) {
+            let cerca = null;
+            try { cerca = await map.near?.(input.value, x); } catch { cerca = null; }
+            if (mine !== turno || !dlg.open || tecleo !== antes) return;
+            if (cerca !== false) { decir(AVISO.seMantiene); return; }  // el punto quedó junto a la calle escrita (o no se puede comparar)
+          }
+          /* Con «Mi ubicación» no se escribe número: el dispositivo no distingue una casa de la del lado */
+          const numero = manual && misma ? cur.numero : como === 'ubicacion' ? '' : r.numero;
+          const base = `${r.calle}${numero ? ` ${numero}` : ''}`;
+          input.value = `${base}${cur.resto ? `, ${cur.resto}` : ''}`.slice(0, maxlength);
+          delMapa = manual && misma ? null : { calle: clave(base), numero };
+          chosen = base;
+          comunaElegida = r.comuna || '';
+          visto = { t: input.value.trim(), preciso: true };
+          hideSuggest();
+          sync();
+          decir(manual && misma ? AVISO.seMantiene : numero ? AVISO.escrita : AVISO.faltaNumero);
+        })();
+      };
+      const abrir = (manual) => {
+        opener.setAttribute('aria-expanded', 'true');
+        zone.classList.add('is-open');
+        if (!ctl) map.warm?.();  // los datos para convertir punto ↔ dirección se piden recién al usar el mapa
+        ctl ||= window.MAPA.mount(zone.querySelector('[data-map-slot]'), { value: point, vista: point ? null : map.locate?.(input.value), onChange: alMover });
+        if (!manual) return;
         input.blur();  // se cierra el teclado: el mapa necesita el espacio
         hideSuggest();
-        /* El mapa parte en la calle escrita (o en la comuna); se crea la primera vez que se abre */
-        ctl ||= window.MAPA.mount(zone.querySelector('[data-map-slot]'), { value: point, vista: map.locate?.(input.value), onChange: (x) => { point = x; paintRow(); } });
         requestAnimationFrame(() => el.body.scrollTo({ top: zone.offsetTop - 6, behavior: motion.matches ? 'smooth' : 'auto' }));
+      };
+      opener.addEventListener('click', () => {
+        if (opener.getAttribute('aria-expanded') !== 'true') { abrir(true); return; }
+        opener.setAttribute('aria-expanded', 'false');
+        zone.classList.remove('is-open');
       });
+      /* Cuando la persona toca el mapa, lo toma ella: lo que ya estaba escrito deja de moverlo (hasta que el texto
+         cambie), y se descarta la búsqueda que venía en camino. Si no, el mapa se correría bajo su dedo y el toque
+         quedaría marcado en otro lugar */
+      zone.addEventListener('pointerdown', (e) => {
+        if (!e.target.closest('[data-map-slot]')) return;
+        toques += 1;
+        clearTimeout(tCalle);
+        clearTimeout(tNumero);
+        if (origen !== 'persona') visto = { t: input.value.trim(), preciso: true };
+      }, true);
+      /* Texto → mapa: la calle escrita se muestra de inmediato (aproximada). Con `preciso` se busca además el número:
+         si el mapa lo conoce, el punto queda marcado; si no, muestra dónde debería estar, sin marcarlo. */
+      alCambiarTexto = async ({ preciso = false } = {}) => {
+        clearTimeout(tCalle);
+        if (preciso) clearTimeout(tNumero);
+        const t = input.value.trim();
+        const k = clave(t);
+        if (origen === 'persona') {  // el punto es de la persona: lo escrito no lo mueve; solo se avisa si ya no calza
+          if (!preciso || k.length < 3 || !map.near || t === visto.t) return;
+          visto = { t, preciso: true };
+          const mine = turno;
+          let cerca = null;
+          try { cerca = await map.near(t, point, 150); } catch { cerca = null; }
+          if (mine === turno && dlg.open && origen === 'persona') ctl?.note(cerca === false ? AVISO.otraCalle : '');
+          return;
+        }
+        if (k.length < 3) return;
+        const cur = partesDe(t);
+        if (!preciso && cur.numero) return;  // con número, se espera la pasada precisa: el mapa se mueve una sola vez
+        if (t === visto.t && (visto.preciso || !preciso)) return;  // esta misma dirección ya se mostró
+        visto = { t, preciso };
+        const mine = ++turno;
+        const antes = toques;
+        const vigente = () => mine === turno && antes === toques && dlg.open;
+        const pref = chosen && t.startsWith(chosen) ? comunaElegida : '';
+        let v = null;
+        let e = null;
+        try { v = await map.locate?.(t, pref); } catch { v = null; }
+        if (!vigente()) return;
+        if (preciso && cur.numero && map.search) {
+          try { e = await map.search(t, pref); } catch { e = null; }
+          if (!vigente()) return;
+        }
+        if (e?.nivel === 'exacto') {
+          abrir(false);
+          ctl.show(e, { marcar: true });
+          point = ctl.get();
+          origen = 'busqueda';
+          /* La dirección quedó resuelta: se escribe con el nombre oficial de la calle (si no se está editando a mitad
+             del texto) y la lista de sugerencias se cierra, para dejar ver el mapa */
+          if (e.calle && (d.activeElement !== input || input.selectionStart === input.value.length)) {
+            input.value = `${e.calle} ${cur.numero}${cur.resto ? `, ${cur.resto}` : ''}`.slice(0, maxlength);
+            visto = { t: input.value.trim(), preciso: true };
+            sync();
+          }
+          buscado = { calle: clave(input.value), numero: cur.numero };
+          chosen = input.value.trim();
+          hideSuggest();
+          paintRow();
+          if (e.comuna) map.onPlace?.({ comuna: e.comuna });
+          return;
+        }
+        const destino = e || (v?.nivel === 'calle' ? v : null);
+        if (!destino) return;
+        if (point) sinPunto();  // otra dirección: el punto que había encontrado la búsqueda ya no corresponde
+        abrir(false);
+        ctl.show(destino, e ? { aviso: e.nivel === 'duda' ? AVISO[e.varias] : e.zoom < 17 ? AVISO.zona : AVISO.tramo } : {});
+      };
+      input.addEventListener('input', () => {
+        tecleo += 1;
+        /* El punto que encontró la búsqueda vale solo para esa calle y ese número */
+        if (origen === 'busqueda' && !(clave(input.value) === buscado.calle && partesDe(input.value).numero === buscado.numero)) { sinPunto(); ctl?.release(); }
+        clearTimeout(tCalle);
+        clearTimeout(tNumero);
+        tCalle = setTimeout(() => alCambiarTexto(), 450);
+        tNumero = setTimeout(() => alCambiarTexto({ preciso: true }), 1100);
+      });
+      /* Al dejar el campo se busca de inmediato (si se dejó tocando el mapa, ese toque ya dio la dirección por vista) */
+      input.addEventListener('blur', () => { if (dlg.open) alCambiarTexto({ preciso: true }); });
       paintRow();
-      p.finally?.(() => ctl?.destroy());
+      /* Al abrir con una dirección ya escrita, el mapa la muestra de inmediato */
+      if (input.value.trim()) {
+        abrir(false);
+        if (!point) alCambiarTexto({ preciso: true });
+        else if (map.search) {
+          /* Un punto guardado que coincide con el número exacto de la dirección es de la búsqueda, no de la persona */
+          const inicial = point;
+          map.search(input.value.trim(), '').then((e) => {
+            if (e?.nivel !== 'exacto' || point !== inicial || tecleo || Math.abs(e.lat - inicial.lat) > 2e-5 || Math.abs(e.lng - inicial.lng) > 2e-5) return;
+            origen = 'busqueda';
+            buscado = { calle: clave(input.value), numero: partesDe(input.value).numero };
+          }).catch(() => {});
+        }
+      }
+      p.finally?.(() => { clearTimeout(tCalle); clearTimeout(tNumero); ctl?.destroy(); });
     }
     if (suggest) {
       const box = el.body.querySelector('.text-suggest');
@@ -458,7 +634,6 @@
       let ctrl = null;
       let timer = 0;
       let turn = 0;
-      let chosen = '';
       const draw = (list) => {
         /* La entrada escalonada solo al aparecer: mientras se sigue escribiendo, la lista cambia sin volver a animarse */
         box.classList.toggle('is-fresh', box.hidden && list.length > 0);
@@ -489,10 +664,12 @@
         if (!b) return;
         const it = items[Number(b.dataset.i)];
         chosen = it.label;
+        comunaElegida = it.comuna || '';
         input.value = it.value;
         onSuggest?.(it);
         draw([]);
         sync();
+        alCambiarTexto({ preciso: true });
         input.focus({ preventScroll: true });
         input.setSelectionRange(input.value.length, input.value.length);
       });
@@ -510,17 +687,6 @@
     sync();
     input.focus({ preventScroll: true });
     input.setSelectionRange(input.value.length, input.value.length);
-    return p;
-  };
-
-  /* Solo el mapa: devuelve el punto marcado ({ lat, lng }), null si se quitó o undefined si se cerró sin confirmar */
-  const map = ({ title, sub = '', value = null, vista = null, done = 'Listo' }) => {
-    const p = open({ title, sub, done, still: true });
-    el.body.innerHTML = '<div class="text-map is-solo"><div data-map-slot></div></div>';
-    let point = value;
-    const ctl = window.MAPA.mount(el.body.querySelector('[data-map-slot]'), { value, vista, onChange: (x) => { point = x; } });
-    hooks.done = () => finish(point || null);
-    p.finally?.(() => ctl.destroy());
     return p;
   };
 
@@ -621,5 +787,5 @@
     return p;
   };
 
-  window.Picker = { content, choose, chooseEach, commune, text, map, dates, time, options, communes, calendar, hint, drag, MODES, close: () => finish() };
+  window.Picker = { content, choose, chooseEach, commune, text, dates, time, options, communes, calendar, hint, drag, MODES, close: () => finish() };
 })();
