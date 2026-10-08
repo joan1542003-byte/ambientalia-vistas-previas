@@ -23,7 +23,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/campanas/campanas-jornada-comunitaria-1400.webp" fetchpriority="high">
-<link rel="stylesheet" href="assets/site/site.css?v=20261001d">
+<link rel="stylesheet" href="assets/site/site.css?v=20261008c">
+<link rel="stylesheet" href="assets/site/transporte.css?v=20261008c">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {
@@ -122,18 +123,376 @@
 
 <main id="contenido">
   <section class="hero" id="top" aria-labelledby="hero-title">
-    <div class="container hero-split">
-      <div class="hero-copy">
-        <h1 class="display" id="hero-title">Organiza una campaña. Recupera materiales.</h1>
-        <p class="lead">Define qué quieres recolectar y coordinamos puntos, operación y trazabilidad para tu municipio, empresa o comunidad.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="#contacto">Organizar una campaña <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-          <a class="btn btn-secondary" href="#materiales">Ver qué materiales recolectar</a>
+    <div class="container">
+      <div class="stage" data-hero data-view="inicio">
+        <picture class="stage-media" aria-hidden="true">
+          <img src="assets/campanas/campanas-jornada-comunitaria-1400.webp" width="1400" height="933" alt="" fetchpriority="high" decoding="async">
+        </picture>
+
+        <div class="stage-side">
+          <div class="stage-copy">
+            <h1 class="display" id="hero-title">Organiza una campaña. Recupera materiales.</h1>
+            <p class="lead">Define qué quieres recolectar y coordinamos puntos, operación y trazabilidad para tu municipio, empresa o comunidad.</p>
+          </div>
+
+          <div class="routes" role="tablist" aria-label="¿Qué necesitas?" aria-orientation="vertical" data-routes>
+            <span class="routes-pill" aria-hidden="true"></span>
+            <button class="route" type="button" role="tab" id="tab-contacto" aria-controls="contacto" aria-selected="false" data-route="contacto">
+              <span class="route-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
+              <span class="route-text"><strong>Quiero organizar una campaña</strong><small>Preparar la ficha</small></span>
+              <span class="route-short" aria-hidden="true">Organizar</span>
+            </button>
+            <button class="route" type="button" role="tab" id="tab-materiales" aria-controls="materiales" aria-selected="false" data-route="materiales">
+              <span class="route-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></span>
+              <span class="route-text"><strong>¿Qué quieres recolectar?</strong><small>Ver materiales</small></span>
+              <span class="route-short" aria-hidden="true">Materiales</span>
+            </button>
+            <button class="route" type="button" role="tab" id="tab-conversar" aria-controls="conversar" aria-selected="false" data-route="conversar">
+              <span class="route-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span>
+              <span class="route-text"><strong>¿Prefieres conversar?</strong><small>Escribir por WhatsApp</small></span>
+              <span class="route-short" aria-hidden="true">WhatsApp</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="stage-panel" data-panel hidden>
+          <div class="hcard">
+            <!-- Organizar una campaña -->
+            <div class="hcard-panel" id="contacto" role="tabpanel" aria-labelledby="tab-contacto" tabindex="-1" hidden>
+              <form class="qform" id="ficha" data-steps data-summary="ficha-resumen" data-title="Ficha de campaña — Campañas de reciclaje" data-closing="Adjuntaré fotografías del material, su acopio y los contenedores disponibles." novalidate>
+                <div class="hcard-head">
+                  <div class="hcard-title">
+                    <h2>Cuéntanos sobre la campaña</h2>
+                    <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                  </div>
+                  <p class="hcard-alt">¿Prefieres conversar? <a href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20reciclaje." target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Escríbenos por WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></a></p>
+                  <div class="stepper" style="--n:2">
+                    <div class="stepper-labels"><button type="button">La campaña</button><button type="button">Contacto</button></div>
+                    <div class="stepper-bar" aria-hidden="true"><i></i></div>
+                  </div>
+                </div>
+
+                <div class="hcard-body" data-scroll-root>
+                  <fieldset data-step-panel data-summary-title="La campaña">
+                    <legend class="sr-only">La campaña</legend>
+                    <div class="picks">
+                      <div class="pick" data-fila="opciones" data-title="¿Qué apoyo necesitas?">
+                      <button type="button" class="pick-btn" aria-haspopup="dialog">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg></span>
+                        <span class="pick-text"><span class="pick-label">Apoyo que necesitas</span><span class="pick-value" data-empty="Elige una opción">Orientación inicial</span></span>
+                        <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                      </button>
+                      <select name="servicio" data-label="Apoyo que necesitas" hidden><option value="orientacion" selected>Orientación inicial</option><option value="completa">Campaña completa</option><option value="diseno">Diseño de campaña</option><option value="educacion">Segregación y educación</option><option value="retiro">Retiro y coordinación</option><option value="sanitaria">Antecedentes para autorización sanitaria</option><option value="cierre">Registro y cierre</option></select>
+                      </div>
+                      <div class="pick" data-fila="opciones" data-title="¿Quién organiza la campaña?" data-required-pick="tipo">
+                      <button type="button" class="pick-btn" aria-haspopup="dialog">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg></span>
+                        <span class="pick-text"><span class="pick-label">Tipo de organización</span><span class="pick-value is-empty" data-empty="Elige una opción">Elige una opción</span></span>
+                        <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                      </button>
+                      <select name="tipo" data-label="Tipo de organización" hidden><option value="" selected hidden>Elige una opción</option><option value="municipal">Municipalidad</option><option value="empresa">Empresa</option><option value="comunidad">Comunidad u otra organización</option></select>
+                      <p class="pick-error">Elige el tipo de organización.</p>
+                      </div>
+                      <div class="pick" data-fila="varias" data-title="¿Qué materiales quieres recolectar?" data-sub="Puedes elegir más de uno." data-options="Neumáticos|Envases y embalajes|Aceites lubricantes|Aparatos eléctricos y electrónicos|Pilas|Baterías|Textiles|Diarios y revistas|Otro material" data-required-pick="materiales">
+                      <button type="button" class="pick-btn" aria-haspopup="dialog">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></span>
+                        <span class="pick-text"><span class="pick-label">Materiales</span><span class="pick-value is-empty" data-empty="Elige los materiales">Elige los materiales</span></span>
+                        <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                      </button>
+                      <input type="hidden" name="materiales" data-label="Materiales">
+                      <p class="pick-error">Elige al menos un material.</p>
+                      </div>
+                      <div class="pick" data-fila="texto" data-title="Cantidades y forma de entrega" data-sub="Si aún no tienes cantidades, parte con una estimación." data-placeholder="Cantidad aproximada, contenedores disponibles y estado del material…" data-maxlength="2000" data-optional>
+                      <button type="button" class="pick-btn" aria-haspopup="dialog">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20h12l-1.6-10H7.6z"/><path d="M9.5 10a2.5 2.5 0 1 1 5 0"/></svg></span>
+                        <span class="pick-text"><span class="pick-label">Cantidades y forma de entrega</span><span class="pick-value is-empty" data-empty="Opcional: cantidad y contenedores">Opcional: cantidad y contenedores</span></span>
+                        <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                      </button>
+                      <input type="hidden" name="entrega" data-label="Cantidades y forma de entrega">
+                      </div>
+                      <div class="pick" data-fila="fecha" data-title="¿Cuándo sería la campaña?" data-sub="Es una estimación. La solicitud de autorización sanitaria se presenta al menos 40 días hábiles antes del inicio." data-hasta="365" data-domingos>
+                      <button type="button" class="pick-btn" aria-haspopup="dialog">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
+                        <span class="pick-text"><span class="pick-label">Fecha estimada</span><span class="pick-value is-empty" data-empty="Opcional">Opcional</span></span>
+                        <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                      </button>
+                      <input type="hidden" name="fecha" data-label="Fecha estimada">
+                      </div>
+                      <div class="pick pick-field">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+                        <span class="pick-text"><label class="pick-label" for="c-lugares">Lugar o número de puntos</label><input id="c-lugares" name="lugares" maxlength="300" placeholder="Ej.: plaza central, 2 puntos"></span>
+                      </div>
+                      <div class="pick" data-fila="opciones" data-title="¿Qué peligrosidad prevés?">
+                      <button type="button" class="pick-btn" aria-haspopup="dialog">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span>
+                        <span class="pick-text"><span class="pick-label">Peligrosidad prevista</span><span class="pick-value" data-empty="Elige una opción">Por definir</span></span>
+                        <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                      </button>
+                      <select name="peligrosidad" data-label="Peligrosidad prevista" hidden><option value="" selected>Por definir</option><option value="No peligrosos">No peligrosos</option><option value="Peligrosos">Peligrosos</option><option value="Necesito orientación">Necesito orientación</option></select>
+                      </div>
+                      <div class="pick" data-fila="opciones" data-title="¿En qué está la autorización sanitaria?">
+                      <button type="button" class="pick-btn" aria-haspopup="dialog">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+                        <span class="pick-text"><span class="pick-label">Estado de la autorización sanitaria</span><span class="pick-value is-empty" data-empty="Opcional">Opcional</span></span>
+                        <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                      </button>
+                      <select name="autorizacion" data-label="Autorización sanitaria" hidden><option value="" selected hidden>Opcional</option><option value="Aún no iniciada">Aún no iniciada</option><option value="Reuniendo antecedentes">Reuniendo antecedentes</option><option value="Solicitud ingresada">Solicitud ingresada</option><option value="Autorización obtenida">Autorización obtenida</option><option value="No estoy seguro">No estoy seguro</option></select>
+                      </div>
+                    </div>
+                    <details class="more-fields">
+                      <summary>Más información <span>(opcional)</span></summary>
+                      <div class="picks">
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="c-participantes">Participación estimada</label><input id="c-participantes" name="participantes" maxlength="200" placeholder="Personas, viviendas o sedes"></span>
+                        </div>
+                        <div class="pick pick-field">
+                          <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/></svg></span>
+                          <span class="pick-text"><label class="pick-label" for="c-destino">Destino previsto</label><input id="c-destino" name="destino" maxlength="400" placeholder="Centro de acopio, valorización o eliminación"></span>
+                        </div>
+                      </div>
+                    </details>
+                  </fieldset>
+
+                  <fieldset data-step-panel data-summary-title="Organización y contacto">
+                    <legend class="sr-only">Organización y contacto</legend>
+                    <div class="picks">
+                      <div class="pick pick-field">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 9h4a1 1 0 0 1 1 1v11M3 21h18M8 8h3M8 12h3M8 16h3"/></svg></span>
+                        <span class="pick-text"><label class="pick-label" for="c-organizacion">Organización</label><input id="c-organizacion" name="organizacion" required maxlength="160" autocomplete="organization" placeholder="Municipalidad, empresa o comunidad"></span>
+                      </div>
+                      <div class="pick" data-fila="comuna" data-title="¿En qué comuna será la campaña?" data-required-pick="comuna">
+                      <button type="button" class="pick-btn" aria-haspopup="dialog">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+                        <span class="pick-text"><span class="pick-label">Comuna</span><span class="pick-value is-empty" data-empty="Elige la comuna">Elige la comuna</span></span>
+                        <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                      </button>
+                      <input type="hidden" name="comuna" data-label="Comuna"><input type="hidden" name="region" data-label="Región">
+                      <p class="pick-error">Elige la comuna de la campaña.</p>
+                      </div>
+                      <div class="pick pick-field">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
+                        <span class="pick-text"><label class="pick-label" for="c-nombre">Nombre de contacto</label><input id="c-nombre" name="nombre" required maxlength="120" autocomplete="name"></span>
+                      </div>
+                      <div class="pick pick-field">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg></span>
+                        <span class="pick-text"><label class="pick-label" for="c-telefono">Teléfono (opcional)</label><input id="c-telefono" name="telefono" type="tel" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="+56 9 1234 5678"></span>
+                      </div>
+                      <div class="pick pick-field">
+                        <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+                        <span class="pick-text"><label class="pick-label" for="c-correo">Correo electrónico (opcional)</label><input id="c-correo" name="correo" type="email" maxlength="254" autocomplete="email" spellcheck="false" placeholder="nombre@organizacion.cl"></span>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+
+                <div class="hcard-foot step-nav">
+                  <button class="btn btn-quiet btn-small" type="button" data-back><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Atrás</button>
+                  <span class="small muted" data-step-count></span>
+                  <button class="btn btn-primary btn-small" type="button" data-next>Continuar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+                  <button class="btn btn-primary btn-small" type="submit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Preparar ficha</button>
+                </div>
+              </form>
+
+              <div class="summary" id="ficha-resumen" hidden tabindex="-1">
+                <div class="hcard-head">
+                  <div class="hcard-title">
+                    <h2><svg width="28" height="28" class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>Tu ficha está lista.</h2>
+                    <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                  </div>
+                  <p class="hcard-sub">Se abrirá WhatsApp con este texto escrito: adjunta las fotografías del material y los contenedores, y envíalo. La ficha ordena el alcance de la campaña; no presenta la solicitud de autorización ante la autoridad.</p>
+                </div>
+                <div class="hcard-body"><pre></pre></div>
+                <div class="hcard-foot">
+                  <span class="foot-label" hidden>Enviar por</span>
+                  <a class="btn btn-wa btn-small" data-send target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span><span class="btn-pre">Enviar por </span>WhatsApp<span class="sr-only"> (abre WhatsApp)</span></span></a>
+                  <a class="btn btn-secondary btn-small" data-mail hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span><span class="btn-pre">Enviar por </span><span class="btn-cap">correo</span></span></a>
+                  <span class="foot-more">
+                    <button class="btn btn-secondary btn-small" type="button" data-copy><svg width="20" height="20" class="icon-idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg width="20" height="20" class="icon-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>Copiar</span></button>
+                    <button class="btn btn-quiet btn-small" type="button" data-edit><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Editar</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Materiales -->
+            <div class="hcard-panel" id="materiales" role="tabpanel" aria-labelledby="tab-materiales" tabindex="-1" hidden>
+              <div class="hcard-head">
+                <div class="hcard-title">
+                  <h2>Empecemos por lo que quieres recolectar.</h2>
+                  <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
+                <p class="hcard-sub">Elige qué quieres recolectar y precisa su categoría o tipo para planificar una campaña informada.</p>
+              </div>
+              <div class="hcard-body" data-scroll-root>
+                <div class="opts mat-grid" role="group" aria-label="Material de la campaña" data-show-when="material=">
+                  <button type="button" class="opt" data-set="material=neumaticos"><span class="opt-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/></svg></span><span class="opt-text"><strong>Neumáticos</strong></span><i class="opt-chev" aria-hidden="true"></i></button>
+                  <button type="button" class="opt" data-set="material=envases"><span class="opt-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg></span><span class="opt-text"><strong>Envases y embalajes</strong></span><i class="opt-chev" aria-hidden="true"></i></button>
+                  <button type="button" class="opt" data-set="material=aceites"><span class="opt-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.3 3.9 5.5 6.9 5.5 9.9a5.5 5.5 0 0 1-11 0c0-3 2.2-6 5.5-9.9z"/></svg></span><span class="opt-text"><strong>Aceites lubricantes</strong></span><i class="opt-chev" aria-hidden="true"></i></button>
+                  <button type="button" class="opt" data-set="material=aee"><span class="opt-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v5M15 3v5M6.5 8h11v3.5a5.5 5.5 0 0 1-11 0zM12 17v4"/></svg></span><span class="opt-text"><strong>Aparatos eléctricos y electrónicos</strong></span><i class="opt-chev" aria-hidden="true"></i></button>
+                  <button type="button" class="opt" data-set="material=pilas"><span class="opt-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="15" height="8.5" rx="2"/><path d="M21 11v2.5M7.5 11v2.5"/></svg></span><span class="opt-text"><strong>Pilas</strong></span><i class="opt-chev" aria-hidden="true"></i></button>
+                  <button type="button" class="opt" data-set="material=baterias"><span class="opt-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="11" rx="2"/><path d="M7 8V5.5M17 8V5.5M6.5 13.5h3M14.5 13.5h3M16 12v3"/></svg></span><span class="opt-text"><strong>Baterías</strong></span><i class="opt-chev" aria-hidden="true"></i></button>
+                  <button type="button" class="opt" data-set="material=textiles"><span class="opt-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 4l-5 3 2 3.5 2-1V20h9V9.5l2 1 2-3.5-5-3a3.5 3.5 0 0 1-7 0z"/></svg></span><span class="opt-text"><strong>Textiles</strong></span><i class="opt-chev" aria-hidden="true"></i></button>
+                  <button type="button" class="opt" data-set="material=diarios"><span class="opt-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h11v14H7a2 2 0 0 1-2-2z"/><path d="M16 9h3v8a2 2 0 0 1-2 2M8 9h5M8 12.5h5M8 16h3"/></svg></span><span class="opt-text"><strong>Diarios y revistas</strong></span><i class="opt-chev" aria-hidden="true"></i></button>
+                </div>
+                <div class="picks" data-show-when="material=neumaticos,envases,aceites,aee,pilas,baterias,textiles,diarios" hidden>
+                  <div class="pick" data-fila="opciones" data-title="¿Qué quieres recolectar?">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Material</span><span class="pick-value is-empty" data-empty="Elige el material">Elige el material</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select name="material" data-label="Material" data-summary-skip hidden><option value="" selected hidden>Elige el material</option><option value="neumaticos">Neumáticos fuera de uso</option><option value="envases">Envases y embalajes</option><option value="aceites">Aceites lubricantes usados</option><option value="aee">Aparatos eléctricos y electrónicos</option><option value="pilas">Pilas en desuso</option><option value="baterias">Baterías en desuso</option><option value="textiles">Textiles en desuso</option><option value="diarios">Diarios, periódicos y revistas</option></select>
+                  </div>
+                  <div class="pick" data-fila="opciones" data-title="Tipo de neumático" data-show-when="material=neumaticos">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Tipo de neumático</span><span class="pick-value" data-empty="Elige una opción">Categoría A — aro &lt; 57″, excepto 45″, 49″ y 51″</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select id="m-neumaticos" data-label="Tipo de neumático" hidden><option selected>Categoría A — aro &lt; 57″, excepto 45″, 49″ y 51″</option><option>Categoría B — aro 45″, 49″, 51″ o ≥ 57″</option><option>Bicicleta, silla de ruedas o similar</option><option>Neumático macizo</option></select>
+                  </div>
+                  <div class="pick" data-fila="opciones" data-title="Material principal" data-show-when="material=envases">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Material principal</span><span class="pick-value" data-empty="Elige una opción">Papel y cartón</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select id="m-envases" data-label="Material principal" hidden><option selected>Papel y cartón</option><option>Plástico</option><option>Metal</option><option>Vidrio</option><option>Cartón para bebidas</option><option>Madera u otro material</option></select>
+                  </div>
+                  <div class="pick" data-fila="opciones" data-title="Origen del aceite" data-show-when="material=aceites">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Origen del aceite</span><span class="pick-value" data-empty="Elige una opción">Vehículos y maquinaria móvil</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select id="m-aceites" data-label="Origen del aceite" hidden><option selected>Vehículos y maquinaria móvil</option><option>Equipos o procesos industriales</option><option>Origen mixto o por confirmar</option></select>
+                  </div>
+                  <div class="pick" data-fila="opciones" data-title="Tipo de aparato" data-show-when="material=aee">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Tipo de aparato</span><span class="pick-value" data-empty="Elige una opción">Equipos informáticos y telecomunicaciones</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select id="m-aee" data-label="Tipo de aparato" hidden><option selected>Equipos informáticos y telecomunicaciones</option><option>Electrodomésticos pequeños</option><option>Electrodomésticos grandes</option><option>Pantallas y equipos audiovisuales</option><option>Herramientas u otros equipos eléctricos</option></select>
+                  </div>
+                  <div class="pick" data-fila="opciones" data-title="Tipo de pila" data-show-when="material=pilas">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Tipo de pila</span><span class="pick-value" data-empty="Elige una opción">Pilas portátiles comunes</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select id="m-pilas" data-label="Tipo de pila" hidden><option selected>Pilas portátiles comunes</option><option>Pilas botón</option><option>Pilas recargables</option><option>Tipos mezclados o por confirmar</option></select>
+                  </div>
+                  <div class="pick" data-fila="opciones" data-title="Tipo de batería" data-show-when="material=baterias">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Tipo de batería</span><span class="pick-value" data-empty="Elige una opción">Baterías de plomo-ácido</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select id="m-baterias" data-label="Tipo de batería" hidden><option selected>Baterías de plomo-ácido</option><option>Baterías de litio</option><option>Baterías industriales</option><option>Otro tipo o por confirmar</option></select>
+                  </div>
+                  <div class="pick" data-fila="opciones" data-title="Tipo de textil" data-show-when="material=textiles">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Tipo de textil</span><span class="pick-value" data-empty="Elige una opción">Prendas de vestir</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select id="m-textiles" data-label="Tipo de textil" hidden><option selected>Prendas de vestir</option><option>Telas y retazos</option><option>Textiles del hogar</option><option>Uniformes u otros textiles institucionales</option></select>
+                  </div>
+                  <div class="pick" data-fila="opciones" data-title="Tipo de material" data-show-when="material=diarios">
+                  <button type="button" class="pick-btn" aria-haspopup="dialog">
+                    <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/></svg></span>
+                    <span class="pick-text"><span class="pick-label">Tipo de material</span><span class="pick-value" data-empty="Elige una opción">Diarios y periódicos</span></span>
+                    <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                  </button>
+                  <select id="m-diarios" data-label="Tipo de material" hidden><option selected>Diarios y periódicos</option><option>Revistas y catálogos</option><option>Publicaciones mezcladas</option><option>Material húmedo o por confirmar</option></select>
+                  </div>
+                </div>
+                <div class="doc-case" data-show-when="material=neumaticos" hidden>
+                  <h3 class="subtitle">Neumáticos fuera de uso</h3>
+                  <p>Indica la medida o el tipo. Las categorías A y B están sujetas a metas REP; bicicletas, sillas de ruedas, similares y neumáticos macizos tienen un tratamiento regulatorio diferente.</p>
+                </div>
+                <div class="doc-case" data-show-when="material=envases" hidden>
+                  <h3 class="subtitle">Envases y embalajes</h3>
+                  <p>Se revisan material, origen, limpieza y presencia de contenido residual antes de definir cómo recibirlos en la campaña.</p>
+                </div>
+                <div class="doc-case" data-show-when="material=aceites" hidden>
+                  <h3 class="subtitle">Aceites lubricantes usados</h3>
+                  <p>Necesitamos conocer el origen del aceite, su cantidad, el recipiente y si está mezclado con agua, combustibles u otras sustancias.</p>
+                </div>
+                <div class="doc-case" data-show-when="material=aee" hidden>
+                  <h3 class="subtitle">Aparatos eléctricos y electrónicos</h3>
+                  <p>El tamaño, estado, baterías incorporadas y componentes sensibles determinan la forma de recepción y almacenamiento.</p>
+                </div>
+                <div class="doc-case" data-show-when="material=pilas" hidden>
+                  <h3 class="subtitle">Pilas en desuso</h3>
+                  <p>Se deben mantener separadas, secas y protegidas de cortocircuitos. Confirma el formato predominante y la cantidad estimada.</p>
+                </div>
+                <div class="doc-case" data-show-when="material=baterias" hidden>
+                  <h3 class="subtitle">Baterías en desuso</h3>
+                  <p>La tecnología, el estado y el riesgo de fuga o cortocircuito cambian las condiciones de acopio y retiro.</p>
+                </div>
+                <div class="doc-case" data-show-when="material=textiles" hidden>
+                  <h3 class="subtitle">Textiles en desuso</h3>
+                  <p>Se revisan limpieza, humedad, composición conocida y posibilidad de reutilización o valorización. Los textiles no están entre los productos prioritarios de la Ley REP (art. 10): revisamos contigo qué requisitos aplican a la campaña.</p>
+                </div>
+                <div class="doc-case" data-show-when="material=diarios" hidden>
+                  <h3 class="subtitle">Diarios, periódicos y revistas</h3>
+                  <p>Indica si se trata de publicaciones separadas, material mezclado o papel con humedad, contaminación o elementos ajenos.</p>
+                </div>
+                <p class="hcard-note">La selección es orientativa. La aceptación y las condiciones de campaña se confirman después de revisar el estado, contaminación, cantidad, lugar y destino del residuo.</p>
+              </div>
+              <div class="hcard-foot">
+                <a class="btn btn-wa btn-small" data-show-when="material=neumaticos" hidden href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20neum%C3%A1ticos." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Neumáticos&#10;Tipo: {#m-neumaticos}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Consultar campaña<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-wa btn-small" data-show-when="material=envases" hidden href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20envases%20y%20embalajes." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Envases y embalajes&#10;Material principal: {#m-envases}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Consultar campaña<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-wa btn-small" data-show-when="material=aceites" hidden href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20aceites%20lubricantes." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Aceites lubricantes&#10;Origen: {#m-aceites}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Consultar campaña<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-wa btn-small" data-show-when="material=aee" hidden href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20aparatos%20el%C3%A9ctricos%20y%20electr%C3%B3nicos." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Aparatos eléctricos y electrónicos&#10;Tipo: {#m-aee}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Consultar campaña<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-wa btn-small" data-show-when="material=pilas" hidden href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20pilas." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Pilas&#10;Tipo: {#m-pilas}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Consultar campaña<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-wa btn-small" data-show-when="material=baterias" hidden href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20bater%C3%ADas." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Baterías&#10;Tipo: {#m-baterias}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Consultar campaña<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-wa btn-small" data-show-when="material=textiles" hidden href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20textiles." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Material: Textiles&#10;Tipo: {#m-textiles}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Consultar campaña<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-wa btn-small" data-show-when="material=diarios" hidden href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20diarios%20y%20revistas." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Diarios, periódicos y revistas&#10;Tipo: {#m-diarios}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Consultar campaña<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=neumaticos" hidden href="#contacto" data-add="materiales=Neumáticos"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=envases" hidden href="#contacto" data-add="materiales=Envases y embalajes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=aceites" hidden href="#contacto" data-add="materiales=Aceites lubricantes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=aee" hidden href="#contacto" data-add="materiales=Aparatos eléctricos y electrónicos"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=pilas" hidden href="#contacto" data-add="materiales=Pilas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=baterias" hidden href="#contacto" data-add="materiales=Baterías"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=textiles" hidden href="#contacto" data-add="materiales=Textiles"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=diarios" hidden href="#contacto" data-add="materiales=Diarios y revistas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+                <a class="btn btn-secondary btn-small" data-show-when="material=" href="#contacto"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Preparar la ficha</a>
+              </div>
+            </div>
+
+            <!-- Conversar por WhatsApp -->
+            <div class="hcard-panel" id="conversar" role="tabpanel" aria-labelledby="tab-conversar" tabindex="-1" hidden data-temas="Orientación inicial|Diseño de campañas|Segregación y educación|Retiro y coordinación|Autorización sanitaria">
+              <div class="hcard-head">
+                <div class="hcard-title">
+                  <h2>Escríbenos por WhatsApp.</h2>
+                  <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
+                <p class="hcard-sub">Cuéntanos qué quieres organizar: organización, comuna, fecha estimada y materiales. Por WhatsApp también puedes enviarnos fotos del material y los contenedores.</p>
+              </div>
+              <div class="hcard-body">
+                <div class="picks">
+                  <div class="pick" data-pick="tema">
+                    <button type="button" class="pick-btn" aria-haspopup="dialog">
+                      <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg></span>
+                      <span class="pick-text"><span class="pick-label">¿Sobre qué quieres hablar?</span><span class="pick-value is-empty" data-empty="Opcional">Opcional</span></span>
+                      <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                    </button>
+                    <input type="hidden" name="tema">
+                  </div>
+                </div>
+              </div>
+              <div class="hcard-foot">
+                <a class="btn btn-wa btn-small" href="https://wa.me/56986067930" target="_blank" rel="noopener noreferrer" data-expert-wa="Hola, quiero organizar una campaña de reciclaje."><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Hablar por WhatsApp<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-secondary btn-small" href="#contacto"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Prefiero la ficha</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <figure class="hero-media">
-        <img src="assets/campanas/campanas-jornada-comunitaria-1400.webp" width="1400" height="933" alt="Vecinos entregando materiales en contenedores de reciclaje durante una jornada de recolección" fetchpriority="high" decoding="async">
-      </figure>
     </div>
   </section>
 
@@ -143,43 +502,39 @@
         <h2 class="title" id="servicios-title">¿En qué te ayudamos?</h2>
         <p class="lead">Desde diseñar la campaña hasta coordinar el retiro y ordenar sus registros. Puedes solicitar el apoyo que necesitas.</p>
       </div>
-      <div class="grid grid-4 reveal-group">
+      <div class="grid grid-4 cards-compact reveal-group">
         <article class="card">
           <figure class="card-media"><img src="assets/campanas/campanas-diseno-studio.webp" width="960" height="640" alt="" loading="lazy" decoding="async"></figure>
           <h3>Diseño de campañas</h3>
           <p>Definimos el alcance, los materiales, el lugar y quiénes participan.</p>
-          <div class="card-foot"><a class="link" href="#contacto" data-set="servicio=diseno">Consultar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+          <div class="card-foot is-split"><a class="link" href="#contacto" data-set="servicio=diseno">Consultar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><button class="more-toggle" type="button" aria-haspopup="dialog" data-ventana="sv-diseno"><span class="pm" aria-hidden="true"></span>Qué incluye</button></div>
         </article>
         <article class="card">
           <figure class="card-media"><img src="assets/campanas/campanas-educacion-studio.webp" width="960" height="640" alt="" loading="lazy" decoding="async"></figure>
           <h3>Segregación y educación</h3>
           <p>Indicaciones simples para entregar el material correcto de forma segura.</p>
-          <div class="card-foot"><a class="link" href="#contacto" data-set="servicio=educacion">Consultar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+          <div class="card-foot is-split"><a class="link" href="#contacto" data-set="servicio=educacion">Consultar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><button class="more-toggle" type="button" aria-haspopup="dialog" data-ventana="sv-educacion"><span class="pm" aria-hidden="true"></span>Qué incluye</button></div>
         </article>
         <article class="card">
           <figure class="card-media"><img src="assets/campanas/campanas-retiro-studio.webp" width="960" height="640" alt="" loading="lazy" decoding="async"></figure>
           <h3>Retiro y coordinación</h3>
           <p>Coordinamos acceso, contenedores, carga y destino de los materiales.</p>
-          <div class="card-foot"><a class="link" href="#contacto" data-set="servicio=retiro">Consultar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+          <div class="card-foot is-split"><a class="link" href="#contacto" data-set="servicio=retiro">Consultar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><button class="more-toggle" type="button" aria-haspopup="dialog" data-ventana="sv-retiro"><span class="pm" aria-hidden="true"></span>Qué incluye</button></div>
         </article>
         <article class="card">
           <figure class="card-media"><img src="assets/campanas/campanas-registro-studio.webp" width="960" height="640" alt="" loading="lazy" decoding="async"></figure>
           <h3>Asesoría y orientación sanitaria</h3>
           <p>Te orientamos sobre los antecedentes que pide la solicitud de la campaña.</p>
-          <div class="card-foot"><a class="link" href="#contacto" data-set="servicio=sanitaria">Consultar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+          <div class="card-foot is-split"><a class="link" href="#contacto" data-set="servicio=sanitaria">Consultar <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><button class="more-toggle" type="button" aria-haspopup="dialog" data-ventana="sv-sanitaria"><span class="pm" aria-hidden="true"></span>Qué incluye</button></div>
         </article>
       </div>
 
-      <div class="split-layout detail-block">
-        <div class="section-head reveal">
-          <h3 class="subtitle">Qué incluye cada servicio</h3>
-        </div>
-        <div class="accordion reveal">
-          <details><summary>Diseño de campañas<span class="plus" aria-hidden="true"></span></summary><div class="answer"><p>Ordenamos productos prioritarios, cantidades estimadas, puntos de recepción, fechas, horarios y responsables. El resultado es una base clara para organizar la campaña y sus antecedentes.</p></div></details>
-          <details><summary>Segregación y educación<span class="plus" aria-hidden="true"></span></summary><div class="answer"><p>Traducimos los criterios de aceptación en instrucciones para participantes: qué recibir, qué excluir, cómo preparar cada material y cómo comunicar el destino de la recolección.</p></div></details>
-          <details><summary>Retiro y coordinación<span class="plus" aria-hidden="true"></span></summary><div class="answer"><p>Antes de confirmar el retiro revisamos material, cantidad, embalaje y condiciones del punto de recepción. Cuando corresponde, el traslado se coordina con <a class="text-link" href="./transporte-autorizado.html">Transporte Autorizado</a> y el destinatario acordado.</p></div></details>
-          <details><summary>Asesoría y orientación sanitaria<span class="plus" aria-hidden="true"></span></summary><div class="answer"><p>Reunimos responsable, residuos y cantidades, lugar, fechas, contenedores, comunicación, contingencias, destino y vehículos. Te ayudamos a preparar el expediente; la autorización la resuelve la Autoridad Sanitaria.</p></div></details>
-        </div>
+      <!-- Qué incluye cada servicio: se abre en una ventana desde su tarjeta (filas.js) -->
+      <div class="ventanas">
+        <div id="sv-diseno" hidden data-title="Diseño de campañas"><p>Ordenamos productos prioritarios, cantidades estimadas, puntos de recepción, fechas, horarios y responsables. El resultado es una base clara para organizar la campaña y sus antecedentes.</p><div data-pie><a class="btn btn-primary btn-small" href="#contacto" data-set="servicio=diseno">Consultar este servicio <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div></div>
+        <div id="sv-educacion" hidden data-title="Segregación y educación"><p>Traducimos los criterios de aceptación en instrucciones para participantes: qué recibir, qué excluir, cómo preparar cada material y cómo comunicar el destino de la recolección.</p><div data-pie><a class="btn btn-primary btn-small" href="#contacto" data-set="servicio=educacion">Consultar este servicio <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div></div>
+        <div id="sv-retiro" hidden data-title="Retiro y coordinación"><p>Antes de confirmar el retiro revisamos material, cantidad, embalaje y condiciones del punto de recepción. Cuando corresponde, el traslado se coordina con <a class="text-link" href="./transporte-autorizado.html">Transporte Autorizado</a> y el destinatario acordado.</p><div data-pie><a class="btn btn-primary btn-small" href="#contacto" data-set="servicio=retiro">Consultar este servicio <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div></div>
+        <div id="sv-sanitaria" hidden data-title="Asesoría y orientación sanitaria"><p>Reunimos responsable, residuos y cantidades, lugar, fechas, contenedores, comunicación, contingencias, destino y vehículos. Te ayudamos a preparar el expediente; la autorización la resuelve la Autoridad Sanitaria.</p><div data-pie><a class="btn btn-primary btn-small" href="#contacto" data-set="servicio=sanitaria">Consultar este servicio <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div></div>
       </div>
     </div>
   </section>
@@ -239,86 +594,7 @@
     </div>
   </section>
 
-  <section class="section section-alt" id="materiales" aria-labelledby="materiales-title">
-    <div class="container">
-      <div class="section-head reveal">
-        <h2 class="title" id="materiales-title">Empecemos por lo que quieres recolectar.</h2>
-        <p class="lead">Elige qué quieres recolectar y precisa su categoría o tipo para planificar una campaña informada.</p>
-      </div>
-      <div class="panel doc-picker reveal" data-tabs>
-        <div class="segmented" role="radiogroup" aria-label="Material de la campaña">
-          <label><input type="radio" name="producto" value="neumaticos" checked><span>Neumáticos</span></label>
-          <label><input type="radio" name="producto" value="envases"><span>Envases y embalajes</span></label>
-          <label><input type="radio" name="producto" value="aceites"><span>Aceites lubricantes</span></label>
-          <label><input type="radio" name="producto" value="aee"><span>Aparatos eléctricos y electrónicos</span></label>
-          <label><input type="radio" name="producto" value="pilas"><span>Pilas</span></label>
-          <label><input type="radio" name="producto" value="baterias"><span>Baterías</span></label>
-          <label><input type="radio" name="producto" value="textiles"><span>Textiles</span></label>
-          <label><input type="radio" name="producto" value="diarios"><span>Diarios y revistas</span></label>
-        </div>
-
-        <div class="doc-panel" data-tab-panel="neumaticos">
-          <div><h3 class="subtitle">Neumáticos fuera de uso</h3><p>Indica la medida o el tipo. Las categorías A y B están sujetas a metas REP; bicicletas, sillas de ruedas, similares y neumáticos macizos tienen un tratamiento regulatorio diferente.</p></div>
-          <div class="material-action">
-            <div class="field"><label for="m-neumaticos">Tipo de neumático</label><select id="m-neumaticos"><option>Categoría A — aro &lt; 57″, excepto 45″, 49″ y 51″</option><option>Categoría B — aro 45″, 49″, 51″ o ≥ 57″</option><option>Bicicleta, silla de ruedas o similar</option><option>Neumático macizo</option></select></div>
-            <a class="btn btn-primary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20neum%C3%A1ticos." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Neumáticos&#10;Tipo: {#m-neumaticos}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer">Consultar campaña</a>
-          </div>
-        </div>
-        <div class="doc-panel" data-tab-panel="envases" hidden>
-          <div><h3 class="subtitle">Envases y embalajes</h3><p>Se revisan material, origen, limpieza y presencia de contenido residual antes de definir cómo recibirlos en la campaña.</p></div>
-          <div class="material-action">
-            <div class="field"><label for="m-envases">Material principal</label><select id="m-envases"><option>Papel y cartón</option><option>Plástico</option><option>Metal</option><option>Vidrio</option><option>Cartón para bebidas</option><option>Madera u otro material</option></select></div>
-            <a class="btn btn-primary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20envases%20y%20embalajes." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Envases y embalajes&#10;Material principal: {#m-envases}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer">Consultar campaña</a>
-          </div>
-        </div>
-        <div class="doc-panel" data-tab-panel="aceites" hidden>
-          <div><h3 class="subtitle">Aceites lubricantes usados</h3><p>Necesitamos conocer el origen del aceite, su cantidad, el recipiente y si está mezclado con agua, combustibles u otras sustancias.</p></div>
-          <div class="material-action">
-            <div class="field"><label for="m-aceites">Origen del aceite</label><select id="m-aceites"><option>Vehículos y maquinaria móvil</option><option>Equipos o procesos industriales</option><option>Origen mixto o por confirmar</option></select></div>
-            <a class="btn btn-primary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20aceites%20lubricantes." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Aceites lubricantes&#10;Origen: {#m-aceites}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer">Consultar campaña</a>
-          </div>
-        </div>
-        <div class="doc-panel" data-tab-panel="aee" hidden>
-          <div><h3 class="subtitle">Aparatos eléctricos y electrónicos</h3><p>El tamaño, estado, baterías incorporadas y componentes sensibles determinan la forma de recepción y almacenamiento.</p></div>
-          <div class="material-action">
-            <div class="field"><label for="m-aee">Tipo de aparato</label><select id="m-aee"><option>Equipos informáticos y telecomunicaciones</option><option>Electrodomésticos pequeños</option><option>Electrodomésticos grandes</option><option>Pantallas y equipos audiovisuales</option><option>Herramientas u otros equipos eléctricos</option></select></div>
-            <a class="btn btn-primary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20aparatos%20el%C3%A9ctricos%20y%20electr%C3%B3nicos." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Aparatos eléctricos y electrónicos&#10;Tipo: {#m-aee}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer">Consultar campaña</a>
-          </div>
-        </div>
-        <div class="doc-panel" data-tab-panel="pilas" hidden>
-          <div><h3 class="subtitle">Pilas en desuso</h3><p>Se deben mantener separadas, secas y protegidas de cortocircuitos. Confirma el formato predominante y la cantidad estimada.</p></div>
-          <div class="material-action">
-            <div class="field"><label for="m-pilas">Tipo de pila</label><select id="m-pilas"><option>Pilas portátiles comunes</option><option>Pilas botón</option><option>Pilas recargables</option><option>Tipos mezclados o por confirmar</option></select></div>
-            <a class="btn btn-primary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20pilas." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Pilas&#10;Tipo: {#m-pilas}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer">Consultar campaña</a>
-          </div>
-        </div>
-        <div class="doc-panel" data-tab-panel="baterias" hidden>
-          <div><h3 class="subtitle">Baterías en desuso</h3><p>La tecnología, el estado y el riesgo de fuga o cortocircuito cambian las condiciones de acopio y retiro.</p></div>
-          <div class="material-action">
-            <div class="field"><label for="m-baterias">Tipo de batería</label><select id="m-baterias"><option>Baterías de plomo-ácido</option><option>Baterías de litio</option><option>Baterías industriales</option><option>Otro tipo o por confirmar</option></select></div>
-            <a class="btn btn-primary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20bater%C3%ADas." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Baterías&#10;Tipo: {#m-baterias}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer">Consultar campaña</a>
-          </div>
-        </div>
-        <div class="doc-panel" data-tab-panel="textiles" hidden>
-          <div><h3 class="subtitle">Textiles en desuso</h3><p>Se revisan limpieza, humedad, composición conocida y posibilidad de reutilización o valorización. Los textiles no están entre los productos prioritarios de la Ley REP (art. 10): revisamos contigo qué requisitos aplican a la campaña.</p></div>
-          <div class="material-action">
-            <div class="field"><label for="m-textiles">Tipo de textil</label><select id="m-textiles"><option>Prendas de vestir</option><option>Telas y retazos</option><option>Textiles del hogar</option><option>Uniformes u otros textiles institucionales</option></select></div>
-            <a class="btn btn-primary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20textiles." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Material: Textiles&#10;Tipo: {#m-textiles}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer">Consultar campaña</a>
-          </div>
-        </div>
-        <div class="doc-panel" data-tab-panel="diarios" hidden>
-          <div><h3 class="subtitle">Diarios, periódicos y revistas</h3><p>Indica si se trata de publicaciones separadas, material mezclado o papel con humedad, contaminación o elementos ajenos.</p></div>
-          <div class="material-action">
-            <div class="field"><label for="m-diarios">Tipo de material</label><select id="m-diarios"><option>Diarios y periódicos</option><option>Revistas y catálogos</option><option>Publicaciones mezcladas</option><option>Material húmedo o por confirmar</option></select></div>
-            <a class="btn btn-primary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20diarios%20y%20revistas." data-wa="Hola, quiero organizar una campaña de recolección.&#10;Producto prioritario: Diarios, periódicos y revistas&#10;Tipo: {#m-diarios}&#10;Comuna: &#10;Fecha estimada: " target="_blank" rel="noopener noreferrer">Consultar campaña</a>
-          </div>
-        </div>
-        <p class="small muted">La selección es orientativa. La aceptación y las condiciones de campaña se confirman después de revisar el estado, contaminación, cantidad, lugar y destino del residuo.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="normativa" aria-labelledby="normativa-title">
+  <section class="section section-alt" id="normativa" aria-labelledby="normativa-title">
     <div class="container">
       <div class="section-head reveal">
         <h2 class="title" id="normativa-title">Te orientamos antes de anunciar la campaña.</h2>
@@ -337,25 +613,27 @@
     </div>
   </section>
 
-  <section class="section section-alt" id="proceso" aria-labelledby="proceso-title">
-    <div class="container split-layout">
+  <section class="section" id="proceso" aria-labelledby="proceso-title">
+    <div class="container">
       <div class="section-head reveal">
         <h2 class="title" id="proceso-title">Del primer contacto a la recolección.</h2>
         <p class="lead">Una campaña temporal necesita una recepción clara para participantes y una operación definida para quien la organiza.</p>
       </div>
-      <ol class="steps reveal-group">
-        <li class="step"><h3>Cuéntanos qué quieres organizar</h3><p>Indica organización, comuna, fecha estimada y productos prioritarios. Si aún no tienes cantidades, podemos partir con una estimación.</p></li>
-        <li class="step"><h3>Definimos el alcance y los antecedentes</h3><p>Revisamos qué se recibe, dónde, cuándo, en qué contenedor y bajo qué condiciones. También ordenamos responsables, contingencias, destino y vehículos cuando corresponda.</p></li>
-        <li class="step"><h3>Orientamos la solicitud y la participación</h3><p>Si la campaña requiere autorización sanitaria, te indicamos con tiempo los antecedentes que pide la solicitud (se presenta al menos 40 días hábiles antes) y preparamos instrucciones simples de entrega para el público.</p></li>
-        <li class="step"><h3>Operamos, retiramos y cerramos</h3><p>Coordinamos la recepción, retiro y destino acordados. Al cierre, los registros permiten respaldar qué se recolectó y cómo se gestionó.</p></li>
+      <ol class="timeline is-4 reveal-group">
+        <li><h3>Cuéntanos qué quieres organizar</h3><p>Indica organización, comuna, fecha estimada y productos prioritarios. Si aún no tienes cantidades, podemos partir con una estimación.</p></li>
+        <li><h3>Definimos el alcance y los antecedentes</h3><p>Revisamos qué se recibe, dónde, cuándo, en qué contenedor y bajo qué condiciones. También ordenamos responsables, contingencias, destino y vehículos cuando corresponda.</p></li>
+        <li><h3>Orientamos la solicitud y la participación</h3><p>Si la campaña requiere autorización sanitaria, te indicamos con tiempo los antecedentes que pide la solicitud (se presenta al menos 40 días hábiles antes) y preparamos instrucciones simples de entrega para el público.</p></li>
+        <li><h3>Operamos, retiramos y cerramos</h3><p>Coordinamos la recepción, retiro y destino acordados. Al cierre, los registros permiten respaldar qué se recolectó y cómo se gestionó.</p></li>
       </ol>
     </div>
   </section>
 
-  <section class="section" id="preguntas" aria-labelledby="preguntas-title">
+  <section class="section section-alt" id="preguntas" aria-labelledby="preguntas-title">
     <div class="container split-layout">
       <div class="section-head reveal">
         <h2 class="title" id="preguntas-title">Preguntas frecuentes.</h2>
+        <p class="faq-more">¿Tienes otra pregunta?</p>
+        <a class="btn btn-secondary btn-small" href="#conversar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>Escríbenos por WhatsApp</a>
       </div>
       <div class="accordion reveal">
         <details><summary>¿Puedo solicitar una campaña para mi comuna?<span class="plus" aria-hidden="true"></span></summary><div class="answer"><p>Sí. Comparte la municipalidad u organización responsable, la comuna, el lugar propuesto y los materiales que quieres incluir para evaluar el alcance.</p></div></details>
@@ -368,125 +646,22 @@
     </div>
   </section>
 
-  <section class="section section-alt" id="contacto" aria-labelledby="contacto-title" data-hide-dock>
-    <div class="container contact-layout">
-      <div class="contact-aside">
-        <h2 class="title" id="contacto-title">Cuéntanos sobre la campaña.</h2>
-        <p class="lead">Prepara una primera ficha de alcance. Te ayudamos a ordenar la campaña y sus antecedentes sanitarios.</p>
-        <ul class="aside-list">
-          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Si aún no tienes cantidades, parte con una estimación.</li>
-          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Las fotografías del material y los contenedores se envían por WhatsApp.</li>
-        </ul>
-        <a class="btn btn-secondary" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20reciclaje." target="_blank" rel="noopener noreferrer">Prefiero escribir por WhatsApp</a>
-      </div>
-
-      <div class="panel">
-        <form class="form" id="ficha" data-summary="ficha-resumen" data-title="Ficha de campaña — Campañas de reciclaje" data-closing="Adjuntaré fotografías del material, su acopio y los contenedores disponibles." novalidate>
-          <fieldset>
-            <legend>La campaña</legend>
-            <div class="fields">
-              <div class="field">
-                <label for="c-servicio">Apoyo que necesitas</label>
-                <select id="c-servicio" name="servicio">
-                  <option value="orientacion">Orientación inicial</option>
-                  <option value="completa">Campaña completa</option>
-                  <option value="diseno">Diseño de campaña</option>
-                  <option value="educacion">Segregación y educación</option>
-                  <option value="retiro">Retiro y coordinación</option>
-                  <option value="sanitaria">Antecedentes para autorización sanitaria</option>
-                  <option value="cierre">Registro y cierre</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="c-tipo">Tipo de organización</label>
-                <select id="c-tipo" name="tipo">
-                  <option value="municipal">Municipalidad</option>
-                  <option value="empresa">Empresa</option>
-                  <option value="comunidad">Comunidad u otra organización</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="c-fecha">Fecha estimada</label>
-                <input id="c-fecha" name="fecha" type="date">
-              </div>
-              <div class="field">
-                <label for="c-peligrosidad">Peligrosidad prevista</label>
-                <select id="c-peligrosidad" name="peligrosidad">
-                  <option value="">Por definir</option><option>No peligrosos</option><option>Peligrosos</option><option>Necesito orientación</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="c-autorizacion">Estado de la autorización sanitaria</label>
-                <select id="c-autorizacion" name="autorizacion" data-label="Autorización sanitaria">
-                  <option>Aún no iniciada</option><option>Reuniendo antecedentes</option><option>Solicitud ingresada</option><option>Autorización obtenida</option><option>No estoy seguro</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="c-lugares">Lugar o número de puntos</label>
-                <input id="c-lugares" name="lugares" maxlength="300" placeholder="Ej.: plaza central, 2 puntos">
-              </div>
-              <div class="field full">
-                <label for="c-participantes">Participación estimada (opcional)</label>
-                <input id="c-participantes" name="participantes" maxlength="200" placeholder="Personas, viviendas o sedes">
-              </div>
-              <div class="field full">
-                <label for="c-materiales">Materiales, cantidades y forma de entrega</label>
-                <textarea id="c-materiales" name="materiales" data-label="Materiales" required maxlength="2000" rows="3" placeholder="Qué se recibirá, cantidad aproximada, contenedores disponibles y estado del material…"></textarea>
-              </div>
-              <div class="field full">
-                <label for="c-destino">Destino previsto (opcional)</label>
-                <input id="c-destino" name="destino" maxlength="400" placeholder="Centro de acopio, valorización o eliminación; si aún no lo sabes, por definir">
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Organización y contacto</legend>
-            <div class="fields">
-              <div class="field">
-                <label for="c-organizacion">Organización</label>
-                <input id="c-organizacion" name="organizacion" required maxlength="160" autocomplete="organization" placeholder="Municipalidad, empresa o comunidad">
-              </div>
-              <div class="field">
-                <label for="c-comuna">Comuna</label>
-                <input id="c-comuna" name="comuna" required maxlength="100" autocomplete="address-level2">
-              </div>
-              <div class="field">
-                <label for="c-nombre">Nombre de contacto</label>
-                <input id="c-nombre" name="nombre" required maxlength="120" autocomplete="name">
-              </div>
-              <div class="field">
-                <label for="c-telefono">Teléfono (opcional)</label>
-                <input id="c-telefono" name="telefono" type="tel" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="+56 9 1234 5678">
-              </div>
-              <div class="field full">
-                <label for="c-correo">Correo electrónico (opcional)</label>
-                <input id="c-correo" name="correo" type="email" maxlength="254" autocomplete="email" spellcheck="false">
-              </div>
-            </div>
-          </fieldset>
-
-          <div class="form-submit">
-            <button class="btn btn-primary" type="submit">Preparar ficha</button>
-            <p>La ficha ordena el alcance de la campaña. No presenta la solicitud de autorización ante la autoridad.</p>
-          </div>
-        </form>
-
-        <div class="summary" id="ficha-resumen" hidden tabindex="-1">
-          <h3>Tu ficha está lista para enviar.</h3>
-          <p class="small muted">Envíala por WhatsApp y adjunta las fotografías. Este formulario no la envía por sí solo.</p>
-          <pre></pre>
-          <div class="actions">
-            <a class="btn btn-primary" data-send target="_blank" rel="noopener noreferrer">Enviar por WhatsApp</a>
-            <button class="btn btn-secondary" type="button" data-copy>Copiar</button>
-          </div>
-          <p class="status" role="status"></p>
+  <section class="section" id="empezar" aria-labelledby="empezar-title">
+    <div class="container">
+      <div class="cta-band reveal">
+        <div>
+          <h2 class="title" id="empezar-title">Cuéntanos sobre la campaña.</h2>
+          <p class="lead">Prepara una primera ficha de alcance. Te ayudamos a ordenar la campaña y sus antecedentes sanitarios.</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn-primary" href="#contacto">Organizar una campaña <svg width="16" height="16" class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          <a class="btn btn-secondary" href="#conversar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>Escribir por WhatsApp</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="relacionados" aria-labelledby="relacionados-title">
+  <section class="section section-alt" id="relacionados" aria-labelledby="relacionados-title">
     <div class="container">
       <div class="section-head reveal">
         <h2 class="title" id="relacionados-title">Una campaña, con el apoyo que necesita.</h2>
@@ -546,12 +721,17 @@
 <div class="dock" data-dock>
   <button class="dock-toggle" type="button" aria-expanded="false" aria-controls="dock-menu" aria-label="Ayuda y contacto"><svg class="dock-q" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.1 9.2a3 3 0 1 1 4.2 2.7c-.8.4-1.3 1.1-1.3 2v.5"/><path d="M12 18h.01"/></svg><svg class="dock-x" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button>
   <nav class="dock-menu" id="dock-menu" aria-label="Acciones rápidas">
-    <a class="dock-action is-primary" href="#contacto"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Organizar una campaña</a>
-    <a class="dock-action" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20reciclaje." target="_blank" rel="noopener noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>WhatsApp<span class="sr-only"> (pestaña nueva)</span></a>
+    <button class="dock-action is-primary" type="button" data-dock-open="contacto"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Organizar una campaña</button>
+    <button class="dock-action" type="button" data-dock-open="materiales"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>Ver materiales</button>
+    <a class="dock-action" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20organizar%20una%20campa%C3%B1a%20de%20reciclaje." target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>WhatsApp<span class="sr-only"> (pestaña nueva)</span></a>
     <p class="dock-caption" aria-hidden="true">¿En qué te ayudamos?</p>
   </nav>
 </div>
 
-<script src="assets/site/site.js?v=20261001d" defer></script>
+<script src="assets/site/site.js?v=20261008c" defer></script>
+<script src="assets/site/pickers.js?v=20261008c" defer></script>
+<script src="assets/site/seleccion.js?v=20261008c" defer></script>
+<script src="assets/site/filas.js?v=20261008c" defer></script>
+<script src="assets/site/transporte-ui.js?v=20261008c" defer></script>
 </body>
 </html>

@@ -32,7 +32,7 @@
     ['peligroso', 'Aceites e hidrocarburos', 'p-aceites-hidrocarburos'], ['peligroso', 'Baterías y pilas', 'p-baterias-pilas']
   ];
   const MODES = Picker.MODES.map((m) => ({ ...m, value: PICK.MODE_LABEL[m.value], key: m.value }));
-  const SLOT_OPTIONS = PICK.SLOTS.map(([t, h]) => ({ value: t === 'Cualquier horario' ? t : `${t} (${h})`, label: t, hint: h, icon: PICK.SLOT_ICONS[t] }));
+  const SLOT_OPTIONS = PICK.SLOTS.map(([t, h]) => ({ value: PICK.slotText(t), label: t, hint: h, icon: PICK.SLOT_ICONS[t] }));
 
   const STEPS = [
     { id: 'residuo', label: 'Residuo', type: 'residuo', ask: '¿Qué necesitas retirar?', help: 'Elige una opción o escríbelo abajo con tus palabras.', hint: 'Ej.: 20 sacos de cartón en Quilicura' },
@@ -42,7 +42,7 @@
     { id: 'direccion', label: 'Dirección', type: 'text', sub: true, ask: '¿Cuál es la dirección del retiro?', help: 'Calle, número y alguna referencia.', hint: 'Escribe la dirección' },
     { id: 'almacenamiento', label: 'Almacenamiento', type: 'options', layout: 'cards', ask: '¿Cómo está almacenado?', hint: 'Ej.: en tambores',
       options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon })) },
-    { id: 'modalidad', label: 'Modalidad', type: 'options', layout: 'list', ask: '¿Cuándo necesitas retirarlo?', hint: 'Ej.: es urgente', options: MODES },
+    { id: 'modalidad', label: 'Plan', type: 'options', layout: 'list', ask: '¿Cuándo necesitas retirarlo?', hint: 'Ej.: es urgente', options: MODES },
     { id: 'fecha', label: 'Fecha', type: 'calendar', sub: true, skip: 'Aún no lo sé', when: (a) => a.modalidad === 'Retiro Programado',
       ask: '¿Qué día te acomoda?', help: 'Lo confirmamos según disponibilidad, tipo de residuo y comuna.', hint: 'Ej.: el lunes' },
     { id: 'fechas', label: 'Fechas posibles', type: 'calendar', multi: 3, sub: true, when: (a) => a.modalidad === 'Espera y ahorra',
@@ -71,6 +71,8 @@
   let editing = false;
   let describing = false;
   let draft = [];
+  let choice = null; // opciones del paso actual (Picker.options)
+  let other = '';    // opción «Otro» elegida en el paso actual, a la espera de su texto
   let exchange = null; // última conversación: { user, bot }
 
   const active = () => STEPS.filter((s) => !s.when || s.when(answers));
@@ -148,11 +150,19 @@
     if (s.type === 'options' || s.type === 'multi') {
       const multi = s.type === 'multi';
       if (multi) draft = value ? value.split(', ') : [];
-      body.innerHTML = `<div class="guide-step">${heading(s)}<div class="guide-area" data-area></div>${multi ? nextButton('Continuar', !draft.length) : ''}</div>`;
-      Picker.options(body.querySelector('[data-area]'), {
-        groups: [{ options: s.options }], value: multi ? draft : value, multi,
+      /* Una opción «Otro» despliega su campo para escribir cuál, igual que en el formulario: no avanza sola, se
+         continúa con el botón (o con Enter) y queda como «Otro: lo escrito» */
+      const options = s.options.map((o) => ({ ...o, other: !multi && PICK.isOther(o.label) }));
+      const [base, texto] = !multi && PICK.isOther(value || '') ? PICK.splitOther(value) : [value, ''];
+      const withOther = options.some((o) => o.other);
+      other = withOther && PICK.isOther(base || '') ? base : '';
+      body.innerHTML = `<div class="guide-step">${heading(s)}<div class="guide-area" data-area></div>${multi ? nextButton('Continuar', !draft.length) : withOther ? nextButton('Continuar') : ''}</div>`;
+      if (withOther) body.querySelector('.guide-next').hidden = !other;
+      choice = Picker.options(body.querySelector('[data-area]'), {
+        groups: [{ options }], value: multi ? draft : base, multi, otherText: texto, otherLabel: s.ask,
         exclusive: s.exclusive ? [s.exclusive] : [], layout: s.layout,
         onPick: (v) => {
+          if (choice.others.includes(v)) { other = v; const next = body.querySelector('.guide-next'); next.hidden = false; if (!matchMedia('(pointer: coarse)').matches) Picker.reveal(next); return; }
           if (s.id === 'modalidad' && answers.modalidad !== v) { delete answers.fecha; delete answers.fechas; meta.dates = {}; }
           answers[s.id] = v;
           exchange = null;
@@ -208,11 +218,17 @@
       : answers[s.id] ? [{ label: s.label, value: shown(s), i }, ...(s.id === 'direccion' && meta.punto ? [{ label: 'Ubicación en el mapa', value: 'Punto marcado (va como enlace de Google Maps)', i }] : [])] : []));
     body.innerHTML = `<div class="guide-step guide-final">
       <div class="guide-done"><svg width="28" height="28" class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>
-        <div><h3 class="guide-q" tabindex="-1">Tu solicitud está lista.</h3><p class="guide-help">Envíala por WhatsApp con las fotografías; con eso revisamos el residuo, la cobertura, la disponibilidad y las condiciones del retiro para preparar la propuesta.</p></div></div>
+        <div><h3 class="guide-q" tabindex="-1">Tu solicitud está lista.</h3><p class="guide-help">Envíala con las fotografías; con eso revisamos el residuo, la cobertura, la disponibilidad y las condiciones del retiro para preparar la propuesta.</p></div></div>
       <dl class="review">${rows.map((r) => `<div><dt>${esc(r.label)}</dt><dd>${esc(r.value)}</dd><button type="button" class="text-link" data-edit="${r.i}">Cambiar<span class="sr-only"> ${esc(r.label)}</span></button></div>`).join('')}</dl>
-      <p class="guide-note">Se abrirá WhatsApp con tu solicitud escrita. Revísala, adjunta las fotografías y envíala.</p>
+      <p class="guide-note">Se abrirá con tu solicitud ya escrita. Revísala, adjunta las fotografías y envíala.</p>
     </div>`;
-    actions.innerHTML = `<button type="button" class="btn btn-secondary btn-small" data-copy>${ICON.copy}${ICON.done}<span>Copiar</span></button><a class="btn btn-primary btn-small" href="${window.SITE.whatsapp(summaryText())}" target="_blank" rel="noopener noreferrer">${ICON.send}Enviar por WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></a>`;
+    /* WhatsApp (verde, con su ícono) y, si el formulario de cotización declara su correo de destino, también correo */
+    const correo = d.getElementById('cotizacion')?.dataset.mail;
+    actions.classList.toggle('has-mail', !!correo);
+    actions.innerHTML = `${correo ? '<span class="foot-label">Enviar por</span>' : ''
+    }<a class="btn btn-wa btn-small" href="${window.SITE.whatsapp(summaryText())}" target="_blank" rel="noopener noreferrer">${window.SITE.ICON.wa}<span><span class="btn-pre">Enviar por </span>WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></span></a>${
+      correo ? `<a class="btn btn-secondary btn-small" href="${esc(window.SITE.mailto(correo, summaryText()))}">${window.SITE.ICON.mail}<span><span class="btn-pre">Enviar por </span><span class="btn-cap">correo</span></span></a>` : ''
+    }<span class="foot-more"><button type="button" class="btn btn-secondary btn-small" data-copy>${ICON.copy}${ICON.done}<span>Copiar</span></button></span>`;
   };
 
   const render = () => {
@@ -426,6 +442,7 @@
     if (edit) { go(() => { done = false; editing = true; exchange = null; index = Number(edit.dataset.edit); }); return; }
     if (!e.target.closest('[data-continue]') || !s) return;
     if (s.type === 'multi') answers[s.id] = s.options.map((o) => o.value).filter((v) => draft.includes(v)).join(', ');
+    else if (s.type === 'options') answers[s.id] = PICK.joinOther(other, choice.other());
     else if (s.type === 'calendar') { meta.dates[s.id] = draft; answers[s.id] = draft.map(PICK.longDate).join(', '); }
     else if (s.type === 'contact') {
       const fields = [...body.querySelectorAll('input')];
@@ -440,7 +457,7 @@
     advance();
   });
   body.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.matches('.pick-field input')) { e.preventDefault(); body.querySelector('[data-continue]')?.click(); }
+    if (e.key === 'Enter' && e.target.matches('.pick-field input, [data-other] input')) { e.preventDefault(); body.querySelector('[data-continue]')?.click(); }
   });
   trail.addEventListener('click', (e) => {
     const edit = e.target.closest('[data-edit]');

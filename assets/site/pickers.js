@@ -58,11 +58,18 @@
     return `${WD_LONG[dt.getDay()]} ${dd} de ${MONTHS_LONG[m - 1]}`;
   };
 
+  /* [nombre, lo que se ve en la opción, cómo queda en el resumen (si difiere)]. El horario vespertino (de noche) no se
+     promete: siempre queda sujeto a confirmación y la opción lo dice (pedido del cliente, 08-10-2026) */
   const SLOTS = [
     ['Mañana', '8:00 a 13:00'],
     ['Tarde', '13:00 a 18:00'],
+    ['Vespertino', 'De noche · sujeto a confirmación', 'de noche, sujeto a confirmación'],
     ['Cualquier horario', 'Dentro de la jornada']
   ];
+  const slotText = (name) => {
+    const s = SLOTS.find(([t]) => t === name);
+    return s && name !== 'Cualquier horario' ? `${s[0]} (${s[2] || s[1]})` : name;
+  };
   const HOURS = Array.from({ length: 15 }, (_, i) => `${i + 6}:00`);
 
   /* Categorías del listado de transportistas (misma fuente que el buscador) con su miniatura en assets/transporte/cat/ */
@@ -96,7 +103,8 @@
     edit: ic('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),
     sun: ic('<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>'),
     sunset: ic('<path d="M4 18h16M7 18a5 5 0 0 1 10 0M12 6v3M5.5 11.5l1.5 1M18.5 11.5l-1.5 1"/>'),
-    clock: ic('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>')
+    clock: ic('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+    moon: ic('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>')
   };
   const AMOUNT_ICONS = [bars(1), bars(2), bars(3), bars(4), ICONS.help];
   const STORAGE = [
@@ -109,11 +117,24 @@
   ];
   const STATES = ['Sólido', 'Líquido', 'Lodo', 'Mixto'];
   const DOCS = ['HDS/FDS del producto original', 'HDSR u hoja del residuo', 'Análisis o caracterización', 'Sin documentos por ahora'];
-  const ACCESS = ['Acceso restringido para camión', 'Bodega subterránea', 'Altura máxima', 'Grúa requerida', 'Horario de carga definido'];
-  const SERVICES = [['retiro', 'Retiro de residuos'], ['rep', 'Gestión REP y productos prioritarios'], ['marcas', 'Destrucción de marcas'], ['reas', 'Gestión de REAS'], ['patios', 'Limpieza y patios de residuos']];
+  const ACCESS = ['Acceso restringido para camión', 'Bodega subterránea', 'Altura máxima', 'Grúa requerida', 'Horario de carga definido', 'Otra condición'];
+  /* Las opciones «Otro», «Otra…» despliegan un campo para escribir cuál (seleccion.js) */
+  const isOther = (label) => /^Otr[oa]s?\b/.test(label);
+  /* «Otro: jaulas» → ['Otro', 'jaulas'] */
+  const splitOther = (v) => { const at = String(v || '').indexOf(': '); return at < 0 ? [v || '', ''] : [v.slice(0, at), v.slice(at + 2)]; };
+  const joinOther = (base, text) => (base && text ? `${base}: ${text}` : base || '');
+  const SERVICES = [['retiro', 'Retiro de residuos'], ['contenedores', 'Arriendo de contenedores'], ['rep', 'Gestión REP y productos prioritarios'], ['marcas', 'Destrucción de marcas'], ['reas', 'Gestión de REAS'], ['patios', 'Limpieza y patios de residuos']];
+  /* Arriendo de contenedores: primero el período, después el residuo y recién entonces el contenedor */
+  const PERIODS = [['mensual', 'Mensual'], ['semanal', 'Semanal'], ['diario', 'Diario']];
+  /* Vehículos y contenedores que se pueden pedir. Cada uno dice con qué tipo de residuo está disponible
+     (tipos: 'no-peligroso', 'peligroso'); con otro tipo se muestra, pero no se puede elegir.
+     NO INVENTAR: la lista la entrega el cliente. Vacía, la fila correspondiente no aparece en el formulario. */
+  const VEHICLES = [];
+  const CONTAINERS = [];
+  const allowed = (item, tipo) => !tipo || tipo === 'no-se' || item.tipos.includes(tipo);
   const TIPO_LABEL = { 'no-peligroso': 'No peligroso', peligroso: 'Peligroso', 'no-se': 'No lo sé' };
   const MODE_LABEL = { express: 'Retiro Express', programado: 'Retiro Programado', flexible: 'Espera y ahorra' };
-  const SLOT_ICONS = { 'Mañana': ICONS.sun, 'Tarde': ICONS.sunset, 'Cualquier horario': ICONS.clock };
+  const SLOT_ICONS = { 'Mañana': ICONS.sun, 'Tarde': ICONS.sunset, 'Vespertino': ICONS.moon, 'Cualquier horario': ICONS.clock };
   const thumb = (file) => `${window.SITE_ROOT || ''}assets/transporte/cat/residuo-${file}.webp`;
   const WD_SHORT = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
   const MONTH_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -122,5 +143,5 @@
     return `${WD_SHORT[new Date(y, m - 1, dd, 12).getDay()]} ${dd} ${MONTH_SHORT[m - 1]}`;
   };
 
-  window.PICK = { CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, DOCS, ACCESS, SERVICES, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
+  window.PICK = { CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, DOCS, ACCESS, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
 })();

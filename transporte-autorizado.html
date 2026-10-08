@@ -24,8 +24,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/transporte/transporte-hero-flota-ciudad-cielo.webp" media="(min-width: 861px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/transporte/transporte-hero-flota-ciudad-movil.webp" media="(max-width: 860px)" fetchpriority="high">
-<link rel="stylesheet" href="assets/site/site.css?v=20261001d">
-<link rel="stylesheet" href="assets/site/transporte.css?v=20261001d">
+<link rel="stylesheet" href="assets/site/site.css?v=20261008c">
+<link rel="stylesheet" href="assets/site/transporte.css?v=20261008c">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {
@@ -99,8 +99,8 @@
 <header class="site-header has-docs nav-long">
   <div class="container">
     <a class="brand" href="#top" aria-label="Transporte Autorizado, inicio">
-      <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#2f5bd3"/><path d="M9 14h14v12H9zM23 18h5l4 4v4h-9M13 30a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm14 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
-      Transporte Autorizado
+      <img class="brand-mark" src="assets/transporte/logo/camion.svg" alt="" width="60" height="36">
+      <img class="brand-name" src="assets/transporte/logo/nombre.svg" alt="" width="126" height="31">
     </a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
       <svg width="20" height="20" class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
@@ -108,7 +108,7 @@
     </button>
     <nav class="nav" id="nav" aria-label="Principal">
       <a href="#servicios">Servicios</a>
-      <a href="#modalidades">Modalidades</a>
+      <a href="#planes">Planes</a>
       <a href="#buscar">Buscar transportista</a>
       <a href="#ayuda" class="nav-docs" data-docs-open aria-controls="docs-panel" aria-expanded="false">Ayuda<span class="nav-docs-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></a>
       <a href="#preguntas">Preguntas</a>
@@ -132,7 +132,7 @@
         <div class="stage-side">
           <div class="stage-copy">
             <h1 class="display" id="hero-title">Nos hacemos cargo de tus residuos.</h1>
-            <p class="lead">Coordinamos el retiro, transporte y gestión de tus residuos con gestores autorizados y el respaldo documental que corresponda.</p>
+            <p class="lead">Gestionamos el retiro, transporte, gestión y reciclaje de tus residuos.</p>
           </div>
 
           <form class="ask" data-ask autocomplete="off" role="search" aria-label="Cuéntanos qué necesitas">
@@ -141,14 +141,15 @@
             <button type="submit" class="ask-send" aria-label="Enviar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
           </form>
 
-          <div class="routes" role="tablist" aria-label="¿Qué necesitas?" aria-orientation="vertical" data-routes>
+          <div class="routes" data-routes>
             <span class="routes-pill" aria-hidden="true"></span>
+            <div class="routes-tabs" role="tablist" aria-label="¿Qué necesitas?" aria-orientation="vertical">
             <button class="route" type="button" role="tab" id="tab-cotizar" aria-controls="cotizar" aria-selected="false" data-route="cotizar">
               <span class="route-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg></span>
               <span class="route-text"><strong>Necesito gestionar mis residuos</strong><small>Cotizar gestión</small></span>
               <span class="route-short" aria-hidden="true">Cotizar</span>
             </button>
-            <button class="route" type="button" role="tab" id="tab-buscar" aria-controls="buscar" aria-selected="false" data-route="buscar">
+            <button class="route" type="button" role="tab" id="tab-buscar" aria-controls="buscar" aria-selected="false" data-route="buscar" data-foto="assets/transporte/transporte-hero-panorama.webp">
               <span class="route-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg></span>
               <span class="route-text"><strong>¿Buscas un transportista autorizado?</strong><small>Buscar transportista</small></span>
               <span class="route-short" aria-hidden="true">Buscar</span>
@@ -158,6 +159,11 @@
               <span class="route-text"><strong>¿Necesitas orientación?</strong><small>Hablar con un especialista</small></span>
               <span class="route-short" aria-hidden="true">Especialista</span>
             </button>
+            </div>
+            <a class="route route-link" href="https://recicladordebase.cl" target="_blank" rel="noopener noreferrer">
+              <span class="route-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></span>
+              <span class="route-text"><strong>Quiero hacer convenio con un reciclador de base</strong><small>Ir a recicladordebase.cl<span class="sr-only"> (se abre en otra pestaña)</span></small></span>
+            </a>
           </div>
         </div>
 
@@ -171,7 +177,7 @@
                     <h2>Cotiza tu retiro</h2>
                     <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
                   </div>
-                  <p class="hcard-alt">¿Prefieres conversar? <a href="https://wa.me/56986067930?text=Hola%2C%20quiero%20cotizar%20el%20retiro%20de%20un%20residuo." target="_blank" rel="noopener noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>Escríbenos por WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></a></p>
+                  <p class="hcard-alt">¿Prefieres conversar? <a href="https://wa.me/56986067930?text=Hola%2C%20quiero%20cotizar%20el%20retiro%20de%20un%20residuo." target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Escríbenos por WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></a></p>
                   <div class="stepper" style="--n:2">
                     <div class="stepper-labels"><button type="button">Retiro</button><button type="button">Contacto</button></div>
                     <div class="stepper-bar" aria-hidden="true"><i></i></div>
@@ -182,7 +188,7 @@
                   <fieldset data-step-panel data-summary-title="Retiro">
                     <legend class="sr-only">Datos del retiro</legend>
                     <div class="picks">
-                        <div class="pick" data-pick="servicio" data-show-when="servicio=rep,marcas,reas,patios">
+                        <div class="pick" data-pick="servicio">
                           <button type="button" class="pick-btn" aria-haspopup="dialog">
                             <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg></span>
                             <span class="pick-text"><span class="pick-label">Servicio</span><span class="pick-value" data-empty="Retiro de residuos">Retiro de residuos</span></span>
@@ -190,19 +196,38 @@
                           </button>
                           <input type="hidden" name="servicio" value="retiro" data-label="Servicio" data-text="Retiro de residuos">
                         </div>
+                        <div class="pick pick-seg" data-required-pick="periodo" data-show-when="servicio=contenedores">
+                          <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
+                          <div class="pick-text">
+                            <span class="pick-label" id="l-periodo">Período de arriendo</span>
+                            <div class="seg" role="radiogroup" aria-labelledby="l-periodo" data-periodos><button type="button" role="radio" aria-checked="false" data-periodo="mensual">Mensual</button><button type="button" role="radio" aria-checked="false" data-periodo="semanal">Semanal</button><button type="button" role="radio" aria-checked="false" data-periodo="diario">Diario</button></div>
+                          </div>
+                          <input type="hidden" name="periodo" data-label="Período de arriendo">
+                          <p class="pick-error">Elige si el arriendo es mensual, semanal o diario.</p>
+                        </div>
                         <div class="pick" data-pick="residuo" data-required-pick="residuo-ok">
                           <button type="button" class="pick-btn" aria-haspopup="dialog">
                             <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg></span>
                             <span class="pick-text"><span class="pick-label">Residuo</span><span class="pick-value" data-empty="Elige el residuo">Elige el residuo</span></span>
                             <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
                           </button>
-                          <input type="hidden" name="tipo" data-label="Tipo de residuo"><input type="hidden" name="categoria" data-label="Residuo"><input type="hidden" name="residuo-ok" data-summary-skip>
+                          <input type="hidden" name="tipo" data-label="Tipo de residuo"><input type="hidden" name="categoria" data-label="Residuo"><input type="hidden" name="residuo-ok" data-summary-skip><input type="hidden" name="describir" data-summary-skip>
                           <p class="pick-error">Elige el residuo que necesitas retirar.</p>
                         </div>
-                        <div class="pick pick-field" data-show-when="tipo=no-se">
+                        <div class="pick pick-field" data-show-when="describir=si">
                           <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/><path d="M9 9.5a3 3 0 1 1 3.5 3c-.3 0-.5.2-.5.5v1M12 17h.01"/></svg></span>
-                          <span class="pick-text"><label class="pick-label" for="f-descripcion">¿Qué es y de qué proceso proviene?</label><input id="f-descripcion" name="descripcion" data-label="Residuo" required maxlength="240" placeholder="Ej.: polvo de la limpieza de hornos"></span>
+                          <span class="pick-text"><label class="pick-label" for="f-descripcion">¿Qué es y de qué proceso proviene?</label><input id="f-descripcion" name="descripcion" data-label="Descripción del residuo" required maxlength="240" placeholder="Ej.: polvo de la limpieza de hornos"></span>
                         </div>
+                        <div class="pick" data-pick="contenedor" data-required-pick="contenedor" data-show-when="servicio=contenedores">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="1.5"/><path d="M7.5 7v11M12 7v11M16.5 7v11"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Contenedor</span><span class="pick-value" data-empty="Elige el contenedor">Elige el contenedor</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="contenedor" data-label="Contenedor">
+                          <p class="pick-error">Elige el contenedor que necesitas.</p>
+                        </div>
+                        <div class="picks-group" data-show-when="servicio=retiro,rep,marcas,reas,patios">
                         <div class="pick" data-pick="cantidad" data-required-pick="cantidad">
                           <button type="button" class="pick-btn" aria-haspopup="dialog">
                             <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20h12l-1.6-10H7.6z"/><path d="M9.5 10a2.5 2.5 0 1 1 5 0"/></svg></span>
@@ -211,6 +236,15 @@
                           </button>
                           <input type="hidden" name="cantidad" data-label="Cantidad aproximada">
                           <p class="pick-error">Elige la cantidad aproximada.</p>
+                        </div>
+                        <div class="pick" data-pick="vehiculo">
+                          <button type="button" class="pick-btn" aria-haspopup="dialog">
+                            <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg></span>
+                            <span class="pick-text"><span class="pick-label">Vehículo</span><span class="pick-value" data-empty="Opcional: lo definimos según tu residuo">Opcional: lo definimos según tu residuo</span></span>
+                            <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
+                          </button>
+                          <input type="hidden" name="vehiculo" data-label="Vehículo">
+                        </div>
                         </div>
                         <div class="pick" data-pick="comuna" data-required-pick="comuna">
                           <button type="button" class="pick-btn" aria-haspopup="dialog">
@@ -231,6 +265,7 @@
                           <input type="hidden" name="ubicacion" data-label="Ubicación en el mapa">
                           <p class="pick-error">Indica la dirección del retiro.</p>
                         </div>
+                        <div class="picks-group" data-show-when="servicio=retiro,rep,marcas,reas,patios">
                         <div class="pick pick-seg" data-required-pick="modalidad">
                           <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg></span>
                           <div class="pick-text">
@@ -238,7 +273,7 @@
                             <div class="seg" role="radiogroup" aria-labelledby="l-modalidad" data-modalidades><button type="button" role="radio" aria-checked="false" data-modalidad="express">Express</button><button type="button" role="radio" aria-checked="false" data-modalidad="programado">Programado</button><button type="button" role="radio" aria-checked="false" data-modalidad="flexible">Espera y ahorra</button></div>
                             <p class="seg-hint" data-modalidad-hint aria-live="polite">Elige qué tan pronto lo necesitas.</p>
                           </div>
-                          <input type="hidden" name="modalidad" data-label="Modalidad">
+                          <input type="hidden" name="modalidad" data-label="Plan">
                           <p class="pick-error">Elige el tipo de retiro.</p>
                         </div>
                         <div class="pick" data-pick="fecha" data-required-pick="fecha-ok" data-show-when="modalidad=programado,flexible">
@@ -273,6 +308,7 @@
                             <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg></span>
                           </button>
                           <input type="hidden" name="acceso" data-label="Condiciones de acceso"><input type="hidden" name="estado" data-label="Estado"><input type="hidden" name="almacenamiento" data-label="Almacenamiento">
+                        </div>
                         </div>
                     </div>
                   </fieldset>
@@ -331,13 +367,17 @@
                     <h2><svg width="28" height="28" class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>Tu solicitud está lista.</h2>
                     <button class="hcard-close" type="button" data-hero-close aria-label="Cerrar y volver al inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
                   </div>
-                  <p class="hcard-sub">Se abrirá WhatsApp con este texto escrito: adjunta las fotografías y envíalo. Revisaremos los antecedentes antes de confirmar disponibilidad, valor y condiciones del retiro.</p>
+                  <p class="hcard-sub">Envíala con este texto ya escrito y adjunta las fotografías. Revisaremos los antecedentes antes de confirmar disponibilidad, valor y condiciones.</p>
                 </div>
                 <div class="hcard-body"><pre></pre></div>
                 <div class="hcard-foot">
-                  <a class="btn btn-primary btn-small" data-send target="_blank" rel="noopener noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10.5 13.5"/><path d="M21 3l-6.5 18-4-7.5L3 9.5z"/></svg>Enviar por WhatsApp</a>
-                  <button class="btn btn-secondary btn-small" type="button" data-copy><svg width="20" height="20" class="icon-idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg width="20" height="20" class="icon-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>Copiar</span></button>
-                  <button class="btn btn-quiet btn-small" type="button" data-edit><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Editar</button>
+                  <span class="foot-label" hidden>Enviar por</span>
+                  <a class="btn btn-wa btn-small" data-send target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span><span class="btn-pre">Enviar por </span>WhatsApp<span class="sr-only"> (abre WhatsApp)</span></span></a>
+                  <a class="btn btn-secondary btn-small" data-mail hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span><span class="btn-pre">Enviar por </span><span class="btn-cap">correo</span></span></a>
+                  <span class="foot-more">
+                    <button class="btn btn-secondary btn-small" type="button" data-copy><svg width="20" height="20" class="icon-idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg width="20" height="20" class="icon-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>Copiar</span></button>
+                    <button class="btn btn-quiet btn-small" type="button" data-edit><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Editar</button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -398,7 +438,7 @@
                 </div>
               </div>
               <div class="hcard-foot">
-                <a class="btn btn-primary btn-small" href="https://wa.me/56986067930" target="_blank" rel="noopener noreferrer" data-expert-wa><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>Hablar por WhatsApp<span class="sr-only"> (abre WhatsApp)</span></a>
+                <a class="btn btn-wa btn-small" href="https://wa.me/56986067930" target="_blank" rel="noopener noreferrer" data-expert-wa><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Hablar por WhatsApp<span class="sr-only"> (abre WhatsApp)</span></a>
                 <button class="btn btn-secondary btn-small" type="button" data-assistant-open><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11"/><circle cx="5.5" cy="18" r="1.5"/></svg>Prefiero que me guíen paso a paso</button>
               </div>
             </div>
@@ -438,9 +478,9 @@
         <p class="lead">Evaluamos el tipo de residuo, coordinamos el retiro y definimos la mejor alternativa de gestión según sus características y condiciones.</p>
       </div>
 
-      <div class="services reveal-group">
-        <article class="service">
-          <figure class="service-media"><img src="assets/transporte/transporte-portacontenedor-azul-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
+      <div class="services is-3 reveal-group">
+        <article class="service is-safe">
+          <figure class="service-media"><img src="assets/transporte/transporte-camion-lluvia-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
           <div class="service-body">
             <h3>Retiro de residuos no peligrosos</h3>
             <p>Coordinamos el retiro y traslado de residuos industriales no peligrosos a una planta de valorización o disposición adecuada.</p>
@@ -451,7 +491,7 @@
             <div class="collapse" id="sv-np"><div class="collapse-inner"><p class="service-more">Cuéntanos qué residuo es, cuánto hay aproximadamente, en qué comuna está y cómo está almacenado. También puedes enviarnos fotografías.</p></div></div>
           </div>
         </article>
-        <article class="service">
+        <article class="service is-hazard">
           <figure class="service-media"><img src="assets/transporte/transporte-camion-industrial-dia-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
           <div class="service-body">
             <h3>Retiro de residuos peligrosos</h3>
@@ -461,6 +501,18 @@
               <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-p" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
             </div>
             <div class="collapse" id="sv-p"><div class="collapse-inner"><p class="service-more">Envíanos una fotografía, HDS/FDS, análisis u otros antecedentes para cotizar a la brevedad. Si falta información, te indicamos qué revisar antes de coordinar.</p></div></div>
+          </div>
+        </article>
+        <article class="service">
+          <figure class="service-media"><img src="assets/transporte/transporte-portacontenedor-azul-1200.webp" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
+          <div class="service-body">
+            <h3>Arriendo de contenedores</h3>
+            <p>Solicita contenedores por día, semana o mes, según el tipo de residuo que necesitas almacenar.</p>
+            <div class="service-foot">
+              <a class="btn btn-primary btn-small" href="#cotizar" data-set="servicio=contenedores">Cotizar arriendo <svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-c" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
+            </div>
+            <div class="collapse" id="sv-c"><div class="collapse-inner"><p class="service-more">Indícanos por cuánto tiempo los necesitas, qué residuo vas a almacenar, el contenedor que prefieres y la comuna.</p></div></div>
           </div>
         </article>
       </div>
@@ -497,10 +549,10 @@
     </div>
   </section>
 
-  <section class="section" id="modalidades" aria-labelledby="modalidades-title">
+  <section class="section" id="planes" aria-labelledby="planes-title">
     <div class="container">
       <div class="section-head reveal">
-        <h2 class="title" id="modalidades-title">¿Cuándo necesitas retirar tus residuos?</h2>
+        <h2 class="title" id="planes-title">¿Cuándo necesitas retirar tus residuos?</h2>
       </div>
       <div class="plans reveal-group">
         <article class="plan" data-tone="express">
@@ -640,9 +692,8 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <a class="brand" href="#top">
-          <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#2f5bd3"/><path d="M9 14h14v12H9zM23 18h5l4 4v4h-9M13 30a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm14 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
-          Transporte Autorizado
+        <a class="brand brand-logo" href="#top" aria-label="Transporte Autorizado, inicio">
+          <img src="assets/transporte/logo/logo.svg" alt="Transporte Autorizado" width="138" height="120" loading="lazy" decoding="async">
         </a>
         <p>Retiro y coordinación de residuos peligrosos y no peligrosos para empresas en Chile.</p>
       </div>
@@ -650,7 +701,7 @@
         <h2>Servicios</h2>
         <ul>
           <li><a href="#servicios">Retiro de residuos</a></li>
-          <li><a href="#modalidades">Modalidades de retiro</a></li>
+          <li><a href="#planes">Planes de retiro</a></li>
           <li><a href="#buscar">Buscar transportista</a></li>
           <li><a href="#cotizar">Cotizar retiro</a></li>
           <li><a href="#ayuda" data-docs-open>Ayuda y documentos</a></li>
@@ -680,22 +731,22 @@
     <button class="dock-action is-primary" type="button" data-dock-open="cotizar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg>Cotizar retiro</button>
     <button class="dock-action" type="button" data-dock-open="buscar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg>Buscar transportista</button>
     <button class="dock-action" type="button" data-dock-open="asistente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg>Chat con el asistente</button>
-    <a class="dock-action" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20cotizar%20el%20retiro%20de%20un%20residuo." target="_blank" rel="noopener noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>WhatsApp<span class="sr-only"> (pestaña nueva)</span></a>
+    <a class="dock-action" href="https://wa.me/56986067930?text=Hola%2C%20quiero%20cotizar%20el%20retiro%20de%20un%20residuo." target="_blank" rel="noopener noreferrer"><svg class="wa-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>WhatsApp<span class="sr-only"> (pestaña nueva)</span></a>
     <p class="dock-caption" aria-hidden="true">¿En qué te ayudamos?</p>
   </nav>
 </div>
 
 
-<script src="assets/site/site.js?v=20261001d" defer></script>
-<script src="assets/site/pickers.js?v=20261001d" defer></script>
-<script src="assets/site/seleccion.js?v=20261001d" defer></script>
-<script src="assets/site/interpretar.js?v=20261001d" defer></script>
-<script src="assets/site/geo.js?v=20261001d" defer></script>
-<script src="assets/site/mapa.js?v=20261001d" defer></script>
-<script src="assets/site/transporte.js?v=20261001d" defer></script>
-<script src="assets/site/transporte-ui.js?v=20261001d" defer></script>
-<script src="assets/site/asistente.js?v=20261001d" defer></script>
-<script src="assets/site/normativa.js?v=20261001d" defer></script>
-<script src="assets/site/ayuda.js?v=20261001d" defer></script>
+<script src="assets/site/site.js?v=20261008c" defer></script>
+<script src="assets/site/pickers.js?v=20261008c" defer></script>
+<script src="assets/site/seleccion.js?v=20261008c" defer></script>
+<script src="assets/site/interpretar.js?v=20261008c" defer></script>
+<script src="assets/site/geo.js?v=20261008c" defer></script>
+<script src="assets/site/mapa.js?v=20261008c" defer></script>
+<script src="assets/site/transporte.js?v=20261008c" defer></script>
+<script src="assets/site/transporte-ui.js?v=20261008c" defer></script>
+<script src="assets/site/asistente.js?v=20261008c" defer></script>
+<script src="assets/site/normativa.js?v=20261008c" defer></script>
+<script src="assets/site/ayuda.js?v=20261008c" defer></script>
 </body>
 </html>

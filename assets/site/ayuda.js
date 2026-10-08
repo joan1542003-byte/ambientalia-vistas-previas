@@ -1,9 +1,10 @@
-/* Transporte Autorizado: «Ayuda» en la cabecera. Al elegirlo, la misma píldora de la cabecera se expande y muestra las
-   guías rápidas (¿peligroso o no?, autorización sanitaria, antes de contratar) y los documentos (checklist descargable y
-   normativa con búsqueda), cada uno con su explicación: en escritorio, lista a la izquierda y detalle a la derecha (cambia
-   al pasar el puntero); en el teléfono, cada tema se despliega en su lugar. El contenido viene en el HTML (tools/ayuda.py),
-   así también lo leen los buscadores. Cualquier enlace con [data-docs-open] abre el panel; con valor, en ese tema
-   (p. ej. data-docs-open="normativa"). También da la confirmación de las descargas ([data-download], [data-doc-pdf]). */
+/* Transporte Autorizado: «Ayuda» en la cabecera. Al elegirlo, la misma píldora de la cabecera se expande y muestra
+   primero las opciones que hay: las guías rápidas (¿peligroso o no?, autorización sanitaria, antes de contratar) y los
+   documentos (checklist descargable y normativa con búsqueda). Al elegir una se ve su explicación: en escritorio, lista a
+   la izquierda y detalle a la derecha (desde ahí cambia al pasar el puntero); en el teléfono, cada tema se despliega en
+   su lugar. El contenido viene en el HTML (tools/ayuda.py), así también lo leen los buscadores. Cualquier enlace con
+   [data-docs-open] abre el panel en las opciones; con valor, directo en ese tema (p. ej. data-docs-open="normativa").
+   También da la confirmación de las descargas ([data-download], [data-doc-pdf]). */
 (() => {
   const d = document;
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
@@ -32,18 +33,28 @@
   const toggle = header.querySelector('.menu-toggle');
   const byKey = (key) => items.find((it) => it.dataset.docsItem === key) || null;
   const scroller = panel.querySelector('.docs-scroll');
+  const inner = panel.querySelector('.docs-inner');
   let open = false;
-  /* Parte en el tema de la página en que se está: su guía, o la normativa al leer una norma */
-  let current = items.find((it) => location.pathname.endsWith(`/ayuda/${it.dataset.docsItem}.html`)) || (location.pathname.includes('/normativa/') ? byKey('normativa') : null);
+  /* Sin tema elegido, el panel muestra solo las opciones (pedido del cliente, 02-10-2026: primero qué hay, no una guía) */
+  let current = null;
   let opener = null;
+  /* El tema de la página en que se está (su guía, o la normativa al leer una norma) queda señalado en la lista */
+  const here = items.find((it) => location.pathname.endsWith(`/ayuda/${it.dataset.docsItem}.html`)) || (location.pathname.includes('/normativa/') ? byKey('normativa') : null);
+  if (here) tabOf(here).setAttribute('aria-current', 'page');
 
-  const placeGlide = (instant) => {
-    const on = current && wide.matches ? tabOf(current) : null;
+  /* Escritorio, vista de opciones: los temas en dos columnas y ningún detalle abierto */
+  const inMenu = () => wide.matches && grid.classList.contains('is-menu');
+  /* En la lista con detalle, la línea de tinta marca el tema abierto; en la vista de opciones, un fondo suave acompaña
+     al puntero de fila en fila (over = la fila bajo el puntero) */
+  const placeGlide = (instant, over = null) => {
+    const menu = inMenu();
+    const on = menu ? over : (current && wide.matches ? tabOf(current) : null);
     glide.classList.toggle('is-on', Boolean(on));
     if (!on) return;
     glide.classList.toggle('is-instant', Boolean(instant) || !motion.matches);
-    glide.style.transform = `translateY(${on.offsetTop}px)`;
+    glide.style.transform = `translate(${menu ? on.offsetLeft : 0}px, ${on.offsetTop}px)`;
     glide.style.height = `${on.offsetHeight}px`;
+    glide.style.width = menu ? `${on.offsetWidth}px` : '';
   };
   /* Teléfono: el tema que se abre sube hasta el borde superior del panel, al mismo tiempo que se despliega
      (la posición se recalcula en cada cuadro porque el tema anterior se está cerrando) */
@@ -66,6 +77,7 @@
   ['touchstart', 'wheel'].forEach((ev) => scroller?.addEventListener(ev, () => cancelAnimationFrame(revealRaf), { passive: true }));
   const select = (item, { instant = false } = {}) => {
     current = item;
+    grid.classList.toggle('is-menu', !item);
     items.forEach((it) => {
       const on = it === item;
       it.classList.toggle('is-on', on);
@@ -74,6 +86,27 @@
     });
     placeGlide(instant);
     reveal(item);
+  };
+  /* De las opciones a la lista con detalle: el panel ajusta su alto con una animación corta y el contenido nuevo entra
+     con un fundido (el mismo lenguaje del hero). `still` recuerda dónde quedó el puntero: al reacomodarse la lista, otra
+     fila puede quedar debajo sin que la persona lo haya movido, y eso no debe cambiar el tema. */
+  let sizing = null;
+  let still = null;
+  let entering = 0;
+  const enter = (item, e) => {
+    const from = inner.offsetHeight;
+    still = e && e.detail ? { x: e.clientX, y: e.clientY } : null;
+    select(item, { instant: true });
+    if (!motion.matches || !inner.animate) return;
+    const to = inner.offsetHeight;
+    sizing?.cancel();
+    if (Math.abs(to - from) > 1) sizing = inner.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 460, easing: 'cubic-bezier(.32, .72, 0, 1)' });
+    grid.classList.remove('is-entering');
+    void grid.offsetWidth;
+    grid.classList.add('is-entering');
+    /* Terminada la entrada, los cambios de tema vuelven a su fundido normal */
+    clearTimeout(entering);
+    entering = setTimeout(() => grid.classList.remove('is-entering'), 700);
   };
 
   const setOpen = (next, { focus = false, item = null } = {}) => {
@@ -86,9 +119,11 @@
     triggers.forEach((t) => t.setAttribute('aria-expanded', String(open)));
     if (toggle) toggle.setAttribute('aria-label', open ? 'Cerrar ayuda' : 'Abrir menú');
     if (open) {
-      /* En escritorio siempre hay un tema a la vista; en el teléfono la lista parte cerrada */
-      if (wide.matches) select(current || items[0], { instant: true });
-      else select(item || null);
+      /* Parte en las opciones (en el teléfono, la lista cerrada); solo un enlace que pide un tema lo abre directo */
+      sizing?.cancel();
+      clearTimeout(entering);
+      grid.classList.remove('is-entering');
+      select(item || null, { instant: wide.matches });
       if (focus) tabOf(current || items[0]).focus({ preventScroll: true });
     } else if (focus) (opener && opener.isConnected ? opener : triggers[0]).focus({ preventScroll: true });
   };
@@ -115,17 +150,23 @@
   let intent = 0;
   items.forEach((item) => {
     const tab = tabOf(item);
-    tab.addEventListener('click', () => {
-      if (wide.matches) select(item);
-      else select(item.classList.contains('is-on') ? null : item);
+    tab.addEventListener('click', (e) => {
+      if (!wide.matches) select(item.classList.contains('is-on') ? null : item);
+      else if (inMenu()) enter(item, e);
+      else select(item);
     });
-    tab.addEventListener('pointerenter', () => {
+    tab.addEventListener('pointerenter', (e) => {
       if (!hover.matches) return;
+      /* En las opciones, pasar el puntero solo acompaña (no abre nada): se elige con un clic */
+      if (inMenu()) { placeGlide(!glide.classList.contains('is-on'), tab); return; }
+      if (still && Math.hypot(e.clientX - still.x, e.clientY - still.y) < 4) return;
       clearTimeout(intent);
       intent = setTimeout(() => select(item), 70);
     });
     tab.addEventListener('pointerleave', () => clearTimeout(intent));
   });
+  grid.addEventListener('pointerleave', () => { if (inMenu()) placeGlide(false); });
+  grid.addEventListener('pointermove', (e) => { if (still && Math.hypot(e.clientX - still.x, e.clientY - still.y) >= 4) still = null; });
   grid.addEventListener('keydown', (e) => {
     if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return;
     const tabs = items.map(tabOf);
@@ -134,7 +175,7 @@
     e.preventDefault();
     const next = tabs[(k + (e.key === 'ArrowDown' ? 1 : -1) + tabs.length) % tabs.length];
     next.focus();
-    if (wide.matches) select(items[tabs.indexOf(next)]);
+    if (wide.matches && !inMenu()) select(items[tabs.indexOf(next)]);
   });
 
   /* Cierre: Escape, tocar fuera, elegir un enlace o una acción, o pasar a leer (barra de lectura de las normas) */
@@ -156,6 +197,6 @@
     setOpen(false, { focus: false });
     toggle.focus({ preventScroll: true });
   }, true);
-  wide.addEventListener('change', () => { if (open) { if (wide.matches && !current) select(items[0], { instant: true }); else placeGlide(true); } });
+  wide.addEventListener('change', () => { if (open) placeGlide(true); });
   addEventListener('resize', () => { if (open) placeGlide(true); });
 })();

@@ -410,8 +410,8 @@ def pagina(g, version, tools):
 <header class="site-header has-docs">
   <div class="container">
     <a class="brand" href="../transporte-autorizado.html" aria-label="Transporte Autorizado, inicio">
-      <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#2f5bd3"/><path d="M9 14h14v12H9zM23 18h5l4 4v4h-9M13 30a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm14 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
-      Transporte Autorizado
+      <img class="brand-mark" src="../assets/transporte/logo/camion.svg" alt="" width="60" height="36">
+      <img class="brand-name" src="../assets/transporte/logo/nombre.svg" alt="" width="126" height="31">
     </a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
       <svg width="20" height="20" class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>

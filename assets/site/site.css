@@ -6,23 +6,25 @@
 /* ---------- Tokens ---------- */
 :root {
   --bg: #ffffff;
-  --bg-alt: #f5f6f9;
-  --bg-sunk: #eef0f5;
+  --bg-alt: #f6f5fa;
+  --bg-sunk: #efedf6;
   --ink: #151a2d;
   --ink-2: #3e4459;
   --muted: #6b7185;
   --line: #e4e7ee;
   --line-strong: #cfd4df;
 
-  --accent: #2f5bd3;
-  --accent-strong: #2447ad;
-  --accent-soft: #edf1fc;
+  /* Transporte Autorizado: lila (pedido del cliente, 08-10-2026; antes azul #2f5bd3). El logo toma este mismo color
+     (tools/logo.py): si cambia, hay que volver a ejecutarlo. */
+  --accent: #8455d2;
+  --accent-strong: #6a3fb6;
+  --accent-soft: #f2edfb;
   --on-accent: #ffffff;
 
   --safe: #1c7a4b;
   --safe-soft: #e7f3ec;
-  --hazard: #b43a17;
-  --hazard-soft: #fbece6;
+  --hazard: #c0301f;
+  --hazard-soft: #fcebe8;
 
   --r-s: 10px;
   --r-m: 16px;
@@ -159,6 +161,15 @@ p, li, dd { text-wrap: pretty; }
 .btn.is-done { border-color: var(--safe); color: var(--safe); }
 .btn-primary { background: var(--accent); color: var(--on-accent); box-shadow: 0 1px 2px rgb(21 26 45 / .12), inset 0 1px 0 rgb(255 255 255 / .12); }
 .btn-primary:hover { background: var(--accent-strong); }
+/* WhatsApp: verde y con su ícono (pedido del cliente, 08-10-2026). Un verde más profundo que el de la marca para que
+   el texto blanco se lea bien (contraste 4,7:1). */
+.btn-wa { background: #0f8446; color: #fff; box-shadow: 0 1px 2px rgb(21 26 45 / .12), inset 0 1px 0 rgb(255 255 255 / .12); }
+.btn-wa:hover { background: #0b6e3a; }
+.btn-wa:focus-visible { outline: 2px solid #0f8446; outline-offset: 2px; }
+.btn .wa-icon { width: 17px; height: 17px; }
+/* El ícono de WhatsApp va verde donde no está sobre el botón verde (enlaces y burbuja «?») */
+.wa-icon { color: #0f8446; }
+.btn-wa .wa-icon { color: inherit; }
 .btn-secondary { background: #fff; color: var(--ink); border-color: var(--line-strong); }
 .btn-secondary:hover { border-color: var(--ink-2); }
 .btn-quiet { background: transparent; color: var(--ink); border-color: var(--line-strong); }
@@ -280,6 +291,9 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
   }
   .doc-picker .segmented::-webkit-scrollbar, .audiences .segmented::-webkit-scrollbar { display: none; }
   .segmented label { flex: none; }
+  /* Tres públicos: caben completos en el ancho de un teléfono, sin desvanecer el último */
+  .audiences .segmented { -webkit-mask-image: none; }
+  .audiences .segmented span { padding: 0 9px; }
 }
 
 /* ---------- Acordeón ---------- */

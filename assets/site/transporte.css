@@ -1,12 +1,14 @@
 /* Transporte Autorizado: piezas propias de la página. Usa los tokens de site.css.
-   Movimiento: suave y sin rebote; nada gira ni se agranda al pasar el cursor. */
+   Movimiento: suave y sin rebote; nada gira ni se agranda al pasar el cursor.
+   El hero, la tarjeta, las filas y las ventanas de selección también los usan HDS y Campañas (bloque al final). */
 :root {
-  --navy: #0d1531;
+  /* Tono oscuro del hero y de la franja de cierre, y su versión en componentes para los velos: violeta profundo */
+  --navy: #17112e; --stage: 23 17 46;
   --tone-amber: #b45309; --tone-amber-soft: #fdf1e2;
   --tone-teal: #0f766e; --tone-teal-soft: #e5f3f1;
-  /* Degradados de las modalidades: naranjo (complementario del azul de la marca), azul y verde azulado */
+  /* Degradados de los planes: naranjo, lila (el color de la marca) y verde azulado */
   --grad-express: radial-gradient(120% 90% at 15% 0%, rgb(253 186 116 / .5), transparent 55%), linear-gradient(145deg, #ea580c 0%, #b4400c 55%, #7c2d12 100%);
-  --grad-programado: radial-gradient(120% 90% at 15% 0%, rgb(147 197 253 / .45), transparent 55%), linear-gradient(145deg, #3563e9 0%, #2447ad 55%, #1e3170 100%);
+  --grad-programado: radial-gradient(120% 90% at 15% 0%, rgb(216 190 255 / .5), transparent 55%), linear-gradient(145deg, #9466e6 0%, #7447c9 55%, #4b2b8c 100%);
   --grad-flexible: radial-gradient(120% 90% at 15% 0%, rgb(153 246 228 / .4), transparent 55%), linear-gradient(145deg, #0d9488 0%, #0f766e 55%, #134e4a 100%);
 }
 
@@ -35,8 +37,8 @@
 .stage::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background:
-    linear-gradient(90deg, rgb(13 21 49 / .92) 0%, rgb(13 21 49 / .74) 30%, rgb(13 21 49 / .1) 62%),
-    linear-gradient(0deg, rgb(13 21 49 / .5), transparent 42%);
+    linear-gradient(90deg, rgb(var(--stage) / .92) 0%, rgb(var(--stage) / .74) 30%, rgb(var(--stage) / .1) 62%),
+    linear-gradient(0deg, rgb(var(--stage) / .5), transparent 42%);
 }
 .stage-side { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-width: 0; padding: clamp(28px, 4vw, 44px); }
 .stage-copy .display { color: #fff; font-size: var(--fs-display); }
@@ -177,6 +179,9 @@
 .text-map { margin-top: 14px; }
 .map-open { display: grid; grid-template-columns: 22px minmax(0, 1fr) 18px; align-items: center; gap: 12px; width: 100%; min-height: 58px; padding: 9px 4px; border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: background-color .2s var(--ease); }
 .map-open:hover { background: var(--bg-alt); }
+/* En la ventana de la dirección la fila es solo un título con el estado: el mapa va siempre abierto */
+.map-open.is-static { grid-template-columns: 22px minmax(0, 1fr); cursor: default; }
+.map-open.is-static:hover { background: none; }
 .map-open:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; border-radius: 8px; }
 .map-open-icon { display: grid; place-items: center; color: var(--ink-2); transition: color .25s var(--ease); }
 .has-point > .map-open .map-open-icon { color: var(--accent); }
@@ -283,10 +288,10 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 /* overflow: clip (y no solo hidden): al abrir, el navegador enfoca el primer botón; si la ventana todavía viene subiendo,
    con hidden desplazaba el contenedor para mostrarlo y la ventana se pasaba hacia arriba, se cortaba y volvía de golpe */
 .picker[open] { display: grid; place-items: center; }
-.picker::backdrop { background: rgb(13 21 49 / .42); -webkit-backdrop-filter: blur(4.8px); backdrop-filter: blur(4.8px); }
+.picker::backdrop { background: rgb(22 18 42 / .42); -webkit-backdrop-filter: blur(4.8px); backdrop-filter: blur(4.8px); }
 .picker-card {
   display: flex; flex-direction: column; width: min(600px, 100%); max-height: min(720px, calc(100dvh - 40px)); overflow: hidden;
-  border-radius: 24px; background: #fff; box-shadow: 0 40px 90px -30px rgb(13 21 49 / .6);
+  border-radius: 24px; background: #fff; box-shadow: 0 40px 90px -30px rgb(var(--stage) / .6);
 }
 .picker-grab { display: none; }
 .picker-head { display: flex; align-items: center; gap: 8px; padding: 18px 16px 12px 22px; }
@@ -310,7 +315,7 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
   /* Pantalla completa, sobre el teclado si está abierto; el fondo se vela sin desenfoque (más fluido en el teléfono) */
   .picker { padding: var(--vv-top, 0px) 0 var(--vv-bottom, 0px); }
   .picker[open] { place-items: stretch; }
-  .picker::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(13 21 49 / .5); }
+  .picker::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(22 18 42 / .5); }
   .picker-card { width: 100%; height: 100%; max-height: none; border-radius: 0; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); will-change: transform; }
   .picker-grab { display: block; width: 40px; height: 4px; margin: 8px auto 0; border-radius: 99px; background: var(--line-strong); }
   .picker-head { padding: 10px 12px 10px 18px; }
@@ -756,7 +761,7 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .hcard-alt { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; margin-top: 2px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.5; }
 .hcard-alt a { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; color: var(--ink); font-weight: 800; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; transition: text-decoration-color .2s; }
 .hcard-alt a:hover { text-decoration-color: var(--ink); }
-.hcard-alt svg { width: 16px; height: 16px; color: var(--safe); }
+.hcard-alt svg { width: 16px; height: 16px; color: #0f8446; }
 .guide-form { flex: none; min-height: 36px; padding: 0; border: 0; background: none; color: var(--ink); font: 800 var(--fs-small) var(--font); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; cursor: pointer; transition: text-decoration-color .2s; }
 .guide-form:hover { text-decoration-color: var(--ink); }
 .guide-form:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
@@ -812,7 +817,7 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
 .sheet-panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); background: #fff; overflow: hidden; overflow: clip; will-change: transform; }
 /* Punto de inicio del foco al abrir una ventana u hoja: fijo e invisible, fuera de lo que se anima */
 .dialog-start { position: absolute; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden; outline: none; }
-.hero-sheet::backdrop { background: rgb(13 21 49 / .5); }
+.hero-sheet::backdrop { background: rgb(22 18 42 / .5); }
 .sheet-grab { flex: none; display: block; width: 40px; height: 4px; margin: 8px auto 0; border-radius: 99px; background: var(--line-strong); }
 .hero-sheet .sheet-grab, .hero-sheet .hcard-head { touch-action: none; }
 .hero-sheet .hcard { flex: 1 1 auto; min-height: 0; max-height: none; border-radius: 0; box-shadow: none; }
@@ -836,7 +841,7 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
     width: min(460px, calc(100vw - 48px)); height: min(760px, calc(100dvh - 48px)); border-radius: 26px;
     box-shadow: 0 40px 90px -30px rgb(21 26 45 / .5), 0 0 0 1px rgb(21 26 45 / .07);
   }
-  .hero-sheet.is-float::backdrop { background: rgb(13 21 49 / .16); }
+  .hero-sheet.is-float::backdrop { background: rgb(22 18 42 / .16); }
   .hero-sheet.is-float .sheet-panel { padding-top: 0; border-radius: inherit; }
   .hero-sheet.is-float .sheet-grab { display: none; }
   .hero-sheet.is-float .hcard-head { padding-top: 18px; }
@@ -1222,8 +1227,17 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
   .site-header.has-docs .nav a:not(.btn) { padding-inline: 9px; }
   .site-header.has-docs .nav .btn { margin-left: 4px; }
 }
-/* Con el menú completo (página principal), entre 861 y 1000 px la marca queda solo con su ícono: así nada se monta */
-@media (min-width: 861px) and (max-width: 1000px) { .site-header.nav-long .brand { gap: 0; font-size: 0; } }
+/* Marca: el camión y el nombre son las piezas del logo del cliente (assets/transporte/logo, hechas con tools/logo.py).
+   En el encabezado van lado a lado dentro de la fila de 56 px; en el pie va el logo completo. No se reemplazan por
+   texto ni por otro ícono: si cambia el logo (o el azul del sitio), se vuelve a ejecutar tools/logo.py. */
+.brand-mark { flex: none; width: auto; height: 36px; }
+.brand-name { flex: none; width: auto; height: 31px; }
+.brand-logo img { width: 138px; height: auto; }
+/* En escritorio el logo va un poco más chico (pedido del cliente) */
+@media (min-width: 861px) { .brand-mark { height: 32px; } .brand-name { height: 27.5px; } }
+/* Con el menú completo (página principal), en la franja angosta de escritorio no caben el camión y el nombre: queda el
+   nombre. El camión nunca queda solo (pedido del cliente). */
+@media (min-width: 861px) and (max-width: 905px) { .site-header.nav-long .brand-mark { display: none; } }
 .nav-docs { display: inline-flex; align-items: center; gap: 4px; }
 .nav-docs-chev { display: grid; place-items: center; transition: rotate .35s var(--ease); }
 .nav-docs-chev svg { width: 16px; height: 16px; }
@@ -1292,6 +1306,26 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
   .docs-detail .lib-scroll { flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding-right: 6px;
     -webkit-mask-image: linear-gradient(#000 calc(100% - 28px), transparent); mask-image: linear-gradient(#000 calc(100% - 28px), transparent); }
   .docs-detail .lib-list { padding-bottom: 26px; }
+}
+/* Vista de opciones (así abre el panel, pedido del cliente del 02-10-2026): primero se ve qué hay —guías rápidas a la
+   izquierda, documentos a la derecha—, sin ninguna explicación abierta y con el panel compacto. Al elegir una opción pasa
+   a la lista con su detalle (ayuda.js anima el alto). Aquí pasar el puntero solo acompaña con un fondo suave. */
+@media (min-width: 861px) {
+  .docs-grid.is-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; grid-auto-flow: row dense; min-height: 0; padding-bottom: 14px; }
+  .docs-grid.is-menu::before { left: calc(50% - .5px); }  /* la línea fina separa las dos columnas */
+  .docs-grid.is-menu .docs-detail { display: none; }
+  .docs-grid.is-menu .docs-group { padding-left: 14px; }
+  .docs-grid.is-menu .docs-group ~ .docs-group { grid-column: 2; grid-row: 1; padding-top: 4px; }
+  .docs-grid.is-menu .docs-group ~ .docs-group ~ .docs-item .docs-tab { grid-column: 2; }
+  .docs-grid.is-menu .docs-tab { padding: 12px 12px 12px 14px; border-radius: 12px; }
+  .docs-grid.is-menu .docs-glide { z-index: 0; border-radius: 12px; background: rgb(21 26 45 / .055); }
+  .docs-grid.is-menu .docs-glide.is-instant { transition: opacity .2s var(--ease); }
+  .docs-grid.is-menu .docs-tab:hover .docs-chev { opacity: 1; }
+}
+@media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+  @keyframes docs-in { from { opacity: 0; } }
+  .docs-grid.is-entering .docs-group, .docs-grid.is-entering .docs-tab { animation: docs-in .4s var(--ease) both; }
+  .docs-grid.is-entering .docs-item.is-on .docs-detail { animation: docs-in .45s var(--ease) .1s both; }
 }
 /* La barra de lectura de las normas ocupa solo la fila de la píldora */
 .norm-bar .reader, .norm-bar .textfind { bottom: auto; height: 56px; }
@@ -1406,4 +1440,146 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
   .norm-art-h { break-after: avoid; }
   .norm-text p { orphans: 2; widows: 2; }
   a { color: inherit; text-decoration: none; }
+}
+
+/* =====================================================================================
+   Cambios del 08-10-2026 (pedido del cliente)
+   ===================================================================================== */
+/* Servicios: tres tarjetas, cada una con su color: verde (no peligrosos), rojo (peligrosos) y el lila de la marca
+   (arriendo de contenedores). El color va en una línea bajo la foto y en el botón. */
+.services.is-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.service.is-safe { --accent: var(--safe); --accent-strong: #15613b; --accent-soft: var(--safe-soft); }
+.service.is-hazard { --accent: var(--hazard); --accent-strong: #9c2518; --accent-soft: var(--hazard-soft); }
+.service-media { border-bottom: 3px solid var(--accent); }
+@media (max-width: 1000px) { .services.is-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .services.is-3 { grid-template-columns: minmax(0, 1fr); } }
+
+/* Tipo de retiro: cada plan con su color (naranjo, lila y verde azulado, los mismos de «Planes») */
+.seg [data-modalidad] { --tone: var(--accent-strong); color: var(--tone); }
+.seg [data-modalidad="express"] { --tone: #b84310; }
+.seg [data-modalidad="flexible"] { --tone: #0f766e; }
+.seg [data-modalidad][aria-checked="true"] { background: var(--tone); color: #fff; box-shadow: none; }
+.seg [data-modalidad]:focus-visible { outline-color: var(--tone); }
+
+/* Filas que solo existen para un servicio (retiro o arriendo): el grupo no dibuja nada propio */
+.picks-group { display: contents; }
+[data-sin-datos] { display: none !important; }
+.pick-flag.is-note { color: var(--muted); font-weight: 700; }
+
+/* Opción que no está disponible (p. ej., un vehículo para otro tipo de residuo) */
+.opt:disabled { cursor: not-allowed; background: var(--bg-alt); border-color: var(--line); }
+.opt:disabled > * { opacity: .5; }
+.opt:disabled .opt-text small { opacity: 1; color: var(--ink-2); }
+/* «Otro»: campo para escribir cuál, bajo sus opciones */
+.opt-other { display: block; margin-top: 8px; }
+.opt-other input { width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: #fff; color: var(--ink); font: 600 1rem/1.4 var(--font); }
+.opt-other input::placeholder { color: var(--muted); }
+.opt-other input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+@media (prefers-reduced-motion: no-preference) { .opt-other:not([hidden]) { animation: hero-fade-in .25s ease both; } }
+/* Asistente: «Continuar» aparece solo al elegir «Otro» */
+.guide-next[hidden] { display: none; }
+/* Horario: con cinco opciones, la última ocupa la fila completa */
+.time .opts.is-cards .opt:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* Envío del resumen. Con una sola vía, el botón dice «Enviar por WhatsApp». Con las dos (el formulario declara su correo
+   de destino en data-mail y site.js marca el pie con .has-mail), el pie dice «Enviar por» una sola vez y los botones
+   quedan en «WhatsApp» y «Correo»; copiar y editar van juntos: si no caben en la fila, bajan los dos. */
+.foot-more { display: contents; }
+.has-mail > .foot-label { flex: none; color: var(--ink-2); font-size: var(--fs-small); font-weight: 700; }
+.has-mail .btn-pre { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.has-mail .btn-cap { display: inline-block; text-transform: capitalize; }
+.has-mail > a.btn { flex: 1 1 auto; }
+.has-mail > .foot-more { display: flex; gap: 8px; }
+
+/* Hero: cuarta opción (enlace a recicladordebase.cl) y foto por opción */
+.routes-tabs { display: contents; }
+a.route { text-decoration: none; }
+.route-link .route-icon, .route-link:first-of-type .route-icon { background: rgb(255 255 255 / .14); }
+.route-link::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 11l6-6M6 5h5v5'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 11l6-6M6 5h5v5'/%3E%3C/svg%3E");
+}
+.route-link:active { background: rgb(255 255 255 / .12); }
+@media (hover: hover) {
+  .route-link:hover { background: rgb(255 255 255 / .08); }
+  .route-link:hover::after { opacity: .9; }
+}
+.stage-fotos { position: absolute; inset: 0; z-index: -2; pointer-events: none; }
+.stage-fotos img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 80% 50%; opacity: 0; transition: opacity .7s var(--ease); }
+.stage-fotos img.is-on { opacity: 1; }
+@media (max-width: 860px) { .stage-fotos { display: none; } }
+@media (prefers-reduced-motion: reduce) { .stage-fotos img { transition: none; } }
+/* Teléfono: con cuatro opciones, la foto cede alto para que el hero siga cabiendo en la primera pantalla */
+@media (max-width: 599px) {
+  body[data-site="transporte"] .stage-media img { height: clamp(96px, calc(100vh - 556px), 210px); height: clamp(96px, calc(100svh - 556px), 210px); }
+}
+/* Teléfonos muy bajos (iPhone SE o Android de 360 px con las barras abiertas, ~550 px de alto): las cuatro opciones
+   caben si la foto y el relleno de cada opción ceden un poco; textos y áreas táctiles (más de 50 px) no cambian */
+@media (max-width: 599px) and (max-height: 640px) {
+  body[data-site="transporte"] .route { padding-block: 6px; }
+}
+@media (max-width: 599px) and (max-height: 600px) {
+  body[data-site="transporte"] .stage-media img { height: 84px; }
+}
+
+/* =====================================================================================
+   HDS y Campañas (02-10-2026): el mismo hero, la misma tarjeta y las mismas ventanas de Transporte.
+   Cada sitio conserva su foto, su acento (site.css) y un tono oscuro propio para el hero y la franja de cierre.
+   Sus filas se declaran en el HTML (assets/site/filas.js).
+   ===================================================================================== */
+body[data-site="hds"] { --navy: #0a2733; --stage: 10 39 51; }
+body[data-site="campanas"] { --navy: #0e2b1d; --stage: 14 43 29; }
+body:is([data-site="hds"], [data-site="campanas"]) .stage::before {
+  background:
+    linear-gradient(90deg, rgb(var(--stage) / .94) 0%, rgb(var(--stage) / .8) 32%, rgb(var(--stage) / .12) 66%),
+    linear-gradient(0deg, rgb(var(--stage) / .5), transparent 42%);
+}
+/* Encuadre de cada foto cuando se recorta (teléfono y tablet) */
+body[data-site="hds"] .stage-media img { object-position: 62% 58%; }
+body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
+/* Escritorio: la foto (3:2) va entera a la derecha, a todo el alto del hero; su borde izquierdo se funde con el tono */
+@media (min-width: 861px) {
+  body:is([data-site="hds"], [data-site="campanas"]) .stage-media { background: var(--navy); }
+  body:is([data-site="hds"], [data-site="campanas"]) .stage-media img {
+    top: 0; right: 0; bottom: auto; width: auto; height: 100%; aspect-ratio: 3 / 2;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 160px); -webkit-mask-composite: source-over;
+    mask-image: linear-gradient(to right, transparent, #000 160px); mask-composite: add;
+  }
+}
+/* Teléfono: sin el campo de conversación queda más alto para la foto */
+@media (max-width: 599px) {
+  body:is([data-site="hds"], [data-site="campanas"]) .stage-media img { height: clamp(130px, calc(100vh - 470px), 230px); height: clamp(130px, calc(100svh - 470px), 230px); }
+}
+
+/* Proceso de cuatro pasos */
+.timeline.is-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1000px) {
+  .timeline.is-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .timeline.is-4 li, .timeline.is-4 li:nth-child(n + 4) { grid-column: auto; }
+}
+@media (max-width: 700px) { .timeline.is-4 { grid-template-columns: minmax(0, 1fr); } }
+
+/* Tarjeta «¿Qué documento necesito?» y «Materiales»: la explicación del caso elegido, bajo sus filas */
+.doc-case { margin-top: 18px; }
+.doc-case > p { margin-top: 6px; color: var(--ink-2); font-size: .9375rem; }
+.doc-case .list-title { margin-top: 16px; }
+.hcard .cross-note { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.hcard-note { margin-top: 14px; color: var(--muted); font-size: var(--fs-small); line-height: 1.5; }
+/* Materiales a la vista para elegir con un toque (Campañas) */
+.mat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.mat-grid .opt { min-height: 56px; }
+@media (max-width: 380px) { .mat-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Tarjetas de servicio: «Consultar» y «Qué incluye» en el pie; el detalle se lee en una ventana */
+.card .card-foot.is-split { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; }
+.picker-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.ventana-texto { display: grid; gap: 12px; padding-top: 6px; color: var(--ink-2); font-size: .9375rem; line-height: 1.6; }
+.ventana-texto strong { color: var(--ink); }
+/* Teléfono: las tarjetas de servicio pasan a filas compactas (miniatura a la izquierda) */
+@media (max-width: 640px) {
+  .cards-compact .card { display: grid; grid-template-columns: 104px minmax(0, 1fr); column-gap: 14px; align-items: start; padding: 14px; }
+  .cards-compact .card-media { grid-row: 1 / span 3; margin: 0; border-radius: 12px; }
+  .cards-compact .card-media img { aspect-ratio: 4 / 3; }
+  .cards-compact .card > :not(.card-media) { grid-column: 2; }
+  .cards-compact .card .card-foot { padding-top: 8px; }
 }

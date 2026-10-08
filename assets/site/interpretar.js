@@ -104,6 +104,7 @@
   const slot = (t) => {
     if (/(?:en|por|a|de|durante) la manana|\bam\b|temprano/.test(t)) return 'Mañana';
     if (/(?:en|por|a|de|durante) la tarde|\bpm\b/.test(t)) return 'Tarde';
+    if (/(?:en|por|de|durante) la noche|vespertin|nocturn/.test(t)) return 'Vespertino';
     if (/cualquier (?:hora|horario|momento)|todo el dia/.test(t)) return 'Cualquier horario';
     const r = t.match(/\b(?:de|entre|desde)?\s*(\d{1,2})(?::(\d{2}))?\s*(?:a|y|-|hasta)\s*(\d{1,2})(?::(\d{2}))?\s*(?:hrs?|horas)?\b/);
     if (r && Number(r[1]) >= 6 && Number(r[3]) <= 21 && Number(r[3]) > Number(r[1])) return `Entre ${Number(r[1])}:${r[2] || '00'} y ${Number(r[3])}:${r[4] || '00'}`;

@@ -90,20 +90,20 @@
   function message(g) {
     const r = g.first;
     return [
-      '*Consulta de retiro — Transporte Autorizado*', '',
+      '*Solicitud de cotización — Transporte Autorizado*', '',
       `• Transportista del listado: ${r.company}`,
       `• Comuna del transportista: ${g.placeLabel}`,
       `• Tipo: ${KIND_LABEL[r.kind]}`,
       `• Residuo: ${state.type === '*' ? r.type : state.type}`,
       `• Resolución: ${r.resolution}`,
       `• Ref. listado: pág. ${r.page}`, '',
-      'Quiero coordinar el retiro de este residuo. Adjuntaré la cantidad aproximada y fotografías.'
+      'Quiero cotizar el retiro de este residuo. Adjuntaré la cantidad aproximada y fotografías.'
     ].join('\n');
   }
   function row(g, i, fresh) {
     const r = g.first;
     const link = el('a', { className: 'btn btn-secondary btn-small', href: window.SITE.whatsapp(message(g)), target: '_blank', rel: 'noopener noreferrer' },
-      'Consultar', arrowUpRight(), el('span', { className: 'sr-only', textContent: ` retiro con ${r.company} (abre WhatsApp)` }));
+      'Solicitar cotización', arrowUpRight(), el('span', { className: 'sr-only', textContent: ` del retiro con ${r.company} (abre WhatsApp)` }));
     const li = el('li', { className: fresh ? 'result is-new' : 'result' },
       el('div', {},
         el('h3', { textContent: r.company }),

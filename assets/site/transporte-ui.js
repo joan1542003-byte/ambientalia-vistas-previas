@@ -1,5 +1,7 @@
-/* Transporte Autorizado: el hero cambia en el mismo lugar según la opción elegida (cotizar, buscar,
-   especialista o asistente guiado). Los campos del formulario se eligen en ventanas de selección (seleccion.js).
+/* Hero de los tres sitios: cambia en el mismo lugar según la opción elegida (en Transporte: cotizar, buscar,
+   especialista o asistente guiado; en HDS y Campañas, sus propios paneles). Los campos del formulario se eligen en
+   ventanas de selección (seleccion.js). El formulario de cotización, el campo de conversación y el asistente son solo
+   de Transporte; las filas de HDS y Campañas se declaran en su HTML (filas.js).
    Transiciones: el cambio se aplica de inmediato; la tarjeta ajusta su alto con una animación corta y el contenido
    nuevo entra con CSS (transporte.css). Sin View Transitions: se ve igual en todos los navegadores y en móvil. */
 (() => {
@@ -40,11 +42,14 @@
     };
     const list = (v) => (v ? v.split(', ') : []);
     const sorted = (picked, all) => all.filter((x) => picked.includes(x));
-    const slotText = () => {
-      if (when.slot === 'otro') return `Entre ${when.desde} y ${when.hasta}`;
-      const s = PICK.SLOTS.find(([t]) => t === when.slot);
-      return s && s[0] !== 'Cualquier horario' ? `${s[0]} (${s[1]})` : when.slot;
-    };
+    const slotText = () => (when.slot === 'otro' ? `Entre ${when.desde} y ${when.hasta}` : PICK.slotText(when.slot));
+    /* Vehículos y contenedores: los que no están disponibles para el tipo de residuo elegido no se pueden pedir */
+    const tipoTexto = { peligroso: 'residuos peligrosos', 'no-peligroso': 'residuos no peligrosos' };
+    const offer = (items, tipo) => items.map((x) => {
+      const ok = PICK.allowed(x, tipo);
+      return { value: x.label, label: x.label, hint: ok ? x.hint || '' : `No disponible para ${tipoTexto[tipo]}`, icon: x.icon, disabled: !ok };
+    });
+    const stillAllowed = (items, label, tipo) => { const x = items.find((i) => i.label === label); return !x || PICK.allowed(x, tipo); };
 
     /* Vuelca el estado de fecha y horario a los campos ocultos que lee el resumen */
     const writeWhen = () => {
@@ -58,6 +63,20 @@
       set('horario', when.slot, slotText());
     };
 
+    /* Textos que cambian entre el retiro y el arriendo de contenedores */
+    const TEXTOS = {
+      retiro: {
+        titulo: 'Cotiza tu retiro', paso: 'Retiro', direccion: 'Dirección del retiro', cierre: form.dataset.closing,
+        faltaResiduo: 'Elige el residuo que necesitas retirar.', faltaComuna: 'Elige la comuna del retiro.', faltaDireccion: 'Indica la dirección del retiro.',
+        residuo: '¿Qué residuo necesitas retirar?', comuna: '¿En qué comuna está el residuo?', donde: '¿Dónde retiramos?'
+      },
+      arriendo: {
+        titulo: 'Cotiza tu arriendo', paso: 'Arriendo', direccion: 'Dirección de entrega', cierre: 'Adjuntaré fotografías del residuo y del lugar donde quedará el contenedor.',
+        faltaResiduo: 'Elige el residuo que vas a almacenar.', faltaComuna: 'Elige la comuna de la entrega.', faltaDireccion: 'Indica la dirección de entrega.',
+        residuo: '¿Qué residuo vas a almacenar?', comuna: '¿En qué comuna lo necesitas?', donde: '¿Dónde lo entregamos?'
+      }
+    };
+    const textos = () => (field('servicio').value === 'contenedores' ? TEXTOS.arriendo : TEXTOS.retiro);
     const MODE_HINT = {
       '': 'Elige qué tan pronto lo necesitas.',
       express: 'Priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna.',
@@ -93,7 +112,27 @@
       const label = form.querySelector('[data-fecha-label]');
       if (label) label.textContent = multi ? 'Días posibles' : 'Día del retiro';
       show('fecha', multi ? when.dates.map(PICK.shortDate).join(', ') : when.dates[0] ? PICK.longDate(when.dates[0]) : '', multi ? 'Elige hasta tres días' : 'Elige el día');
-      show('horario', slotText());
+      /* El horario vespertino se muestra corto y con su condición debajo */
+      const noche = when.slot === 'Vespertino';
+      show('horario', noche ? 'Vespertino' : slotText());
+      const horaText = form.querySelector('[data-pick="horario"] .pick-text');
+      horaText?.querySelector('.pick-flag')?.remove();
+      if (horaText && noche) horaText.insertAdjacentHTML('beforeend', '<span class="pick-flag is-note">De noche · sujeto a confirmación</span>');
+      /* Arriendo de contenedores: el formulario habla de arriendo y de entrega, no de retiro */
+      const arriendo = field('servicio').value === 'contenedores';
+      const T = arriendo ? TEXTOS.arriendo : TEXTOS.retiro;
+      const put = (sel, text) => { const el = form.querySelector(sel); if (el && el.textContent !== text) el.textContent = text; };
+      put('.hcard-title h2', T.titulo);
+      put('.stepper-labels > :first-child', T.paso);
+      put('[data-pick="direccion"] .pick-label', T.direccion);
+      put('[data-pick="direccion"] .pick-error', T.faltaDireccion);
+      put('[data-pick="comuna"] .pick-error', T.faltaComuna);
+      put('[data-pick="residuo"] .pick-error', T.faltaResiduo);
+      form.querySelector('fieldset[data-step-panel]').dataset.summaryTitle = T.paso;
+      form.dataset.closing = T.cierre;
+      form.querySelectorAll('[data-periodo]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.periodo === field('periodo')?.value)));
+      show('contenedor', field('contenedor')?.value);
+      show('vehiculo', field('vehiculo')?.value);
       show('antecedentes', field('documentos').value);
       show('detalles', [field('acceso').value, field('estado').value, field('almacenamiento').value].filter(Boolean).join(' · '));
     };
@@ -108,6 +147,21 @@
       const inKind = tipo === 'peligroso' ? PICK.CATEGORIES.hazard : PICK.CATEGORIES.safe;
       if (cat && (tipo === 'no-se' || !inKind.some(([n]) => n === cat))) set('categoria', '');
       set('residuo-ok', tipo === 'no-se' || field('categoria').value ? 'ok' : '');
+      /* La descripción se pide cuando no se sabe qué residuo es o cuando es «Otros…» */
+      set('describir', tipo === 'no-se' || PICK.isOther(field('categoria').value) ? 'si' : '');
+      const per = field('periodo');
+      if (per) set('periodo', per.value, PICK.PERIODS.find(([k]) => k === per.value)?.[1]);
+      /* Si cambió el tipo de residuo, lo que ya no está disponible para ese tipo se quita (y se avisa) */
+      if (field('vehiculo')?.value && !stillAllowed(PICK.VEHICLES, field('vehiculo').value, tipo)) {
+        set('vehiculo', '');
+        window.SITE.toast?.(`Ese vehículo no está disponible para ${tipoTexto[tipo]}`);
+      }
+      const cont = list(field('contenedor')?.value);
+      const contOk = cont.filter((c) => stillAllowed(PICK.CONTAINERS, c, tipo));
+      if (contOk.length !== cont.length) {
+        set('contenedor', contOk.join(', '));
+        window.SITE.toast?.(`Quitamos los contenedores que no están disponibles para ${tipoTexto[tipo]}`);
+      }
       const m = field('modalidad').value;
       if (m !== when.modalidad) {
         when.modalidad = m;
@@ -129,7 +183,7 @@
         const safe = { label: 'No peligrosos', options: PICK.CATEGORIES.safe.map(([n, file]) => ({ value: `no-peligroso|${n}`, label: n, img: PICK.thumb(file) })) };
         const hazard = { label: 'Peligrosos', options: PICK.CATEGORIES.hazard.map(([n, file]) => ({ value: `peligroso|${n}`, label: n, img: PICK.thumb(file) })) };
         const v = await Picker.choose({
-          title: '¿Qué residuo necesitas retirar?',
+          title: textos().residuo,
           sub: 'Las imágenes son ilustrativas: la clasificación se confirma con los antecedentes.',
           groups: tipo === 'peligroso' ? [hazard, safe] : [safe, hazard], tabs: true,
           value: `${tipo}|${field('categoria').value}`,
@@ -141,7 +195,30 @@
         set('tipo', t, PICK.TIPO_LABEL[t]);
         set('categoria', c);
         set('residuo-ok', 'ok');
-        if (t === 'no-se') setTimeout(() => field('descripcion')?.focus(), 250);
+        if (t === 'no-se' || PICK.isOther(c)) setTimeout(() => field('descripcion')?.focus(), 250);
+        return v;
+      },
+      /* Vehículo (opcional): la disponibilidad cambia con el tipo de residuo */
+      vehiculo: async () => {
+        const v = await Picker.choose({
+          title: '¿Qué vehículo necesitas?', sub: 'La disponibilidad depende del tipo de residuo. Lo confirmamos al cotizar.',
+          groups: [{ options: offer(PICK.VEHICLES, field('tipo').value) }], value: field('vehiculo').value, layout: 'list'
+        });
+        if (v) set('vehiculo', v);
+        return v;
+      },
+      /* Contenedores en arriendo: primero el residuo (define cuáles se pueden pedir); se puede elegir más de uno */
+      contenedor: async () => {
+        if (!field('residuo-ok').value) {
+          form.querySelector('[data-pick="residuo"]')?.setAttribute('data-invalid', '');
+          window.SITE.toast?.('Elige primero el residuo: define qué contenedores se pueden pedir');
+          return undefined;
+        }
+        const v = await Picker.choose({
+          title: '¿Qué contenedor necesitas?', sub: 'Puedes elegir más de uno. La disponibilidad depende del tipo de residuo.',
+          groups: [{ options: offer(PICK.CONTAINERS, field('tipo').value) }], value: list(field('contenedor').value), multi: true, required: true, layout: 'list'
+        });
+        if (v) set('contenedor', sorted(v, PICK.CONTAINERS.map((x) => x.label)).join(', '));
         return v;
       },
       cantidad: async () => {
@@ -154,7 +231,7 @@
         return v;
       },
       comuna: async () => {
-        const v = await Picker.commune({ value: { commune: field('comuna').value } });
+        const v = await Picker.commune({ value: { commune: field('comuna').value }, title: textos().comuna });
         if (v) set('comuna', v.commune);
         return v;
       },
@@ -171,8 +248,8 @@
         let punto = antes.punto;
         GEO?.prepare();  // el índice de calles se descarga al abrir la dirección
         const v = await Picker.text({
-          title: '¿Dónde retiramos?', sub: 'Calle y número, y una referencia si ayuda: bodega, portón o piso.',
-          label: 'Dirección del retiro', value: field('direccion').value, placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address',
+          title: textos().donde, sub: 'Calle y número, y una referencia si ayuda: bodega, portón o piso.',
+          label: textos().direccion, value: field('direccion').value, placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address',
           suggest: GEO ? (q, signal) => GEO.suggest(q, { comuna: field('comuna').value, signal }) : null,
           onSuggest: (it) => { picked = it; }, source: GEO?.fuente || '',
           map: MAPA?.paraTexto({ comuna: () => field('comuna').value, value: punto, onDone: (p) => { punto = p; }, onPlace: (x) => { lugar = x; } }) || null
@@ -219,17 +296,24 @@
         if (v) set('documentos', sorted(v, PICK.DOCS).join(', '));
         return v;
       },
+      /* «Otra condición» y «Otro» despliegan un campo para escribir cuál; queda guardado como «Otro: …» */
       detalles: async () => {
+        const acc = list(field('acceso').value).map(PICK.splitOther);
+        const [alm, almOtro] = PICK.splitOther(field('almacenamiento').value);
         const v = await Picker.chooseEach({
           title: 'Detalles del retiro', sub: 'Todo es opcional, pero ayuda a evitar retiros fallidos.',
           groups: [
-            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, options: PICK.ACCESS.map((x) => ({ value: x, label: x })) },
+            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, otherLabel: '¿Qué otra condición?', options: PICK.ACCESS.map((x) => ({ value: x, label: x, other: PICK.isOther(x) })) },
             { key: 'estado', label: 'Estado del residuo', options: PICK.STATES.map((x) => ({ value: x, label: x })) },
-            { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon })) }
+            { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', otherLabel: '¿Cómo está almacenado?', options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) }
           ],
-          value: { acceso: list(field('acceso').value), estado: field('estado').value, almacenamiento: field('almacenamiento').value }
+          value: { acceso: acc.map(([base]) => base), accesoOtro: acc.find(([base]) => PICK.isOther(base))?.[1] || '', estado: field('estado').value, almacenamiento: alm, almacenamientoOtro: almOtro }
         });
-        if (v) { set('acceso', sorted(v.acceso, PICK.ACCESS).join(', ')); set('estado', v.estado || ''); set('almacenamiento', v.almacenamiento || ''); }
+        if (v) {
+          set('acceso', sorted(v.acceso, PICK.ACCESS).map((x) => (PICK.isOther(x) ? PICK.joinOther(x, v.accesoOtro) : x)).join(', '));
+          set('estado', v.estado || '');
+          set('almacenamiento', PICK.joinOther(v.almacenamiento, v.almacenamientoOtro));
+        }
         return v;
       }
     };
@@ -253,6 +337,21 @@
       writeWhen();
       b.closest('.pick')?.removeAttribute('data-invalid');
       field('modalidad').dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    /* Período del arriendo: mensual, semanal o diario, con un toque */
+    form.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-periodo]');
+      if (!b) return;
+      set('periodo', b.dataset.periodo, b.textContent.trim());
+      b.closest('.pick')?.removeAttribute('data-invalid');
+      field('periodo').dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    /* Sin lista de vehículos o de contenedores (la entrega el cliente), su fila no se muestra ni se exige */
+    [['vehiculo', PICK.VEHICLES], ['contenedor', PICK.CONTAINERS]].forEach(([name, items]) => {
+      const row = form.querySelector(`[data-pick="${name}"]`);
+      if (!row || items.length) return;
+      row.setAttribute('data-sin-datos', '');
+      row.removeAttribute('data-required-pick');
     });
     form.transition = (update) => transition(update);
 
@@ -324,10 +423,12 @@
     const floatOnly = hero.hasAttribute('data-float-only');
     let floating = false;  // abierta desde la burbuja
     const wrap = hero.querySelector('[data-panel]');
-    const panels = { cotizar: d.getElementById('cotizar'), buscar: d.getElementById('buscar'), especialista: d.getElementById('especialista'), asistente: d.getElementById('asistente') };
+    const card = wrap.querySelector('.hcard');
+    /* Las opciones son los paneles de la tarjeta, por su id: cotizar, buscar, especialista y asistente en Transporte;
+       HDS y Campañas traen los suyos (contacto, documentos o materiales, conversar) */
+    const panels = Object.fromEntries([...card.querySelectorAll('.hcard-panel[id]')].map((p) => [p.id, p]));
     let view = 'inicio';
     let tab = null;
-    const card = wrap.querySelector('.hcard');
 
     /* Hoja inferior (móvil): la misma tarjeta, con su estado, pasa a un <dialog> que sube desde abajo sobre el hero */
     const sheetMode = () => mobile.matches || floating || floatOnly;
@@ -433,6 +534,7 @@
       Object.entries(panels).forEach(([k, p]) => { if (p) p.hidden = k !== name; });
       if (name === 'inicio') floating = false;
       placePill();
+      hero.dispatchEvent(new Event('hero:view'));
       window.SITE.refresh?.();
     };
     /* Deja el hero a la vista bajo la barra de navegación (llegadas desde otro punto de la página). En móvil no hace falta:
@@ -467,6 +569,44 @@
     };
     window.HERO = { show, transition, get view() { return view; } };
 
+    /* Foto del hero por opción (pedido del cliente, 08-10-2026): en escritorio, al pasar el puntero o el foco por una
+       opción —o mientras está abierta— el hero muestra la foto de esa opción (data-foto) con un fundido; al salir vuelve
+       la foto principal. Las fotos se descargan cuando la página queda libre; en el teléfono no hay puntero y no se cargan. */
+    const withFoto = [...hero.querySelectorAll('[data-foto]')];
+    const canHover = matchMedia('(hover: hover) and (min-width: 861px)');
+    if (withFoto.length && canHover.matches) {
+      const layer = d.createElement('div');
+      layer.className = 'stage-fotos';
+      layer.setAttribute('aria-hidden', 'true');
+      hero.querySelector('.stage-media').after(layer);
+      const imgs = new Map();
+      const load = () => withFoto.forEach((r) => {
+        if (imgs.has(r)) return;
+        const img = new Image();
+        img.alt = '';
+        img.decoding = 'async';
+        if (r.dataset.fotoPos) img.style.objectPosition = r.dataset.fotoPos;
+        img.src = r.dataset.foto;
+        layer.append(img);
+        imgs.set(r, img);
+      });
+      let over = null;
+      const paintFoto = () => {
+        const on = over || withFoto.find((r) => r.dataset.route && r.dataset.route === tab) || null;
+        imgs.forEach((img, r) => img.classList.toggle('is-on', r === on && img.complete && img.naturalWidth > 0));
+      };
+      (window.requestIdleCallback || ((f) => setTimeout(f, 1500)))(load);
+      withFoto.forEach((r) => {
+        const enter = () => { load(); over = r; const img = imgs.get(r); if (img.complete) paintFoto(); else img.addEventListener('load', paintFoto, { once: true }); };
+        const leave = () => { if (over === r) over = null; paintFoto(); };
+        r.addEventListener('pointerenter', enter);
+        r.addEventListener('pointerleave', leave);
+        r.addEventListener('focus', enter);
+        r.addEventListener('blur', leave);
+      });
+      hero.addEventListener('hero:view', paintFoto);
+    }
+
     tabs.forEach((t) => {
       t.addEventListener('click', () => { if (view !== t.dataset.route) show(t.dataset.route); });
       if (t.dataset.route === 'buscar') t.addEventListener('pointerenter', () => window.FINDER_LOAD?.(), { once: true });
@@ -497,14 +637,16 @@
       if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('select')) close();
     });
 
-    /* Los enlaces a #cotizar, #buscar y #especialista (planes, servicios, cierre, barra móvil) abren esa opción en el hero */
-    const HASH = { '#cotizar': 'cotizar', '#buscar': 'buscar', '#especialista': 'especialista', '#asistente': 'asistente' };
+    /* Los enlaces al anclaje de una opción (#cotizar, #buscar, #especialista…: planes, servicios, cierre, menú) la abren en el hero */
+    const HASH = Object.fromEntries(Object.keys(panels).map((k) => [`#${k}`, k]));
     d.addEventListener('click', (e) => {
       const a = e.target.closest('a[href^="#"]');
       if (!a || !HASH[a.hash]) return;
       e.preventDefault();
-      if (a.hash === '#cotizar' && a.hasAttribute('data-set') && form?.hidden) d.querySelector('#cotizacion-resumen [data-edit]')?.click();
       const name = HASH[a.hash];
+      /* Un enlace que preselecciona datos (data-set, o data-add en filas.js) vuelve del resumen al formulario de esa opción */
+      const filled = a.matches('[data-set], [data-add]') ? panels[name].querySelector('form[data-summary]') : null;
+      if (filled?.hidden) d.getElementById(filled.dataset.summary)?.querySelector('[data-edit]')?.click();
       if (view === name) { align(); panels[name]?.focus({ preventScroll: true }); } else show(name, { from: 'link' });
     });
     /* Atrás y adelante del navegador: muestran la opción de esa entrada (otros anclajes, como #servicios, no tocan el hero) */
@@ -551,20 +693,25 @@
     const scope = expertLink.closest('.hcard-panel');
     const input = scope.querySelector('[name="tema"]');
     const value = scope.querySelector('[data-pick="tema"] .pick-value');
-    const TEMAS = ['No sé cómo clasificar mi residuo', 'Tengo un residuo peligroso', 'Necesito un retiro urgente', 'Quiero retiros periódicos', 'Otro tema'];
+    /* Cada sitio trae su saludo y sus temas en el propio panel (data-expert-wa="saludo", data-temas="A|B|C") */
+    const HELLO = expertLink.dataset.expertWa || 'Hola, quiero hablar con un especialista sobre la gestión de mis residuos.';
+    const TEMAS = scope.dataset.temas ? scope.dataset.temas.split('|') : ['No sé cómo clasificar mi residuo', 'Tengo un residuo peligroso', 'Necesito un retiro urgente', 'Quiero retiros periódicos', 'Otro tema'];
     const sync = () => {
-      expertLink.href = window.SITE.whatsapp(`Hola, quiero hablar con un especialista sobre la gestión de mis residuos.${input.value ? `\nTema: ${input.value}` : ''}`);
+      expertLink.href = window.SITE.whatsapp(`${HELLO}${input.value ? `\nTema: ${input.value}` : ''}`);
       value.textContent = input.value || value.dataset.empty;
       value.classList.toggle('is-empty', !input.value);
     };
     let note = '';
     const syncAll = () => {
       sync();
-      if (note) expertLink.href = window.SITE.whatsapp(`Hola, quiero hablar con un especialista sobre la gestión de mis residuos.${input.value ? `\nTema: ${input.value}` : ''}\nMi consulta: ${note}`);
+      if (note) expertLink.href = window.SITE.whatsapp(`${HELLO}${input.value ? `\nTema: ${input.value}` : ''}\nMi consulta: ${note}`);
     };
     scope.querySelector('[data-pick="tema"] .pick-btn').addEventListener('click', async () => {
-      const v = await Picker.choose({ title: '¿Sobre qué quieres hablar?', groups: [{ options: TEMAS.map((t) => ({ value: t, label: t })) }], value: input.value });
-      if (v) { input.value = v; syncAll(); }
+      const [base, texto] = PICK.splitOther(input.value);
+      const v = await Picker.choose({ title: '¿Sobre qué quieres hablar?', groups: [{ options: TEMAS.map((t) => ({ value: t, label: t, other: PICK.isOther(t) })) }], value: base, otherText: texto, otherLabel: 'Cuéntanos el tema' });
+      if (!v) return;
+      input.value = typeof v === 'object' ? PICK.joinOther(v.value, v.text) : v;
+      syncAll();
     });
     /* Desde el campo del hero: tema sugerido y la consulta escrita, listos para WhatsApp */
     window.EXPERT = { set: ({ tema = '', texto = '' } = {}) => { input.value = TEMAS.includes(tema) ? tema : ''; note = texto; syncAll(); } };
@@ -591,7 +738,23 @@
   if (ask && window.PARSE) {
     const field = ask.querySelector('input');
     /* Ejemplos que se escriben y borran solos en el placeholder (uno por cada camino: cotizar, buscar y hablar) */
-    const EXAMPLES = ['Necesito un retiro urgente', '600 kg de cartón en Quilicura', 'Busco un transportista para aceite', 'Quiero hablar con un especialista'];
+    /* Cada ejemplo trae una versión corta: se usa cuando la larga no cabe en el campo (teléfonos angostos), para que
+       nunca se vea una frase cortada */
+    const PHRASES = [
+      ['Necesito un retiro urgente de cartón', 'Retiro urgente de cartón'],
+      ['Quiero un transportista de pallets', 'Transportista de pallets'],
+      ['600 kg de plástico en Quilicura', '600 kg de plástico'],
+      ['Quiero hablar con un especialista', 'Hablar con un especialista']
+    ];
+    const fits = (() => {
+      const ctx = d.createElement('canvas').getContext('2d');
+      return (text) => {
+        const cs = getComputedStyle(field);
+        ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        return ctx.measureText(text).width <= field.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 6;
+      };
+    })();
+    let EXAMPLES = PHRASES.map(([long, short]) => (fits(long) ? long : short));
     /* Al tocar el campo se muestra una instrucción completa, nunca una frase a medio escribir */
     const HINT = 'Escribe lo que necesitas retirar';
     let timer = 0;
@@ -599,6 +762,14 @@
     let at = EXAMPLES[0].length;
     let erase = false;
     field.placeholder = EXAMPLES[0];
+    /* Al cargar la tipografía o cambiar el ancho se vuelve a elegir; la frase que está completa a la vista se actualiza */
+    const choose = () => {
+      const shown = EXAMPLES[line];
+      EXAMPLES = PHRASES.map(([long, short]) => (fits(long) ? long : short));
+      if (field.placeholder === shown && EXAMPLES[line] !== shown) { field.placeholder = EXAMPLES[line]; at = EXAMPLES[line].length; }
+    };
+    d.fonts?.ready.then(choose);
+    addEventListener('resize', choose);
     if (motion.matches) {
       /* Se escribe un ejemplo, se sostiene y se borra; empieza con el primero ya escrito para que el campo nunca se vea vacío */
       const tick = () => {
@@ -642,8 +813,9 @@
     addEventListener('pagehide', () => clearTimeout(timer));
   }
 
-  /* NumberFlow (MIT, number-flow.barvian.me): los números cambian con una animación de dígitos. Opcional. */
-  if (motion.matches) {
+  /* NumberFlow (MIT, number-flow.barvian.me): los números cambian con una animación de dígitos. Opcional.
+     Solo se descarga donde hay un contador que lo usa (buscador, asistente o biblioteca de normas). */
+  if (motion.matches && d.querySelector('[data-finder], [data-guide], [data-lib]')) {
     import('https://cdn.jsdelivr.net/npm/number-flow@0.6.2/+esm')
       .then(() => d.dispatchEvent(new Event('numberflow:ready')))
       .catch(() => {});
