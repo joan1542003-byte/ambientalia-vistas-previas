@@ -1478,6 +1478,10 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 @media (prefers-reduced-motion: no-preference) { .opt-other:not([hidden]) { animation: hero-fade-in .25s ease both; } }
 /* Asistente: «Continuar» aparece solo al elegir «Otro» */
 .guide-next[hidden] { display: none; }
+/* Asistente: los dos tipos de residuo como pestañas, con todas sus categorías debajo (misma pieza de las ventanas) */
+.guide-tabs { margin: 18px 0 12px; }
+.guide-tabs + .guide-area { margin-top: 0; }
+.guide .guide-extra { grid-template-columns: minmax(0, 1fr); }  /* una sola opción aparte: «No sé cuál es» */
 /* Horario: con cinco opciones, la última ocupa la fila completa */
 .time .opts.is-cards .opt:last-child:nth-child(odd) { grid-column: 1 / -1; }
 

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Flujo de cotización | Transporte Autorizado</title>
+<style>
+  :root { --ink: #1c1930; --muted: #5d5a70; --line: #dcd8ea; --lila: #6a3fb6; --lila-suave: #f2edfb; --verde: #0f8446; --fondo: #f6f5fa; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  main { width: min(880px, 100% - 32px); margin: 0 auto; padding: 40px 0 56px; }
+  h1 { margin: 0; font-size: 30px; line-height: 1.15; }
+  h2 { margin: 40px 0 12px; font-size: 20px; }
+  .paso h2 { margin: 0 0 6px; font-size: 17px; }
+  p { margin: 0; }
+  .bajada { margin-top: 8px; color: var(--muted); }
+  .leyenda { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 20px 0 28px; padding: 0; list-style: none; font-size: 14px; color: var(--muted); }
+  .leyenda li { display: flex; align-items: center; gap: 8px; }
+  .leyenda i { width: 22px; height: 14px; border-radius: 4px; border: 2px solid var(--lila); background: #fff; }
+  .leyenda .plan i { border-style: dashed; border-color: #8d89a3; }
+  .leyenda .req::before { content: "*"; color: var(--lila); font-weight: 700; font-size: 18px; }
+
+  .flujo { margin: 0; padding: 0; list-style: none; }
+  .paso { position: relative; padding: 18px 20px; border: 2px solid var(--lila); border-radius: 14px; background: #fff; }
+  .paso + .paso { margin-top: 44px; }
+  .paso + .paso::before { content: attr(data-via); position: absolute; left: 0; right: 0; top: -37px; padding-left: 44px; color: var(--muted); font-size: 14px; line-height: 30px;
+    background: linear-gradient(var(--lila), var(--lila)) 28px 0 / 2px 30px no-repeat; }
+  .paso + .paso::after { content: ""; position: absolute; left: 22px; top: -13px; border: 7px solid transparent; border-top: 9px solid var(--lila); border-bottom: 0; }
+  .paso.plan { border-style: dashed; border-color: #8d89a3; background: #fbfaff; }
+  .paso.plan::before { background-image: repeating-linear-gradient(#8d89a3 0 4px, transparent 4px 8px) !important; }
+  .paso.plan::after { border-top-color: #8d89a3; }
+  .etiqueta { display: inline-block; margin-bottom: 6px; padding: 1px 9px; border-radius: 99px; background: var(--lila-suave); color: var(--lila); font-size: 13px; font-weight: 700; }
+  .plan .etiqueta { background: #ecebf2; color: #55526a; }
+  .paso ul, .paso ol { margin: 8px 0 0; padding-left: 20px; }
+  .paso li + li { margin-top: 3px; }
+  .nota { margin-top: 10px; color: var(--muted); font-size: 14px; }
+  .ramas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  .rama { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--fondo); }
+  .rama h3 { margin: 0 0 6px; font-size: 15px; }
+  .rama ol { margin: 0; padding-left: 20px; font-size: 15px; }
+  b.req { color: var(--lila); }
+  .wa { color: var(--verde); font-weight: 700; }
+  .lista { margin: 0; padding-left: 20px; }
+  .lista li + li { margin-top: 6px; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  @media (max-width: 640px) { .ramas { grid-template-columns: 1fr; } h1 { font-size: 25px; } }
+  @media print { body { background: #fff; } .paso { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Flujo de cotización</h1>
+  <p class="bajada">Transporte Autorizado: cómo una persona pide una cotización en el sitio y qué ocurre con su solicitud.</p>
+  <ul class="leyenda">
+    <li><i></i>Funciona hoy en el sitio</li>
+    <li class="plan"><i></i>Planificado para la integración en WordPress (aún sin implementar)</li>
+    <li class="req">Dato obligatorio</li>
+  </ul>
+
+  <ol class="flujo">
+    <li class="paso">
+      <span class="etiqueta">Entrada</span>
+      <h2>La persona llega al formulario</h2>
+      <ul>
+        <li>Opción del inicio «Necesito gestionar mis residuos».</li>
+        <li>Campo del inicio: escribe lo que necesita (por ejemplo, «Necesito un retiro urgente de cartón») y el formulario se abre con lo entendido ya completado.</li>
+        <li>Botón «Cotizar retiro» del menú, burbuja «?», tarjetas de Servicios y de Planes, y el cierre de la página. Servicios y Planes dejan ya elegido el servicio o el plan.</li>
+        <li>Asistente de retiro: siete preguntas guiadas; puede pasar al formulario con lo respondido o terminar en su propio resumen.</li>
+      </ul>
+    </li>
+
+    <li class="paso" data-via="Se abre «Cotiza tu retiro»">
+      <span class="etiqueta">Paso 1 de 2</span>
+      <h2>Retiro</h2>
+      <p>Cada dato se elige en una ventana; solo se escribe la dirección. «Atrás» vuelve al inicio sin borrar lo respondido.</p>
+      <div class="ramas">
+        <div class="rama">
+          <h3>Retiro de residuos</h3>
+          <ol>
+            <li>Servicio <b class="req">*</b></li>
+            <li>Residuo <b class="req">*</b>: tipo (no peligroso, peligroso o «no sé») y categoría. Con «Otros» o «No sé» se pide describirlo.</li>
+            <li>Cantidad aproximada <b class="req">*</b></li>
+            <li>Vehículo (opcional; aparecerá cuando esté la lista de vehículos)</li>
+            <li>Comuna <b class="req">*</b> (Región Metropolitana)</li>
+            <li>Dirección <b class="req">*</b>, con mapa para marcar el punto</li>
+            <li>Tipo de retiro <b class="req">*</b>: Express, Programado o Espera y ahorra</li>
+            <li>Día <b class="req">*</b>: un día en Programado, hasta tres en Espera y ahorra; Express no lo pide</li>
+            <li>Horario: cualquier horario, mañana, tarde, vespertino (sujeto a confirmación) o un rango</li>
+            <li>Antecedentes del residuo (solo si es peligroso o «no sé»)</li>
+            <li>Detalles: acceso, estado y almacenamiento</li>
+          </ol>
+        </div>
+        <div class="rama">
+          <h3>Arriendo de contenedores</h3>
+          <ol>
+            <li>Servicio <b class="req">*</b></li>
+            <li>Período <b class="req">*</b>: mensual, semanal o diario</li>
+            <li>Residuo <b class="req">*</b></li>
+            <li>Contenedor (aparecerá cuando esté la lista de contenedores; depende del residuo)</li>
+            <li>Comuna <b class="req">*</b></li>
+            <li>Dirección de entrega <b class="req">*</b></li>
+          </ol>
+        </div>
+      </div>
+      <p class="nota">Gestión REP, Destrucción de marcas, Gestión de REAS y Limpieza y patios usan los mismos datos del retiro.</p>
+    </li>
+
+    <li class="paso" data-via="«Continuar»: revisa que estén los datos obligatorios">
+      <span class="etiqueta">Paso 2 de 2</span>
+      <h2>Contacto</h2>
+      <ul>
+        <li>Empresa <b class="req">*</b>, nombre de contacto <b class="req">*</b>, teléfono <b class="req">*</b> y correo electrónico <b class="req">*</b></li>
+        <li>Opcional: RUT de la empresa, «Solicitud de retiro con copia a» y comentarios adicionales</li>
+      </ul>
+      <p class="nota">«Atrás» vuelve al paso 1.</p>
+    </li>
+
+    <li class="paso" data-via="«Preparar solicitud»">
+      <span class="etiqueta">Resumen</span>
+      <h2>«Tu solicitud está lista»</h2>
+      <p>El sitio muestra el texto completo de la solicitud y ofrece:</p>
+      <ul>
+        <li><span class="wa">Enviar por WhatsApp</span></li>
+        <li>Enviar por correo (preparado: aparece cuando se defina el correo de destino)</li>
+        <li>Copiar el texto</li>
+        <li>Editar, que vuelve al formulario</li>
+      </ul>
+    </li>
+
+    <li class="paso" data-via="La persona elige «Enviar por WhatsApp»">
+      <span class="etiqueta">Envío hoy</span>
+      <h2>WhatsApp con el mensaje ya escrito</h2>
+      <p>Se abre WhatsApp (+56 9 8606 7930) con la solicitud completa. La persona adjunta las fotografías y lo envía. El sitio no envía nada por sí solo ni guarda los datos.</p>
+    </li>
+
+    <li class="paso plan" data-via="Lo que reemplazará al envío manual">
+      <span class="etiqueta">Planificado</span>
+      <h2>Envío automático desde WordPress</h2>
+      <ol>
+        <li>Al enviar el formulario, los datos de la solicitud se guardan en la nube.</li>
+        <li>La solicitud llega al encargado de gestión.</li>
+        <li>La persona recibe un correo automático con el ID de su solicitud.</li>
+        <li>Cuando la solicitud está lista, se le contacta por correo, también de forma automática.</li>
+      </ol>
+    </li>
+  </ol>
+
+  <h2>Otros caminos que terminan en una solicitud</h2>
+  <ul class="lista">
+    <li><strong>Buscar transportista:</strong> elige residuo y comuna, y pide «Solicitar cotización» en un transportista. Se abre WhatsApp con el mensaje escrito.</li>
+    <li><strong>Hablar con un especialista:</strong> elige el tema (opcional) y se abre WhatsApp.</li>
+    <li><strong>Asistente de retiro:</strong> al terminar las siete preguntas muestra su resumen y abre WhatsApp.</li>
+  </ul>
+
+  <h2>Por definir</h2>
+  <ul class="lista">
+    <li>Correo de destino de las solicitudes.</li>
+    <li>Lista de vehículos y de contenedores, con el tipo de residuo que admite cada uno.</li>
+    <li>Para la integración: dónde se guardan los datos, qué servicio envía los correos y qué formato tiene el ID.</li>
+  </ul>
+
+  <footer>Corresponde al sitio al 09-10-2026. Fuente: <code>transporte-autorizado.html</code> y <code>assets/site/</code> de este repositorio.</footer>
+</main>
+</body>
+</html>

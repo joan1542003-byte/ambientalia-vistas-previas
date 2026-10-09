@@ -633,6 +633,10 @@
       show('inicio').then(() => giveFocus(was));
     };
     hero.addEventListener('click', (e) => { if (e.target.closest('[data-hero-close]')) close(); });
+    /* «Atrás» en el primer paso de un formulario o del asistente pide cerrar con este aviso (site.js, asistente.js).
+       No se usa data-hero-close en esos botones: el mismo botón retrocede un paso en los demás, y un atributo que
+       cambia durante el clic cerraría la tarjeta al volver del paso 2 al 1. */
+    d.addEventListener('hero:close', close);
     wrap.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('select')) close();
     });

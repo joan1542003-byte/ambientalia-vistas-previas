@@ -308,6 +308,7 @@
       const next = form.querySelector('[data-next]');
       const submit = form.querySelector('[type="submit"]');
       const counter = form.querySelector('[data-step-count]');
+      const inCard = Boolean(form.closest('.hcard'));
       const paint = (dir, animate) => {
         steps.forEach((s, n) => {
           s.hidden = n !== current;
@@ -320,7 +321,9 @@
         });
         if (bar) bar.style.setProperty('--p', `${((current + 1) / steps.length) * 100}%`);
         if (counter) counter.textContent = `Paso ${current + 1} de ${steps.length}`;
-        back.hidden = current === 0;
+        /* En el primer paso, «Atrás» vuelve a lo que había antes del formulario cuando este vive en la tarjeta del hero
+           (ver el clic, más abajo). Un formulario suelto no tiene adónde volver: ahí se oculta. */
+        back.hidden = current === 0 && !inCard;
         next.hidden = current === steps.length - 1;
         submit.hidden = current !== steps.length - 1;
         window.SITE.refresh?.();
@@ -341,7 +344,11 @@
         if (bad) { report(bad); return; }
         move(current + 1, 1);
       });
-      back.addEventListener('click', () => move(current - 1, -1));
+      back.addEventListener('click', () => {
+        if (current > 0) { move(current - 1, -1); return; }
+        /* Primer paso: la tarjeta del hero se cierra y vuelve al inicio, sin borrar lo ya respondido (transporte-ui.js) */
+        form.dispatchEvent(new CustomEvent('hero:close', { bubbles: true }));
+      });
       /* Volver a un paso anterior desde la barra de pasos */
       labels.forEach((l, n) => l.tagName === 'BUTTON' && l.addEventListener('click', () => { if (n < current) move(n, -1); }));
       /* Enter en un campo avanza al paso siguiente en vez de enviar */

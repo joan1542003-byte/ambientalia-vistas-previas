@@ -25,12 +25,8 @@
   /* Deja ver la selección antes de avanzar; un doble toque no avanza dos veces (solo si la pregunta sigue siendo la misma) */
   const later = (fn) => { const at = index; setTimeout(() => { if (index === at) fn(); }, 160); };
 
-  const POPULAR = [
-    ['no-peligroso', 'Papel y cartón', 'np-papel-carton'], ['no-peligroso', 'Plásticos', 'np-plasticos'],
-    ['no-peligroso', 'Metales', 'np-metales'], ['no-peligroso', 'Madera', 'np-madera'],
-    ['no-peligroso', 'Construcción y demolición', 'np-construccion-demolicion'], ['no-peligroso', 'RAEE y electrónicos', 'np-raee-electronicos'],
-    ['peligroso', 'Aceites e hidrocarburos', 'p-aceites-hidrocarburos'], ['peligroso', 'Baterías y pilas', 'p-baterias-pilas']
-  ];
+  /* Tipos de residuo: [valor, pestaña, clave en PICK.CATEGORIES] */
+  const TIPOS = [['no-peligroso', 'No peligrosos', 'safe'], ['peligroso', 'Peligrosos', 'hazard']];
   const MODES = Picker.MODES.map((m) => ({ ...m, value: PICK.MODE_LABEL[m.value], key: m.value }));
   const SLOT_OPTIONS = PICK.SLOTS.map(([t, h]) => ({ value: PICK.slotText(t), label: t, hint: h, icon: PICK.SLOT_ICONS[t] }));
 
@@ -106,7 +102,9 @@
       flow.update(stepNumber(index));
     } else count.textContent = `Paso ${stepNumber(index)} de ${TOTAL}`;
     bar.style.setProperty('--p', `${done ? 100 : Math.max(((stepNumber(index) - 1) / TOTAL) * 100, 5)}%`);
-    backBtn.hidden = !done && index === 0;
+    /* La flecha está en todos los pasos: en el primero vuelve al inicio (cierra la tarjeta), como «Atrás» del formulario */
+    backBtn.hidden = false;
+    backBtn.setAttribute('aria-label', !done && index === 0 ? 'Volver' : 'Paso anterior');
     const chips = done ? [] : steps.map((s, i) => (i !== index && answered(s) && shown(s) ? `<button type="button" class="trail-chip" data-edit="${i}"><span class="sr-only">Cambiar ${esc(s.label || 'contacto')}: </span>${esc(shown(s))}</button>` : ''));
     trail.innerHTML = chips.join('');
     trail.hidden = !chips.some(Boolean);
@@ -135,16 +133,28 @@
     actions.hidden = true;
     input.placeholder = s.hint || 'Escribe tu respuesta';
     if (s.type === 'residuo') {
-      body.innerHTML = `<div class="guide-step">${heading(s)}<div class="guide-area" data-area></div>
+      /* Todos los residuos, por tipo (corrección del cliente, 09-10-2026): antes se mostraban ocho «frecuentes» y el
+         resto quedaba aparte, tras «Ver todos». Las pestañas son los dos tipos y cada una muestra todas sus categorías. */
+      let tipo = meta.tipo === 'peligroso' ? 'peligroso' : 'no-peligroso';
+      body.innerHTML = `<div class="guide-step">${heading(s)}
+        <div class="picker-tabs guide-tabs" role="tablist" aria-label="Tipo de residuo">${TIPOS.map(([kind, label, key]) => `<button type="button" role="tab" data-tipo="${kind}" aria-selected="${kind === tipo}">${label}<span>${PICK.CATEGORIES[key].length}</span></button>`).join('')}</div>
+        <div class="guide-area" data-area role="tabpanel"></div>
         <div class="opts is-list guide-extra">
-          <button type="button" class="opt" data-all><span class="opt-icon" aria-hidden="true">${PICK.ICONS.grid}</span><span class="opt-text"><strong>Ver todos los residuos</strong><small>No peligrosos y peligrosos</small></span><i class="opt-chev" aria-hidden="true"></i></button>
           <button type="button" class="opt" data-describe><span class="opt-icon" aria-hidden="true">${PICK.ICONS.edit}</span><span class="opt-text"><strong>No sé cuál es</strong><small>Descríbelo abajo con tus palabras</small></span><i class="opt-chev" aria-hidden="true"></i></button>
         </div></div>`;
-      Picker.options(body.querySelector('[data-area]'), {
-        groups: [{ options: POPULAR.map(([kind, name, file]) => ({ value: `${kind}|${name}`, label: name, img: PICK.thumb(file) })) }],
+      const draw = () => Picker.options(body.querySelector('[data-area]'), {
+        groups: [{ options: PICK.CATEGORIES[TIPOS.find(([kind]) => kind === tipo)[2]].map(([name, file]) => ({ value: `${tipo}|${name}`, label: name, img: PICK.thumb(file) })) }],
         value: `${meta.tipo}|${value}`, layout: 'tiles',
         onPick: (v) => { const [kind, name] = v.split('|'); meta.tipo = kind; answers.residuo = name; exchange = null; later(advance); }
       });
+      draw();
+      body.querySelector('.guide-tabs').onclick = (e) => {
+        const tab = e.target.closest('[data-tipo]');
+        if (!tab || tab.dataset.tipo === tipo) return;
+        tipo = tab.dataset.tipo;
+        body.querySelectorAll('.guide-tabs [data-tipo]').forEach((x) => x.setAttribute('aria-selected', String(x === tab)));
+        draw();
+      };
       return;
     }
     if (s.type === 'options' || s.type === 'multi') {
@@ -428,15 +438,6 @@
   body.addEventListener('click', async (e) => {
     const s = active()[index];
     if (e.target.closest('[data-describe]')) { input.placeholder = 'Ej.: polvo gris de la limpieza de hornos'; input.focus(); return; }
-    if (e.target.closest('[data-all]')) {
-      const group = (kind, label) => ({ label, options: PICK.CATEGORIES[kind === 'peligroso' ? 'hazard' : 'safe'].map(([n, file]) => ({ value: `${kind}|${n}`, label: n, img: PICK.thumb(file) })) });
-      const v = await Picker.choose({ title: '¿Qué residuo necesitas retirar?', sub: 'Las imágenes son ilustrativas: la clasificación se confirma con los antecedentes.', groups: [group('no-peligroso', 'No peligrosos'), group('peligroso', 'Peligrosos')], value: `${meta.tipo}|${answers.residuo}`, search: 'Buscar residuo', layout: 'tiles', tabs: true });
-      if (!v) return;
-      const [kind, name] = v.split('|');
-      meta.tipo = kind; answers.residuo = name; exchange = null;
-      advance();
-      return;
-    }
     if (e.target.closest('[data-skip]')) { answers[s.id] = ''; meta.dates[s.id] = []; exchange = null; advance(); return; }
     const edit = e.target.closest('[data-edit]');
     if (edit) { go(() => { done = false; editing = true; exchange = null; index = Number(edit.dataset.edit); }); return; }
@@ -463,10 +464,13 @@
     const edit = e.target.closest('[data-edit]');
     if (edit) go(() => { editing = true; exchange = null; index = Number(edit.dataset.edit); });
   });
-  backBtn.addEventListener('click', () => go(() => {
-    exchange = null;
-    if (done) { done = false; index = active().length - 1; } else index = Math.max(0, index - 1);
-  }));
+  backBtn.addEventListener('click', () => {
+    if (!done && index === 0) { panel.dispatchEvent(new CustomEvent('hero:close', { bubbles: true })); return; }  // primer paso: cierra la tarjeta
+    go(() => {
+      exchange = null;
+      if (done) { done = false; index = active().length - 1; } else index = Math.max(0, index - 1);
+    });
+  });
   /* «Ir al formulario»: se lleva todo lo respondido */
   panel.querySelector('[data-mode="form"]')?.addEventListener('click', () => {
     window.QUOTE?.fill({ answers, meta });
