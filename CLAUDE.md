@@ -5,6 +5,7 @@ Sitio estático (HTML/CSS/JS sin build) con vistas previas de diseño publicadas
 - `transporte-autorizado.html`: retiro y coordinación de residuos peligrosos y no peligrosos; no ofrece obtener ni tramitar autorizaciones sanitarias.
 - `hds.html`: Hojas de Datos de Seguridad (HDS/HDSR). Van de la mano con el transporte, porque el residuo peligroso viaja con su HDS.
 - `campanas-reciclaje.html`: campañas de recolección para municipalidades y empresas. Se apoyan en las otras dos páginas.
+- `agente-virtual.html`: maqueta de un agente informativo para Transporte Autorizado. Muestra el sitio real detrás y el agente encima; responde solo con lo publicado y cita su fuente (reglas en `AGENTS.md`, «Agente informativo»). El mismo agente se prueba en `transporte-autorizado.html` desde la burbuja de abajo a la izquierda.
 - `assets/<página>/`: imágenes y scripts de cada página.
 - `docs/activos-visuales.md`: catálogo de las 23 imágenes ilustrativas de categorías de residuos para Transporte Autorizado; los fondos de color no sustituyen una clasificación técnica.
 

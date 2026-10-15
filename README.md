@@ -18,6 +18,7 @@ Campañas organiza jornadas; Transporte Autorizado coordina retiros; HDS desarro
 - `assets/transporte/`, `assets/hds/` y `assets/campanas/` mantienen separados los recursos de cada página.
 - [`docs/activos-visuales.md`](docs/activos-visuales.md) cataloga las 23 imágenes de categorías de residuos del buscador de Transporte Autorizado y enlaza a cada recurso.
 - `index.html` es el índice de las vistas.
+- `agente-virtual.html` es una maqueta: muestra Transporte Autorizado con un agente informativo encima, que responde solo con lo publicado en el sitio y cita su fuente (ver `AGENTS.md`). El mismo agente se prueba en `transporte-autorizado.html` desde la burbuja de abajo a la izquierda.
 - `robots.txt` y las etiquetas `noindex` mantienen este repositorio fuera de los resultados de búsqueda. No copiar esa configuración a los dominios de producción.
 
 
