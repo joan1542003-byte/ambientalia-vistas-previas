@@ -136,7 +136,9 @@
 
   const renderStep = (s) => {
     const value = answers[s.id];
-    composer.hidden = s.type === 'contact';
+    /* Sin campo para escribir donde no hace falta: en los datos de contacto y en las preguntas de varias opciones
+       (los antecedentes), donde el campo dejaba «Continuar» fuera de la vista */
+    composer.hidden = s.type === 'contact' || s.type === 'multi';
     actions.hidden = true;
     input.placeholder = s.hint || 'Escribe tu respuesta';
     if (s.type === 'residuo') {

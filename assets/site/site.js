@@ -250,8 +250,9 @@
   }
 
   /* Logo de Transporte: solo mientras el puntero está encima toma otro par de la paleta de la marca [oscuro, claro]
-     (cada pasada, el siguiente); al salir vuelve a sus colores oficiales, que define el CSS */
-  const PARES = [['#0E14DA', '#A8DFFD'], ['#059A3F', '#D7F560'], ['#FF651C', '#FFE357'], ['#E90B2D', '#FEB5A7'], ['#000000', '#FFFFFF'], ['#6708C7', '#EBA9FC']];
+     (cada pasada, el siguiente); al salir vuelve a sus colores oficiales, que define el CSS. El único morado es el
+     del logotipo oficial: el par lila con rosado no se usa (pedido del cliente, 15-10-2026) */
+  const PARES = [['#0E14DA', '#A8DFFD'], ['#059A3F', '#D7F560'], ['#FF651C', '#FFE357'], ['#E90B2D', '#FEB5A7'], ['#000000', '#FFFFFF']];
   let par = -1;
   d.querySelectorAll('.logo-ta').forEach((logo) => {
     const zona = logo.closest('a') || logo;
