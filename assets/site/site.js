@@ -241,7 +241,11 @@
   };
   const validate = (scope) => {
     const fields = [...scope.querySelectorAll('input, select, textarea')].filter((f) => !f.disabled);
-    fields.forEach((f) => { if (f.required && f.type !== 'radio') f.setCustomValidity(f.value.trim() ? '' : 'Completa este dato.'); });
+    fields.forEach((f) => {
+      /* Una casilla obligatoria (p. ej., aceptar un aviso) dice qué falta: data-required-text */
+      if (f.required && f.type === 'checkbox') f.setCustomValidity(f.checked ? '' : f.dataset.requiredText || 'Marca esta casilla para seguir.');
+      else if (f.required && f.type !== 'radio') f.setCustomValidity(f.value.trim() ? '' : 'Completa este dato.');
+    });
     /* Grupos de casillas que exigen al menos una opción: [data-required-group] */
     scope.querySelectorAll('[data-required-group]').forEach((g) => {
       const boxes = [...g.querySelectorAll('input')].filter((f) => !f.disabled);
@@ -359,25 +363,38 @@
       paint(1, false);
     }
 
-    const summaryOf = () => {
-      const lines = [`*${form.dataset.title || 'Consulta'}*`];
+    /* Las filas del resumen, en orden y agrupadas por su fieldset: { section, name, label, value }. El texto para
+       WhatsApp sale de aquí, y también lo que envía el formulario de cotización al asistente (form.summaryRows,
+       transporte-ui.js): así los dos dicen lo mismo */
+    const rowsOf = () => {
+      const rows = [];
       const seen = new Set();
       form.querySelectorAll('fieldset').forEach((fs) => {
-        const rows = [];
+        const section = fs.dataset.summaryTitle || fs.querySelector('legend')?.textContent.trim() || '';
+        const row = (field, value) => rows.push({ group: fs, section, name: field.name, label: labelFor(field), value });
         fs.querySelectorAll('[name]').forEach((field) => {
           if (seen.has(field.name) || field.disabled || 'summarySkip' in field.dataset) return;
           if (field.type === 'radio' && !field.checked) return;
           if (field.type === 'checkbox') {
             seen.add(field.name);
             const on = [...fs.querySelectorAll(`[name="${field.name}"]:checked:not(:disabled)`)].map(valueOf);
-            if (on.length) rows.push(`• ${labelFor(field)}: ${on.join(', ')}`);
+            if (on.length) row(field, on.join(', '));
             return;
           }
           seen.add(field.name);
           const value = valueOf(field);
-          if (value) rows.push(`• ${labelFor(field)}: ${value}`);
+          if (value) row(field, value);
         });
-        if (rows.length) lines.push('', `*${fs.dataset.summaryTitle || fs.querySelector('legend')?.textContent.trim() || ''}*`, ...rows);
+      });
+      return rows;
+    };
+    form.summaryRows = () => rowsOf().map(({ group, ...r }) => r);
+    const summaryOf = () => {
+      const lines = [`*${form.dataset.title || 'Consulta'}*`];
+      let group = null;
+      rowsOf().forEach((r) => {
+        if (r.group !== group) { group = r.group; lines.push('', `*${r.section}*`); }
+        lines.push(`• ${r.label}: ${r.value}`);
       });
       if (form.dataset.closing) lines.push('', form.dataset.closing);
       return lines.join('\n');
@@ -407,9 +424,11 @@
         out.hidden = false;
         if (edit) form.hidden = true;
         out.classList.toggle('is-shown', !form.transition);
+        /* Un resumen nuevo: quien envía la solicitud por otra vía (transporte-ui.js) vuelve a empezar */
+        form.dispatchEvent(new CustomEvent('summary:ready', { detail: { text } }));
       }, 1).then(() => {
         if (edit) bring(out); else out.scrollIntoView({ behavior: smooth(), block: 'nearest' });
-        send.focus({ preventScroll: true });
+        (out.querySelector('[data-send-first]:not([hidden])') || send).focus({ preventScroll: true });
       });
     });
     edit?.addEventListener('click', () => {

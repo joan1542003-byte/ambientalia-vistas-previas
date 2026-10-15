@@ -1539,6 +1539,28 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 .has-mail > a.btn { flex: 1 1 auto; }
 .has-mail > .foot-more { display: flex; gap: 8px; }
 
+/* Envío al asistente (form[data-cotizar-api], transporte-ui.js): el aviso de privacidad sobre «Preparar solicitud», el aviso de
+   un envío que no salió y «Enviar solicitud», en su propia fila; debajo quedan WhatsApp, copiar y editar, como sin envío.
+   El campo trampa queda fuera de la vista. */
+.step-nav > .cotizar-aviso { flex: 1 1 100%; padding: 0 2px 4px; }
+.step-nav:has([type="submit"][hidden]) > .cotizar-aviso { display: none; }  /* solo en el último paso, junto a «Preparar solicitud» */
+.acepto { display: flex; align-items: flex-start; gap: 8px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; }
+.acepto input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); }
+.acepto input[aria-invalid] { outline: 2px solid #b42318; outline-offset: 2px; }
+.acepto a { color: var(--accent-strong); font-weight: 700; text-underline-offset: 3px; }
+.trampa { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.cotizar-estado { margin-bottom: 14px; padding: 10px 12px; border-radius: var(--r-s); background: #fdecea; color: #b42318; font-size: var(--fs-small); font-weight: 600; line-height: 1.45; }
+/* El widget de Turnstile, entre el resumen y los botones: no ocupa lugar hasta que pide resolver algo (.is-visible) */
+.cotizar-humano { flex: none; height: 0; overflow: hidden; padding-inline: 20px; }
+.cotizar-humano.is-visible { height: auto; padding-top: 12px; }
+.hcard-foot [data-cotizar-enviar] { flex: 1 1 100%; }
+.hcard-foot [data-cotizar-enviar]:disabled { opacity: .7; cursor: progress; }
+/* En el teléfono, bajo «Enviar solicitud» el botón dice solo «WhatsApp» (el lector de pantalla oye «Enviar por WhatsApp»):
+   así WhatsApp, copiar y editar caben en una fila */
+@media (max-width: 520px) {
+  .is-cotizar .btn-pre { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
 /* Hero: cuarta opción (enlace a recicladordebase.cl) y foto por opción */
 .routes-tabs { display: contents; }
 a.route { text-decoration: none; }

@@ -473,7 +473,10 @@
         : `<li class="adjunto"><img src="${it.url}" alt="Foto ${i + 1} del residuo"></li>`)).join('');
       const paso = canCopy ? (one ? 'haz clic en la foto para copiarla y pégala' : 'haz clic en cada foto para copiarla y pégala')
         : canShare ? (one ? 'compártela' : 'compártelas') : (one ? 'adjúntala' : 'adjúntalas');
-      envio.querySelector('.adjuntos-nota').textContent = `${one ? 'La foto va' : 'Las fotos van'} aparte del texto. Envía primero el mensaje y después ${paso} en ese mismo chat.`;
+      /* Con el envío al asistente (más abajo), las fotos viajan con la solicitud; WhatsApp sigue siendo la otra vía */
+      envio.querySelector('.adjuntos-nota').textContent = 'cotizarOn' in (owner?.dataset || {})
+        ? `${one ? 'La foto va' : 'Las fotos van'} con la solicitud. Si la envías por WhatsApp, ${paso} después del mensaje.`
+        : `${one ? 'La foto va' : 'Las fotos van'} aparte del texto. Envía primero el mensaje y después ${paso} en ese mismo chat.`;
       const share = envio.querySelector('[data-adjuntos-share]');
       share.hidden = !canShare;
       share.querySelector('span').textContent = one ? 'Compartir foto' : 'Compartir fotos';
@@ -495,6 +498,7 @@
             : (coarse.matches ? 'Opcional: toma una foto o elígela de tu galería' : 'Opcional: arrastra las imágenes aquí o elígelas');
     };
     const sync = () => { paintZone(); paintEnvio(); };
+    zone.fotos = () => ready().map((it) => it.file);  // las fotos ya reducidas, para el envío al asistente
     /* Si las miniaturas quedan bajo el borde de la tarjeta (o en su difuminado), la lista baja lo justo para mostrarlas;
        la página no se mueve */
     const reveal = () => Promise.resolve(resize?.finished).catch(() => {}).then(() => {
@@ -601,6 +605,174 @@
       }
     });
     sync();
+  }
+
+  /* ---------- Envío de la cotización al asistente (form[data-cotizar-api]) ----------
+     Con la dirección del asistente, el resumen ofrece «Enviar solicitud»: los datos de contacto, las mismas líneas que van
+     a WhatsApp (form.summaryRows, site.js) y las fotos llegan a Odoo como una solicitud del chat, a la misma persona.
+     WhatsApp queda al lado. Sin dirección no cambia nada. data-cotizar-api-local cuenta solo en este computador, como el
+     agente (?cotizar=whatsapp lo apaga). Pide el aviso de privacidad aceptado; lleva el campo trampa («website», que una
+     persona no ve) y, con data-turnstile, el token de Cloudflare Turnstile, que se canjea una vez: se renueva tras cada
+     intento. Cada resumen lleva su identificador: reintentar el mismo envío no crea otra solicitud. */
+  const cotizar = d.querySelector('form[data-cotizar-api], form[data-cotizar-api-local]');
+  const enLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).get('cotizar') !== 'whatsapp';
+  const API = (cotizar?.dataset.cotizarApi || (enLocal ? cotizar?.dataset.cotizarApiLocal : '') || '').replace(/\/+$/, '');
+  const resumen = cotizar && d.getElementById(cotizar.dataset.summary);
+  if (API && resumen) {
+    const campos = cotizar.querySelector('[data-cotizar-campos]');
+    const aviso = campos.querySelector('input[type="checkbox"]');
+    const trampa = cotizar.querySelector('[name="website"]');
+    const boton = resumen.querySelector('[data-cotizar-enviar]');
+    const estado = resumen.querySelector('[data-cotizar-estado]');
+    const titulo = resumen.querySelector('h2').lastChild;  // el texto, después del visto
+    const sub = resumen.querySelector('.hcard-sub');
+    const wa = resumen.querySelector('[data-send]');
+    const editar = resumen.querySelector('[data-edit]');
+    const fotosEnvio = resumen.querySelector('[data-adjuntos-envio]');
+    const humano = resumen.querySelector('[data-turnstile-widget]');
+    const sitekey = cotizar.dataset.turnstile;
+    const rotuloEditar = editar.lastChild;
+    const LISTA = { titulo: titulo.textContent, editar: rotuloEditar.textContent, sub: 'Revisa los datos y envíala. Revisaremos los antecedentes antes de confirmar disponibilidad, valor y condiciones.' };
+    const CONTACTO = { nombre: 'name', empresa: 'company', correo: 'email', telefono: 'phone' };  // van aparte: no se repiten en el detalle
+    const ASUNTO = ['servicio', 'categoria', 'comuna'];  // el título de la tarea: «Retiro de residuos · Papel y cartón · Quilicura»
+    const nuevoId = () => (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`).replace(/[^\w-]/g, '');
+    let id = nuevoId();
+    let enviando = false;
+
+    cotizar.dataset.cotizarOn = '';
+    campos.hidden = false;
+    aviso.disabled = false;
+    campos.querySelector('[data-cotizar-aviso]').href = `${API}/politica-de-privacidad`;
+    boton.hidden = false;
+    boton.parentElement.classList.add('is-cotizar');
+    sub.textContent = LISTA.sub;
+
+    /* Turnstile: el widget vive sobre los botones del resumen y solo se ve si pide resolver algo. Se carga con el primer
+       resumen, ya a la vista (así Cloudflare solo ve a quien prepara una solicitud). Su token dura cinco minutos (el
+       widget lo renueva solo) y sirve una vez */
+    let widget = null;
+    let token = '';
+    let esperan = [];
+    /* Quien envía apenas aparece el resumen espera unos segundos a que llegue el token */
+    const conToken = () => (token ? Promise.resolve(token) : new Promise((ok) => {
+      esperan.push(ok);
+      setTimeout(() => ok(''), 8000);
+    }));
+    const renovar = () => { token = ''; if (widget !== null) window.turnstile?.reset(widget); };
+    /* Un solo script para la página, aunque también lo pida el chat (agente-chat.js) */
+    const turnstileListo = () => window.__turnstile || (window.__turnstile = new Promise((ok, mal) => {
+      window.__turnstileListo = () => ok(window.turnstile);
+      const s = d.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__turnstileListo';
+      s.async = true;
+      s.onerror = mal;
+      d.head.append(s);
+    }));
+    let cargado = false;
+    const verificar = () => {
+      if (!sitekey || cargado) return;
+      cargado = true;
+      humano.hidden = false;
+      turnstileListo().then((ts) => {
+        widget = ts.render(humano, {
+          sitekey, appearance: 'interaction-only', language: 'es',
+          callback: (t) => { token = t; esperan.splice(0).forEach((ok) => ok(t)); },
+          'expired-callback': () => { token = ''; },
+          'error-callback': () => { token = ''; },
+          'before-interactive-callback': () => humano.classList.add('is-visible'),
+          'after-interactive-callback': () => humano.classList.remove('is-visible')
+        });
+      }).catch(() => { cargado = false; });
+    };
+
+    const avisar = (texto) => { estado.textContent = texto; estado.hidden = !texto; };
+    const preparar = (on) => {
+      boton.disabled = on;
+      boton.classList.toggle('is-loading', on);
+      boton.querySelector('span').textContent = on ? 'Enviando…' : 'Enviar solicitud';
+    };
+    /* Un resumen nuevo (o editado) vuelve a estar listo para enviar, con otro identificador */
+    cotizar.addEventListener('summary:ready', () => {
+      id = nuevoId();
+      titulo.textContent = LISTA.titulo;
+      sub.textContent = LISTA.sub;
+      avisar('');
+      preparar(false);
+      boton.hidden = false;
+      rotuloEditar.textContent = LISTA.editar;
+      wa.querySelector('.btn-pre').textContent = 'Enviar por ';
+      setTimeout(verificar, 400);  // cuando el resumen terminó de entrar
+    });
+
+    const corto = (v, n) => (v.length > n ? `${v.slice(0, n - 1)}…` : v);
+    const cuerpo = async () => {
+      const filas = cotizar.summaryRows();
+      const valor = (nombre) => cotizar.elements[nombre]?.value.trim() || '';
+      const f = new FormData();
+      Object.entries(CONTACTO).forEach(([campo, clave]) => f.append(clave, valor(campo)));
+      f.append('privacy_accepted', aviso.checked ? '1' : '0');
+      f.append('subject', corto(ASUNTO.map((n) => filas.find((r) => r.name === n)?.value).filter(Boolean).join(' · '), 150));
+      filas.filter((r) => !(r.name in CONTACTO)).slice(0, 40).forEach((r, i) => {
+        f.append(`details[${i}][label]`, corto(r.label, 80));
+        f.append(`details[${i}][value]`, corto(r.value, 1000));
+      });
+      (zone?.fotos?.() || []).forEach((foto) => f.append('photos[]', foto, foto.name));
+      f.append('client_request_id', id);
+      f.append('website', trampa?.value || '');
+      if (sitekey) f.append('cf-turnstile-response', token);
+      return f;
+    };
+    const POR_ESTADO = {
+      403: 'No pudimos enviar la solicitud desde esta página. Envíala por WhatsApp.',
+      409: 'Estamos recibiendo tu envío. Espera un momento y vuelve a intentarlo.',
+      413: 'Las fotos pesan demasiado para enviarlas juntas. Quita alguna o envíalas por WhatsApp.',
+      429: 'Hubo muchos envíos seguidos. Espera unos minutos o envía la solicitud por WhatsApp.'
+    };
+    const listo = (ref) => {
+      titulo.textContent = 'Recibimos tu solicitud.';
+      sub.textContent = ref
+        ? `Tu número de solicitud es ${ref}. Revisaremos los antecedentes y te contactaremos para confirmar disponibilidad, valor y condiciones.`
+        : 'Revisaremos los antecedentes y te contactaremos para confirmar disponibilidad, valor y condiciones.';
+      avisar('');
+      boton.hidden = true;
+      rotuloEditar.textContent = 'Otra solicitud';  // vuelve al formulario con los datos de contacto ya escritos
+      if (fotosEnvio) fotosEnvio.hidden = true;  // ya van con la solicitud
+      wa.querySelector('.btn-pre').textContent = 'Escríbenos por ';
+      wa.href = window.SITE.whatsapp(ref ? `Hola, envié la solicitud ${ref} desde el sitio y quiero agregar información.` : 'Hola, envié una solicitud de cotización desde el sitio y quiero agregar información.');
+      resumen.focus({ preventScroll: true });
+      window.SITE.toast?.(ref ? `Solicitud ${ref} enviada` : 'Solicitud enviada');
+    };
+
+    boton.addEventListener('click', async () => {
+      if (enviando) return;
+      enviando = true;
+      avisar('');
+      preparar(true);
+      try {
+        /* Con Turnstile, sin el token no se envía: el asistente lo rechazaría */
+        if (sitekey && !(await conToken())) {
+          avisar(humano.classList.contains('is-visible')
+            ? 'Para enviar, completa la verificación que aparece sobre los botones.'
+            : 'No pudimos comprobar que eres una persona. Espera unos segundos y vuelve a intentarlo, o envía la solicitud por WhatsApp.');
+          return;
+        }
+        const r = await fetch(`${API}/api/quotes`, {
+          method: 'POST', headers: { Accept: 'application/json' }, body: await cuerpo(),
+          signal: AbortSignal.timeout ? AbortSignal.timeout(60000) : undefined
+        });
+        const json = await r.json().catch(() => ({}));
+        if (r.ok && json.received) { transition(() => listo(json.reference)); return; }
+        /* Los mensajes del asistente ya vienen en español (validación y topes, con «error»); los genéricos, no */
+        const errores = Object.values(json.errors || {}).flat();
+        avisar((r.status === 422 && errores[0]) || (json.error && json.message) || POR_ESTADO[r.status] || 'No pudimos enviar la solicitud. Vuelve a intentarlo en unos minutos o envíala por WhatsApp.');
+      } catch {
+        avisar('No pudimos conectarnos. Revisa tu conexión y vuelve a intentarlo, o envía la solicitud por WhatsApp.');
+      } finally {
+        enviando = false;
+        preparar(false);
+        if (sitekey && token) renovar();  // el token ya se usó; si no había, no hay nada que renovar
+      }
+    });
   }
 
   /* ---------- Hero: en escritorio la opción elegida cambia el propio hero; en móvil se abre en una hoja inferior ----------
