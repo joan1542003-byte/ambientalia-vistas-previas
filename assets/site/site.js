@@ -18,6 +18,190 @@
     }
   };
 
+  /* Envío al servidor. Solo existe cuando el sitio corre sobre WordPress: el plugin deja window.TA_API con la dirección
+     de su servicio, que guarda la solicitud, le pone número y envía los correos. Sin eso (vista previa estática), la
+     solicitud se sigue enviando por WhatsApp. El servicio pide un permiso con hora: se solicita al mostrar el resumen
+     y vale desde un par de segundos después. */
+  if (window.TA_API?.url) {
+    let permiso = null;
+    const espera = (ms) => new Promise((listo) => setTimeout(listo, ms));
+    /* La dirección del servicio puede traer su propia consulta (WordPress sin enlaces permanentes): lo que se agrega va con & */
+    const ruta = (r) => { const base = window.TA_API.url; return base + (base.includes('?') ? r.replace('?', '&') : r); };
+    const pide = async (r) => {
+      const res = await fetch(ruta(r), { credentials: 'omit', cache: 'no-store' });
+      const datos = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(datos.message || 'No pudimos enviar la solicitud.');
+      return datos;
+    };
+    /* La solicitud sube con XMLHttpRequest, que informa cuánto va (fetch no): con fotografías se ve el avance */
+    const sube = (r, cuerpo, avance) => new Promise((listo, falla) => {
+      const x = new XMLHttpRequest();
+      x.open('POST', ruta(r));
+      x.responseType = 'json';
+      x.timeout = 90000;
+      x.upload.onprogress = (e) => { if (e.lengthComputable) avance?.(e.loaded / e.total); };
+      x.onload = () => {
+        const datos = x.response || {};
+        if (x.status >= 200 && x.status < 300) listo(datos); else falla(new Error(datos.message || 'No pudimos enviar la solicitud.'));
+      };
+      x.onerror = x.ontimeout = () => falla(new Error('No hay conexión con el servidor. Inténtalo de nuevo.'));
+      x.send(cuerpo);
+    });
+    window.SITE.permiso = () => {
+      if (!permiso || Date.now() - permiso.hora > 3 * 3600e3) permiso = { hora: Date.now(), dato: pide(`permiso?t=${Date.now()}`).catch(() => null) };
+      return permiso;
+    };
+    /* enviar(solicitud, { fotos: [Blob…], avance: (fracción subida) => … }) → { numero, correo, fotos } */
+    window.SITE.enviar = async (solicitud, { fotos = [], avance } = {}) => {
+      let p = window.SITE.permiso();
+      let dato = await p.dato;
+      if (!dato) { permiso = null; p = window.SITE.permiso(); dato = await p.dato; }
+      if (!dato) throw new Error('No hay conexión con el servidor. Inténtalo de nuevo.');
+      const falta = 2500 - (Date.now() - p.hora);
+      if (falta > 0) await espera(falta);
+      permiso = null;  // cada permiso sirve una vez
+      const cuerpo = new FormData();
+      cuerpo.append('datos', JSON.stringify({ ...solicitud, permiso: dato.permiso, sitio: '' }));
+      fotos.forEach((foto, i) => cuerpo.append('fotos[]', foto, `foto-${i + 1}.jpg`));
+      return sube('solicitudes', cuerpo, avance);
+    };
+
+    /* Lo que se le dice a la persona cuando la solicitud quedó enviada (respuesta del servidor, fotografías que adjuntó) */
+    window.SITE.enviada = (r, adjuntas = 0) => {
+      const numero = `Tu número de solicitud es ${r.numero}.`;
+      if (!r.correo) return `${numero} Guárdalo: no pudimos enviarte el correo de confirmación.`;
+      const recibidas = r.fotos || 0;
+      if (adjuntas && recibidas < adjuntas) return `${numero} Te enviamos un correo con el detalle. No pudimos recibir ${recibidas ? 'todas las fotografías' : 'las fotografías'}: respóndelo con ellas.`;
+      if (adjuntas) return `${numero} Te enviamos un correo con el detalle y recibimos ${recibidas === 1 ? 'tu fotografía' : `tus ${recibidas} fotografías`}.`;
+      return `${numero} Te enviamos un correo con el detalle: si tienes fotografías del residuo o del lugar, respóndelo con ellas.`;
+    };
+
+    /* Fotografías adjuntas. Cada imagen se reduce en el navegador antes de subir: pesa menos, sube rápido desde el
+       teléfono y sale sin los datos de la cámara (la ubicación entre ellos). El servidor las vuelve a revisar. */
+    const FOTOS_MAX = 6;
+    const LADO = 1600;
+    const ICONO = {
+      camara: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1.5-2h5L16 7h2.5A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z"/><circle cx="12" cy="13" r="3.4"/></svg>',
+      quitar: '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 3l6 6M9 3L3 9"/></svg>',
+      avion: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10.5 13.5"/><path d="M21 3l-6.5 18-4-7.5L3 9.5z"/></svg>',
+      listo: '<svg width="56" height="56" class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>'
+    };
+    const abrir = (file) => new Promise((ok, no) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); ok(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); no(new Error('No es una imagen')); };
+      img.src = url;
+    });
+    const reducir = async (file) => {
+      /* createImageBitmap respeta el giro que anota la cámara; si el navegador no lo tiene (o no acepta la opción), se abre como <img> */
+      let origen;
+      try { origen = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { origen = await abrir(file); }
+      const ancho = origen.naturalWidth || origen.width;
+      const alto = origen.naturalHeight || origen.height;
+      if (!ancho || !alto) throw new Error('No es una imagen');
+      const k = Math.min(1, LADO / Math.max(ancho, alto));
+      const lienzo = d.createElement('canvas');
+      lienzo.width = Math.max(1, Math.round(ancho * k));
+      lienzo.height = Math.max(1, Math.round(alto * k));
+      const ctx = lienzo.getContext('2d');
+      ctx.fillStyle = '#fff';  // las imágenes con transparencia quedan sobre blanco
+      ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+      ctx.drawImage(origen, 0, 0, lienzo.width, lienzo.height);
+      origen.close?.();
+      return new Promise((ok, no) => lienzo.toBlob((b) => (b ? ok(b) : no(new Error('No se pudo preparar la imagen'))), 'image/jpeg', .82));
+    };
+    /* Franja «Adjuntar fotografías» de un resumen. host: el elemento [data-fotos] (su contenido se arma aquí). */
+    window.SITE.fotos = (host) => {
+      host.innerHTML = `<div class="fotos-row"><button type="button" class="btn btn-secondary btn-small fotos-add" data-fotos-sumar>${ICONO.camara}<span>Adjuntar fotografías</span></button><ul class="fotos-list" data-fotos-lista aria-label="Fotografías adjuntas"></ul></div>
+        <p class="fotos-hint" data-fotos-ayuda></p>
+        <input type="file" accept="image/*" multiple hidden tabindex="-1" aria-hidden="true">`;
+      const lista = host.querySelector('[data-fotos-lista]');
+      const sumar = host.querySelector('[data-fotos-sumar]');
+      const ayuda = host.querySelector('[data-fotos-ayuda]');
+      const input = host.querySelector('input');
+      let fotos = [];
+      const pinta = () => {
+        lista.innerHTML = fotos.map((f, i) => `<li><button type="button" class="fotos-item" data-fotos-quitar="${i}" aria-label="Quitar la fotografía ${i + 1}"><img src="${f.url}" alt="" width="48" height="48"><i aria-hidden="true">${ICONO.quitar}</i></button></li>`).join('');
+        sumar.querySelector('span').textContent = fotos.length ? 'Agregar otra' : 'Adjuntar fotografías';
+        sumar.hidden = fotos.length >= FOTOS_MAX;
+        ayuda.textContent = fotos.length
+          ? `${fotos.length} de ${FOTOS_MAX} fotografías. Toca una para quitarla.`
+          : `Opcional: del residuo, su envase o el lugar donde está. Hasta ${FOTOS_MAX}.`;
+        host.classList.toggle('has-fotos', fotos.length > 0);
+      };
+      sumar.addEventListener('click', () => input.click());
+      input.addEventListener('change', async () => {
+        const elegidas = [...input.files];
+        input.value = '';
+        const caben = elegidas.slice(0, FOTOS_MAX - fotos.length);
+        if (!caben.length) return;
+        host.classList.add('is-busy');
+        sumar.disabled = true;
+        let malas = 0;
+        for (const file of caben) {
+          try {
+            if (!file.type.startsWith('image/')) throw new Error('No es una imagen');
+            const blob = await reducir(file);
+            fotos.push({ blob, url: URL.createObjectURL(blob) });
+          } catch { malas += 1; }
+        }
+        host.classList.remove('is-busy');
+        sumar.disabled = false;
+        pinta();
+        if (malas) window.SITE.toast(malas === 1 ? 'No pudimos leer una de las imágenes. Prueba con una fotografía en JPG o PNG.' : 'No pudimos leer algunas imágenes. Prueba con fotografías en JPG o PNG.');
+        else if (elegidas.length > caben.length) window.SITE.toast(`Se pueden adjuntar hasta ${FOTOS_MAX} fotografías`);
+      });
+      lista.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-fotos-quitar]');
+        if (!b || host.classList.contains('is-locked')) return;
+        const [fuera] = fotos.splice(Number(b.dataset.fotosQuitar), 1);
+        URL.revokeObjectURL(fuera.url);
+        pinta();
+        (lista.querySelector('button') || sumar).focus({ preventScroll: true });
+      });
+      pinta();
+      return {
+        blobs: () => fotos.map((f) => f.blob),
+        /* Mientras se envía (o ya enviada) no se agregan ni se quitan */
+        bloquear: (si) => { sumar.disabled = si; host.classList.toggle('is-locked', si); },
+        vaciar: () => { fotos.forEach((f) => URL.revokeObjectURL(f.url)); fotos = []; pinta(); }
+      };
+    };
+
+    /* Capa «Enviando…»: cubre `host` (desde el borde inferior de `desde`, si se indica) mientras la solicitud sube.
+       paso(texto, fracción): con fracción el anillo muestra el avance; sin ella, gira. listo(texto): cierra con el visto. */
+    window.SITE.enviando = (host, desde) => {
+      const capa = d.createElement('div');
+      capa.className = 'enviando';
+      capa.setAttribute('role', 'status');
+      capa.innerHTML = `<span class="enviando-anillo"><svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true"><circle class="pista" cx="36" cy="36" r="32"/><circle class="avance" cx="36" cy="36" r="32" pathLength="100"/></svg><i>${ICONO.avion}</i></span><p class="enviando-texto"></p>`;
+      if (desde) capa.style.top = `${desde.offsetTop + desde.offsetHeight}px`;
+      host.append(capa);
+      const texto = capa.querySelector('.enviando-texto');
+      const inicio = Date.now();
+      return {
+        paso: (mensaje, fraccion) => {
+          if (texto.textContent !== mensaje) texto.textContent = mensaje;
+          capa.classList.toggle('con-avance', fraccion != null);
+          if (fraccion != null) capa.style.setProperty('--p', String(Math.round(fraccion * 100)));
+        },
+        /* El envío puede tardar menos de un segundo: la capa se queda lo justo para que se alcance a ver */
+        listo: async (mensaje) => {
+          await espera(Math.max(0, 900 - (Date.now() - inicio)));
+          capa.querySelector('.enviando-anillo').outerHTML = ICONO.listo;
+          capa.classList.add('is-lista');
+          texto.textContent = mensaje;
+          await espera(1300);
+          capa.classList.add('is-saliendo');
+          await espera(220);
+          capa.remove();
+        },
+        quitar: () => capa.remove()
+      };
+    };
+  }
+
   /* Aviso breve */
   const toast = d.createElement('div');
   toast.className = 'toast';
@@ -64,6 +248,21 @@
     d.addEventListener('focusout', () => setTimeout(sync, 0));
     sync();
   }
+
+  /* Logo de Transporte: solo mientras el puntero está encima toma otro par de la paleta de la marca [oscuro, claro]
+     (cada pasada, el siguiente); al salir vuelve a sus colores oficiales, que define el CSS */
+  const PARES = [['#0E14DA', '#A8DFFD'], ['#059A3F', '#D7F560'], ['#FF651C', '#FFE357'], ['#E90B2D', '#FEB5A7'], ['#000000', '#FFFFFF'], ['#6708C7', '#EBA9FC']];
+  let par = -1;
+  d.querySelectorAll('.logo-ta').forEach((logo) => {
+    const zona = logo.closest('a') || logo;
+    zona.addEventListener('pointerenter', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      par = (par + 1) % PARES.length;
+      logo.style.setProperty('--logo-a', PARES[par][0]);
+      logo.style.setProperty('--logo-b', PARES[par][1]);
+    });
+    zona.addEventListener('pointerleave', () => { logo.style.removeProperty('--logo-a'); logo.style.removeProperty('--logo-b'); });
+  });
 
   /* iOS solo aplica :active al tocar si la página escucha touchstart; el estado presionado reemplaza al resaltado gris */
   d.addEventListener('touchstart', () => {}, { passive: true });
@@ -273,8 +472,24 @@
     const pre = out?.querySelector('pre');
     const send = out?.querySelector('[data-send]');
     const mail = out?.querySelector('[data-mail]');  // «Enviar por correo»: aparece si el formulario declara su destino (data-mail)
+    /* «Enviar solicitud»: solo sobre WordPress (window.SITE.enviar). Al enviarla, el resumen muestra su número. */
+    const ship = window.SITE.enviar ? out?.querySelector('[data-enviar]') : null;
+    /* Con envío al servidor, el resumen deja adjuntar fotografías (franja [data-fotos]) */
+    const fotosHost = ship ? out.querySelector('[data-fotos]') : null;
+    const fotos = fotosHost ? window.SITE.fotos(fotosHost) : null;
+    const heading = out?.querySelector('[data-resumen-titulo]');
+    const lead = out?.querySelector('[data-resumen-bajada]');
+    const texts = { heading: heading?.textContent || '' };
     const copy = out?.querySelector('[data-copy]');
     const edit = out?.querySelector('[data-edit]');
+    /* «Editar» pasa a «Nueva solicitud» cuando la solicitud ya se envió al servidor (vuelve al formulario con lo escrito) */
+    const editText = edit ? [...edit.childNodes].reverse().find((n) => n.nodeType === 3 && n.textContent.trim()) : null;
+    const editIcon = edit?.querySelector('svg');
+    const editar = { texto: editText?.textContent || '', icono: editIcon?.innerHTML || '' };
+    const pintaEditar = (nueva) => {
+      if (editText) editText.textContent = nueva ? 'Nueva solicitud' : editar.texto;
+      if (editIcon) editIcon.innerHTML = nueva ? '<path d="M12 5v14M5 12h14"/>' : editar.icono;
+    };
     form.addEventListener('change', (e) => {
       const g = e.target.closest('[data-required-group]');
       if (g && e.target.checked) { g.removeAttribute('data-invalid'); g.querySelectorAll('input').forEach((f) => f.setCustomValidity('')); }
@@ -359,9 +574,10 @@
       paint(1, false);
     }
 
-    const summaryOf = () => {
-      const lines = [`*${form.dataset.title || 'Consulta'}*`];
+    /* Lo respondido, por sección: [título, [[dato, valor, nombre del campo]…]] */
+    const sectionsOf = () => {
       const seen = new Set();
+      const sections = [];
       form.querySelectorAll('fieldset').forEach((fs) => {
         const rows = [];
         fs.querySelectorAll('[name]').forEach((field) => {
@@ -370,15 +586,20 @@
           if (field.type === 'checkbox') {
             seen.add(field.name);
             const on = [...fs.querySelectorAll(`[name="${field.name}"]:checked:not(:disabled)`)].map(valueOf);
-            if (on.length) rows.push(`• ${labelFor(field)}: ${on.join(', ')}`);
+            if (on.length) rows.push([labelFor(field), on.join(', '), field.name]);
             return;
           }
           seen.add(field.name);
           const value = valueOf(field);
-          if (value) rows.push(`• ${labelFor(field)}: ${value}`);
+          if (value) rows.push([labelFor(field), value, field.name]);
         });
-        if (rows.length) lines.push('', `*${fs.dataset.summaryTitle || fs.querySelector('legend')?.textContent.trim() || ''}*`, ...rows);
+        if (rows.length) sections.push([fs.dataset.summaryTitle || fs.querySelector('legend')?.textContent.trim() || '', rows]);
       });
+      return sections;
+    };
+    const summaryOf = () => {
+      const lines = [`*${form.dataset.title || 'Consulta'}*`];
+      sectionsOf().forEach(([title, rows]) => lines.push('', `*${title}*`, ...rows.map(([label, value]) => `• ${label}: ${value}`)));
       if (form.dataset.closing) lines.push('', form.dataset.closing);
       return lines.join('\n');
     };
@@ -404,13 +625,56 @@
           mail.parentElement.classList.add('has-mail');
           mail.parentElement.querySelector('.foot-label')?.removeAttribute('hidden');
         }
+        if (ship) {  // sobre WordPress: la vía principal es enviarla al servidor; WhatsApp queda como alternativa
+          ship.hidden = false; ship.disabled = false;
+          if (edit) edit.hidden = false;
+          pintaEditar(false);
+          ship.parentElement.classList.add('has-envio');
+          if (heading) heading.textContent = texts.heading;
+          if (lead) lead.textContent = fotos
+            ? 'Revísala, adjunta fotografías si las tienes y envíala. Te llegará un correo con su número; usaremos tus datos solo para responder esta solicitud.'
+            : 'Revísala y envíala. Te llegará un correo con su número; usaremos tus datos solo para responder esta solicitud.';
+          if (fotosHost) { fotosHost.hidden = false; fotos.bloquear(false); }
+          window.SITE.permiso();
+        }
         out.hidden = false;
         if (edit) form.hidden = true;
         out.classList.toggle('is-shown', !form.transition);
       }, 1).then(() => {
         if (edit) bring(out); else out.scrollIntoView({ behavior: smooth(), block: 'nearest' });
-        send.focus({ preventScroll: true });
+        (ship || send).focus({ preventScroll: true });
       });
+    });
+    ship?.addEventListener('click', async () => {
+      const CONTACTO = ['empresa', 'organizacion', 'nombre', 'telefono', 'correo'];
+      const rows = sectionsOf().flatMap(([, list]) => list);
+      const dato = (name) => rows.find((r) => r[2] === name)?.[1] || '';
+      ship.disabled = true;
+      fotos?.bloquear(true);
+      const adjuntas = fotos?.blobs() || window.ADJUNTOS?.archivos() || [];
+      /* Mientras sube, una capa cubre el resumen: con fotografías muestra el avance; sin ellas, que se está enviando */
+      const capa = window.SITE.enviando(out, out.querySelector('.hcard-head'));
+      capa.paso(adjuntas.length ? 'Subiendo fotografías…' : 'Enviando tu solicitud…', adjuntas.length ? 0 : null);
+      try {
+        const r = await window.SITE.enviar({
+          origen: 'formulario', titulo: form.dataset.title || '',
+          contacto: { empresa: dato('empresa') || dato('organizacion'), nombre: dato('nombre'), telefono: dato('telefono'), correo: dato('correo') },
+          campos: rows.filter((x) => !CONTACTO.includes(x[2])).map(([label, value]) => [label, value])
+        }, { fotos: adjuntas, avance: adjuntas.length ? (f) => capa.paso(f < 1 ? 'Subiendo fotografías…' : 'Enviando tu solicitud…', f < 1 ? f : null) : null });
+        ship.hidden = true;
+        pintaEditar(true);
+        if (fotosHost) { fotosHost.hidden = true; fotos.vaciar(); }
+        window.ADJUNTOS?.vaciar();
+        if (heading) heading.textContent = 'Solicitud enviada.';
+        if (lead) lead.textContent = window.SITE.enviada(r, adjuntas.length);
+        await capa.listo(`Solicitud ${r.numero} enviada`);
+        send.focus({ preventScroll: true });
+      } catch (err) {
+        capa.quitar();
+        ship.disabled = false;
+        fotos?.bloquear(false);
+        window.SITE.toast(`${err.message || 'No pudimos enviar la solicitud.'} También puedes enviarla por WhatsApp.`);
+      }
     });
     edit?.addEventListener('click', () => {
       run(() => { out.hidden = true; form.hidden = false; }, -1).then(() => {

@@ -1,0 +1,386 @@
+{
+ "titulo": "Checklist de autorización de transporte",
+ "fuente": "Checklist_Autorizacion_Transporte_V2_Casillas.xlsx (cliente, 28-09-2026)",
+ "estados": [
+  "Pendiente",
+  "Por confirmar",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Identificación del residuo",
+   "puntos": [
+    {
+     "n": 1,
+     "criterio": "Identificar el nombre del residuo.",
+     "evidencia": "El residuo cuenta con una denominación clara y suficientemente específica."
+    },
+    {
+     "n": 2,
+     "criterio": "Identificar el proceso u operación que genera el residuo.",
+     "evidencia": "Está documentado el origen del residuo y la actividad que lo genera."
+    },
+    {
+     "n": 3,
+     "criterio": "Definir el estado físico del residuo.",
+     "evidencia": "Se identifica si es sólido, líquido, lodo, mezcla u otra condición relevante."
+    },
+    {
+     "n": 4,
+     "criterio": "Registrar la cantidad estimada a transportar por retiro.",
+     "evidencia": "Existe una estimación en kg, toneladas, litros u otra unidad trazable."
+    },
+    {
+     "n": 5,
+     "criterio": "Identificar el tipo de envase, contenedor o forma de carga.",
+     "evidencia": "El método de contención es compatible con el residuo y permite evitar dispersión o derrames."
+    },
+    {
+     "n": 6,
+     "criterio": "Confirmar ubicación exacta del punto de retiro.",
+     "evidencia": "Comuna, dirección y condiciones de acceso están definidas."
+    }
+   ]
+  },
+  {
+   "nombre": "Clasificación de peligrosidad",
+   "puntos": [
+    {
+     "n": 7,
+     "criterio": "Definir destino previsto del residuo.",
+     "evidencia": "La instalación de destino está identificada antes de coordinar el retiro."
+    },
+    {
+     "n": 8,
+     "criterio": "Verificar si existe caracterización del residuo.",
+     "evidencia": "Hay antecedentes técnicos suficientes para sostener la clasificación preliminar."
+    },
+    {
+     "n": 9,
+     "criterio": "Revisar si el residuo presenta alguna característica de peligrosidad.",
+     "evidencia": "La evaluación considera las características de peligrosidad aplicables y no se basa solo en apariencia."
+    },
+    {
+     "n": 10,
+     "criterio": "Confirmar si corresponde a residuo peligroso.",
+     "evidencia": "La clasificación final está definida como Sí / No y respaldada."
+    },
+    {
+     "n": 11,
+     "criterio": "Si es peligroso, identificar si corresponde a tóxico agudo.",
+     "evidencia": "La clase relevante para el umbral del art. 42 está definida.",
+     "normas": [
+      {
+       "slug": "ds-148-2003-minsal",
+       "art": "42",
+       "texto": "D.S. 148, art. 42"
+      }
+     ]
+    },
+    {
+     "n": 12,
+     "criterio": "Si es peligroso, verificar la cantidad frente al umbral del art. 42.",
+     "evidencia": "Se determina si no excede 6 kg de tóxicos agudos o 2 toneladas de cualquier otra clase de residuo peligroso.",
+     "normas": [
+      {
+       "slug": "ds-148-2003-minsal",
+       "art": "42",
+       "texto": "D.S. 148, art. 42"
+      }
+     ]
+    },
+    {
+     "n": 13,
+     "criterio": "Evitar usar fotografías como única evidencia de peligrosidad.",
+     "evidencia": "Existe al menos un antecedente técnico adicional a la imagen."
+    },
+    {
+     "n": 14,
+     "criterio": "Dejar registro de dudas o información faltante.",
+     "evidencia": "Las incertidumbres se documentan y se detiene la conclusión hasta resolverlas."
+    }
+   ]
+  },
+  {
+   "nombre": "Producto prioritario",
+   "puntos": [
+    {
+     "n": 15,
+     "criterio": "Verificar si el residuo proviene de un producto prioritario sujeto a Ley REP.",
+     "evidencia": "Se identifica expresamente el producto prioritario o se descarta con fundamento.",
+     "normas": [
+      {
+       "slug": "ley-20920",
+       "art": null,
+       "texto": "Ley 20.920"
+      }
+     ]
+    },
+    {
+     "n": 16,
+     "criterio": "Definir si el residuo de producto prioritario es peligroso o no peligroso.",
+     "evidencia": "Existe una clasificación inequívoca para elegir la ruta normativa."
+    },
+    {
+     "n": 17,
+     "criterio": "Si es producto prioritario no peligroso, verificar registro del gestor.",
+     "evidencia": "Quien recolecta o transporta forma parte del registro de gestores de residuos de productos prioritarios."
+    },
+    {
+     "n": 18,
+     "criterio": "Confirmar que el art. 29 del DS 29 no se está extrapolando a residuos no prioritarios.",
+     "evidencia": "La justificación de no exigir autorización sanitaria se usa solo dentro de su ámbito de aplicación.",
+     "normas": [
+      {
+       "slug": "ds-29-2024-minsal",
+       "art": "29",
+       "texto": "D.S. 29, art. 29"
+      }
+     ]
+    },
+    {
+     "n": 19,
+     "criterio": "Si es producto prioritario peligroso, derivar a la ruta de autorización del DS 148.",
+     "evidencia": "El caso se trata como residuo peligroso para efectos del transporte.",
+     "normas": [
+      {
+       "slug": "ds-148-2003-minsal",
+       "art": null,
+       "texto": "D.S. 148"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "nombre": "Identificación del transportista",
+   "puntos": [
+    {
+     "n": 20,
+     "criterio": "Identificar quién realizará el transporte.",
+     "evidencia": "Se define si transporta el propio generador, un gestor o un tercero."
+    },
+    {
+     "n": 21,
+     "criterio": "Verificar identidad y antecedentes del transportista.",
+     "evidencia": "Razón social, RUT, domicilio y contacto están documentados."
+    },
+    {
+     "n": 22,
+     "criterio": "Verificar vehículos incluidos en la operación.",
+     "evidencia": "Patente y tipo de vehículo están identificados y son coherentes con permisos o registros aplicables."
+    },
+    {
+     "n": 23,
+     "criterio": "Verificar vigencia de los antecedentes del transportista.",
+     "evidencia": "Resoluciones, registros y documentos aplicables están vigentes y legibles."
+    }
+   ]
+  },
+  {
+   "nombre": "Determinación de autorización sanitaria",
+   "puntos": [
+    {
+     "n": 24,
+     "criterio": "Si el residuo es peligroso, verificar autorización sanitaria del transportista.",
+     "evidencia": "El transportista cuenta con autorización sanitaria válida para transporte de residuos peligrosos, salvo excepción aplicable."
+    },
+    {
+     "n": 25,
+     "criterio": "Si se pretende aplicar art. 42, confirmar que transporta el propio generador.",
+     "evidencia": "El transporte no es realizado por un tercero.",
+     "normas": [
+      {
+       "slug": "ds-148-2003-minsal",
+       "art": "42",
+       "texto": "D.S. 148, art. 42"
+      }
+     ]
+    },
+    {
+     "n": 26,
+     "criterio": "Si se pretende aplicar art. 42, confirmar que el generador está exceptuado de presentar plan de manejo.",
+     "evidencia": "Existe fundamento documentado de la excepción del generador.",
+     "normas": [
+      {
+       "slug": "ds-148-2003-minsal",
+       "art": "42",
+       "texto": "D.S. 148, art. 42"
+      }
+     ]
+    },
+    {
+     "n": 27,
+     "criterio": "Si se pretende aplicar art. 42, confirmar umbral de cantidad.",
+     "evidencia": "La cantidad no excede el umbral correspondiente según la clase del residuo peligroso.",
+     "normas": [
+      {
+       "slug": "ds-148-2003-minsal",
+       "art": "42",
+       "texto": "D.S. 148, art. 42"
+      }
+     ]
+    },
+    {
+     "n": 28,
+     "criterio": "Si es producto prioritario no peligroso, documentar la no exigencia de autorización sanitaria para recolección/transporte.",
+     "evidencia": "La conclusión cita art. 29 DS 29 y además verifica registro REP.",
+     "normas": [
+      {
+       "slug": "ds-29-2024-minsal",
+       "art": "29",
+       "texto": "D.S. 29, art. 29"
+      }
+     ]
+    },
+    {
+     "n": 29,
+     "criterio": "Si no es producto prioritario y no es peligroso, realizar revisión normativa específica.",
+     "evidencia": "No se emite una conclusión de exención usando el art. 29 DS 29.",
+     "normas": [
+      {
+       "slug": "ds-29-2024-minsal",
+       "art": "29",
+       "texto": "D.S. 29, art. 29"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "nombre": "Requisitos del vehículo y operación",
+   "puntos": [
+    {
+     "n": 30,
+     "criterio": "Verificar que la carga no supere la altura máxima del vehículo o contenedor.",
+     "evidencia": "La estiba respeta el límite físico y evita caída de carga."
+    },
+    {
+     "n": 31,
+     "criterio": "Verificar cubierta o sistema para evitar dispersión.",
+     "evidencia": "El vehículo/contenedor puede ser cubierto o cerrado de forma efectiva."
+    },
+    {
+     "n": 32,
+     "criterio": "Verificar control de lluvia y escurrimiento de líquidos.",
+     "evidencia": "La operación impide ingreso de aguas lluvia y escurrimientos desde el vehículo."
+    },
+    {
+     "n": 33,
+     "criterio": "Verificar control de ruido y olores molestos.",
+     "evidencia": "Se han previsto medidas para reducir ruidos y evitar emanación de olores durante el transporte."
+    },
+    {
+     "n": 34,
+     "criterio": "Verificar limpieza del vehículo.",
+     "evidencia": "El vehículo se encuentra limpio y existe criterio/procedimiento de limpieza."
+    }
+   ]
+  },
+  {
+   "nombre": "Documentación para residuos peligrosos",
+   "puntos": [
+    {
+     "n": 35,
+     "criterio": "Verificar Documento de Declaración cuando corresponda.",
+     "evidencia": "El transporte porta el documento exigible por el Sistema de Declaración y Seguimiento, salvo excepción aplicable."
+    },
+    {
+     "n": 36,
+     "criterio": "Verificar Hojas de Seguridad de Transporte de Residuos Peligrosos cuando corresponda.",
+     "evidencia": "Las hojas necesarias están disponibles durante el transporte."
+    },
+    {
+     "n": 37,
+     "criterio": "Verificar consistencia entre documento, residuo y cantidad.",
+     "evidencia": "La información declarada coincide con la carga real."
+    },
+    {
+     "n": 38,
+     "criterio": "Verificar capacitación del personal de transporte.",
+     "evidencia": "El personal está capacitado para operar el vehículo/equipos y enfrentar emergencias."
+    },
+    {
+     "n": 39,
+     "criterio": "Verificar adecuación del vehículo al tipo y estado físico del residuo.",
+     "evidencia": "El vehículo es apto para peligrosidad y condición física de la carga."
+    },
+    {
+     "n": 40,
+     "criterio": "Revisar aplicabilidad del DS 298 para cargas peligrosas por calles y caminos.",
+     "evidencia": "Se verifican requisitos adicionales del transporte de cargas peligrosas cuando resulten aplicables.",
+     "normas": [
+      {
+       "slug": "ds-298-1994-mtt",
+       "art": null,
+       "texto": "D.S. 298"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "nombre": "Destino y trazabilidad",
+   "puntos": [
+    {
+     "n": 41,
+     "criterio": "Confirmar que el destino puede recibir el residuo específico.",
+     "evidencia": "La autorización/alcance del destinatario comprende el residuo que será entregado."
+    },
+    {
+     "n": 42,
+     "criterio": "Verificar convenio, contrato u aceptación del destinatario.",
+     "evidencia": "Existe respaldo de que el destino recibirá la carga."
+    },
+    {
+     "n": 43,
+     "criterio": "Verificar que la ruta termina en instalación permitida.",
+     "evidencia": "El destino corresponde a instalación de recepción/almacenamiento o manejo autorizada según corresponda."
+    },
+    {
+     "n": 44,
+     "criterio": "Definir evidencia de entrega del residuo.",
+     "evidencia": "Se conservará comprobante de recepción, pesaje, declaración u otro respaldo."
+    },
+    {
+     "n": 45,
+     "criterio": "Definir responsable de cerrar la trazabilidad.",
+     "evidencia": "Existe una persona responsable de verificar la recepción final y archivar la evidencia."
+    }
+   ]
+  },
+  {
+   "nombre": "Cierre de revisión",
+   "puntos": [
+    {
+     "n": 46,
+     "criterio": "Consolidar la conclusión normativa del caso.",
+     "evidencia": "La conclusión indica claramente la ruta: autorización DS 148 / art. 29 DS 29 / posible excepción / revisión adicional."
+    },
+    {
+     "n": 47,
+     "criterio": "Registrar la norma y artículo utilizados para la conclusión.",
+     "evidencia": "La decisión no queda sustentada solo en una opinión verbal."
+    },
+    {
+     "n": 48,
+     "criterio": "Verificar que no existan controles críticos pendientes.",
+     "evidencia": "Todos los puntos críticos están cerrados o justificados como no aplicables antes del retiro."
+    },
+    {
+     "n": 49,
+     "criterio": "Archivar respaldos del caso.",
+     "evidencia": "Existe una carpeta con antecedentes, resoluciones, registros, fotos y comunicaciones relevantes."
+    },
+    {
+     "n": 50,
+     "criterio": "Realizar aprobación interna antes de coordinar el retiro.",
+     "evidencia": "La revisión cuenta con visto bueno del responsable técnico definido por la empresa."
+    }
+   ]
+  }
+ ],
+ "nota": "Citas solo donde el punto nombra la norma; enlazan a la biblioteca de normativa del sitio."
+}

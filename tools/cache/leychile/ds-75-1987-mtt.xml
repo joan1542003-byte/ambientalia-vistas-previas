@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="76048" esTratado="no tratado" fechaVersion="2022-07-28" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="1987-05-25" fechaPublicacion="1987-07-07">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Decreto</Tipo>
+        <Numero>75</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE TRANSPORTES Y TELECOMUNICACIONES</Organismo>
+      <Organismo>SUBSECRETARIA DE TRANSPORTES</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>ESTABLECE CONDICIONES PARA EL TRANSPORTE DE CARGAS QUE INDICA</TituloNorma>
+    
+    
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>32813</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="1987-07-07" derogado="no derogado">
+    <Texto>ESTABLECE CONDICIONES PARA EL TRANSPORTE DE CARGAS QUE
+INDICA
+
+     N&#250;m. 75.- Santiago, 25 de Mayo de 1987.- Vistos: Lo
+dispuesto por los art&#237;culos 56 y 58 de la Ley de Tr&#225;nsito
+N&#186; 18.290, en relaci&#243;n con la Ley N&#186; 18.059, 
+     Decreto:</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1997-07-19" derogado="no derogado" idParte="7210949">
+      <Texto>     Art&#237;culo 1&#186;.- En los veh&#237;culos de carga no se podr&#225;
+ocupar con ella el techo de la cabina ni llevarla en forma
+que exceda el ancho de la carrocer&#237;a. La carga no podr&#225;
+sobrepasar el extremo anterior en los veh&#237;culos motorizados
+o la cabeza de los animales de tiro, cuando se trate de
+veh&#237;culos a tracci&#243;n animal. Por la parte posterior, la
+carga no deber&#225; arrastrar ni sobresalir del extremo del
+veh&#237;culo m&#225;s de 2 metros. Cuando sobresalga m&#225;s de 0,50
+m., deber&#225; llevar en el extremo de la carga una luz roja,
+si fuere de noche y un bander&#237;n del mismo color, si fuere
+de d&#237;a. Este bander&#237;n ser&#225; de g&#233;nero o de material
+pl&#225;stico, de 0,50 m. de largo por 0,40 de ancho, colocado
+en forma adecuada y que se amarrar&#225; al extremo de la carga.
+Cuando los objetos que constituyan la carga tengan gran
+longitud, deber&#225;n estar fuertemente sujetos unos a otros, y
+tambi&#233;n al veh&#237;culo, de tal manera que las oscilaciones
+que el movimiento produzca no den lugar a que sobresalgan
+lateralmente de aqu&#233;l. </Texto>
+      <Metadatos>
+        <NombreParte presente="si">1 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1987-07-07" derogado="no derogado" idParte="7210950">
+      <Texto>     Art&#237;culo 2&#186;.- Los veh&#237;culos que transporten
+desperdicios, arena, ripio, tierra u otros materiales, ya
+sean s&#243;lidos, o l&#237;quidos, que puedan escurrirse y caer al
+suelo, estar&#225;n construidos de forma que ello no ocurra por
+causa alguna.
+     En las zonas urbanas, el transporte de materiales que
+produzcan polvo, tales como escombros, cemento, yeso, etc.
+deber&#225; efectuarse siempre cubriendo total y eficazmente los
+materiales con lonas o pl&#225;sticos de dimensiones adecuadas,
+u otro sistema, que impida su dispersi&#243;n al aire </Texto>
+      <Metadatos>
+        <NombreParte presente="si">2 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1987-07-07" derogado="no derogado" idParte="7210951">
+      <Texto>     Art&#237;culo 3&#186;.- La carga de mal olor o repugnante a la
+vista debe transportarse en caja cerrada o debidamente
+cubierta.</Texto>
+      <Metadatos>
+        <NombreParte presente="si">3 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1987-07-07" derogado="no derogado" idParte="7210952">
+      <Texto>     Art&#237;culo 4&#186;.- Los veh&#237;culos destinados al transporte
+de alimentos, tales como, carnes, pescados mariscos, aves,
+etc., deber&#225;n cumplir con los requisitos y condiciones
+especiales que se&#241;ale la autoridad sanitaria competente.</Texto>
+      <Metadatos>
+        <NombreParte presente="si">4 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1987-07-07" derogado="no derogado" idParte="7210953">
+      <Texto>     Art&#237;culo 5&#186;.- La carga de un veh&#237;culo y los
+elementos de sujeci&#243;n y protecci&#243;n de &#233;sta, tales como,
+cordeles, cadenas y cubiertas de lona, deber&#225;n acomodarse
+en tal forma que no oculte ninguna de las luces exteriores
+del veh&#237;culo.</Texto>
+      <Metadatos>
+        <NombreParte presente="si">5 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2022-07-28" derogado="no derogado" idParte="7210954">
+      <Texto>     Art&#237;culo 6&#186;.- Proh&#237;bese anunciar o promover la venta
+de gas licuado mediante el uso de aparato sonoro, golpes en
+los cilindros transportados u otro tipo de ruidos
+estridentes similares.
+     El transporte de gas licuado de petr&#243;leo deber&#225;
+efectuarse de acuerdo con lo dispuesto en el T&#237;tulo VI "Del
+transporte de GLP" del decreto supremo N&#186; 108, de 2013, del
+Ministerio de Energ&#237;a, que aprueba reglamento de seguridad
+para las instalaciones de almacenamiento, transporte y
+distribuci&#243;n de gas licuado de petr&#243;leo y operaciones
+asociadas, o el que en el futuro lo reemplace.
+</Texto>
+      <Metadatos>
+        <NombreParte presente="si">6 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1987-07-07" derogado="no derogado" idParte="7210955">
+      <Texto>     Art&#237;culo 7&#186;.- Los veh&#237;culos que transporten
+contenedores deber&#225;n estar provistos de dispositivos
+especiales de fijaci&#243;n, fijos o desmontables, que
+inmovilicen el contenedor por los esquineros inferiores. Los
+contenedores no deber&#225;n sobresalir del extremo delantero o
+trasero del veh&#237;culo que lo transporta y deber&#225;n apoyarse
+solamente sobre sus esquineros o en las zonas reforzadas de
+la estructura de la base. Antes de comenzar la operaci&#243;n de
+transporte se deber&#225; verificar la eficacia de los
+dispositivos de fijaci&#243;n. </Texto>
+      <Metadatos>
+        <NombreParte presente="si">7 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1987-07-07" derogado="no derogado" idParte="7210956">
+      <Texto>     Art&#237;culo 8&#186;.- Der&#243;ganse las resoluciones N&#186;s.
+1108/76 y 1299/76, del Ministerio de Transportes. </Texto>
+      <Metadatos>
+        <NombreParte presente="si">8 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1997-07-19" derogado="no derogado" idParte="7210958">
+      <Texto>    Art&#237;culo 9&#186;.- Establ&#233;cese, como condici&#243;n de
+seguridad, en 90 kil&#243;metros por hora el l&#237;mite m&#225;ximo de
+velocidad en zonas rurales, para la circulaci&#243;n de los
+veh&#237;culos motorizados destinados al transporte de carga de
+peso bruto vehicular superior a 3.500 kilogramos. </Texto>
+      <Metadatos>
+        <NombreParte presente="si">9 </NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="1987-07-07" derogado="no derogado">
+    <Texto>     An&#243;tese, t&#243;mese raz&#243;n y publ&#237;quese.- Por orden del
+Presidente de la Rep&#250;blica, Enrique Escobar Rodr&#237;guez,
+General de Aviaci&#243;n, Ministro de Transportes y
+Telecomunicaciones.
+
+     Lo que transcribo para su conocimiento.- Saluda a Ud.-
+Patricia Mu&#241;oz Villela, Jefe Depto. Administrativo. </Texto>
+  </Promulgacion>
+  
+</Norma>

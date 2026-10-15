@@ -1,5 +1,5 @@
 {
- "consulta": "2026-10-01",
+ "consulta": "2026-10-15",
  "fuente": "Ley Chile, Biblioteca del Congreso Nacional",
  "temas": {
   "peligrosos": "Residuos peligrosos",
@@ -113,6 +113,350 @@
     "De las obligaciones del transportista",
     "De la fiscalización",
     "De la vigencia"
+   ]
+  },
+  {
+   "id": 76048,
+   "slug": "ds-75-1987-mtt",
+   "tipo": "Decreto",
+   "numero": "75",
+   "corto": "D.S. 75/1987",
+   "tema": "Transporte de carga",
+   "temas": [
+    "transporte"
+   ],
+   "rel": "Cómo debe ir la carga: los desechos y materiales que puedan escurrirse o caer van en vehículos construidos para evitarlo, lo que produce polvo va cubierto y la carga de mal olor, en caja cerrada o cubierta.",
+   "nombre": "Decreto 75 de 1987: Establece condiciones para el transporte de cargas que indica",
+   "titulo": "ESTABLECE CONDICIONES PARA EL TRANSPORTE DE CARGAS QUE INDICA",
+   "organismo": "Ministerio de Transportes y Telecomunicaciones",
+   "promulgacion": "1987-05-25",
+   "publicacion": "1987-07-07",
+   "version": "2022-07-28",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=76048",
+   "pagina": "normativa/ds-75-1987-mtt.html",
+   "pdf": "assets/transporte/normativa/ds-75-1987-mtt.pdf",
+   "consulta": "2026-10-15",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?75\\b",
+     3
+    ],
+    [
+     "transporte de cargas?\\b",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1º.- En los vehículos de carga no se podrá ocupar con ella el techo de la cabina ni llevarla en forma que exceda el ancho de la carrocería. La carga no podrá sobrepasar el extremo anterior en los vehículos motorizados o la cabeza de los animales de tiro, cuando se trate de vehículos a tracción animal. Por la parte posterior, la carga no deberá arrastrar ni sobresalir del extremo del vehículo más de 2 metros. Cuando sobresalga más de 0,50 m., deberá llevar en el extremo de la carga una luz roja, si fuere de noche y un banderín del mismo color, si fuere de día. Este banderín será de género o de material plástico, de 0,50 m. de largo por 0,40 de ancho, colocado en forma adecuada y que se amarrará al extremo de la carga. Cuando los objetos que constituyan la carga tengan gran longitud, deberán estar fuertemente sujetos unos a otros, y también al vehículo, de tal manera que las oscilaciones que el movimiento produzca no den lugar a que sobresalgan lateralmente de aquél.",
+   "articulos": 9,
+   "indice": []
+  },
+  {
+   "id": 1007469,
+   "slug": "dfl-1-2007-mtt",
+   "tipo": "Decreto con Fuerza de Ley",
+   "numero": "1",
+   "corto": "DFL 1/2007",
+   "tema": "Ley de Tránsito",
+   "temas": [
+    "transporte"
+   ],
+   "rel": "Ley de Tránsito (texto refundido de la Ley 18.290): reglas para circular con cualquier vehículo, incluidos los de carga. En ella se apoyan los reglamentos de transporte de carga.",
+   "nombre": "Decreto con Fuerza de Ley 1 de 2007: Fija texto refundido, coordinado y sistematizado de la ley de tránsito",
+   "titulo": "FIJA TEXTO REFUNDIDO, COORDINADO Y SISTEMATIZADO DE LA LEY DE TRÁNSITO",
+   "organismo": "Ministerio de Transportes y Telecomunicaciones",
+   "promulgacion": "2007-12-27",
+   "publicacion": "2009-10-29",
+   "version": "2026-08-27",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1007469",
+   "pagina": "normativa/dfl-1-2007-mtt.html",
+   "pdf": "assets/transporte/normativa/dfl-1-2007-mtt.pdf",
+   "consulta": "2026-10-15",
+   "alias": [
+    [
+     "ley de transito",
+     3
+    ],
+    [
+     "(?:d\\.?\\s?f\\.?\\s?l\\.?|decreto con fuerza de ley)\\s?(?:n[°º.o]?\\s?)?1\\b(?![.,]\\d)",
+     3
+    ],
+    [
+     "\\b18\\.?290\\b",
+     2
+    ]
+   ],
+   "objeto": "1.- Fíjase el siguiente texto refundido, coordinado y sistematizado de la Ley Nº 18.290, sobre Tránsito:",
+   "articulos": 261,
+   "indice": [
+    "Título preliminar",
+    "Título I · De los conductores y de las licencias",
+    "Título II · De la enseñanza de las normas de tránsito y de las escuelas de conductores",
+    "Título III · Del dominio y registro de los vehículos motorizados y de la patente única y certificado de inscripción",
+    "Título IV · De la patente extranjera, distintivos y documentos internacionales",
+    "Título V · De las condiciones técnicas, de la carga, de las medidas de seguridad y de los distintivos y colores de ciertos vehículos",
+    "Título VI · Del transporte público de pasajeros",
+    "Título VII · De las revisiones de los vehículos, de sus condiciones de seguridad y de la homologación",
+    "Título VIII · De la señalización, cruces de ferrocarril y señales luminosas reguladoras del tránsito",
+    "Título IX · De la conducción",
+    "Título X · De los virajes y señales de advertencia",
+    "Título XI · Derecho preferente de paso",
+    "Título XII · De la velocidad",
+    "Título XIII · Del estacionamiento y de la detención",
+    "Título XIV · Disposiciones generales sobre uso de las vías e infraestructura destinada a los servicios de transporte público",
+    "Título XV · De la responsabilidad por los accidentes",
+    "Título XVI · De los procedimientos policiales y administrativos",
+    "Título XVII · De los delitos, cuasidelitos y de la conducción bajo la influencia del alcohol, en estado de ebriedad o bajo la influencia de sustancias estupefacientes o sicotrópicas",
+    "Título XVIII · Del registro nacional de conductores de vehiculos motorizados",
+    "Título XIX · De los vehículos considerados como antiguos o históricos",
+    "Título XX · De las bicicletas y otros ciclos (arts. 221-224)",
+    "Título final · De la vigencia de la ley",
+    "Artículos transitorios"
+   ]
+  },
+  {
+   "id": 5595,
+   "slug": "dfl-725-1967-minsal",
+   "tipo": "Decreto con Fuerza de Ley",
+   "numero": "725",
+   "corto": "DFL 725/1967",
+   "tema": "Código Sanitario",
+   "temas": [
+    "marco",
+    "salud"
+   ],
+   "rel": "Base de las facultades sanitarias sobre residuos: la autoridad sanitaria autoriza los lugares de acumulación, tratamiento y disposición final de basuras y desperdicios, y fija los requisitos de los vehículos que los transportan (artículos 78 a 81).",
+   "nombre": "Decreto con Fuerza de Ley 725 de 1967: Codigo sanitario",
+   "titulo": "CODIGO SANITARIO",
+   "organismo": "Ministerio De Salud Pública",
+   "promulgacion": "1967-12-11",
+   "publicacion": "1968-01-31",
+   "version": "2025-09-29",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=5595",
+   "pagina": "normativa/dfl-725-1967-minsal.html",
+   "pdf": "assets/transporte/normativa/dfl-725-1967-minsal.pdf",
+   "consulta": "2026-10-15",
+   "alias": [
+    [
+     "codigo sanitario",
+     3
+    ],
+    [
+     "(?:d\\.?\\s?f\\.?\\s?l\\.?|decreto con fuerza de ley)\\s?(?:n[°º.o]?\\s?)?725\\b",
+     3
+    ]
+   ],
+   "objeto": "Artículo 1°.- El Código Sanitario rige todas las cuestiones relacionadas con el fomento, protección y recuperación de la salud de los habitantes de la República, salvo aquellas sometidas a otras leyes.",
+   "articulos": 222,
+   "indice": [
+    "Título preliminar",
+    "Libro I · De la proteccion y promocion de la salud",
+    "Libro II · De la profilaxis sanitaria internacional",
+    "Libro III · De la higiene y seguridad del ambiente y de los lugares de trabajo",
+    "Libro cuarto · De los productos farmacéuticos, alimenticios, cosméticos y artículos de uso médico",
+    "Libro V · Del ejercicio de la medicina y profesiones afines",
+    "Libro sexto · De los establecimientos del área de la salud",
+    "Libro VII · De la observacion y reclusion de los enfermos mentales, de los alcoholicos y de los que presenten estado de dependencia de otras drogas y substancias",
+    "Libro VIII · De las inhumaciones, exhumaciones y traslado de cadaveres",
+    "Libro IX · Del aprovechamiento de tejidos o partes del cuerpo de un donante vivo y de la utilizacion de cadaveres o parte de ellos con fines cientificos o terapeuticos",
+    "Libro X · De los procedimientos y sanciones"
+   ]
+  },
+  {
+   "id": 37732,
+   "slug": "res-5081-1993-minsal",
+   "tipo": "Resolución",
+   "numero": "5081",
+   "corto": "Res. 5081/1993",
+   "tema": "Declaración y seguimiento de desechos sólidos industriales",
+   "temas": [
+    "registro",
+    "transporte"
+   ],
+   "rel": "En la Región Metropolitana, todo desecho sólido industrial viaja con un documento de declaración desde que sale del generador hasta su destino; fija lo que deben hacer el generador, el transportista y el destinatario.",
+   "nombre": "Resolución 5081 de 1993: Establece sistema de declaracion y seguimiento de desechos solidos industriales",
+   "titulo": "ESTABLECE SISTEMA DE DECLARACION Y SEGUIMIENTO DE DESECHOS SOLIDOS INDUSTRIALES",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "1993-03-12",
+   "publicacion": "1993-03-18",
+   "version": "1993-03-18",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=37732",
+   "pagina": "normativa/res-5081-1993-minsal.html",
+   "pdf": "assets/transporte/normativa/res-5081-1993-minsal.pdf",
+   "consulta": "2026-10-15",
+   "alias": [
+    [
+     "(?:resolucion|res\\.?)\\s?(?:exenta\\s?)?(?:n[°º.o]?\\s?)?5\\.?081\\b",
+     3
+    ],
+    [
+     "desechos? solidos? industriales?",
+     2
+    ]
+   ],
+   "objeto": "ESTABLECE SISTEMA DE DECLARACION Y SEGUIMIENTO DE DESECHOS SOLIDOS INDUSTRIALES Disposiciones Preliminares 1° La presente Resolución es aplicable a todos los establecimientos industriales localizados en la Región Metropolitana que generan, como resultado de sus procesos u operaciones, desechos o residuos sólidos de tipo industrial, como así a los transportistas y destinatarios de los mismos. Definiciones 2° Para los efectos de la presente Resolución, se entenderá por: DESECHO SOLIDO INDUSTRIAL: Todo desecho o residuo sólido o semisólido resultante de cualquier proceso u operación industrial que no vaya a ser reutilizado, recuperado o reciclado en el mismo establecimiento industrial. Se incluyen en esta definición los residuos o productos de descarte, sean éstos líquidos o gaseosos. El carácter de desecho sólido de los últimos lo aporta el contenedor o recipiente que los contiene. GENERADOR: Toda persona natural o jurídica (industria o cualquier establecimiento industrial) que, producto de proceso u operaciones industriales, genere o dé origen a algún desecho sólido industrial. TRANSPORTADOR: Toda persona natural o jurídica (empresa, institución u organismo) que transporte algún desecho sólido industrial. Si el transporte del desecho lo realiza el mismo generador, éste será considerado también Transportador. DESTINATARIO: Toda persona natural o jurídica (empresa, industria, organismo o institución) que recepciona el desecho sólido industrial, ya sea para su manejo, tratamiento reciclado o disposición final. DOCUMENTO DE DECLARACION: Formulario, debidamente llenado, que acompaña al desecho sólido industrial desde su punto de generación hasta su destino final. CONSOLIDADO DEL GENERADOR: Formulario, debidamente llenado, que debe ser completado por el Generador de desechos sólidos industriales, que contiene un resumen de las cantidades y tipo de desechos generados durante un mes calendario, como asimismo el número y fecha de los Documentos de Declaración debidamente emitido por el Generador. CONSOLIDADO DEL DESTINATARIO: Formulario, debidamente llenado, que debe ser completado por el Destinatario de los desechos sólidos industriales, que contiene un resumen de las cantidades y tipos de desechos recepcionados durante un mes calendario, como asimismo el número de los Documentos de Declaración recepcionados por el Destinatario. Del Documento de Declaración 3°Todo desecho sólido industrial desde el momento que abandona el establecimiento generador y hasta su destino final, debe estar premunido del correspondiente Documento de Declaración. Este documento contendrá información específica respecto de los desechos sólidos industriales generados, como también de antecedentes identificatorios del Generador, Transportista y Destinatario del mismo. 4° Los formularios de los Documentos referidos en el punto 2° deben ser procurados por el Generador o Destinatario según corresponda, y deberán ajustarse al formato y especificaciones que indique el Servicio de Salud del Ambiente de la Región Metropolitana (en adelante, el Servicio). 5° El Documento de Declaración está compuesto por dos Originales (1 y 2) y cuatro copias (1 al 4). La distribución de los originales y copias será la siguiente: a) Original 1, a retener por el Generador de los desechos sólidos industriales. b) Original 2, a remitir por el Generador al Servicio. c) Copia 1, a retener por el destinatario de los desechos sólidos industriales. d) Copia 2, a retener por el Transportador de los desechos sólidos industriales. e) Copia 3, a remitir por el Destinatario de los desechos al Servicio. f) Copia 4, a remitir por el Destinatario de los desechos al Generador, con objeto de confirmar la recepción de los mismos. De las Obligaciones y Deberes del Generador, Transportista y Destinatario de Desechos 6° El Generador de los desechos deberá: a) Completar la parte correspondiente al Generador en los Originales (1 y 2) del Documento de Declaración y responsabilizarse de que las copias respectivas estén debidamente llenadas. b) Retener el Original 1 de Documento de Declaración por un período mínimo de 2 años. c) Entregar al Transportista, junto con los desechos, las 4 copias del Documento de Declaración. d) Remitir al Servicio de Salud, el original 2 del Documento de Declaración. Dentro de los primeros 10 días hábiles de cada mes, el Generador deberá preparar y remitir al Servicio de Salud un consolidado (Consolidado de Generador) conteniendo un resumen de todos los desechos generados durante el mes calendario anterior. 7° El transportista de los desechos deberá: a) Verificar la conformidad entre lo indicado en el Documento de Declaración del Generador y lo recibido. b) Completar la parte correspondiente al Transportista en las 4 copias del Documento de Declaración. c) Retener la copia 2 del Documento de Declaración por un período mínimo de 2 años. d) Entregar, en un plazo máximo de 2 días hábiles, los desechos al Destinatario. 8° El Destinatario de los desechos deberá: a) Completar, en las copias 1, 3 y 4 del Documento de Declaración, la parte correspondiente al Destinatario. b) Mantener la copia 1 del Documento de Declaración por un período mínimo de 2 años. c) Remitir al Servicio de Salud, la Copia 3 del Documento de Declaración. Dentro de los primeros 10 días hábiles de cada mes, el Destinatario deberá preparar y remitir al Servicio de Salud un consolidado (Consolidado del Destinatario) conteniendo un resumen de todos los desechos recepcionados durante el mes calendario. d) Remitir la copia 4 al Generador de los desechos, dentro de los 3 días hábiles siguientes a la recepción de los mismos, y retener por un período de 2 años la constancia de la emisión o entrega del documento. Del Registro de Generadores, Transportistas y Destinatarios 9° El Servicio de Salud mantendrá un registro de Generadores, Transportistas y Destinatarios de desechos sólidos industriales. A cada uno de ellos se le asignará un Número de Identificación, el que deberá indicarse al momento de completar el Documento de Declaración. Asimismo llevará un registro de los desechos industriales que se están manejando. 10° Durante el primer año de la puesta en vigencia de la presente Resolución, no será necesario completar el espacio correspondiente al Número de Identificación, salvo que el Servicio de Salud ya le hubiera asignado tal número. Del Formato del Documento de Declaración y del Consolidado 11° El formato y especificaciones para el impreso del Documento de Declaración a que se refiere el punto 4° y de los Consolidados indicados en los puntos 6° y 8° podrán ser retirados por el interesado en las dependencias del Servicio de Salud Metropolitano del Ambiente en Av. Bulnes 175, Santiago, de Lunes a Viernes de 09:00 a 16:00 horas. De la Fiscalización y Control 12° La fiscalización y sanción de los infractores a lo dispuesto en la presente Resolución corresponderá a este Servicio de Salud, de acuerdo a lo dispuesto en el Artículo 161 y siguientes del Código Sanitario.",
+   "articulos": 1,
+   "indice": [
+    "Anexos"
+   ]
+  },
+  {
+   "id": 167766,
+   "slug": "ds-594-1999-minsal",
+   "tipo": "Decreto",
+   "numero": "594",
+   "corto": "D.S. 594/1999",
+   "tema": "Condiciones sanitarias en lugares de trabajo",
+   "temas": [
+    "trabajo",
+    "peligrosos"
+   ],
+   "rel": "Condiciones sanitarias y ambientales básicas de los lugares de trabajo, incluido el manejo de residuos industriales.",
+   "nombre": "Decreto 594 de 1999: Aprueba reglamento sobre condiciones sanitarias y ambientales básicas en los lugares de trabajo",
+   "titulo": "APRUEBA REGLAMENTO SOBRE CONDICIONES SANITARIAS Y AMBIENTALES BASICAS EN LOS LUGARES DE TRABAJO",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "1999-09-15",
+   "publicacion": "2000-04-29",
+   "version": "2026-01-16",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=167766",
+   "pagina": "normativa/ds-594-1999-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-594-1999-minsal.pdf",
+   "consulta": "2026-10-01",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?594\\b",
+     3
+    ],
+    [
+     "lugares? de trabajo",
+     2
+    ],
+    [
+     "residuos? industriales?",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1°: El presente reglamento establece las condiciones sanitarias y ambientales básicas que deberá cumplir todo lugar de trabajo, sin perjuicio de la reglamentación específica que se haya dictado o se dicte para aquellas faenas que requieren condiciones especiales. Establece, además, los límites permisibles de exposición ambiental a agentes químicos y agentes físicos, y aquellos límites de tolerancia biológica para trabajadores expuestos a riesgo ocupacional.",
+   "articulos": 155,
+   "indice": [
+    "Título I · Disposiciones Generales",
+    "Título II · Del Saneamiento Básico de los Lugares de Trabajo",
+    "Título III · De las Condiciones Ambientales",
+    "Título IV · De la Contaminación Ambiental",
+    "Título V · De los Límites de Tolerancia Biológica",
+    "Título VI · Del Laboratorio Nacional de Referencia",
+    "Título VII · Normas especiales para actividades primarias agricolas, pecuarias y forestales a campo abierto",
+    "Título VIII · De la Fiscalización y Sanciones",
+    "Título final",
+    "Articulos transitorios"
+   ]
+  },
+  {
+   "id": 1008725,
+   "slug": "ds-6-2009-minsal",
+   "tipo": "Decreto",
+   "numero": "6",
+   "corto": "D.S. 6/2009",
+   "tema": "Residuos de establecimientos de salud (REAS)",
+   "temas": [
+    "salud",
+    "peligrosos"
+   ],
+   "rel": "Condiciones para manejar los residuos que se generan en establecimientos de atención de salud.",
+   "nombre": "Decreto 6 de 2009: Aprueba reglamento sobre manejo de residuos de establecimientos de atención de salud (REAS)",
+   "titulo": "APRUEBA REGLAMENTO SOBRE MANEJO DE RESIDUOS DE ESTABLECIMIENTOS DE ATENCIÓN DE SALUD (REAS)",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "2009-02-23",
+   "publicacion": "2009-12-04",
+   "version": "2017-03-10",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1008725",
+   "pagina": "normativa/ds-6-2009-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-6-2009-minsal.pdf",
+   "consulta": "2026-10-01",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?6\\b",
+     3
+    ],
+    [
+     "\\breas\\b",
+     2
+    ],
+    [
+     "establecimientos? de (atencion de )?salud",
+     2
+    ]
+   ],
+   "objeto": "Artículo 1º.- El presente reglamento establece las condiciones sanitarias y de seguridad básicas a las que deberá someterse el manejo de los residuos generados en establecimientos de atención de salud.",
+   "articulos": 53,
+   "indice": [
+    "Título I · Disposiciones generales",
+    "Título II · De la identificación y clasificación",
+    "Título III · De la generación",
+    "Título IV · Del manejo interno",
+    "Título V · De la eliminación",
+    "Título VI · Del transporte",
+    "Título VII · De los planes de contingencia",
+    "Título VIII · Del personal",
+    "Título IX · Sistema de seguimiento de residuos especiales",
+    "Título X · De la fiscalización y sanciones",
+    "Título final"
+   ]
+  },
+  {
+   "id": 1220286,
+   "slug": "ds-29-2024-minsal",
+   "tipo": "Decreto",
+   "numero": "29",
+   "corto": "D.S. 29/2024",
+   "tema": "Residuos de productos prioritarios",
+   "temas": [
+    "rep",
+    "transporte",
+    "almacenamiento"
+   ],
+   "rel": "Requisitos sanitarios para recolectar, transportar, recibir y almacenar residuos de productos prioritarios, incluidas las campañas de recolección.",
+   "nombre": "Decreto 29 de 2024: Aprueba reglamento sanitario sobre labores de recepción y almacenamiento de residuos de productos prioritarios",
+   "titulo": "APRUEBA REGLAMENTO SANITARIO SOBRE LABORES DE RECEPCIÓN Y ALMACENAMIENTO DE RESIDUOS DE PRODUCTOS PRIORITARIOS",
+   "organismo": "Ministerio de Salud",
+   "promulgacion": "2024-07-22",
+   "publicacion": "2026-01-14",
+   "version": "2026-01-14",
+   "vigente": true,
+   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1220286",
+   "pagina": "normativa/ds-29-2024-minsal.html",
+   "pdf": "assets/transporte/normativa/ds-29-2024-minsal.pdf",
+   "consulta": "2026-10-01",
+   "alias": [
+    [
+     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?29\\b",
+     3
+    ],
+    [
+     "productos? prioritarios?",
+     1
+    ],
+    [
+     "campanas? de (recoleccion|reciclaje)",
+     1
+    ]
+   ],
+   "objeto": "Artículo 1°.- El presente reglamento tiene por objeto establecer la regulación específica del procedimiento simplificado para la autorización sanitaria de las labores de recolección, de las instalaciones de recepción y almacenamiento de residuos de productos prioritarios y de las instalaciones de pretratamiento de residuos no peligrosos, desarrolladas por gestores autorizados y registrados acorde a lo establecido en la ley N° 20.920. Este procedimiento simplificado establece los plazos, condiciones y requisitos que los sujetos obligados deberán cumplir para la obtención de la autorización sanitaria correspondiente.",
+   "articulos": 48,
+   "indice": [
+    "Título primero · Disposiciones generales",
+    "Título segundo · De las instalaciones de recepción y almacenamiento",
+    "Título tercero · De la recolección y transporte",
+    "Título cuarto · De los procedimientos de aprobación y autorización sanitaria",
+    "Título quinto · Del procedimiento y las sanciones",
+    "Título final · De la vigencia",
+    "Artículos transitorios",
+    "Anexos"
    ]
   },
   {
@@ -262,110 +606,6 @@
    ]
   },
   {
-   "id": 1220286,
-   "slug": "ds-29-2024-minsal",
-   "tipo": "Decreto",
-   "numero": "29",
-   "corto": "D.S. 29/2024",
-   "tema": "Residuos de productos prioritarios",
-   "temas": [
-    "rep",
-    "transporte",
-    "almacenamiento"
-   ],
-   "rel": "Requisitos sanitarios para recolectar, transportar, recibir y almacenar residuos de productos prioritarios, incluidas las campañas de recolección.",
-   "nombre": "Decreto 29 de 2024: Aprueba reglamento sanitario sobre labores de recepción y almacenamiento de residuos de productos prioritarios",
-   "titulo": "APRUEBA REGLAMENTO SANITARIO SOBRE LABORES DE RECEPCIÓN Y ALMACENAMIENTO DE RESIDUOS DE PRODUCTOS PRIORITARIOS",
-   "organismo": "Ministerio de Salud",
-   "promulgacion": "2024-07-22",
-   "publicacion": "2026-01-14",
-   "version": "2026-01-14",
-   "vigente": true,
-   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1220286",
-   "pagina": "normativa/ds-29-2024-minsal.html",
-   "pdf": "assets/transporte/normativa/ds-29-2024-minsal.pdf",
-   "consulta": "2026-10-01",
-   "alias": [
-    [
-     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?29\\b",
-     3
-    ],
-    [
-     "productos? prioritarios?",
-     1
-    ],
-    [
-     "campanas? de (recoleccion|reciclaje)",
-     1
-    ]
-   ],
-   "objeto": "Artículo 1°.- El presente reglamento tiene por objeto establecer la regulación específica del procedimiento simplificado para la autorización sanitaria de las labores de recolección, de las instalaciones de recepción y almacenamiento de residuos de productos prioritarios y de las instalaciones de pretratamiento de residuos no peligrosos, desarrolladas por gestores autorizados y registrados acorde a lo establecido en la ley N° 20.920. Este procedimiento simplificado establece los plazos, condiciones y requisitos que los sujetos obligados deberán cumplir para la obtención de la autorización sanitaria correspondiente.",
-   "articulos": 48,
-   "indice": [
-    "Título primero · Disposiciones generales",
-    "Título segundo · De las instalaciones de recepción y almacenamiento",
-    "Título tercero · De la recolección y transporte",
-    "Título cuarto · De los procedimientos de aprobación y autorización sanitaria",
-    "Título quinto · Del procedimiento y las sanciones",
-    "Título final · De la vigencia",
-    "Artículos transitorios",
-    "Anexos"
-   ]
-  },
-  {
-   "id": 1008725,
-   "slug": "ds-6-2009-minsal",
-   "tipo": "Decreto",
-   "numero": "6",
-   "corto": "D.S. 6/2009",
-   "tema": "Residuos de establecimientos de salud (REAS)",
-   "temas": [
-    "salud",
-    "peligrosos"
-   ],
-   "rel": "Condiciones para manejar los residuos que se generan en establecimientos de atención de salud.",
-   "nombre": "Decreto 6 de 2009: Aprueba reglamento sobre manejo de residuos de establecimientos de atención de salud (REAS)",
-   "titulo": "APRUEBA REGLAMENTO SOBRE MANEJO DE RESIDUOS DE ESTABLECIMIENTOS DE ATENCIÓN DE SALUD (REAS)",
-   "organismo": "Ministerio de Salud",
-   "promulgacion": "2009-02-23",
-   "publicacion": "2009-12-04",
-   "version": "2017-03-10",
-   "vigente": true,
-   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1008725",
-   "pagina": "normativa/ds-6-2009-minsal.html",
-   "pdf": "assets/transporte/normativa/ds-6-2009-minsal.pdf",
-   "consulta": "2026-10-01",
-   "alias": [
-    [
-     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?6\\b",
-     3
-    ],
-    [
-     "\\breas\\b",
-     2
-    ],
-    [
-     "establecimientos? de (atencion de )?salud",
-     2
-    ]
-   ],
-   "objeto": "Artículo 1º.- El presente reglamento establece las condiciones sanitarias y de seguridad básicas a las que deberá someterse el manejo de los residuos generados en establecimientos de atención de salud.",
-   "articulos": 53,
-   "indice": [
-    "Título I · Disposiciones generales",
-    "Título II · De la identificación y clasificación",
-    "Título III · De la generación",
-    "Título IV · Del manejo interno",
-    "Título V · De la eliminación",
-    "Título VI · Del transporte",
-    "Título VII · De los planes de contingencia",
-    "Título VIII · Del personal",
-    "Título IX · Sistema de seguimiento de residuos especiales",
-    "Título X · De la fiscalización y sanciones",
-    "Título final"
-   ]
-  },
-  {
    "id": 1088802,
    "slug": "ds-43-2015-minsal",
    "tipo": "Decreto",
@@ -480,58 +720,6 @@
     "Título VII · De la evaluación de riesgos",
     "Título VIII · De la fiscalización y sanciones",
     "Anexos"
-   ]
-  },
-  {
-   "id": 167766,
-   "slug": "ds-594-1999-minsal",
-   "tipo": "Decreto",
-   "numero": "594",
-   "corto": "D.S. 594/1999",
-   "tema": "Condiciones sanitarias en lugares de trabajo",
-   "temas": [
-    "trabajo",
-    "peligrosos"
-   ],
-   "rel": "Condiciones sanitarias y ambientales básicas de los lugares de trabajo, incluido el manejo de residuos industriales.",
-   "nombre": "Decreto 594 de 1999: Aprueba reglamento sobre condiciones sanitarias y ambientales básicas en los lugares de trabajo",
-   "titulo": "APRUEBA REGLAMENTO SOBRE CONDICIONES SANITARIAS Y AMBIENTALES BASICAS EN LOS LUGARES DE TRABAJO",
-   "organismo": "Ministerio de Salud",
-   "promulgacion": "1999-09-15",
-   "publicacion": "2000-04-29",
-   "version": "2026-01-16",
-   "vigente": true,
-   "fuente": "https://www.bcn.cl/leychile/navegar?idNorma=167766",
-   "pagina": "normativa/ds-594-1999-minsal.html",
-   "pdf": "assets/transporte/normativa/ds-594-1999-minsal.pdf",
-   "consulta": "2026-10-01",
-   "alias": [
-    [
-     "(?:d\\.?\\s?s\\.?|decreto(?: supremo)?|dto\\.?)\\s?(?:n[°º.o]?\\s?)?594\\b",
-     3
-    ],
-    [
-     "lugares? de trabajo",
-     2
-    ],
-    [
-     "residuos? industriales?",
-     1
-    ]
-   ],
-   "objeto": "Artículo 1°: El presente reglamento establece las condiciones sanitarias y ambientales básicas que deberá cumplir todo lugar de trabajo, sin perjuicio de la reglamentación específica que se haya dictado o se dicte para aquellas faenas que requieren condiciones especiales. Establece, además, los límites permisibles de exposición ambiental a agentes químicos y agentes físicos, y aquellos límites de tolerancia biológica para trabajadores expuestos a riesgo ocupacional.",
-   "articulos": 155,
-   "indice": [
-    "Título I · Disposiciones Generales",
-    "Título II · Del Saneamiento Básico de los Lugares de Trabajo",
-    "Título III · De las Condiciones Ambientales",
-    "Título IV · De la Contaminación Ambiental",
-    "Título V · De los Límites de Tolerancia Biológica",
-    "Título VI · Del Laboratorio Nacional de Referencia",
-    "Título VII · Normas especiales para actividades primarias agricolas, pecuarias y forestales a campo abierto",
-    "Título VIII · De la Fiscalización y Sanciones",
-    "Título final",
-    "Articulos transitorios"
    ]
   },
   {

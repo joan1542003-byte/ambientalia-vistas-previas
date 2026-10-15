@@ -41,26 +41,37 @@ TEMAS = {
 
 # idNorma de Ley Chile, slug, nombre corto, tema de la tarjeta, temas y por qué importa para el retiro de residuos
 NORMAS = [
+    # Orden de la biblioteca: primero lo que más pesa en el retiro y transporte de residuos (residuos, transporte y carga),
+    # luego lo sanitario y de trabajo, REP, sustancias, registros y el marco ambiental. Las del 15-10-2026 las entregó
+    # el cliente (PDF de Ley Chile); su texto se toma igual del servicio oficial.
     (226458, 'ds-148-2003-minsal', 'Residuos peligrosos', ['peligrosos', 'transporte', 'almacenamiento'],
      'Es la base para identificar, almacenar, transportar y eliminar residuos peligrosos, y para la documentación que acompaña su traslado.'),
     (12087, 'ds-298-1994-mtt', 'Transporte de cargas peligrosas', ['transporte'],
      'Fija las condiciones para transportar sustancias peligrosas por calles y caminos: vehículos, rotulación y operación.'),
+    (76048, 'ds-75-1987-mtt', 'Transporte de carga', ['transporte'],
+     'Cómo debe ir la carga: los desechos y materiales que puedan escurrirse o caer van en vehículos construidos para evitarlo, lo que produce polvo va cubierto y la carga de mal olor, en caja cerrada o cubierta.'),
+    (1007469, 'dfl-1-2007-mtt', 'Ley de Tránsito', ['transporte'],
+     'Ley de Tránsito (texto refundido de la Ley 18.290): reglas para circular con cualquier vehículo, incluidos los de carga. En ella se apoyan los reglamentos de transporte de carga.'),
+    (5595, 'dfl-725-1967-minsal', 'Código Sanitario', ['marco', 'salud'],
+     'Base de las facultades sanitarias sobre residuos: la autoridad sanitaria autoriza los lugares de acumulación, tratamiento y disposición final de basuras y desperdicios, y fija los requisitos de los vehículos que los transportan (artículos 78 a 81).'),
+    (37732, 'res-5081-1993-minsal', 'Declaración y seguimiento de desechos sólidos industriales', ['registro', 'transporte'],
+     'En la Región Metropolitana, todo desecho sólido industrial viaja con un documento de declaración desde que sale del generador hasta su destino; fija lo que deben hacer el generador, el transportista y el destinatario.'),
+    (167766, 'ds-594-1999-minsal', 'Condiciones sanitarias en lugares de trabajo', ['trabajo', 'peligrosos'],
+     'Condiciones sanitarias y ambientales básicas de los lugares de trabajo, incluido el manejo de residuos industriales.'),
+    (1008725, 'ds-6-2009-minsal', 'Residuos de establecimientos de salud (REAS)', ['salud', 'peligrosos'],
+     'Condiciones para manejar los residuos que se generan en establecimientos de atención de salud.'),
+    (1220286, 'ds-29-2024-minsal', 'Residuos de productos prioritarios', ['rep', 'transporte', 'almacenamiento'],
+     'Requisitos sanitarios para recolectar, transportar, recibir y almacenar residuos de productos prioritarios, incluidas las campañas de recolección.'),
     (1090894, 'ley-20920', 'Ley REP', ['rep', 'marco'],
      'Marco de la gestión de residuos y de la responsabilidad extendida del productor (REP) para productos prioritarios.'),
     (1157019, 'ds-12-2020-mma', 'Metas REP de envases y embalajes', ['rep'],
      'Metas de recolección y valorización y obligaciones asociadas para envases y embalajes.'),
     (1154847, 'ds-8-2019-mma', 'Metas REP de neumáticos', ['rep'],
      'Metas de recolección y valorización y obligaciones asociadas para neumáticos.'),
-    (1220286, 'ds-29-2024-minsal', 'Residuos de productos prioritarios', ['rep', 'transporte', 'almacenamiento'],
-     'Requisitos sanitarios para recolectar, transportar, recibir y almacenar residuos de productos prioritarios, incluidas las campañas de recolección.'),
-    (1008725, 'ds-6-2009-minsal', 'Residuos de establecimientos de salud (REAS)', ['salud', 'peligrosos'],
-     'Condiciones para manejar los residuos que se generan en establecimientos de atención de salud.'),
     (1088802, 'ds-43-2015-minsal', 'Almacenamiento de sustancias peligrosas', ['sustancias', 'almacenamiento'],
      'Condiciones de las instalaciones donde se almacenan sustancias peligrosas.'),
     (1155752, 'ds-57-2019-minsal', 'Clasificación y etiquetado de sustancias', ['sustancias'],
      'Clasificación, etiquetado y comunicación de peligros de sustancias y mezclas (HDS). No se aplica a los residuos peligrosos (art. 2, letra h), que se rigen por el D.S. 148.'),
-    (167766, 'ds-594-1999-minsal', 'Condiciones sanitarias en lugares de trabajo', ['trabajo', 'peligrosos'],
-     'Condiciones sanitarias y ambientales básicas de los lugares de trabajo, incluido el manejo de residuos industriales.'),
     (1050536, 'ds-1-2013-mma', 'Registro RETC', ['registro'],
      'Declaración de emisiones, residuos y transferencias de contaminantes en el RETC.'),
     (30667, 'ley-19300', 'Bases generales del medio ambiente', ['marco'],
@@ -70,6 +81,7 @@ NORMAS = [
 # Cómo reconocer cada norma en un texto (publicaciones de LinkedIn y búsqueda): expresión regular sobre texto en minúsculas
 # y sin tildes, con su peso. Número de la norma = 3; sigla o tema propio = 2; tema compartido = 1. Gana el puntaje mayor.
 NUM = r'(?:d\.?\s?s\.?|decreto(?: supremo)?|dto\.?)\s?(?:n[°º.o]?\s?)?'
+DFL = r'(?:d\.?\s?f\.?\s?l\.?|decreto con fuerza de ley)\s?(?:n[°º.o]?\s?)?'
 ALIAS = {
     'ds-148-2003-minsal': [[NUM + r'148\b', 3], [r'\bsidrep\b', 2], [r'residuos? peligrosos?', 1]],
     'ds-298-1994-mtt': [[NUM + r'298\b', 3], [r'cargas? peligrosas?', 2], [r'transporte de (sustancias|mercancias) peligrosas', 2]],
@@ -83,6 +95,10 @@ ALIAS = {
     'ds-594-1999-minsal': [[NUM + r'594\b', 3], [r'lugares? de trabajo', 2], [r'residuos? industriales?', 1]],
     'ds-1-2013-mma': [[NUM + r'1\b(?![.,]\d)', 3], [r'\bretc\b', 2], [r'ventanilla unica', 2]],
     'ley-19300': [[r'(ley\s?(n[°º.o]?\s?)?)?19\.?300\b', 3], [r'\bseia\b', 2], [r'evaluacion de impacto ambiental', 2]],
+    'dfl-725-1967-minsal': [[r'codigo sanitario', 3], [DFL + r'725\b', 3]],
+    'dfl-1-2007-mtt': [[r'ley de transito', 3], [DFL + r'1\b(?![.,]\d)', 3], [r'\b18\.?290\b', 2]],
+    'ds-75-1987-mtt': [[NUM + r'75\b', 3], [r'transporte de cargas?\b', 1]],
+    'res-5081-1993-minsal': [[r'(?:resolucion|res\.?)\s?(?:exenta\s?)?(?:n[°º.o]?\s?)?5\.?081\b', 3], [r'desechos? solidos? industriales?', 2]],
 }
 
 ORG_CORTO = {
@@ -315,7 +331,8 @@ def articulo(texto, ancla, h, epigrafes, nombre=''):
     # Definiciones: si el artículo tiene al menos tres líneas «Término: significado», se destacan los términos
     defs = sum(1 for l in ls if DEFINICION.match(LISTA.sub(r'\2', l))) >= 3
     if not etiqueta:
-        etiqueta = nombre if re.match(r'^art', nombre, re.I) else (f'Artículo {nombre}' if nombre else 'Artículo')
+        # Sin número (p. ej., una resolución que Ley Chile entrega como un solo bloque): es el texto, no «Artículo»
+        etiqueta = nombre if re.match(r'^art', nombre, re.I) else (f'Artículo {nombre}' if nombre else 'Texto de la norma')
     cab = f'<h{h} class="norm-art-h"><a href="#{ancla}">{esc(etiqueta)}</a>{f"<span>{esc(epi)}</span>" if epi else ""}</h{h}>'
     return cab + bloques(ls, defs)
 
@@ -362,6 +379,10 @@ def titulo_corto(tipo, numero, prom):
     if tipo == 'Ley':
         n = f'{int(numero):,}'.replace(',', '.') if numero.isdigit() else numero
         return f'Ley {n}'
+    if 'Fuerza de Ley' in tipo:
+        return f'DFL {numero}/{y}'
+    if tipo.startswith('Resoluci'):
+        return f'Res. {numero}/{y}'
     return f'D.S. {numero}/{y}'
 
 
@@ -406,6 +427,7 @@ ICON = {
 
 
 def pagina(n, cuerpo, toc, version, tools=('', '')):
+    articulos = 'Texto único' if n['articulos'] <= 1 else f'{n["articulos"]} artículos'
     from ayuda import menu_html as docs_menu, boton_ayuda as docs_boton  # panel «Ayuda» de la cabecera
     ld = {
         '@context': 'https://schema.org',
@@ -450,7 +472,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
         f'<li data-tip="Fecha en que se firmó">{DATO["promulgada"]}<span class="fact"><span class="fact-l">Promulgada<span class="lg"> el</span></span> <time datetime="{n["promulgacion"]}">{fecha_corta(n["promulgacion"])}</time></span></li>'
         f'<li data-tip="Fecha de publicación en el Diario Oficial">{DATO["publicada"]}<span class="fact"><span class="fact-l">Publicada<span class="lg"> el</span></span> <time datetime="{n["publicacion"]}">{fecha_corta(n["publicacion"])}</time></span></li>'
         f'<li data-tip="Versión del texto que muestra esta página">{DATO["version"]}<span class="fact"><span class="fact-l">Texto al</span> <time datetime="{n["version"]}">{fecha_corta(n["version"])}</time></span></li>'
-        f'<li>{DATO["articulos"]}{n["articulos"]} artículos</li>'
+        f'<li>{DATO["articulos"]}{articulos}</li>'
     )
     desc = f'{n["corto"]}: {titulo_oracion(n["titulo"])}. Texto oficial, datos clave y descarga en PDF. Fuente: Ley Chile (BCN).'
     return f'''<!doctype html>
@@ -468,7 +490,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 <meta property="og:title" content="{esc(n["corto"])} · {esc(n["tema"])}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:url" content="{SITE}/normativa/{n["slug"]}.html">
-<meta property="og:image" content="{SITE}/assets/truck-stock.jpg">
+<meta property="og:image" content="{SITE}/assets/transporte/og-transporte.jpg">
 <meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
@@ -489,8 +511,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 <header class="site-header norm-bar has-docs" data-reader>
   <div class="container">
     <a class="brand" href="../transporte-autorizado.html" aria-label="Transporte Autorizado, inicio">
-      <img class="brand-mark" src="../assets/transporte/logo/camion.svg" alt="" width="60" height="36">
-      <img class="brand-name" src="../assets/transporte/logo/nombre.svg" alt="" width="126" height="31">
+      <span class="logo-ta" aria-hidden="true"></span>
     </a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
       <svg width="20" height="20" class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>

@@ -201,7 +201,7 @@
       /* Vehículo (opcional): la disponibilidad cambia con el tipo de residuo */
       vehiculo: async () => {
         const v = await Picker.choose({
-          title: '¿Qué vehículo necesitas?', sub: 'La disponibilidad depende del tipo de residuo. Lo confirmamos al cotizar.',
+          title: '¿Qué vehículo necesitas?', sub: 'Es opcional: si no lo tienes claro, lo elegimos nosotros. La disponibilidad se confirma al cotizar.',
           groups: [{ options: offer(PICK.VEHICLES, field('tipo').value) }], value: field('vehiculo').value, layout: 'list'
         });
         if (v) set('vehiculo', v);
@@ -473,7 +473,10 @@
         : `<li class="adjunto"><img src="${it.url}" alt="Foto ${i + 1} del residuo"></li>`)).join('');
       const paso = canCopy ? (one ? 'haz clic en la foto para copiarla y pégala' : 'haz clic en cada foto para copiarla y pégala')
         : canShare ? (one ? 'compártela' : 'compártelas') : (one ? 'adjúntala' : 'adjúntalas');
-      envio.querySelector('.adjuntos-nota').textContent = `${one ? 'La foto va' : 'Las fotos van'} aparte del texto. Envía primero el mensaje y después ${paso} en ese mismo chat.`;
+      /* Sobre WordPress (window.SITE.enviar) las fotos viajan con «Enviar solicitud»; WhatsApp queda como alternativa */
+      envio.querySelector('.adjuntos-nota').textContent = window.SITE.enviar
+        ? `${one ? 'La foto va' : 'Las fotos van'} con tu solicitud al presionar «Enviar solicitud». Si prefieres WhatsApp, envía primero el mensaje y después ${paso} en ese mismo chat.`
+        : `${one ? 'La foto va' : 'Las fotos van'} aparte del texto. Envía primero el mensaje y después ${paso} en ese mismo chat.`;
       const share = envio.querySelector('[data-adjuntos-share]');
       share.hidden = !canShare;
       share.querySelector('span').textContent = one ? 'Compartir foto' : 'Compartir fotos';
@@ -601,6 +604,11 @@
       }
     });
     sync();
+    /* Para el envío al servidor (site.js): las fotos ya reducidas; tras enviarlas, se vacía la lista */
+    window.ADJUNTOS = {
+      archivos: () => ready().map((it) => it.file),
+      vaciar: () => { [...items].forEach(remove); sync(); }
+    };
   }
 
   /* ---------- Hero: en escritorio la opción elegida cambia el propio hero; en móvil se abre en una hoja inferior ----------
@@ -1010,9 +1018,10 @@
   }
 
   /* NumberFlow (MIT, number-flow.barvian.me): los números cambian con una animación de dígitos. Opcional.
-     Solo se descarga donde hay un contador que lo usa (buscador, asistente o biblioteca de normas). */
+     Solo se carga donde hay un contador que lo usa (buscador, asistente o biblioteca de normas). Es una copia local
+     (assets/site/vendor/number-flow/): la dirección se resuelve respecto de este archivo. */
   if (motion.matches && d.querySelector('[data-finder], [data-guide], [data-lib]')) {
-    import('https://cdn.jsdelivr.net/npm/number-flow@0.6.2/+esm')
+    import('./vendor/number-flow/number-flow.js')
       .then(() => d.dispatchEvent(new Event('numberflow:ready')))
       .catch(() => {});
   }

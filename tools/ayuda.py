@@ -45,10 +45,12 @@ ICO = {
 
 CHECKLIST = {
     'archivo': 'assets/transporte/documentos/checklist-autorizacion-transporte.xlsx',
+    'datos': 'assets/transporte/documentos/checklist-autorizacion-transporte.json',  # los 50 puntos, sacados de la planilla
+    'pagina': 'ayuda/checklist-autorizacion-transporte.html',                         # versión para usar en línea
     'titulo': 'Checklist de autorización de transporte',
     'sub': '50 puntos en 9 bloques para revisar un caso antes del retiro · Excel',
-    'menu': 'Checklist de autorización', 'menu_sub': 'Planilla para revisar un caso antes del retiro',
-    'resumen': '50 puntos para revisar un caso antes del retiro. Cada punto se marca como pendiente, por confirmar, cumple, no cumple o no aplica.',
+    'menu': 'Checklist de autorización', 'menu_sub': 'Úsalo en línea o descárgalo en Excel',
+    'resumen': '50 puntos para revisar un caso antes del retiro. Úsalo aquí mismo, también en el teléfono, marcando cada punto, o descárgalo en Excel. Cada punto queda como pendiente, por confirmar, cumple, no cumple o no aplica.',
     'bloques': ['Identificación del residuo', 'Clasificación de peligrosidad', 'Producto prioritario', 'Identificación del transportista',
                 'Determinación de autorización sanitaria', 'Requisitos del vehículo y operación', 'Documentación para residuos peligrosos',
                 'Destino y trazabilidad', 'Cierre de revisión'],
@@ -193,7 +195,7 @@ GUIAS = [
 ]
 
 NORMATIVA_MENU = {
-    'menu': 'Normativa', 'menu_sub': 'D.S. 148, Ley REP y más, con su texto oficial',
+    'menu': 'Normativa', 'menu_sub': 'D.S. 148, Ley de Tránsito, Código Sanitario y más, con su texto oficial',
     'resumen': 'El texto oficial de cada norma, para leerlo, buscar dentro o descargarlo en PDF.',
 }
 
@@ -289,8 +291,8 @@ def menu_html(root=''):
         'checklist', 'rep', ICO['hoja'], c['menu'], c['menu_sub'],
         f'<p class="docs-kicker">Descargable</p><h3>{esc(c["titulo"])}</h3><p class="docs-lead">{esc(c["resumen"])}</p>'
         f'<ol class="docs-blocks">{"".join(f"<li>{esc(b)}</li>" for b in c["bloques"])}</ol>'
-        f'<div class="docs-actions"><a class="btn btn-ink btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar en Excel</span></a>'
-        f'<a class="btn btn-quiet btn-small" href="{root}ayuda/autorizacion-sanitaria-transporte.html">Ver la guía de autorización{ICO["flecha"]}</a></div>')
+        f'<div class="docs-actions"><a class="btn btn-ink btn-small" href="{root}{c["pagina"]}">Usar en línea{ICO["flecha"]}</a>'
+        f'<a class="btn btn-quiet btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar en Excel</span></a></div>')
     nm = NORMATIVA_MENU
     normativa = _item(
         'normativa', 'marco', ICO['normativa'], nm['menu'], nm['menu_sub'],
@@ -312,7 +314,8 @@ def boton_ayuda(root='', actual=False):
 def franja_descarga(root):
     return (f'<div class="download-strip"><span class="download-icon">{ICO["hoja"]}</span>'
             f'<p><strong>{esc(CHECKLIST["titulo"])}</strong><small>{esc(CHECKLIST["sub"])}</small></p>'
-            f'<a class="btn btn-ink btn-small" href="{root}{CHECKLIST["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar</span></a></div>')
+            f'<span class="download-actions"><a class="btn btn-ink btn-small" href="{root}{CHECKLIST["pagina"]}">Usar en línea</a>'
+            f'<a class="btn btn-quiet btn-small" href="{root}{CHECKLIST["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Excel</span></a></span></div>')
 
 
 def reemplazar(s, marca, contenido):
@@ -327,6 +330,83 @@ def citas(refs, root):
     if not refs:
         return ''
     return '<span class="law-refs">' + ''.join(f'<a class="law-ref" href="{enlace_norma(r, root)}">{esc(r["texto"])}</a>' for r in refs) + '</span>'
+
+
+def envoltura(titulo, descripcion, url, ld, tema, cuerpo, version, tools, clase='', scripts='', og='article'):
+    """Página de «Ayuda» con la cabecera, el panel y los scripts del sitio; cuerpo = el <main>."""
+    root = '../'
+    return f'''<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{esc(titulo)} | Transporte Autorizado</title>
+<meta name="description" content="{esc(descripcion)}">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="{url}">
+<meta property="og:locale" content="es_CL">
+<meta property="og:type" content="{og}">
+<meta property="og:site_name" content="Transporte Autorizado">
+<meta property="og:title" content="{esc(titulo)}">
+<meta property="og:description" content="{esc(descripcion)}">
+<meta property="og:url" content="{url}">
+<meta property="og:image" content="{SITE}/assets/transporte/og-transporte.jpg">
+<meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="../assets/transporte/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site/site.css?v={version}">
+<link rel="stylesheet" href="../assets/site/transporte.css?v={version}">
+<script>document.documentElement.classList.add('js')</script>
+<script type="application/ld+json">
+{json.dumps(ld, ensure_ascii=False, indent=2)}
+</script>
+</head>
+<body data-site="transporte" class="guia-page{clase}" data-tema="{tema}">
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<header class="site-header has-docs">
+  <div class="container">
+    <a class="brand" href="../transporte-autorizado.html" aria-label="Transporte Autorizado, inicio">
+      <span class="logo-ta" aria-hidden="true"></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
+      <svg width="20" height="20" class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+      <svg width="20" height="20" class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="nav" id="nav" aria-label="Principal">
+      {boton_ayuda(root, actual=True)}
+      <a class="btn btn-primary btn-small" href="../transporte-autorizado.html#cotizar" data-dock-open="cotizar">Cotizar retiro</a>
+    </nav>
+    {menu_html(root)}
+  </div>
+</header>
+
+{cuerpo}
+
+<div data-hero data-view="inicio" data-float-only hidden><div data-panel hidden>
+{tools[0]}
+</div></div>
+{tools[1]}
+
+<script>window.SITE_ROOT = '../';</script>
+<script src="../assets/site/site.js?v={version}" defer></script>
+<script src="../assets/site/pickers.js?v={version}" defer></script>
+<script src="../assets/site/seleccion.js?v={version}" defer></script>
+<script src="../assets/site/interpretar.js?v={version}" defer></script>
+<script src="../assets/site/geo.js?v={version}" defer></script>
+<script src="../assets/site/mapa.js?v={version}" defer></script>
+<script src="../assets/site/transporte.js?v={version}" defer></script>
+<script src="../assets/site/transporte-ui.js?v={version}" defer></script>
+<script src="../assets/site/asistente.js?v={version}" defer></script>
+<script src="../assets/site/normativa.js?v={version}" defer></script>
+<script src="../assets/site/ayuda.js?v={version}" defer></script>{scripts}
+</body>
+</html>
+'''
 
 
 def pagina(g, version, tools):
@@ -374,58 +454,7 @@ def pagina(g, version, tools):
     mas = ''.join(f'<li><a href="{x["slug"]}.html" data-tema="{x["tema"]}"><span class="doc-icon">{ICO[x["icono"]]}</span><span><strong>{esc(x["titulo"])}</strong><small>{esc(x["resumen"])}</small></span>{ICO["chev"]}</a></li>' for x in otras)
     cta_principal = accion(*g['accion'], root, 'btn btn-ink btn-small')
     cta_descarga = accion('descarga', '', root) if g.get('descarga') else ''
-    return f'''<!doctype html>
-<html lang="es-CL">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>{esc(g["titulo"])} | Transporte Autorizado</title>
-<meta name="description" content="{esc(g["descripcion"])}">
-<meta name="robots" content="noindex,nofollow">
-<link rel="canonical" href="{url}">
-<meta property="og:locale" content="es_CL">
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="Transporte Autorizado">
-<meta property="og:title" content="{esc(g["titulo"])}">
-<meta property="og:description" content="{esc(g["descripcion"])}">
-<meta property="og:url" content="{url}">
-<meta property="og:image" content="{SITE}/assets/truck-stock.jpg">
-<meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#ffffff">
-<link rel="icon" href="../assets/transporte/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/site/site.css?v={version}">
-<link rel="stylesheet" href="../assets/site/transporte.css?v={version}">
-<script>document.documentElement.classList.add('js')</script>
-<script type="application/ld+json">
-{json.dumps(ld, ensure_ascii=False, indent=2)}
-</script>
-</head>
-<body data-site="transporte" class="guia-page" data-tema="{g["tema"]}">
-<a class="skip" href="#contenido">Saltar al contenido</a>
-<header class="site-header has-docs">
-  <div class="container">
-    <a class="brand" href="../transporte-autorizado.html" aria-label="Transporte Autorizado, inicio">
-      <img class="brand-mark" src="../assets/transporte/logo/camion.svg" alt="" width="60" height="36">
-      <img class="brand-name" src="../assets/transporte/logo/nombre.svg" alt="" width="126" height="31">
-    </a>
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
-      <svg width="20" height="20" class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
-      <svg width="20" height="20" class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-    <nav class="nav" id="nav" aria-label="Principal">
-      {boton_ayuda(root, actual=True)}
-      <a class="btn btn-primary btn-small" href="../transporte-autorizado.html#cotizar" data-dock-open="cotizar">Cotizar retiro</a>
-    </nav>
-    {menu_html(root)}
-  </div>
-</header>
-
-<main id="contenido">
+    cuerpo = f'''<main id="contenido">
   <article class="container guia">
     <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#ayuda" data-docs-open>Ayuda</a><span aria-hidden="true">/</span><span aria-current="page">{esc(g["corto"])}</span></nav>
     <header class="guia-head">
@@ -448,28 +477,88 @@ def pagina(g, version, tools):
       <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#ayuda" data-docs-open>{ICO["volver"]}Ver más ayuda</a>
     </footer>
   </article>
-</main>
+</main>'''
+    return envoltura(g['titulo'], g['descripcion'], url, ld, g['tema'], cuerpo, version, tools)
 
-<div data-hero data-view="inicio" data-float-only hidden><div data-panel hidden>
-{tools[0]}
-</div></div>
-{tools[1]}
 
-<script>window.SITE_ROOT = '../';</script>
-<script src="../assets/site/site.js?v={version}" defer></script>
-<script src="../assets/site/pickers.js?v={version}" defer></script>
-<script src="../assets/site/seleccion.js?v={version}" defer></script>
-<script src="../assets/site/interpretar.js?v={version}" defer></script>
-<script src="../assets/site/geo.js?v={version}" defer></script>
-<script src="../assets/site/mapa.js?v={version}" defer></script>
-<script src="../assets/site/transporte.js?v={version}" defer></script>
-<script src="../assets/site/transporte-ui.js?v={version}" defer></script>
-<script src="../assets/site/asistente.js?v={version}" defer></script>
-<script src="../assets/site/normativa.js?v={version}" defer></script>
-<script src="../assets/site/ayuda.js?v={version}" defer></script>
-</body>
-</html>
-'''
+ESTADOS = [  # valor, nombre, clase de color
+    ('pendiente', 'Pendiente', ''), ('cumple', 'Cumple', 'is-ok'), ('confirmar', 'Por confirmar', 'is-wait'),
+    ('no-cumple', 'No cumple', 'is-no'), ('no-aplica', 'No aplica', 'is-na'),
+]
+
+
+def pagina_checklist(version, tools):
+    """Checklist de autorización para usar en línea: cada punto se marca con un toque (y tiene sus otros estados en una
+    ventana de selección); las marcas quedan en el dispositivo (assets/site/checklist.js). El texto está en la página,
+    así se lee sin scripts y lo encuentran los buscadores."""
+    root = '../'
+    c = CHECKLIST
+    datos = json.loads((ROOT / c['datos']).read_text(encoding='utf-8'))
+    total = sum(len(b['puntos']) for b in datos['bloques'])
+    url = f'{SITE}/{c["pagina"]}'
+    descripcion = f'Checklist de {total} puntos para revisar un caso antes de coordinar el retiro de residuos: identificación, peligrosidad, producto prioritario, transportista, autorización sanitaria, vehículo, documentos, destino y cierre. Úsalo en línea o descárgalo en Excel.'
+    ld = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {'@type': 'HowTo', '@id': f'{url}#checklist', 'name': c['titulo'], 'description': descripcion, 'inLanguage': 'es-CL', 'url': url,
+             'step': [{'@type': 'HowToSection', 'name': b['nombre'], 'itemListElement': [{'@type': 'HowToStep', 'position': q['n'], 'text': q['criterio']} for q in b['puntos']]} for b in datos['bloques']]},
+            {'@type': 'BreadcrumbList', 'itemListElement': [
+                {'@type': 'ListItem', 'position': 1, 'name': 'Transporte Autorizado', 'item': f'{SITE}/'},
+                {'@type': 'ListItem', 'position': 2, 'name': 'Ayuda', 'item': f'{SITE}/#ayuda'},
+                {'@type': 'ListItem', 'position': 3, 'name': 'Checklist de autorización'}]},
+        ],
+    }
+    chev = _i('<path d="M6 9l6 6 6-6"/>', 14, 2.4)
+    bloques = []
+    for i, b in enumerate(datos['bloques'], 1):
+        puntos = []
+        for q in b['puntos']:
+            n = q['n']
+            refs = citas([{'slug': r['slug'], 'art': r['art'], 'texto': r['texto']} for r in q.get('normas', [])], root)
+            puntos.append(
+                f'<li class="ck-punto" data-n="{n}" data-estado="pendiente">'
+                f'<button type="button" class="ck-marca" role="checkbox" aria-checked="false" aria-labelledby="ck-{n}" aria-describedby="ck-{n}-e" disabled>{ICO["check"]}</button>'
+                f'<div class="ck-texto"><p class="ck-criterio" id="ck-{n}"><span class="ck-n">{n}</span>{esc(q["criterio"])}</p>'
+                f'<p class="ck-evidencia" id="ck-{n}-e">{esc(q["evidencia"])}</p>{refs}'
+                f'<button type="button" class="ck-estado" data-ck-estado disabled><span class="ck-estado-t">Pendiente</span>{chev}</button></div></li>')
+        bloques.append(
+            f'<section class="ck-bloque" id="bloque-{i}" aria-labelledby="bloque-{i}-t" data-ck-bloque>'
+            f'<h2 id="bloque-{i}-t"><span class="ck-num">{i}</span><span class="ck-nombre">{esc(b["nombre"])}</span>'
+            f'<small class="ck-avance" data-ck-avance>{len(b["puntos"])} puntos</small></h2>'
+            f'<ol class="ck-lista">{"".join(puntos)}</ol></section>')
+    leyenda = ''.join(f'<li class="{k}"><i aria-hidden="true"></i>{esc(nombre)}</li>' for _, nombre, k in ESTADOS)
+    imprimir = _i('<path d="M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/>', 18, 2)
+    cuerpo = f'''<main id="contenido">
+  <article class="container guia ck" data-checklist data-total="{total}" data-estados='{esc(json.dumps([[v, n] for v, n, _ in ESTADOS], ensure_ascii=False))}'>
+    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#ayuda" data-docs-open>Ayuda</a><span aria-hidden="true">/</span><span aria-current="page">Checklist de autorización</span></nav>
+    <header class="guia-head">
+      <p class="norm-kind"><span class="doc-icon">{ICO["hoja"]}</span>Checklist · {total} puntos en {len(datos["bloques"])} bloques</p>
+      <h1 class="norm-title">{esc(c["titulo"])}</h1>
+      <p class="norm-lead">Para revisar un caso antes de coordinar el retiro. Toca el círculo de cada punto cuando lo hayas verificado; si queda pendiente de confirmar, no cumple o no aplica, cámbialo en su estado. Tus marcas quedan guardadas en este dispositivo.</p>
+      <div class="norm-actions guia-actions"><a class="btn btn-ink btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar en Excel</span></a><button class="btn btn-quiet btn-small" type="button" data-ck-imprimir hidden>{imprimir}<span>Guardar con mis marcas (PDF)</span></button></div>
+    </header>
+
+    <div class="ck-barra" data-ck-barra hidden>
+      <p class="ck-cuenta" aria-live="polite"><strong data-ck-hechos>0</strong> de {total} revisados<span class="ck-detalle" data-ck-detalle></span></p>
+      <div class="ck-progreso" aria-hidden="true"><i data-ck-progreso></i></div>
+      <button class="ck-borrar" type="button" data-ck-borrar hidden>Borrar marcas</button>
+    </div>
+    <ul class="ck-leyenda" aria-label="Estados de cada punto">{leyenda}</ul>
+
+    {"".join(bloques)}
+
+    <section class="guia-sec" aria-labelledby="otras"><h2 id="otras">Para revisar tu caso</h2><ul class="guia-links guia-more">
+      {"".join(f'<li><a href="{x["slug"]}.html" data-tema="{x["tema"]}"><span class="doc-icon">{ICO[x["icono"]]}</span><span><strong>{esc(x["titulo"])}</strong><small>{esc(x["resumen"])}</small></span>{ICO["chev"]}</a></li>' for x in GUIAS)}
+    </ul></section>
+
+    <footer class="norm-source">
+      <p>Pauta de revisión preparada por Transporte Autorizado. Orientación general: no reemplaza la revisión técnica ni legal de cada caso. Las citas enlazan al texto oficial publicado en Ley Chile (Biblioteca del Congreso Nacional).</p>
+      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#ayuda" data-docs-open>{ICO["volver"]}Ver más ayuda</a>
+    </footer>
+  </article>
+</main>'''
+    return envoltura(c['titulo'], descripcion, url, ld, 'rep', cuerpo, version, tools, clase=' ck-page',
+                     scripts=f'\n<script src="../assets/site/checklist.js?v={version}" defer></script>')
 
 
 def main():
@@ -488,6 +577,8 @@ def main():
             f'<meta name="robots" content="noindex,nofollow">\n<link rel="canonical" href="{destino}">\n'
             f'<meta http-equiv="refresh" content="0; url={destino}">\n</head>\n'
             f'<body>\n<p>Esta guía ahora está en <a href="{destino}">Ayuda</a>.</p>\n</body>\n</html>\n', encoding='utf-8')
+    (ROOT / CHECKLIST['pagina']).write_text(pagina_checklist(version, tools), encoding='utf-8')
+    print(CHECKLIST['pagina'])
     p = ROOT / 'transporte-autorizado.html'
     s = p.read_text(encoding='utf-8')
     s = reemplazar(s, 'ayuda:menu', '    ' + menu_html('') + '\n')

@@ -106,8 +106,12 @@ def rotos(base):
     for f in sorted(base.rglob('*')):
         if f.suffix not in ('.html', '.css') or not f.is_file() or {'tools', 'docs'} & set(f.relative_to(base).parts):
             continue
+        sitio = f.relative_to(base).parts[0]
         for ref in sorted(referencias(f.read_text(encoding='utf-8', errors='replace'), f.suffix == '.css')):
             ruta = ref.split('#')[0].split('?')[0]
+            # El CSS compartido nombra el logo de Transporte: HDS y Campañas no lo usan ni lo llevan.
+            if f.suffix == '.css' and ruta.startswith('../transporte/') and sitio != SITIOS['transporte'][0]:
+                continue
             if ruta and not (f.parent / ruta).resolve().exists():
                 faltan.append(f'{f.relative_to(base)} → {ref}')
     return faltan
@@ -164,6 +168,7 @@ y luego abrir <http://localhost:8800>. No hay nada que instalar ni compilar: son
 | Normas, una página por norma | `normativa/` |
 | Guías | `ayuda/` (`documentos/` solo redirige a ellas) |
 | Herramientas que generan contenido | `tools/` |
+| Plugin para WordPress (sirve el sitio y recibe las solicitudes) | `wordpress/ta-sitio/`; se arma con `python3 tools/wordpress.py` |
 | Documentación del proyecto | `docs/`: contexto, normativa, procedimientos y dos esquemas en HTML, `flujo-cotizacion.html` (el flujo de cotización) y `preguntas-y-apartados.html` (preguntas frecuentes de una persona y el apartado que las responde) |
 | Reglas y decisiones de diseño | `AGENTS.md` (la bitácora completa) y `CLAUDE.md` |
 
@@ -186,7 +191,8 @@ Herramientas de `tools/` (se ejecutan desde la carpeta del sitio, por ejemplo `p
 - `normativa-pdf.mjs`: genera los PDF de las normas.
 - `compactar-transportistas.py`: prepara `transportistas.json` a partir del listado.
 - `calles.py` y `direcciones.py`: arman el índice de calles y direcciones con OpenStreetMap.
-- `logo.py` y `logo.swift`: sacan las piezas del logo desde el original de `docs/marca/`.
+- `logo.py`: saca las piezas del logotipo y los íconos desde el original de `docs/marca/`.
+- `wordpress.py`: arma el plugin de WordPress con el sitio dentro.
 - `hero-cielo.py`: prepara las versiones de la foto del hero.
 - `linkedin.mjs` y `.github/workflows/linkedin.yml` (carpeta oculta): leen las publicaciones de LinkedIn; esa tarea corre sola en GitHub.
 
