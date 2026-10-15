@@ -411,6 +411,198 @@
     window.SITE.refresh?.();
   }
 
+  /* ---------- Fotos del residuo ([data-adjuntos], al final del formulario) ----------
+     Se arrastran a la página, se pegan o se eligen (en el teléfono, también desde la cámara). No salen del navegador:
+     wa.me y mailto no admiten adjuntos y el formulario no tiene dónde subirlas. Por eso el resumen las muestra aparte y
+     ofrece llevarlas al chat: «Compartir fotos» (menú del sistema, donde existe) o, con puntero, copiar cada una para
+     pegarla. Cada imagen se reduce a 1600 px en JPEG: pesa menos y no lleva los datos de la cámara (p. ej., la ubicación). */
+  const zone = d.querySelector('[data-adjuntos]');
+  if (zone) {
+    const MAX = Number(zone.dataset.max) || 5;
+    const SIDE = 1600;
+    const owner = zone.closest('form');
+    const scope = zone.closest('.hcard-panel') || owner;  // el formulario y su resumen
+    const envio = d.getElementById(owner?.dataset.summary)?.querySelector('[data-adjuntos-envio]');
+    const input = zone.querySelector('input[type="file"]');
+    const addBtn = zone.querySelector('.adjuntos-add');
+    const list = zone.querySelector('.adjuntos-list');
+    const count = zone.querySelector('[data-adjuntos-count]');
+    const hint = zone.querySelector('.adjuntos-hint');
+    const status = zone.querySelector('[role="status"]');
+    const coarse = matchMedia('(pointer: coarse)');
+    const canCopy = !coarse.matches && !!navigator.clipboard?.write && typeof ClipboardItem === 'function';
+    const toast = (text) => window.SITE.toast(text);
+    const shown = (el) => !!el && el.getClientRects().length > 0;
+    const keyOf = (f) => `${f.name}|${f.size}|${f.lastModified}`;
+    const fotos = (n) => (n === 1 ? '1 foto' : `${n} fotos`);
+    const X = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
+    let items = [];  // { key, name, el, file, url }: file y url llegan cuando la imagen ya está reducida
+    let dragging = false;
+    const ready = () => items.filter((it) => it.file);
+
+    /* Dibuja la imagen en un lienzo (como máximo «side» px por lado) y la entrega en el formato pedido */
+    const render = async (file, type, side = Infinity) => {
+      const url = URL.createObjectURL(file);
+      try {
+        const img = new Image();
+        img.src = url;
+        await img.decode();
+        const k = Math.min(1, side / Math.max(img.naturalWidth, img.naturalHeight));
+        const canvas = d.createElement('canvas');
+        canvas.width = Math.round(img.naturalWidth * k);
+        canvas.height = Math.round(img.naturalHeight * k);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';  // el JPEG no tiene transparencia
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const blob = await new Promise((done) => canvas.toBlob(done, type, .85));
+        if (!blob) throw new Error('imagen vacía');
+        return blob;
+      } finally { URL.revokeObjectURL(url); }
+    };
+
+    const paintEnvio = () => {
+      if (!envio) return;
+      const done = ready();
+      const one = done.length === 1;
+      envio.hidden = !done.length;
+      if (!done.length) return;
+      const canShare = !!navigator.canShare?.({ files: done.map((it) => it.file) });
+      envio.querySelector('.adjuntos-list').innerHTML = done.map((it, i) => (canCopy
+        ? `<li class="adjunto"><button type="button" class="adjunto-copiar" data-copiar="${i}" aria-label="Copiar la foto ${i + 1}"><img src="${it.url}" alt=""></button></li>`
+        : `<li class="adjunto"><img src="${it.url}" alt="Foto ${i + 1} del residuo"></li>`)).join('');
+      const paso = canCopy ? (one ? 'haz clic en la foto para copiarla y pégala' : 'haz clic en cada foto para copiarla y pégala')
+        : canShare ? (one ? 'compártela' : 'compártelas') : (one ? 'adjúntala' : 'adjúntalas');
+      envio.querySelector('.adjuntos-nota').textContent = `${one ? 'La foto va' : 'Las fotos van'} aparte del texto. Envía primero el mensaje y después ${paso} en ese mismo chat.`;
+      const share = envio.querySelector('[data-adjuntos-share]');
+      share.hidden = !canShare;
+      share.querySelector('span').textContent = one ? 'Compartir foto' : 'Compartir fotos';
+    };
+    const paintZone = () => {
+      const n = items.length;
+      const full = n >= MAX;
+      list.hidden = !n;
+      items.forEach((it, i) => {
+        it.el.querySelector('button').setAttribute('aria-label', `Quitar la foto ${i + 1}`);
+        it.el.querySelector('img')?.setAttribute('alt', `Foto ${i + 1}`);
+      });
+      count.textContent = n ? ` · ${n} de ${MAX}` : '';
+      addBtn.disabled = full;
+      zone.classList.toggle('is-drag', dragging && !full);
+      hint.textContent = full ? 'Quita una para agregar otra'
+        : dragging ? 'Suelta las fotos aquí'
+          : n ? (coarse.matches ? 'Agregar otra foto' : 'Arrastra otra imagen o elígela')
+            : (coarse.matches ? 'Opcional: toma una foto o elígela de tu galería' : 'Opcional: arrastra las imágenes aquí o elígelas');
+    };
+    const sync = () => { paintZone(); paintEnvio(); };
+    /* Si las miniaturas quedan bajo el borde de la tarjeta (o en su difuminado), la lista baja lo justo para mostrarlas;
+       la página no se mueve */
+    const reveal = () => Promise.resolve(resize?.finished).catch(() => {}).then(() => {
+      const box = zone.closest('[data-scroll-root]');
+      if (!box || !shown(zone)) return;
+      const over = zone.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom + 76;
+      if (over > 0) box.scrollBy({ top: over, behavior: motion.matches ? 'smooth' : 'auto' });
+    });
+    const remove = (it) => {
+      items = items.filter((x) => x !== it);
+      it.el.remove();
+      if (it.url) URL.revokeObjectURL(it.url);
+    };
+
+    const add = async (files) => {
+      const all = [...files];
+      const images = all.filter((f) => f.type.startsWith('image/') && !items.some((it) => it.key === keyOf(f)));
+      const room = MAX - items.length;
+      if (images.length > room) toast(`Se pueden agregar hasta ${MAX} fotos.`);
+      else if (all.some((f) => !f.type.startsWith('image/'))) toast('Solo se pueden agregar imágenes.');
+      const nuevos = images.slice(0, room).map((f) => {
+        const el = d.createElement('li');
+        el.className = 'adjunto is-loading';
+        el.innerHTML = `<button type="button" class="adjunto-quitar">${X}</button>`;
+        return { key: keyOf(f), name: f.name, source: f, el };
+      });
+      if (!nuevos.length) return;
+      transition(() => { items.push(...nuevos); list.append(...nuevos.map((it) => it.el)); sync(); });
+      reveal();
+      let fallas = 0;
+      for (const it of nuevos) {  // de a una: una foto de cámara ocupa mucha memoria mientras se reduce
+        try {
+          const blob = await render(it.source, 'image/jpeg', SIDE);
+          if (!items.includes(it)) continue;  // la quitaron mientras se preparaba
+          it.file = new File([blob], `${it.name.replace(/\.[^.]+$/, '') || 'foto'}.jpg`, { type: 'image/jpeg' });
+          it.url = URL.createObjectURL(it.file);
+          const img = new Image();
+          img.src = it.url;
+          it.el.prepend(img);
+          it.el.classList.remove('is-loading');
+        } catch {
+          fallas += 1;
+          if (items.includes(it)) transition(() => { remove(it); sync(); });
+          toast(`No pudimos leer «${it.name}». Prueba con una imagen JPG o PNG.`);
+        }
+        delete it.source;
+      }
+      sync();
+      const n = nuevos.length - fallas;
+      if (!n) return;
+      status.textContent = `${n === 1 ? 'Foto agregada' : `${n} fotos agregadas`}. ${fotos(items.length)} en la solicitud.`;
+      if (!shown(zone) && !shown(envio)) toast(n === 1 ? 'Foto agregada: la verás al final del formulario.' : `${n} fotos agregadas: las verás al final del formulario.`);
+    };
+
+    addBtn.addEventListener('click', () => input.click());
+    input.addEventListener('change', () => { add(input.files); input.value = ''; });
+    list.addEventListener('click', (e) => {
+      const it = items.find((x) => x.el === e.target.closest('.adjunto-quitar')?.parentElement);
+      if (!it) return;
+      const i = items.indexOf(it);
+      transition(() => { remove(it); sync(); });
+      status.textContent = `Foto quitada. ${items.length ? `${fotos(items.length)} en la solicitud.` : 'La solicitud queda sin fotos.'}`;
+      (items[i] || items[i - 1])?.el.querySelector('button').focus();
+      if (!items.length) addBtn.focus();
+    });
+
+    /* Con el formulario o su resumen a la vista, soltar en cualquier parte de la página agrega la foto (y el navegador
+       no abre la imagen, que haría perder lo ya respondido) */
+    let own = false;  // lo que se arrastra viene de la propia página (p. ej., una imagen): no es una foto nueva
+    d.addEventListener('dragstart', () => { own = true; });
+    d.addEventListener('dragend', () => { own = false; });
+    const withFiles = (e) => !own && shown(scope) && [...(e.dataTransfer?.types || [])].includes('Files');
+    let depth = 0;
+    const setDrag = (on) => { if (dragging !== on) { dragging = on; paintZone(); } };
+    d.addEventListener('dragenter', (e) => { if (!withFiles(e)) return; e.preventDefault(); depth += 1; setDrag(true); });
+    d.addEventListener('dragover', (e) => { if (!withFiles(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+    d.addEventListener('dragleave', () => { if (!dragging) return; depth -= 1; if (depth <= 0) { depth = 0; setDrag(false); } });
+    d.addEventListener('drop', (e) => {
+      if (!withFiles(e)) return;
+      e.preventDefault();
+      depth = 0; setDrag(false);
+      add(e.dataTransfer.files);
+    });
+    d.addEventListener('paste', (e) => {
+      const images = [...(e.clipboardData?.files || [])].filter((f) => f.type.startsWith('image/'));
+      if (!images.length || !shown(scope)) return;
+      e.preventDefault();
+      add(images);
+    });
+
+    envio?.addEventListener('click', async (e) => {
+      const copiar = e.target.closest('[data-copiar]');
+      if (copiar) {
+        const it = ready()[Number(copiar.dataset.copiar)];
+        /* El portapapeles solo admite PNG, y Safari exige crear el ítem dentro del propio clic (con la imagen por llegar) */
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': render(it.file, 'image/png') })]);
+          toast('Foto copiada: pégala en el chat.');
+        } catch { toast('No se pudo copiar la foto: adjúntala en el chat.'); }
+      }
+      if (e.target.closest('[data-adjuntos-share]')) {
+        try { await navigator.share({ files: ready().map((it) => it.file) }); }
+        catch (err) { if (err.name !== 'AbortError') toast('No se pudo abrir el menú para compartir: adjunta las fotos en el chat.'); }
+      }
+    });
+    sync();
+  }
+
   /* ---------- Hero: en escritorio la opción elegida cambia el propio hero; en móvil se abre en una hoja inferior ----------
      Desde la burbuja «?» (en cualquier punto de la página, y en las páginas de cada norma) la opción se abre en el mismo
      lugar: en móvil, la misma hoja a pantalla completa; en escritorio, un panel que nace de la burbuja. Así nadie vuelve

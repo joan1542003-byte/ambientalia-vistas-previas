@@ -282,6 +282,50 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
   .summary:not([hidden]) .summary-check path, .guide-done .summary-check path { animation: check-draw .5s .25s var(--ease) both; }
 }
 
+/* ---------- Fotos del residuo (transporte-ui.js): zona para arrastrar o elegir imágenes, al final del formulario ----------
+   Una fila como las demás, con borde de guiones: es donde se sueltan las fotos. Al arrastrar un archivo sobre la página
+   toma el color del sitio. Las miniaturas quedan bajo el texto; en el resumen van antes del mensaje (que es largo y las
+   dejaría fuera de la vista), con la forma de llevarlas al chat. */
+.adjuntos { margin-top: 12px; border: 1.5px dashed var(--line-strong); border-radius: 16px; background: #fff; transition: border-color .25s var(--ease), background-color .25s var(--ease); }
+.adjuntos-add {
+  display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: center; gap: 14px;
+  width: 100%; min-height: 60px; padding: 9px 14px; border: 0; border-radius: 14px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.adjuntos-add:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.adjuntos-add:disabled { cursor: default; }
+.adjuntos-hint { color: var(--muted); font-size: var(--fs-body-sm); font-weight: 600; line-height: 1.4; }
+@media (hover: hover) { .adjuntos:has(.adjuntos-add:hover:enabled) { border-color: var(--ink-2); } }
+.adjuntos:has(.adjuntos-add:active:enabled) { background: var(--bg-alt); }
+.adjuntos.is-drag { border-color: var(--accent); background: var(--accent-soft); }
+.adjuntos.is-drag :is(.pick-icon, .pick-label, .adjuntos-hint) { color: var(--accent-strong); }
+.adjuntos-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 2px 14px 14px 50px; list-style: none; }
+.adjuntos-list[hidden] { display: none; }
+.adjunto { position: relative; flex: none; width: 64px; height: 64px; border-radius: 12px; background: var(--bg-sunk); }
+.adjunto img { display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+.adjunto-quitar {
+  position: absolute; top: 4px; right: 4px; display: grid; place-items: center; width: 22px; height: 22px; padding: 0;
+  border: 0; border-radius: 99px; background: rgb(21 26 45 / .72); color: #fff; cursor: pointer; transition: background-color .2s;
+}
+.adjunto-quitar::after { content: ""; position: absolute; inset: -9px; }  /* área táctil mayor que el botón */
+.adjunto-quitar:hover, .adjunto-quitar:active { background: var(--ink); }
+.adjunto-quitar:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.adjunto.is-loading .adjunto-quitar { background: rgb(21 26 45 / .4); }
+/* En el resumen */
+.adjuntos-envio { margin-bottom: 16px; }
+.adjuntos-envio .adjuntos-list { padding: 0; }
+.adjuntos-envio .adjunto { width: 56px; height: 56px; }
+.adjunto-copiar { display: block; width: 100%; height: 100%; padding: 0; border: 0; border-radius: inherit; background: none; cursor: copy; transition: box-shadow .2s; }
+.adjunto-copiar:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.adjunto-copiar:active { box-shadow: 0 0 0 2px var(--accent); }
+@media (hover: hover) { .adjunto-copiar:hover { box-shadow: 0 0 0 2px var(--ink); } }
+.adjuntos-nota { margin-top: 10px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.5; }
+.adjuntos-envio .btn { margin-top: 10px; }
+@media (pointer: coarse) {
+  .adjuntos-list:not(.adjuntos-envio *) .adjunto { width: 72px; height: 72px; }
+  .adjunto-quitar { width: 26px; height: 26px; }
+}
+@media (prefers-reduced-motion: no-preference) { .adjunto img { animation: hero-fade-in .3s ease both; } }
+
 /* ---------- Ventana de selección (assets/site/seleccion.js): diálogo en escritorio, hoja inferior en móvil ---------- */
 .picker-open { overflow: hidden; }
 .picker { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 20px; border: 0; background: transparent; color: var(--ink); overflow: hidden; overflow: clip; }
