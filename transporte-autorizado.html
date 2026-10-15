@@ -26,6 +26,7 @@
 <link rel="preload" as="image" href="assets/transporte/transporte-hero-flota-ciudad-movil.webp" media="(max-width: 860px)" fetchpriority="high">
 <link rel="stylesheet" href="assets/site/site.css?v=20261009a">
 <link rel="stylesheet" href="assets/site/transporte.css?v=20261009a">
+<link rel="stylesheet" href="assets/site/agente.css?v=20261009a">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {
@@ -753,6 +754,31 @@
 </div>
 
 
+<!-- Agente informativo (maqueta): burbuja abajo a la izquierda que abre una ventana pequeña. assets/site/agente.js -->
+<button class="agente-burbuja is-aparte" type="button" data-agente-abrir aria-haspopup="dialog" aria-controls="agente" aria-expanded="false" aria-label="Abrir el agente informativo (maqueta)">
+  <svg class="agente-b-chat" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M9 10.5h6M9 14h3.5"/></svg>
+  <svg class="agente-b-x" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+</button>
+<div class="agente" id="agente" role="dialog" aria-labelledby="agente-titulo" data-agente hidden>
+  <div class="agente-panel">
+    <div class="agente-cab">
+      <div class="agente-quien">
+        <h2 id="agente-titulo">Agente informativo <span class="agente-tag">Maqueta</span></h2>
+        <p>Responde con lo publicado en este sitio</p>
+      </div>
+      <button class="agente-icono" type="button" data-agente-nuevo aria-label="Empezar una conversación nueva"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg></button>
+      <button class="agente-icono" type="button" data-agente-cerrar aria-label="Cerrar el agente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="agente-charla" data-agente-charla role="log" aria-live="polite" aria-label="Conversación con el agente" tabindex="0"></div>
+    <form class="agente-escribir" data-agente-form autocomplete="off">
+      <label class="sr-only" for="agente-q">Escribe tu pregunta</label>
+      <input id="agente-q" name="q" type="text" maxlength="240" enterkeyhint="send" placeholder="Escribe tu pregunta">
+      <button type="submit" aria-label="Enviar la pregunta"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
+    </form>
+    <p class="agente-pie">Muestra información del sitio con su fuente. No cotiza ni es asesoría legal.</p>
+  </div>
+</div>
+
 <script src="assets/site/site.js?v=20261009a" defer></script>
 <script src="assets/site/pickers.js?v=20261009a" defer></script>
 <script src="assets/site/seleccion.js?v=20261009a" defer></script>
@@ -764,5 +790,6 @@
 <script src="assets/site/asistente.js?v=20261009a" defer></script>
 <script src="assets/site/normativa.js?v=20261009a" defer></script>
 <script src="assets/site/ayuda.js?v=20261009a" defer></script>
+<script src="assets/site/agente.js?v=20261009a" defer></script>
 </body>
 </html>
