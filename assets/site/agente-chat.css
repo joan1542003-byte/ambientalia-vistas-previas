@@ -1,0 +1,35 @@
+/* Agente conectado al asistente (prueba local): assets/site/agente-chat.js. Va después de agente.css y solo suma lo
+   propio de esta versión: la puerta con los datos, el texto en varias líneas con sus enlaces, las fuentes y el botón
+   para adjuntar una foto. */
+
+.agente .msg-texto { white-space: pre-line; overflow-wrap: anywhere; }
+.agente .msg-texto strong { color: var(--ink); font-weight: 800; }
+.agente .msg-texto a, .msg-fuentes a, .agente-acepto a { color: var(--accent-strong); font-weight: 700; text-underline-offset: 3px; }
+
+/* Fuentes: una por documento, con su enlace */
+.msg-fuentes { display: grid; gap: 4px; justify-self: start; max-width: 94%; padding-left: 2px; }
+.msg-fuentes ul { display: grid; gap: 4px; padding: 0; list-style: none; color: var(--ink-2); font-size: var(--fs-caption); line-height: 1.4; }
+.msg-fuentes li { display: flex; gap: 6px; }
+.msg-fuentes li > span:first-child { display: contents; }
+.msg-fuentes svg { flex: none; width: 14px; height: 14px; margin-top: 1px; color: var(--muted); }
+
+/* La puerta: nombre, correo, teléfono y el aviso de privacidad */
+.agente-puerta { display: grid; gap: 10px; }
+.agente-campo { display: grid; gap: 4px; color: var(--ink); font-size: var(--fs-small); font-weight: 700; }
+.agente-campo input { min-height: 44px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: #fff; color: var(--ink); font: 600 1rem/1.4 var(--font); }  /* 16 px: con menos, el iPhone acerca la página */
+.agente-campo input::placeholder { color: var(--muted); font-weight: 500; }
+.agente-campo input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
+.agente-acepto { display: flex; align-items: flex-start; gap: 8px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; }
+.agente-acepto input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); }
+.agente-error { color: #b42318; font-size: var(--fs-small); font-weight: 600; white-space: pre-line; }
+.agente-error:empty { display: none; }
+.agente-puerta .btn { justify-self: start; }
+.agente-puerta.is-enviando .btn { opacity: .6; pointer-events: none; }
+
+/* Adjuntar: al lado de «Enviar», sin el color del sitio (que queda para enviar) */
+.agente-escribir .agente-adjuntar { background: var(--bg-sunk); color: var(--ink-2); }
+.agente-escribir .agente-adjuntar:hover, .agente-escribir .agente-adjuntar:active { background: var(--line); color: var(--ink); }
+.agente-escribir .agente-adjuntar svg { width: 20px; height: 20px; }
+
+.agente-salir { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.agente-salir:hover { color: var(--ink); }

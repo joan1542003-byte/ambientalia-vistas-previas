@@ -9,12 +9,16 @@
    bloquea la página. «Ver en la página» cierra la ventana, va al pasaje y lo destaca; lo que está en otra página del
    sitio (una guía, una norma) se abre en otra pestaña y la conversación sigue aquí. En agente-virtual.html el sitio
    va detrás en un <iframe> y ahí se muestra todo, también las otras páginas.
-   Para conectar un modelo de lenguaje más adelante basta reemplazar responder(): la lectura del sitio (leer…), los
-   pasajes y la forma de mostrar las fuentes no cambian. Sin lookbehind en las expresiones regulares (Safari < 16.4). */
+   Si la ventana tiene la dirección de un servicio del asistente, responde ese servicio (agente-chat.js) y este archivo
+   no hace nada; ver la condición más abajo. Sin lookbehind en las expresiones regulares (Safari < 16.4). */
 (() => {
   const d = document;
   const panel = d.querySelector('[data-agente]');
   if (!panel) return;
+  /* Con servicio responde agente-chat.js: `data-agente-api`, o `data-agente-api-local` cuando el sitio corre en este
+     computador. `?agente=maqueta` fuerza la maqueta en local. La misma condición está en agente-chat.js */
+  const enLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).get('agente') !== 'maqueta';
+  if (panel.dataset.agenteApi || (enLocal && panel.dataset.agenteApiLocal)) return;
   const marco = d.querySelector('[data-agente-sitio]');  // solo en agente-virtual.html: el sitio va detrás, en un <iframe>
   const boton = d.querySelector('[data-agente-abrir]');
   const charla = panel.querySelector('[data-agente-charla]');

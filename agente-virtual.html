@@ -14,6 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site/site.css?v=20261009a">
 <link rel="stylesheet" href="assets/site/agente.css?v=20261009a">
+<link rel="stylesheet" href="assets/site/agente-chat.css?v=20261009a">
 </head>
 <body data-site="transporte">
 
@@ -21,12 +22,14 @@
      página» también muestra las guías y las normas, porque todo el sitio vive en el marco de atrás. -->
 <iframe class="agente-sitio" src="transporte-autorizado.html" title="Sitio de Transporte Autorizado" data-agente-sitio></iframe>
 
-<!-- Agente informativo (maqueta): burbuja abajo a la izquierda que abre una ventana pequeña. assets/site/agente.js -->
+<!-- Agente informativo: burbuja abajo a la izquierda que abre una ventana pequeña. Responde la maqueta (assets/site/agente.js);
+     con la dirección de un servicio del asistente responde assets/site/agente-chat.js: data-agente-api, o
+     data-agente-api-local solo cuando el sitio corre en este computador (en local, ?agente=maqueta fuerza la maqueta). -->
 <button class="agente-burbuja" type="button" data-agente-abrir aria-haspopup="dialog" aria-controls="agente" aria-expanded="false" aria-label="Abrir el agente informativo (maqueta)">
   <svg class="agente-b-chat" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M9 10.5h6M9 14h3.5"/></svg>
   <svg class="agente-b-x" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
 </button>
-<div class="agente" id="agente" role="dialog" aria-labelledby="agente-titulo" data-agente hidden>
+<div class="agente" id="agente" role="dialog" aria-labelledby="agente-titulo" data-agente data-agente-api-local="http://127.0.0.1:8000" hidden>
   <div class="agente-panel">
     <div class="agente-cab">
       <div class="agente-quien">
@@ -48,5 +51,6 @@
 
 <script src="assets/site/pickers.js?v=20261009a" defer></script>
 <script src="assets/site/agente.js?v=20261009a" defer></script>
+<script src="assets/site/agente-chat.js?v=20261009a" defer></script>
 </body>
 </html>
