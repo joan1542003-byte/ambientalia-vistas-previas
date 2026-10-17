@@ -184,7 +184,11 @@
       fila('phone', 'Teléfono', { type: 'tel', autocomplete: 'tel', maxlength: 20, placeholder: '+56 9 1234 5678' }),
       h('label', { class: 'agente-acepto' },
         h('input', { type: 'checkbox', name: 'privacy_accepted', checked: datos.privacy_accepted || null }),
-        h('span', {}, 'Acepto el ', h('a', { href: `${API}/politica-de-privacidad`, target: '_blank', rel: 'noopener noreferrer' }, 'aviso de privacidad'), '.')),
+        h('span', {}, 'Acepto las ', h('a', { href: `${API}/condiciones-del-servicio`, target: '_blank', rel: 'noopener noreferrer' }, 'condiciones del servicio'), ' y el ', h('a', { href: `${API}/politica-de-privacidad`, target: '_blank', rel: 'noopener noreferrer' }, 'aviso de privacidad'), '.')),
+      /* Opcional y sin marcar: no condiciona el chat (el texto es el de chatbot.privacy.marketing.label del asistente) */
+      h('label', { class: 'agente-acepto' },
+        h('input', { type: 'checkbox', name: 'marketing_accepted', checked: datos.marketing_accepted || null }),
+        h('span', { text: 'Acepto que Transporte Autorizado me contacte por correo, teléfono o llamada para hacer seguimiento de mi consulta o cotización y ofrecerme sus servicios (opcional).' })),
       h('div', { class: 'agente-trampa', 'aria-hidden': 'true' }, h('label', {}, 'No completes este campo ', h('input', { name: 'website', tabindex: '-1', autocomplete: 'off' }))),
       humano,
       error,
@@ -203,7 +207,7 @@
     f.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (f.classList.contains('is-enviando')) return;
-      datos = { name: f.elements.name.value.trim(), email: f.elements.email.value.trim(), phone: f.elements.phone.value.trim(), privacy_accepted: f.elements.privacy_accepted.checked };
+      datos = { name: f.elements.name.value.trim(), email: f.elements.email.value.trim(), phone: f.elements.phone.value.trim(), privacy_accepted: f.elements.privacy_accepted.checked, marketing_accepted: f.elements.marketing_accepted.checked };
       error.textContent = '';
       if (humano && !token) { error.textContent = 'Estamos comprobando que eres una persona. Espera un momento y vuelve a intentarlo.'; return; }
       f.classList.add('is-enviando');

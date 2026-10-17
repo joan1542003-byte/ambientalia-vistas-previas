@@ -611,7 +611,8 @@
      Con la dirección del asistente, el resumen ofrece «Enviar solicitud»: los datos de contacto, las mismas líneas que van
      a WhatsApp (form.summaryRows, site.js) y las fotos llegan a Odoo como una solicitud del chat, a la misma persona.
      WhatsApp queda al lado. Sin dirección no cambia nada. data-cotizar-api-local cuenta solo en este computador, como el
-     agente (?cotizar=whatsapp lo apaga). Pide el aviso de privacidad aceptado; lleva el campo trampa («website», que una
+     agente (?cotizar=whatsapp lo apaga). Pide aceptar las condiciones y el aviso de privacidad (una casilla) y manda si aceptó el contacto comercial
+     (opcional, sin marcar); lleva el campo trampa («website», que una
      persona no ve) y, con data-turnstile, el token de Cloudflare Turnstile, que se canjea una vez: se renueva tras cada
      intento. Cada resumen lleva su identificador: reintentar el mismo envío no crea otra solicitud. */
   const cotizar = d.querySelector('form[data-cotizar-api], form[data-cotizar-api-local]');
@@ -620,7 +621,8 @@
   const resumen = cotizar && d.getElementById(cotizar.dataset.summary);
   if (API && resumen) {
     const campos = cotizar.querySelector('[data-cotizar-campos]');
-    const aviso = campos.querySelector('input[type="checkbox"]');
+    const aviso = campos.querySelector('input[name="aviso"]');
+    const comercial = campos.querySelector('input[name="comercial"]');  // opcional: no condiciona el envío
     const trampa = cotizar.querySelector('[name="website"]');
     const boton = resumen.querySelector('[data-cotizar-enviar]');
     const estado = resumen.querySelector('[data-cotizar-estado]');
@@ -642,7 +644,9 @@
     cotizar.dataset.cotizarOn = '';
     campos.hidden = false;
     aviso.disabled = false;
+    comercial.disabled = false;
     campos.querySelector('[data-cotizar-aviso]').href = `${API}/politica-de-privacidad`;
+    campos.querySelector('[data-cotizar-condiciones]').href = `${API}/condiciones-del-servicio`;
     boton.hidden = false;
     boton.parentElement.classList.add('is-cotizar');
     sub.textContent = LISTA.sub;
@@ -711,6 +715,7 @@
       const f = new FormData();
       Object.entries(CONTACTO).forEach(([campo, clave]) => f.append(clave, valor(campo)));
       f.append('privacy_accepted', aviso.checked ? '1' : '0');
+      f.append('marketing_accepted', comercial.checked ? '1' : '0');
       f.append('subject', corto(ASUNTO.map((n) => filas.find((r) => r.name === n)?.value).filter(Boolean).join(' · '), 150));
       filas.filter((r) => !(r.name in CONTACTO)).slice(0, 40).forEach((r, i) => {
         f.append(`details[${i}][label]`, corto(r.label, 80));
