@@ -14,11 +14,17 @@
   --line: #e4e7ee;
   --line-strong: #cfd4df;
 
-  /* Transporte Autorizado: lila (pedido del cliente, 08-10-2026; antes azul #2f5bd3). El logo toma este mismo color
-     (tools/logo.py): si cambia, hay que volver a ejecutarlo. */
-  --accent: #8455d2;
-  --accent-strong: #6a3fb6;
-  --accent-soft: #f2edfb;
+  /* Transporte Autorizado: paleta de la marca (docs/marca/paleta.svg, entregada por el cliente el 09-10-2026). Son
+     seis pares; el principal es el lila #6708C7 con #EBA9FC. Los demás pares se usan donde un color distingue algo:
+     verde y rojo para no peligrosos y peligrosos, naranjo y azul para los planes. El logo recorre los pares (site.js). */
+  --marca: #6708C7;   --marca-2: #EBA9FC;
+  --azul: #0E14DA;    --azul-2: #A8DFFD;
+  --verde: #059A3F;   --verde-2: #D7F560;
+  --naranja: #FF651C; --naranja-2: #FFE357;
+  --rojo: #E90B2D;    --rojo-2: #FEB5A7;
+  --accent: var(--marca);
+  --accent-strong: #5206A0;
+  --accent-soft: #F6EAFE;
   --on-accent: #ffffff;
 
   --safe: #1c7a4b;
@@ -54,6 +60,9 @@
   --fs-display: clamp(1.75rem, 1.45rem + .95vw, 2.125rem);
   color-scheme: light;
 }
+/* Transporte: verde y rojo de la paleta. El verde y el naranjo puros no dan contraste suficiente para texto chico ni
+   para un botón con texto blanco: ahí se usa su versión oscura (--safe, --tone-amber) y el color puro queda en líneas y fondos. */
+body[data-site="transporte"] { --safe: #047A32; --safe-soft: #EFF9D6; --hazard: var(--rojo); --hazard-soft: #FEEDE8; }
 body[data-site="hds"] { --accent: #0b7ea3; --accent-strong: #08678a; --accent-soft: #e7f4f9; --bg-alt: #f4f7f9; --bg-sunk: #ecf1f4; }
 body[data-site="campanas"] { --accent: #1c7a4b; --accent-strong: #15613b; --accent-soft: #e8f3ec; --bg-alt: #f5f7f5; --bg-sunk: #edf1ee; }
 
@@ -76,6 +85,7 @@ ul, ol { padding: 0; }
 h1, h2, h3, h4 { font-weight: 800; line-height: 1.15; letter-spacing: -.018em; text-wrap: balance; }
 p, li, dd { text-wrap: pretty; }
 ::selection { background: color-mix(in srgb, var(--accent) 20%, transparent); }
+body[data-site="transporte"] ::selection { background: var(--marca-2); color: #1c0a36; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
 [hidden] { display: none !important; }
 .tnum { font-variant-numeric: tabular-nums; }

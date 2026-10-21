@@ -25,13 +25,19 @@
   /* Deja ver la selección antes de avanzar; un doble toque no avanza dos veces (solo si la pregunta sigue siendo la misma) */
   const later = (fn) => { const at = index; setTimeout(() => { if (index === at) fn(); }, 160); };
 
-  /* Tipos de residuo: [valor, pestaña, clave en PICK.CATEGORIES] */
-  const TIPOS = [['no-peligroso', 'No peligrosos', 'safe'], ['peligroso', 'Peligrosos', 'hazard']];
+  /* Tipos de residuo: [valor, nombre, clave en PICK.CATEGORIES, ejemplos, ícono] */
+  const svg = (trazos) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${trazos}</svg>`;
+  const TIPOS = [
+    ['no-peligroso', 'No peligrosos', 'safe', 'Papel y cartón, plásticos, metales y más', svg('<path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/>')],
+    ['peligroso', 'Peligrosos', 'hazard', 'Aceites, baterías, solventes y más', svg('<path d="M12 4l9 15.5H3z"/><path d="M12 10v4.5M12 17.2v.1"/>')]
+  ];
+  /* Teléfono: solo caracteres de teléfono y al menos 8 números (lo mismo que pide el formulario y revisa el servidor) */
+  const TEL = { patron: String.raw`(?=(?:\D*\d){8})[+\d\s.\-\(\)]{8,30}`, titulo: 'Escribe un teléfono con al menos 8 números' };
   const MODES = Picker.MODES.map((m) => ({ ...m, value: PICK.MODE_LABEL[m.value], key: m.value }));
   const SLOT_OPTIONS = PICK.SLOTS.map(([t, h]) => ({ value: PICK.slotText(t), label: t, hint: h, icon: PICK.SLOT_ICONS[t] }));
 
   const STEPS = [
-    { id: 'residuo', label: 'Residuo', type: 'residuo', ask: '¿Qué necesitas retirar?', help: 'Elige una opción o escríbelo abajo con tus palabras.', hint: 'Ej.: 20 sacos de cartón en Quilicura' },
+    { id: 'residuo', label: 'Residuo', type: 'residuo', ask: '¿Qué necesitas retirar?', help: 'Elige el tipo de residuo o escríbelo abajo con tus palabras.', hint: 'Ej.: 20 sacos de cartón en Quilicura' },
     { id: 'cantidad', label: 'Cantidad aproximada', type: 'options', layout: 'list', ask: '¿Cuánto residuo tienes aproximadamente?', help: 'Un rango aproximado basta; lo precisamos al cotizar.', hint: 'Ej.: 600 kg',
       options: PICK.AMOUNTS.map((a, i) => ({ value: a, label: a, icon: PICK.AMOUNT_ICONS[i] })) },
     { id: 'comuna', label: 'Comuna', type: 'commune', ask: '¿En qué comuna se encuentra?', help: 'Comunas de la Región Metropolitana. Elige la tuya o escríbela abajo.', hint: 'Escribe tu comuna' },
@@ -70,6 +76,7 @@
   let choice = null; // opciones del paso actual (Picker.options)
   let other = '';    // opción «Otro» elegida en el paso actual, a la espera de su texto
   let exchange = null; // última conversación: { user, bot }
+  let enviada = null;  // la solicitud ya se envió al servidor: { r: respuesta, n: fotografías adjuntas }. Desde ahí no se cambia ni se reenvía
 
   const active = () => STEPS.filter((s) => !s.when || s.when(answers));
   const TOTAL = STEPS.filter((s) => !s.sub).length;
@@ -95,7 +102,7 @@
   /* ---------- Pintado ---------- */
   const paintHead = () => {
     const steps = active();
-    if (done) count.textContent = 'Solicitud lista';
+    if (done) count.textContent = enviada ? 'Solicitud enviada' : 'Solicitud lista';
     else if (customElements.get('number-flow')) {
       let flow = count.querySelector('number-flow');
       if (!flow) { count.textContent = 'Paso '; flow = d.createElement('number-flow'); count.append(flow, ` de ${TOTAL}`); }
@@ -103,7 +110,7 @@
     } else count.textContent = `Paso ${stepNumber(index)} de ${TOTAL}`;
     bar.style.setProperty('--p', `${done ? 100 : Math.max(((stepNumber(index) - 1) / TOTAL) * 100, 5)}%`);
     /* La flecha está en todos los pasos: en el primero vuelve al inicio (cierra la tarjeta), como «Atrás» del formulario */
-    backBtn.hidden = false;
+    backBtn.hidden = Boolean(enviada);
     backBtn.setAttribute('aria-label', !done && index === 0 ? 'Volver' : 'Paso anterior');
     const chips = done ? [] : steps.map((s, i) => (i !== index && answered(s) && shown(s) ? `<button type="button" class="trail-chip" data-edit="${i}"><span class="sr-only">Cambiar ${esc(s.label || 'contacto')}: </span>${esc(shown(s))}</button>` : ''));
     trail.innerHTML = chips.join('');
@@ -129,32 +136,20 @@
 
   const renderStep = (s) => {
     const value = answers[s.id];
-    composer.hidden = s.type === 'contact';
+    /* Sin campo para escribir donde no hace falta: en los datos de contacto y en las preguntas de varias opciones
+       (los antecedentes), donde el campo dejaba «Continuar» fuera de la vista */
+    composer.hidden = s.type === 'contact' || s.type === 'multi';
     actions.hidden = true;
     input.placeholder = s.hint || 'Escribe tu respuesta';
     if (s.type === 'residuo') {
-      /* Todos los residuos, por tipo (corrección del cliente, 09-10-2026): antes se mostraban ocho «frecuentes» y el
-         resto quedaba aparte, tras «Ver todos». Las pestañas son los dos tipos y cada una muestra todas sus categorías. */
-      let tipo = meta.tipo === 'peligroso' ? 'peligroso' : 'no-peligroso';
+      /* Solo dos opciones a la vista, los dos tipos de residuo (corrección del cliente, 09-10-2026: con las categorías
+         en el propio paso había que bajar para verlas todas). Cada tipo abre la ventana con todas sus categorías, la
+         misma del formulario; la otra forma de responder es escribirlo abajo. */
       body.innerHTML = `<div class="guide-step">${heading(s)}
-        <div class="picker-tabs guide-tabs" role="tablist" aria-label="Tipo de residuo">${TIPOS.map(([kind, label, key]) => `<button type="button" role="tab" data-tipo="${kind}" aria-selected="${kind === tipo}">${label}<span>${PICK.CATEGORIES[key].length}</span></button>`).join('')}</div>
-        <div class="guide-area" data-area role="tabpanel"></div>
-        <div class="opts is-list guide-extra">
-          <button type="button" class="opt" data-describe><span class="opt-icon" aria-hidden="true">${PICK.ICONS.edit}</span><span class="opt-text"><strong>No sé cuál es</strong><small>Descríbelo abajo con tus palabras</small></span><i class="opt-chev" aria-hidden="true"></i></button>
-        </div></div>`;
-      const draw = () => Picker.options(body.querySelector('[data-area]'), {
-        groups: [{ options: PICK.CATEGORIES[TIPOS.find(([kind]) => kind === tipo)[2]].map(([name, file]) => ({ value: `${tipo}|${name}`, label: name, img: PICK.thumb(file) })) }],
-        value: `${meta.tipo}|${value}`, layout: 'tiles',
-        onPick: (v) => { const [kind, name] = v.split('|'); meta.tipo = kind; answers.residuo = name; exchange = null; later(advance); }
-      });
-      draw();
-      body.querySelector('.guide-tabs').onclick = (e) => {
-        const tab = e.target.closest('[data-tipo]');
-        if (!tab || tab.dataset.tipo === tipo) return;
-        tipo = tab.dataset.tipo;
-        body.querySelectorAll('.guide-tabs [data-tipo]').forEach((x) => x.setAttribute('aria-selected', String(x === tab)));
-        draw();
-      };
+        <div class="opts is-list guide-area guide-tipos">${TIPOS.map(([kind, label, key, ejemplos, icono]) => {
+          const suyo = Boolean(value) && meta.tipo === kind;
+          return `<button type="button" class="opt" data-tipo="${kind}" aria-haspopup="dialog" aria-pressed="${suyo}"><span class="opt-icon" aria-hidden="true">${icono}</span><span class="opt-text"><strong>${label}</strong><small>${suyo ? esc(value) : `${ejemplos} · ${PICK.CATEGORIES[key].length} categorías`}</small></span><i class="opt-chev" aria-hidden="true"></i></button>`;
+        }).join('')}</div></div>`;
       return;
     }
     if (s.type === 'options' || s.type === 'multi') {
@@ -216,33 +211,70 @@
     }
     if (s.type === 'contact') {
       body.innerHTML = `<div class="guide-step">${heading(s)}<div class="picks">${s.fields.map((f) => `
-        <div class="pick pick-field"><span class="pick-text"><label class="pick-label" for="g-${f.id}">${esc(f.label)}</label><input id="g-${f.id}" name="${f.id}" type="${f.type || 'text'}" required maxlength="160" autocomplete="${f.autocomplete}"${f.placeholder ? ` placeholder="${esc(f.placeholder)}"` : ''}${f.type === 'email' ? ' spellcheck="false"' : ''}${f.type === 'tel' ? ' inputmode="tel"' : ''} value="${esc(answers[f.id] || '')}"></span></div>`).join('')}</div>${nextButton('Preparar solicitud')}</div>`;
+        <div class="pick pick-field"><span class="pick-text"><label class="pick-label" for="g-${f.id}">${esc(f.label)}</label><input id="g-${f.id}" name="${f.id}" type="${f.type || 'text'}" required maxlength="160" autocomplete="${f.autocomplete}"${f.placeholder ? ` placeholder="${esc(f.placeholder)}"` : ''}${f.type === 'email' ? ' spellcheck="false"' : ''}${f.type === 'tel' ? ` inputmode="tel" pattern="${TEL.patron}" title="${TEL.titulo}"` : ''} value="${esc(answers[f.id] || '')}"></span></div>`).join('')}</div>${nextButton('Preparar solicitud')}</div>`;
     }
+  };
+
+  /* Las cotizaciones de Transporte las recibe solo el asistente Laravel, por el formulario (form[data-cotizar-api],
+     transporte-ui.js): este asistente no las envía a WordPress aunque el sitio corra ahí. Para enviarla en línea lleva
+     lo respondido a ese formulario («Enviar en línea»), que pide aceptar el aviso de privacidad y la envía con sus fotos.
+     El envío a WordPress (servidor) solo valdría en una página sin ese formulario, y hoy no hay ninguna. */
+  const servidor = Boolean(window.SITE.enviar) && !d.querySelector('form[data-cotizar-api]');
+  const enLinea = () => 'cotizarOn' in (d.querySelector('form[data-cotizar-api]')?.dataset || {});
+  const alFormulario = (alFinal) => {
+    const form = d.getElementById('cotizacion');
+    const out = form && d.getElementById(form.dataset.summary);
+    if (out && !out.hidden) out.querySelector('[data-edit]')?.click();  // un resumen anterior a la vista: vuelve al formulario
+    window.QUOTE?.fill({ answers, meta });
+    if (alFinal) form?.goTo?.(Infinity);  // contacto, fotos y la aceptación del aviso: de ahí sale la solicitud
+    window.HERO?.show('cotizar');
+  };
+
+  /* Fotografías adjuntas (solo con el envío a WordPress). La franja se arma una vez y se conserva entre pasos: lo
+     adjuntado no se pierde si la persona vuelve a cambiar una respuesta. */
+  const fotosHost = servidor && window.SITE.fotos ? Object.assign(d.createElement('div'), { className: 'fotos' }) : null;
+  const fotos = fotosHost ? window.SITE.fotos(fotosHost) : null;
+
+  /* Tras enviar una solicitud, la siguiente parte de cero */
+  const reiniciar = () => {
+    Object.keys(answers).forEach((k) => delete answers[k]);
+    Object.keys(meta).forEach((k) => delete meta[k]);
+    Object.assign(meta, { tipo: '', region: '', dates: {}, search: '' });
+    geoPicked = null; index = 0; done = false; editing = false; describing = false; draft = []; choice = null; other = ''; exchange = null; enviada = null;
   };
 
   const renderDone = () => {
     composer.hidden = true;
+    const linea = !servidor && enLinea();
     actions.hidden = false;
     const rows = active().flatMap((s, i) => (s.type === 'contact'
       ? [{ label: 'Contacto', value: s.fields.map((f) => answers[f.id]).filter(Boolean).join(' · '), i }]
       : answers[s.id] ? [{ label: s.label, value: shown(s), i }, ...(s.id === 'direccion' && meta.punto ? [{ label: 'Ubicación en el mapa', value: 'Punto marcado (va como enlace de Google Maps)', i }] : [])] : []));
     body.innerHTML = `<div class="guide-step guide-final">
       <div class="guide-done"><svg width="28" height="28" class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>
-        <div><h3 class="guide-q" tabindex="-1">Tu solicitud está lista.</h3><p class="guide-help">Envíala con las fotografías; con eso revisamos el residuo, la cobertura, la disponibilidad y las condiciones del retiro para preparar la propuesta.</p></div></div>
-      <dl class="review">${rows.map((r) => `<div><dt>${esc(r.label)}</dt><dd>${esc(r.value)}</dd><button type="button" class="text-link" data-edit="${r.i}">Cambiar<span class="sr-only"> ${esc(r.label)}</span></button></div>`).join('')}</dl>
-      <p class="guide-note">Se abrirá con tu solicitud ya escrita. Revísala, adjunta las fotografías y envíala.</p>
+        <div><h3 class="guide-q" tabindex="-1">${enviada ? 'Solicitud enviada.' : 'Tu solicitud está lista.'}</h3><p class="guide-help">${enviada ? esc(window.SITE.enviada(enviada.r, enviada.n)) : `${servidor ? 'Adjunta fotografías si las tienes y envíala' : 'Envíala con las fotografías'}; con eso revisamos el residuo, la cobertura, la disponibilidad y las condiciones del retiro para preparar la propuesta.`}</p></div></div>
+      <dl class="review">${rows.map((r) => `<div><dt>${esc(r.label)}</dt><dd>${esc(r.value)}</dd>${enviada ? '' : `<button type="button" class="text-link" data-edit="${r.i}">Cambiar<span class="sr-only"> ${esc(r.label)}</span></button>`}</div>`).join('')}</dl>
+      ${enviada ? '' : `<p class="guide-note">${servidor ? 'Al enviarla te llegará un correo con su número; usaremos tus datos solo para responder esta solicitud.' : linea ? 'Para enviarla en línea y recibir su número, «Enviar en línea» la lleva al formulario: ahí agregas las fotos y aceptas el aviso de privacidad.' : 'Se abrirá con tu solicitud ya escrita. Revísala, adjunta las fotografías y envíala.'}</p>`}
     </div>`;
+    /* La franja de fotografías queda fija sobre los botones, fuera de la zona que se desplaza */
+    if (fotosHost && !enviada) { actions.before(fotosHost); fotos.bloquear(false); }
     /* WhatsApp (verde, con su ícono) y, si el formulario de cotización declara su correo de destino, también correo */
     const correo = d.getElementById('cotizacion')?.dataset.mail;
-    actions.classList.toggle('has-mail', !!correo);
-    actions.innerHTML = `${correo ? '<span class="foot-label">Enviar por</span>' : ''
+    /* Con el envío a WordPress (servidor) la vía principal es enviarla allí; con el asistente Laravel (linea), seguir
+       en el formulario, que la envía */
+    if (servidor && !enviada) window.SITE.permiso();
+    actions.classList.toggle('has-mail', !!correo && !servidor && !linea);
+    actions.classList.toggle('has-envio', servidor || linea);
+    actions.innerHTML = `${enviada ? '' : servidor ? `<button type="button" class="btn btn-primary btn-small" data-enviar>${ICON.send}<span>Enviar solicitud</span></button>` : linea ? `<button type="button" class="btn btn-primary btn-small" data-en-linea>${ICON.send}<span>Enviar en línea</span></button>` : correo ? '<span class="foot-label">Enviar por</span>' : ''
     }<a class="btn btn-wa btn-small" href="${window.SITE.whatsapp(summaryText())}" target="_blank" rel="noopener noreferrer">${window.SITE.ICON.wa}<span><span class="btn-pre">Enviar por </span>WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></span></a>${
-      correo ? `<a class="btn btn-secondary btn-small" href="${esc(window.SITE.mailto(correo, summaryText()))}">${window.SITE.ICON.mail}<span><span class="btn-pre">Enviar por </span><span class="btn-cap">correo</span></span></a>` : ''
-    }<span class="foot-more"><button type="button" class="btn btn-secondary btn-small" data-copy>${ICON.copy}${ICON.done}<span>Copiar</span></button></span>`;
+      correo && !servidor && !linea ? `<a class="btn btn-secondary btn-small" href="${esc(window.SITE.mailto(correo, summaryText()))}">${window.SITE.ICON.mail}<span><span class="btn-pre">Enviar por </span><span class="btn-cap">correo</span></span></a>` : ''
+    }<span class="foot-more"><button type="button" class="btn btn-secondary btn-small" data-copy>${ICON.copy}${ICON.done}<span>Copiar</span></button>${
+      enviada ? '<button type="button" class="btn btn-quiet btn-small" data-nueva>Nueva solicitud</button>' : ''}</span>`;
   };
 
   const render = () => {
     paintHead();
+    if (!done || enviada) fotosHost?.remove();
     if (done) renderDone(); else renderStep(active()[index]);
     body.scrollTop = 0;
   };
@@ -437,7 +469,17 @@
 
   body.addEventListener('click', async (e) => {
     const s = active()[index];
-    if (e.target.closest('[data-describe]')) { input.placeholder = 'Ej.: polvo gris de la limpieza de hornos'; input.focus(); return; }
+    const tipo = e.target.closest('[data-tipo]');
+    if (tipo) {
+      const grupo = ([kind, label, key]) => ({ label, options: PICK.CATEGORIES[key].map(([n, file]) => ({ value: `${kind}|${n}`, label: n, img: PICK.thumb(file) })) });
+      const orden = [...TIPOS].sort((x, y) => Number(y[0] === tipo.dataset.tipo) - Number(x[0] === tipo.dataset.tipo));  // la pestaña del tipo elegido va primero
+      const v = await Picker.choose({ title: '¿Qué residuo necesitas retirar?', sub: 'Las imágenes son ilustrativas: la clasificación se confirma con los antecedentes.', groups: orden.map(grupo), tabs: true, value: `${meta.tipo}|${answers.residuo}`, search: 'Buscar residuo', layout: 'tiles' });
+      if (!v) return;
+      const [kind, name] = v.split('|');
+      meta.tipo = kind; answers.residuo = name; exchange = null;
+      advance();
+      return;
+    }
     if (e.target.closest('[data-skip]')) { answers[s.id] = ''; meta.dates[s.id] = []; exchange = null; advance(); return; }
     const edit = e.target.closest('[data-edit]');
     if (edit) { go(() => { done = false; editing = true; exchange = null; index = Number(edit.dataset.edit); }); return; }
@@ -462,7 +504,7 @@
   });
   trail.addEventListener('click', (e) => {
     const edit = e.target.closest('[data-edit]');
-    if (edit) go(() => { editing = true; exchange = null; index = Number(edit.dataset.edit); });
+    if (edit && !enviada) go(() => { editing = true; exchange = null; index = Number(edit.dataset.edit); });
   });
   backBtn.addEventListener('click', () => {
     if (!done && index === 0) { panel.dispatchEvent(new CustomEvent('hero:close', { bubbles: true })); return; }  // primer paso: cierra la tarjeta
@@ -472,12 +514,38 @@
     });
   });
   /* «Ir al formulario»: se lleva todo lo respondido */
-  panel.querySelector('[data-mode="form"]')?.addEventListener('click', () => {
-    window.QUOTE?.fill({ answers, meta });
-    window.HERO?.show('cotizar');
-  });
+  panel.querySelector('[data-mode="form"]')?.addEventListener('click', () => alFormulario(false));
   d.addEventListener('numberflow:ready', paintHead);
   actions.addEventListener('click', async (e) => {
+    const ship = e.target.closest('[data-enviar]');
+    if (ship) {
+      ship.disabled = true;
+      fotos?.bloquear(true);
+      const adjuntas = fotos?.blobs() || [];
+      /* Mientras sube, una capa cubre el asistente (bajo su encabezado): avance de las fotografías o «enviando» */
+      const capa = window.SITE.enviando(panel, panel.querySelector('.hcard-head'));
+      capa.paso(adjuntas.length ? 'Subiendo fotografías…' : 'Enviando tu solicitud…', adjuntas.length ? 0 : null);
+      try {
+        const campos = active().flatMap((s) => (s.type !== 'contact' && answers[s.id] ? [[s.label, s.id === 'residuo' ? shown(s) : answers[s.id]], ...(s.id === 'direccion' && meta.punto && window.MAPA ? [['Ubicación en el mapa', window.MAPA.enlace(meta.punto)]] : [])] : []));
+        const r = await window.SITE.enviar(
+          { origen: 'asistente', titulo: TITLE, contacto: { empresa: answers.empresa, nombre: answers.nombre, telefono: answers.telefono, correo: answers.correo }, campos },
+          { fotos: adjuntas, avance: adjuntas.length ? (f) => capa.paso(f < 1 ? 'Subiendo fotografías…' : 'Enviando tu solicitud…', f < 1 ? f : null) : null }
+        );
+        enviada = { r, n: adjuntas.length };
+        if (fotosHost) { fotosHost.remove(); fotos.vaciar(); }
+        render();  // bajo la capa: queda el número, sin «Cambiar» ni «Enviar solicitud»
+        await capa.listo(`Solicitud ${r.numero} enviada`);
+        body.querySelector('.guide-q')?.focus({ preventScroll: true });
+      } catch (err) {
+        capa.quitar();
+        ship.disabled = false;
+        fotos?.bloquear(false);
+        window.SITE.toast(`${err.message || 'No pudimos enviar la solicitud.'} También puedes enviarla por WhatsApp.`);
+      }
+      return;
+    }
+    if (e.target.closest('[data-en-linea]')) { alFormulario(true); return; }
+    if (e.target.closest('[data-nueva]')) { go(reiniciar); return; }
     const copy = e.target.closest('[data-copy]');
     if (!copy) return;
     try { await navigator.clipboard.writeText(summaryText().replaceAll('*', '')); window.SITE.toast('Resumen copiado'); window.SITE.done(copy); }
@@ -502,6 +570,7 @@
     open: (from = 'hero') => Promise.resolve(open(from, 'cotizar')).then(() => body.querySelector('.guide-q')?.focus({ preventScroll: true })),
     /* Desde el campo de texto del hero: abre el asistente y procesa lo escrito */
     ingest: (text) => {
+      if (enviada) reiniciar();  // lo escrito después de enviar una solicitud es otra consulta
       if (window.HERO?.view === 'asistente') return go(() => interpret(text));
       interpret(text);
       render();

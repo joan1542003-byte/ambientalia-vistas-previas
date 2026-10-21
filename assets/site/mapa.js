@@ -9,7 +9,7 @@
    mapa a esa zona y arrastrar solo sirve para recorrerlo.
 
    Qué se carga y de dónde, solo cuando el mapa aparece:
-   - Leaflet 1.9.4 (BSD-2) desde jsDelivr, o unpkg si falla, con verificación de integridad (SRI).
+   - Leaflet 1.9.4 (BSD-2), copia local en assets/site/vendor/leaflet/ (los mismos archivos del paquete: se comprueban con SRI).
    - Las imágenes del mapa, desde los servidores de OpenStreetMap (© colaboradores de OpenStreetMap). Su política admite
      un uso liviano como este; con mucho tráfico hay que contratar un proveedor de mapas y cambiar TILES.
    - La conversión dirección ↔ punto la hace geo.js con archivos del propio sitio (no consulta servicios externos).
@@ -17,7 +17,7 @@
    Si el mapa no carga, la dirección escrita sigue funcionando igual. */
 (() => {
   const d = document;
-  const CDN = ['https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/', 'https://unpkg.com/leaflet@1.9.4/dist/'];
+  const LEAFLET = new URL('vendor/leaflet/', d.currentScript.src).href;  // junto a este archivo, sea cual sea la página
   const SRI = {
     'leaflet.css': 'sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H',
     'leaflet.js': 'sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH'
@@ -77,7 +77,7 @@
     tag('link', { rel: 'stylesheet', href: `${base}leaflet.css`, integrity: SRI['leaflet.css'], crossOrigin: 'anonymous' }),
     window.L ? null : tag('script', { src: `${base}leaflet.js`, integrity: SRI['leaflet.js'], crossOrigin: 'anonymous' })
   ]);
-  const ready = () => (lib ||= desde(CDN[0]).catch(() => desde(CDN[1])).then(() => window.L).catch((e) => { lib = null; throw e; }));
+  const ready = () => (lib ||= desde(LEAFLET).then(() => window.L).catch((e) => { lib = null; throw e; }));
 
   const redondo = (ll) => ({ lat: Number(ll.lat.toFixed(5)), lng: Number(ll.lng.toFixed(5)) });
   /* Enlace público de Google Maps (formato oficial «Maps URLs»); abre la app en el teléfono.

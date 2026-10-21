@@ -2,14 +2,15 @@
    Movimiento: suave y sin rebote; nada gira ni se agranda al pasar el cursor.
    El hero, la tarjeta, las filas y las ventanas de selección también los usan HDS y Campañas (bloque al final). */
 :root {
-  /* Tono oscuro del hero y de la franja de cierre, y su versión en componentes para los velos: violeta profundo */
-  --navy: #17112e; --stage: 23 17 46;
-  --tone-amber: #b45309; --tone-amber-soft: #fdf1e2;
-  --tone-teal: #0f766e; --tone-teal-soft: #e5f3f1;
-  /* Degradados de los planes: naranjo, lila (el color de la marca) y verde azulado */
-  --grad-express: radial-gradient(120% 90% at 15% 0%, rgb(253 186 116 / .5), transparent 55%), linear-gradient(145deg, #ea580c 0%, #b4400c 55%, #7c2d12 100%);
-  --grad-programado: radial-gradient(120% 90% at 15% 0%, rgb(216 190 255 / .5), transparent 55%), linear-gradient(145deg, #9466e6 0%, #7447c9 55%, #4b2b8c 100%);
-  --grad-flexible: radial-gradient(120% 90% at 15% 0%, rgb(153 246 228 / .4), transparent 55%), linear-gradient(145deg, #0d9488 0%, #0f766e 55%, #134e4a 100%);
+  /* Tono oscuro del hero y de la franja de cierre, y su versión en componentes para los velos: el lila de la marca, profundo */
+  --navy: #190a33; --stage: 25 10 51;
+  /* Tonos de los planes para texto y botones (naranjo oscuro: el puro no da contraste) y sus fondos suaves */
+  --tone-amber: #C4460A; --tone-amber-soft: #FFF6D2;
+  --tone-teal: var(--azul); --tone-teal-soft: #E7F5FE;
+  /* Degradados de los planes, con los pares de la paleta: naranjo (Express), lila (Programado) y azul (Espera y ahorra) */
+  --grad-express: radial-gradient(120% 90% at 15% 0%, rgb(255 227 87 / .55), transparent 55%), linear-gradient(145deg, #FF8A3D 0%, #FF651C 50%, #D94A0A 100%);
+  --grad-programado: radial-gradient(120% 90% at 15% 0%, rgb(235 169 252 / .55), transparent 55%), linear-gradient(145deg, #8B3DF0 0%, #6708C7 55%, #45058A 100%);
+  --grad-flexible: radial-gradient(120% 90% at 15% 0%, rgb(168 223 253 / .5), transparent 55%), linear-gradient(145deg, #3C43F2 0%, #0E14DA 55%, #090D94 100%);
 }
 
 /* ---------- Hero: escenario con las tres opciones y un panel que cambia en el mismo lugar ---------- */
@@ -681,7 +682,6 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .guide-q:focus { outline: none; }
 .guide-help { margin-top: 6px; color: var(--muted); font-size: .9375rem; }
 .guide-area, .guide-search, .guide-describe, .guide-step > .picks { margin-top: 18px; }
-.guide-extra { margin-top: 10px; }
 .guide-describe[hidden] { display: none; }
 .guide-input {
   width: 100%; min-height: 50px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 14px; background: #fff;
@@ -711,12 +711,6 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 @media print { .picker { display: none !important; } }
 .when .cal { max-width: none; }
 .when .cal-day { aspect-ratio: auto; height: 40px; }
-.guide .is-tiles { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; }
-.guide .is-tiles .opt { padding: 10px 6px 8px; gap: 6px; }
-.guide .is-tiles .opt img { width: 44px; height: 44px; border-radius: 12px; }
-.guide .guide-extra { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.guide .guide-extra .opt { min-height: 48px; padding: 8px 12px; }
-@media (max-width: 560px) { .guide .guide-extra { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------- Campo de conversación del hero ---------- */
 .ask {
@@ -786,7 +780,18 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .opts.is-tiles { grid-auto-rows: 1fr; }
 .is-tiles .opt img, .is-tiles .opt-icon { width: 52px; height: 52px; border-radius: 14px; }
 .is-tiles .opt-icon svg { width: 22px; height: 22px; }
-.is-tiles .opt-text strong { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+/* Tres líneas: los nombres largos («Envases y materiales contaminados») se leen completos */
+.is-tiles .opt-text strong { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+/* Teléfono: en la ventana, los residuos van en dos columnas de filas compactas (imagen a la izquierda y el nombre
+   completo), para que todas las categorías de un tipo se vean sin bajar (pedido del cliente, 09-10-2026) */
+@media (max-width: 560px) {
+  .picker .opts.is-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; gap: 6px; }
+  .picker .is-tiles .opt { flex-direction: row; align-items: center; gap: 10px; min-height: 52px; padding: 7px 10px; text-align: left; }
+  .picker .is-tiles .opt img, .picker .is-tiles .opt-icon { width: 36px; height: 36px; border-radius: 10px; }
+  .picker .is-tiles .opt-text strong { line-height: 1.25; }
+  .picker .is-tiles .opt-check { top: 50%; right: 8px; translate: 0 -50%; }
+  .picker .is-tiles .opt[aria-pressed="true"] { padding-right: 32px; }
+}
 .is-grid .opt-text small { font-size: var(--fs-caption); }
 @media (max-width: 640px) { .picker-tabs { margin-inline: 18px; } }
 
@@ -1271,17 +1276,20 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
   .site-header.has-docs .nav a:not(.btn) { padding-inline: 9px; }
   .site-header.has-docs .nav .btn { margin-left: 4px; }
 }
-/* Marca: el camión y el nombre son las piezas del logo del cliente (assets/transporte/logo, hechas con tools/logo.py).
-   En el encabezado van lado a lado dentro de la fila de 56 px; en el pie va el logo completo. No se reemplazan por
-   texto ni por otro ícono: si cambia el logo (o el azul del sitio), se vuelve a ejecutar tools/logo.py. */
-.brand-mark { flex: none; width: auto; height: 36px; }
-.brand-name { flex: none; width: auto; height: 31px; }
-.brand-logo img { width: 138px; height: auto; }
-/* En escritorio el logo va un poco más chico (pedido del cliente) */
-@media (min-width: 861px) { .brand-mark { height: 32px; } .brand-name { height: 27.5px; } }
-/* Con el menú completo (página principal), en la franja angosta de escritorio no caben el camión y el nombre: queda el
-   nombre. El camión nunca queda solo (pedido del cliente). */
-@media (min-width: 861px) and (max-width: 905px) { .site-header.nav-long .brand-mark { display: none; } }
+/* Marca (logotipo oficial del 15-10-2026): placa de dos franjas, «TRANSPORTE» y «AUTORIZADO», hecha con las piezas de
+   assets/transporte/logo (tools/logo.py). Son dos capas recortadas con máscara, como en el original: abajo lo claro
+   (--logo-b) y encima lo oscuro (--logo-a). Mientras el puntero está sobre el logo toma otro par de la paleta de la
+   marca; al salir vuelve a sus colores (site.js). No se reemplaza por texto ni por otro ícono. Si la máscara no está
+   disponible, se muestra el logotipo como imagen. */
+.logo-ta { position: relative; display: block; flex: none; height: 38px; aspect-ratio: 4040 / 1240; background: url("../transporte/logo/logotipo.svg") center / contain no-repeat; }
+.logo-ta.is-grande { height: 60px; }
+/* Las dos capas son seudoelementos: una máscara en el propio .logo-ta recortaría también la capa de encima */
+@supports ((-webkit-mask-image: none) or (mask-image: none)) {
+  .logo-ta { background: none; }
+  .logo-ta::before, .logo-ta::after { content: ""; position: absolute; inset: 0; -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; transition: background-color .35s var(--ease); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .logo-ta::before { background: var(--logo-b, #FDF7FF); -webkit-mask-image: url("../transporte/logo/claro.svg"); mask-image: url("../transporte/logo/claro.svg"); }
+  .logo-ta::after { background: var(--logo-a, #6708C7); -webkit-mask-image: url("../transporte/logo/oscuro.svg"); mask-image: url("../transporte/logo/oscuro.svg"); }
+}
 .nav-docs { display: inline-flex; align-items: center; gap: 4px; }
 .nav-docs-chev { display: grid; place-items: center; transition: rotate .35s var(--ease); }
 .nav-docs-chev svg { width: 16px; height: 16px; }
@@ -1492,16 +1500,16 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 /* Servicios: tres tarjetas, cada una con su color: verde (no peligrosos), rojo (peligrosos) y el lila de la marca
    (arriendo de contenedores). El color va en una línea bajo la foto y en el botón. */
 .services.is-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.service.is-safe { --accent: var(--safe); --accent-strong: #15613b; --accent-soft: var(--safe-soft); }
-.service.is-hazard { --accent: var(--hazard); --accent-strong: #9c2518; --accent-soft: var(--hazard-soft); }
-.service-media { border-bottom: 3px solid var(--accent); }
+.service.is-safe { --accent: var(--safe); --accent-strong: #03662A; --accent-soft: var(--safe-soft); --linea: var(--verde); }
+.service.is-hazard { --accent: var(--hazard); --accent-strong: #C00A25; --accent-soft: var(--hazard-soft); --linea: var(--rojo); }
+.service-media { border-bottom: 3px solid var(--linea, var(--accent)); }
 @media (max-width: 1000px) { .services.is-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .services.is-3 { grid-template-columns: minmax(0, 1fr); } }
 
-/* Tipo de retiro: cada plan con su color (naranjo, lila y verde azulado, los mismos de «Planes») */
-.seg [data-modalidad] { --tone: var(--accent-strong); color: var(--tone); }
-.seg [data-modalidad="express"] { --tone: #b84310; }
-.seg [data-modalidad="flexible"] { --tone: #0f766e; }
+/* Tipo de retiro: cada plan con su color (naranjo, lila y azul, los mismos de «Planes») */
+.seg [data-modalidad] { --tone: var(--accent); color: var(--tone); }
+.seg [data-modalidad="express"] { --tone: var(--tone-amber); }
+.seg [data-modalidad="flexible"] { --tone: var(--tone-teal); }
 .seg [data-modalidad][aria-checked="true"] { background: var(--tone); color: #fff; box-shadow: none; }
 .seg [data-modalidad]:focus-visible { outline-color: var(--tone); }
 
@@ -1522,10 +1530,9 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 @media (prefers-reduced-motion: no-preference) { .opt-other:not([hidden]) { animation: hero-fade-in .25s ease both; } }
 /* Asistente: «Continuar» aparece solo al elegir «Otro» */
 .guide-next[hidden] { display: none; }
-/* Asistente: los dos tipos de residuo como pestañas, con todas sus categorías debajo (misma pieza de las ventanas) */
-.guide-tabs { margin: 18px 0 12px; }
-.guide-tabs + .guide-area { margin-top: 0; }
-.guide .guide-extra { grid-template-columns: minmax(0, 1fr); }  /* una sola opción aparte: «No sé cuál es» */
+/* Asistente: el primer paso ofrece solo los dos tipos de residuo; cada uno abre la ventana con todas sus categorías */
+.guide-tipos .opt-icon { color: var(--verde); }
+.guide-tipos [data-tipo="peligroso"] .opt-icon { color: var(--rojo); }
 /* Horario: con cinco opciones, la última ocupa la fila completa */
 .time .opts.is-cards .opt:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
@@ -1534,10 +1541,80 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
    quedan en «WhatsApp» y «Correo»; copiar y editar van juntos: si no caben en la fila, bajan los dos. */
 .foot-more { display: contents; }
 .has-mail > .foot-label { flex: none; color: var(--ink-2); font-size: var(--fs-small); font-weight: 700; }
-.has-mail .btn-pre { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.has-mail .btn-pre, .has-envio .btn-pre { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .has-mail .btn-cap { display: inline-block; text-transform: capitalize; }
-.has-mail > a.btn { flex: 1 1 auto; }
-.has-mail > .foot-more { display: flex; gap: 8px; }
+.has-mail > a.btn, .has-envio > a.btn, .has-envio > [data-enviar], .has-envio > [data-en-linea] { flex: 1 1 auto; }
+.has-mail > .foot-more, .has-envio > .foot-more { display: flex; gap: 8px; }
+/* Sobre WordPress el resumen se envía al servidor («Enviar solicitud») y WhatsApp queda al lado, como alternativa */
+[data-enviar]:disabled { opacity: .6; cursor: progress; }
+
+/* Fotografías adjuntas (solo sobre WordPress; site.js: window.SITE.fotos). Franja fija sobre los botones, siempre a la
+   vista: un botón para adjuntar y las miniaturas al lado; tocar una miniatura la quita. */
+.fotos { flex: none; padding: 12px 20px; border-top: 1px solid var(--line); background: #fff; }
+.fotos[hidden] { display: none; }
+.fotos-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.fotos-add { flex: none; }
+.fotos-add[hidden] { display: none; }
+.fotos-add:disabled { opacity: .6; }
+.fotos.is-busy .fotos-add { cursor: progress; }
+.fotos-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.fotos-item { position: relative; display: block; width: 48px; height: 48px; padding: 0; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--bg-sunk); cursor: pointer; transition: border-color .2s; }
+.fotos-item img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fotos-item i { position: absolute; top: 3px; right: 3px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 99px; background: rgb(21 26 45 / .72); color: #fff; }
+.fotos-item:hover { border-color: var(--ink-2); }
+.fotos-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.fotos.is-locked .fotos-item { cursor: default; }
+.fotos.is-locked .fotos-item i { display: none; }
+.fotos-hint { margin-top: 8px; color: var(--muted); font-size: var(--fs-caption); line-height: 1.45; }
+@media (max-width: 560px) { .fotos { padding-inline: 14px; } }
+
+/* Capa «Enviando…» (site.js: window.SITE.enviando): cubre el resumen o el asistente, bajo su encabezado, mientras la
+   solicitud sube. El anillo gira; con fotografías muestra cuánto se ha subido. Termina con el visto y el número. */
+.hcard .summary, .hcard-panel.guide { position: relative; }
+.enviando { position: absolute; inset: 0; z-index: 4; display: grid; place-content: center; justify-items: center; gap: 14px; padding: 24px; background: #fff; text-align: center; }
+.enviando-anillo { position: relative; display: grid; place-items: center; width: 72px; height: 72px; color: var(--accent); }
+.enviando-anillo > svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.enviando-anillo circle { fill: none; stroke-width: 4; }
+.enviando-anillo .pista { stroke: var(--bg-sunk); }
+.enviando-anillo .avance { stroke: currentColor; stroke-linecap: round; stroke-dasharray: 26 74; }
+.enviando.con-avance .avance { stroke-dasharray: 100; stroke-dashoffset: calc(100 - var(--p, 0)); transition: stroke-dashoffset .3s linear; }
+.enviando-anillo i { display: grid; }
+.enviando .summary-check { width: 56px; height: 56px; }
+.enviando-texto { color: var(--ink); font-size: var(--fs-body-sm); font-weight: 800; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes enviando-in { from { opacity: 0; } }
+  @keyframes enviando-giro { to { transform: rotate(270deg); } }
+  @keyframes enviando-vuelo { 0%, 100% { transform: translate(-1.5px, 1.5px); } 50% { transform: translate(1.5px, -1.5px); } }
+  .enviando { animation: enviando-in .25s ease both; transition: opacity .2s ease; }
+  .enviando:not(.con-avance) .enviando-anillo > svg { animation: enviando-giro 1.1s linear infinite; }
+  .enviando-anillo i { animation: enviando-vuelo 1.8s ease-in-out infinite; }
+  .enviando .summary-check path { animation: check-draw .5s .1s var(--ease) both; }
+  .enviando.is-saliendo { opacity: 0; }
+}
+
+/* Envío al asistente (form[data-cotizar-api], transporte-ui.js): el aviso de privacidad sobre «Preparar solicitud», el aviso de
+   un envío que no salió y «Enviar solicitud», en su propia fila; debajo quedan WhatsApp, copiar y editar, como sin envío.
+   El campo trampa queda fuera de la vista. */
+.step-nav > .cotizar-aviso { flex: 1 1 100%; padding: 0 2px 4px; }
+.step-nav:has([type="submit"][hidden]) > .cotizar-aviso { display: none; }  /* solo en el último paso, junto a «Preparar solicitud» */
+.acepto { display: flex; align-items: flex-start; gap: 8px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; }
+.acepto input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); }
+.acepto input[aria-invalid] { outline: 2px solid #b42318; outline-offset: 2px; }
+.acepto a { color: var(--accent-strong); font-weight: 700; text-underline-offset: 3px; }
+.trampa { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.cotizar-estado { margin-bottom: 14px; padding: 10px 12px; border-radius: var(--r-s); background: #fdecea; color: #b42318; font-size: var(--fs-small); font-weight: 600; line-height: 1.45; }
+/* Sin dirección del asistente: aviso de que el envío en línea no está disponible (no es un error de la persona) */
+.cotizar-estado.is-info { background: var(--bg-sunk); color: var(--ink-2); font-weight: 500; }
+/* El widget de Turnstile, entre el resumen y los botones: no ocupa lugar hasta que pide resolver algo (.is-visible) */
+.cotizar-humano { flex: none; height: 0; overflow: hidden; padding-inline: 20px; }
+.cotizar-humano.is-visible { height: auto; padding-top: 12px; }
+.hcard-foot [data-cotizar-enviar] { flex: 1 1 100%; }
+.hcard-foot [data-cotizar-enviar]:disabled { opacity: .7; cursor: progress; }
+/* En el teléfono, bajo «Enviar solicitud» el botón dice solo «WhatsApp» (el lector de pantalla oye «Enviar por WhatsApp»):
+   así WhatsApp, copiar y editar caben en una fila */
+@media (max-width: 520px) {
+  .is-cotizar .btn-pre { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 
 /* Hero: cuarta opción (enlace a recicladordebase.cl) y foto por opción */
 .routes-tabs { display: contents; }
@@ -1631,3 +1708,79 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
   .cards-compact .card > :not(.card-media) { grid-column: 2; }
   .cards-compact .card .card-foot { padding-top: 8px; }
 }
+
+/* ---------- Checklist de autorización en línea (ayuda/checklist-autorizacion-transporte.html; assets/site/checklist.js) ----------
+   Una fila por punto: el círculo marca «Cumple» con un toque; debajo del texto, su estado, que abre la ventana de
+   selección con los cinco estados de la planilla. Arriba, una barra fija con el avance. Sin scripts se lee igual. */
+.download-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.ck .guia-head { margin-bottom: 8px; }
+.ck-barra { position: sticky; top: 84px; z-index: 5; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px 16px; margin-top: 28px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: rgb(255 255 255 / .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.ck-barra[hidden] { display: none; }
+.ck-cuenta { color: var(--ink-2); font-size: var(--fs-small); font-weight: 700; }
+.ck-cuenta strong { color: var(--ink); font-size: var(--fs-body); font-variant-numeric: tabular-nums; }
+.ck-progreso { grid-column: 1 / -1; height: 6px; overflow: hidden; border-radius: 99px; background: var(--bg-sunk); }
+.ck-progreso i { display: block; width: var(--p, 0%); height: 100%; border-radius: inherit; background: var(--safe); transition: width .45s var(--ease); }
+.ck-borrar { grid-column: 2; grid-row: 1; padding: 6px 2px; border: 0; background: none; color: var(--ink-2); font: inherit; font-size: var(--fs-small); font-weight: 800; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; cursor: pointer; }
+.ck-borrar:hover { color: var(--ink); }
+.ck-borrar[hidden] { display: none; }
+.ck-leyenda { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 2px 0; padding: 0; list-style: none; color: var(--muted); font-size: var(--fs-caption); font-weight: 700; }
+.ck-leyenda li { display: inline-flex; align-items: center; gap: 6px; }
+.ck-leyenda i { width: 10px; height: 10px; border-radius: 99px; border: 2px solid var(--line-strong); }
+.ck-leyenda .is-ok i { border-color: var(--safe); background: var(--safe); }
+.ck-leyenda .is-wait i { border-color: var(--tone-amber); }
+.ck-leyenda .is-no i { border-color: var(--hazard); background: var(--hazard); }
+.ck-leyenda .is-na i { border-color: var(--muted); background: var(--bg-sunk); }
+
+.ck-bloque { margin-top: 40px; scroll-margin-top: 170px; }
+.ck-bloque h2 { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--ink); font-size: var(--fs-card); letter-spacing: -.01em; }
+.ck-num { color: var(--accent); font-variant-numeric: tabular-nums; }
+.ck-avance { color: var(--muted); font-size: var(--fs-small); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ck-bloque.is-completo .ck-avance { color: var(--safe); }
+.ck-lista { margin: 0; padding: 0; list-style: none; }
+.ck-punto { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px 12px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.ck-marca { display: grid; place-items: center; width: 44px; height: 44px; margin: -6px 0 0 -6px; padding: 0; border: 0; border-radius: 99px; background: none; color: transparent; cursor: pointer; }
+.ck-marca::before { content: ""; grid-area: 1 / 1; width: 28px; height: 28px; border: 2px solid var(--line-strong); border-radius: 99px; background: #fff; transition: border-color .2s, background-color .2s; }
+.ck-marca svg { grid-area: 1 / 1; position: relative; width: 16px; height: 16px; }
+.ck-marca:hover::before { border-color: var(--ink-2); }
+.ck-marca:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.ck-marca:disabled { cursor: default; }
+.ck-marca:disabled:hover::before { border-color: var(--line-strong); }
+.ck-punto[data-estado="cumple"] .ck-marca { color: #fff; }
+.ck-punto[data-estado="cumple"] .ck-marca::before { border-color: var(--safe); background: var(--safe); }
+.ck-punto[data-estado="confirmar"] .ck-marca::before { border-color: var(--tone-amber); }
+.ck-punto[data-estado="no-cumple"] .ck-marca::before { border-color: var(--hazard); background: var(--hazard-soft, #FEEDE8); }
+.ck-punto[data-estado="no-aplica"] .ck-marca::before { border-color: var(--muted); background: var(--bg-sunk); }
+.ck-criterio { color: var(--ink); font-size: var(--fs-body); font-weight: 700; line-height: 1.5; }
+.ck-n { display: inline-block; min-width: 1.9em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ck-evidencia { margin-top: 4px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.55; }
+.ck-texto .law-refs { margin-top: 4px; }
+.ck-estado { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-top: 8px; padding: 0 10px 0 12px; border: 1px solid var(--line-strong); border-radius: 99px; background: #fff; color: var(--ink-2); font: inherit; font-size: var(--fs-caption); font-weight: 800; cursor: pointer; transition: border-color .2s, color .2s, background-color .2s; }
+.ck-estado:hover { border-color: var(--ink-2); color: var(--ink); }
+.ck-estado:disabled { display: none; }
+.ck-estado svg { width: 14px; height: 14px; }
+.ck-punto[data-estado="cumple"] .ck-estado { border-color: var(--safe); color: var(--safe); }
+.ck-punto[data-estado="confirmar"] .ck-estado { border-color: var(--tone-amber); color: var(--tone-amber); }
+.ck-punto[data-estado="no-cumple"] .ck-estado { border-color: var(--hazard); color: var(--hazard); }
+.ck-punto[data-estado="no-aplica"] .ck-estado { background: var(--bg-sunk); color: var(--muted); }
+@media (max-width: 560px) {
+  .ck-barra { top: 76px; padding: 12px 14px; }
+  .ck-punto { grid-template-columns: 40px minmax(0, 1fr); gap: 4px 10px; }
+  .ck-marca { width: 40px; height: 40px; }
+  .ck-criterio { font-size: var(--fs-body-sm); }
+  .ck-n { min-width: 1.7em; }
+}
+/* Con las marcas: el papel (o el PDF) muestra el estado de cada punto, sin botones ni barra */
+@media print {
+  .ck-page .dock, .ck-page .norm-actions, .ck-page .guia-sec, .ck-page .norm-crumbs, .ck-leyenda, .ck-borrar, .ck-estado svg { display: none !important; }
+  .ck-barra { position: static; border: 0; padding: 0; background: none; backdrop-filter: none; }
+  .ck-bloque { break-inside: auto; margin-top: 24px; }
+  .ck-punto { break-inside: avoid; padding: 10px 0; }
+  .ck-estado { display: inline-flex !important; min-height: 0; margin-top: 4px; padding: 0; border: 0 !important; background: none !important; }
+  .ck-estado::before { content: "Estado: "; font-weight: 700; color: var(--muted); }
+}
+
+/* Sello «Yo Reciclo» del pie (logo entregado por el cliente el 15-10-2026): pequeño, a modo de distintivo, con el texto
+   del logo aún legible. No se presenta como certificación. */
+.site-footer .sello { margin-top: 18px; }
+.site-footer .sello img { display: block; width: auto; height: 85px; }
+@media (max-width: 560px) { .site-footer .sello img { height: 80px; } }

@@ -128,8 +128,16 @@
   const PERIODS = [['mensual', 'Mensual'], ['semanal', 'Semanal'], ['diario', 'Diario']];
   /* Vehículos y contenedores que se pueden pedir. Cada uno dice con qué tipo de residuo está disponible
      (tipos: 'no-peligroso', 'peligroso'); con otro tipo se muestra, pero no se puede elegir.
-     NO INVENTAR: la lista la entrega el cliente. Vacía, la fila correspondiente no aparece en el formulario. */
-  const VEHICLES = [];
+     NO INVENTAR: la lista la entrega el cliente. Vacía, la fila correspondiente no aparece en el formulario.
+     Vehículos: lista del cliente (09-10-2026), sin distinción por tipo de residuo ni capacidades: todos quedan
+     disponibles para ambos tipos y sin descripción. La primera opción deja la elección al equipo.
+     Contenedores: el cliente todavía no entrega la lista. */
+  const AMBOS = ['no-peligroso', 'peligroso'];
+  const VEHICLES = [
+    { label: 'Elijan ustedes', hint: 'Lo definimos según tu residuo y la cantidad', tipos: AMBOS },
+    ...['Camión ampliroll (hook lift)', 'Camión cerrado 3/4', 'Camión recolector/compactador de residuos trasero', 'Camioneta', 'Camión doble', 'Camión con acoplado', 'Camión cerrado de mayor tamaño']
+      .map((label) => ({ label, tipos: AMBOS }))
+  ];
   const CONTAINERS = [];
   const allowed = (item, tipo) => !tipo || tipo === 'no-se' || item.tipos.includes(tipo);
   const TIPO_LABEL = { 'no-peligroso': 'No peligroso', peligroso: 'Peligroso', 'no-se': 'No lo sé' };

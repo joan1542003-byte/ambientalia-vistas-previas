@@ -201,7 +201,7 @@
       /* Vehículo (opcional): la disponibilidad cambia con el tipo de residuo */
       vehiculo: async () => {
         const v = await Picker.choose({
-          title: '¿Qué vehículo necesitas?', sub: 'La disponibilidad depende del tipo de residuo. Lo confirmamos al cotizar.',
+          title: '¿Qué vehículo necesitas?', sub: 'Es opcional: si no lo tienes claro, lo elegimos nosotros. La disponibilidad se confirma al cotizar.',
           groups: [{ options: offer(PICK.VEHICLES, field('tipo').value) }], value: field('vehiculo').value, layout: 'list'
         });
         if (v) set('vehiculo', v);
@@ -412,13 +412,14 @@
   }
 
   /* ---------- Fotos del residuo ([data-adjuntos], al final del formulario) ----------
-     Se arrastran a la página, se pegan o se eligen (en el teléfono, también desde la cámara). No salen del navegador:
-     wa.me y mailto no admiten adjuntos y el formulario no tiene dónde subirlas. Por eso el resumen las muestra aparte y
-     ofrece llevarlas al chat: «Compartir fotos» (menú del sistema, donde existe) o, con puntero, copiar cada una para
-     pegarla. Cada imagen se reduce a 1600 px en JPEG: pesa menos y no lleva los datos de la cámara (p. ej., la ubicación). */
+     Se arrastran a la página, se pegan o se eligen (en el teléfono, también desde la cámara). Con el envío al asistente
+     (más abajo) viajan con «Enviar solicitud» (zone.fotos); data-max es el tope que el asistente acepta por solicitud.
+     Por WhatsApp no viajan (wa.me no admite adjuntos): el resumen las muestra aparte y ofrece llevarlas al chat:
+     «Compartir fotos» (menú del sistema, donde existe) o, con puntero, copiar cada una para pegarla. Cada imagen se
+     reduce a 1600 px en JPEG: pesa menos y no lleva los datos de la cámara (p. ej., la ubicación). */
   const zone = d.querySelector('[data-adjuntos]');
   if (zone) {
-    const MAX = Number(zone.dataset.max) || 5;
+    const MAX = Number(zone.dataset.max) || 2;
     const SIDE = 1600;
     const owner = zone.closest('form');
     const scope = zone.closest('.hcard-panel') || owner;  // el formulario y su resumen
@@ -473,7 +474,10 @@
         : `<li class="adjunto"><img src="${it.url}" alt="Foto ${i + 1} del residuo"></li>`)).join('');
       const paso = canCopy ? (one ? 'haz clic en la foto para copiarla y pégala' : 'haz clic en cada foto para copiarla y pégala')
         : canShare ? (one ? 'compártela' : 'compártelas') : (one ? 'adjúntala' : 'adjúntalas');
-      envio.querySelector('.adjuntos-nota').textContent = `${one ? 'La foto va' : 'Las fotos van'} aparte del texto. Envía primero el mensaje y después ${paso} en ese mismo chat.`;
+      /* Con el envío al asistente (más abajo), las fotos viajan con «Enviar solicitud»; WhatsApp queda como contacto */
+      envio.querySelector('.adjuntos-nota').textContent = 'cotizarOn' in (owner?.dataset || {})
+        ? `${one ? 'La foto va' : 'Las fotos van'} con tu solicitud al presionar «Enviar solicitud». Si prefieres WhatsApp, envía primero el mensaje y después ${paso} en ese mismo chat.`
+        : `${one ? 'La foto va' : 'Las fotos van'} aparte del texto. Envía primero el mensaje y después ${paso} en ese mismo chat.`;
       const share = envio.querySelector('[data-adjuntos-share]');
       share.hidden = !canShare;
       share.querySelector('span').textContent = one ? 'Compartir foto' : 'Compartir fotos';
@@ -495,6 +499,7 @@
             : (coarse.matches ? 'Opcional: toma una foto o elígela de tu galería' : 'Opcional: arrastra las imágenes aquí o elígelas');
     };
     const sync = () => { paintZone(); paintEnvio(); };
+    zone.fotos = () => ready().map((it) => it.file);  // las fotos ya reducidas, para el envío al asistente
     /* Si las miniaturas quedan bajo el borde de la tarjeta (o en su difuminado), la lista baja lo justo para mostrarlas;
        la página no se mueve */
     const reveal = () => Promise.resolve(resize?.finished).catch(() => {}).then(() => {
@@ -601,6 +606,215 @@
       }
     });
     sync();
+  }
+
+  /* ---------- Envío de la cotización al asistente (form[data-cotizar-api]) ----------
+     El atributo declara que las cotizaciones de este formulario las recibe solo el asistente de Transporte Autorizado
+     (servicio Laravel, que las registra en Odoo): POST /api/quotes, una sola solicitud por envío. WordPress no las
+     intercepta (site.js) y, si el envío falla o no hay dirección, no se mandan a otro lado en su lugar.
+     - La dirección la da window.SITE.asistente (site.js): la del plugin en WordPress, la del atributo o, en este
+       computador, ?asistente=… Sin dirección, el resumen avisa que el envío en línea no está disponible; quedan Copiar
+       y el enlace de WhatsApp, que la persona usa si quiere (nada se abre ni se envía solo).
+     - El resumen ofrece «Enviar solicitud»: los datos de contacto, las mismas líneas que van a WhatsApp
+       (form.summaryRows, site.js) y las fotos llegan a Odoo como una solicitud del chat, a la misma persona.
+     - Pide aceptar las condiciones y el aviso de privacidad (una casilla) y manda si aceptó el contacto comercial
+       (opcional, sin marcar). Lleva el campo trampa («website», que una persona no ve) y, con la clave pública de
+       Turnstile (window.TA_API.turnstile o data-turnstile), el token del widget, que se canjea una vez: se renueva
+       tras cada intento.
+     - Cada resumen lleva su identificador (client_request_id). Reintentar, o volver a preparar el mismo resumen sin
+       cambios mientras no se confirme, usa el mismo: el asistente responde «duplicada» con el mismo número en vez de
+       crear otra solicitud. Un resumen distinto, o uno nuevo después de una enviada, lleva otro.
+     - Las fotos son las del formulario ([data-adjuntos]); su tope (data-max) es el que acepta el asistente. */
+  const cotizar = d.querySelector('form[data-cotizar-api]');
+  const API = cotizar ? window.SITE.asistente(cotizar.dataset.cotizarApi) : '';
+  const resumen = cotizar && d.getElementById(cotizar.dataset.summary);
+  if (resumen && !API) {
+    const estado = resumen.querySelector('[data-cotizar-estado]');
+    cotizar.addEventListener('summary:ready', () => {
+      estado.textContent = 'El envío en línea no está disponible por ahora. Puedes copiar el resumen o escribirnos por WhatsApp.';
+      estado.classList.add('is-info');
+      estado.hidden = false;
+    });
+  }
+  if (API && resumen) {
+    const campos = cotizar.querySelector('[data-cotizar-campos]');
+    const aviso = campos.querySelector('input[name="aviso"]');
+    const comercial = campos.querySelector('input[name="comercial"]');  // opcional: no condiciona el envío
+    const trampa = cotizar.querySelector('[name="website"]');
+    const boton = resumen.querySelector('[data-cotizar-enviar]');
+    const estado = resumen.querySelector('[data-cotizar-estado]');
+    const titulo = resumen.querySelector('[data-resumen-titulo]') || resumen.querySelector('h2').lastChild;  // el texto, después del visto
+    const sub = resumen.querySelector('[data-resumen-bajada]') || resumen.querySelector('.hcard-sub');
+    const wa = resumen.querySelector('[data-send]');
+    const editar = resumen.querySelector('[data-edit]');
+    const fotosEnvio = resumen.querySelector('[data-adjuntos-envio]');
+    const humano = resumen.querySelector('[data-turnstile-widget]');
+    const sitekey = window.TA_API?.turnstile || cotizar.dataset.turnstile;
+    const rotuloEditar = editar.lastChild;
+    const LISTA = { titulo: titulo.textContent, editar: rotuloEditar.textContent, sub: 'Revisa los datos y envíala. Revisaremos los antecedentes antes de confirmar disponibilidad, valor y condiciones.' };
+    const CONTACTO = { nombre: 'name', empresa: 'company', correo: 'email', telefono: 'phone' };  // van aparte: no se repiten en el detalle
+    const ASUNTO = ['servicio', 'categoria', 'comuna'];  // el título de la tarea: «Retiro de residuos · Papel y cartón · Quilicura»
+    const FOTOS_MAX = Number(zone?.dataset.max) || 2;  // CHAT_ATTACHMENTS_MAX del asistente
+    const FOTO_MAX_KB = 5120;                           // CHAT_ATTACHMENT_MAX_KB del asistente
+    const nuevoId = () => (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`).replace(/[^\w-]/g, '');
+    let id = nuevoId();
+    let firma = '';           // lo que lleva el resumen con ese identificador (texto, contacto comercial y fotos)
+    let confirmada = false;   // el asistente ya respondió que la recibió: lo siguiente es otra solicitud
+    let enviando = false;
+    const fotosDe = () => zone?.fotos?.() || [];
+    const firmaDe = (texto) => [texto, comercial.checked, ...fotosDe().map((f) => `${f.name}:${f.size}`)].join('\n');
+
+    cotizar.dataset.cotizarOn = '';
+    campos.hidden = false;
+    aviso.disabled = false;
+    comercial.disabled = false;
+    campos.querySelector('[data-cotizar-aviso]').href = `${API}/politica-de-privacidad`;
+    campos.querySelector('[data-cotizar-condiciones]').href = `${API}/condiciones-del-servicio`;
+    boton.hidden = false;
+    boton.parentElement.classList.add('is-cotizar');
+    sub.textContent = LISTA.sub;
+
+    /* Turnstile: el widget vive sobre los botones del resumen y solo se ve si pide resolver algo. Se carga con el primer
+       resumen, ya a la vista (así Cloudflare solo ve a quien prepara una solicitud). Su token dura cinco minutos (el
+       widget lo renueva solo) y sirve una vez */
+    let widget = null;
+    let token = '';
+    let esperan = [];
+    /* Quien envía apenas aparece el resumen espera unos segundos a que llegue el token */
+    const conToken = () => (token ? Promise.resolve(token) : new Promise((ok) => {
+      esperan.push(ok);
+      setTimeout(() => ok(''), 8000);
+    }));
+    const renovar = () => { token = ''; if (widget !== null) window.turnstile?.reset(widget); };
+    /* Un solo script para la página, aunque también lo pida el chat (agente-chat.js) */
+    const turnstileListo = () => window.__turnstile || (window.__turnstile = new Promise((ok, mal) => {
+      window.__turnstileListo = () => ok(window.turnstile);
+      const s = d.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__turnstileListo';
+      s.async = true;
+      s.onerror = mal;
+      d.head.append(s);
+    }));
+    let cargado = false;
+    const verificar = () => {
+      if (!sitekey || cargado) return;
+      cargado = true;
+      humano.hidden = false;
+      turnstileListo().then((ts) => {
+        widget = ts.render(humano, {
+          sitekey, appearance: 'interaction-only', language: 'es',
+          callback: (t) => { token = t; esperan.splice(0).forEach((ok) => ok(t)); },
+          'expired-callback': () => { token = ''; },
+          'error-callback': () => { token = ''; },
+          'before-interactive-callback': () => humano.classList.add('is-visible'),
+          'after-interactive-callback': () => humano.classList.remove('is-visible')
+        });
+      }).catch(() => { cargado = false; });
+    };
+
+    const avisar = (texto) => { estado.textContent = texto; estado.hidden = !texto; estado.classList.remove('is-info'); };
+    const preparar = (on) => {
+      boton.disabled = on;
+      boton.classList.toggle('is-loading', on);
+      boton.querySelector('span').textContent = on ? 'Enviando…' : 'Enviar solicitud';
+    };
+    /* Un resumen nuevo (o editado) vuelve a estar listo para enviar. El identificador se decide al enviar (firmaDe) */
+    cotizar.addEventListener('summary:ready', () => {
+      titulo.textContent = LISTA.titulo;
+      sub.textContent = LISTA.sub;
+      avisar('');
+      preparar(false);
+      boton.hidden = false;
+      rotuloEditar.textContent = LISTA.editar;
+      wa.querySelector('.btn-pre').textContent = 'Enviar por ';
+      setTimeout(verificar, 400);  // cuando el resumen terminó de entrar
+    });
+
+    const corto = (v, n) => (v.length > n ? `${v.slice(0, n - 1)}…` : v);
+    const cuerpo = async () => {
+      const filas = cotizar.summaryRows();
+      const valor = (nombre) => cotizar.elements[nombre]?.value.trim() || '';
+      const f = new FormData();
+      Object.entries(CONTACTO).forEach(([campo, clave]) => f.append(clave, valor(campo)));
+      f.append('privacy_accepted', aviso.checked ? '1' : '0');
+      f.append('marketing_accepted', comercial.checked ? '1' : '0');
+      f.append('subject', corto(ASUNTO.map((n) => filas.find((r) => r.name === n)?.value).filter(Boolean).join(' · '), 150));
+      filas.filter((r) => !(r.name in CONTACTO)).slice(0, 40).forEach((r, i) => {
+        f.append(`details[${i}][label]`, corto(r.label, 80));
+        f.append(`details[${i}][value]`, corto(r.value, 1000));
+      });
+      fotosDe().forEach((foto) => f.append('photos[]', foto, foto.name));
+      f.append('client_request_id', id);
+      f.append('website', trampa?.value || '');
+      if (sitekey) f.append('cf-turnstile-response', token);
+      return f;
+    };
+    /* Respuestas sin mensaje propio del asistente. Donde la solicitud pudo haber llegado (sin respuesta, error del
+       servidor) se pide reintentar, que no la duplica; WhatsApp solo se sugiere cuando es seguro que no llegó */
+    const POR_ESTADO = {
+      403: 'No pudimos enviar la solicitud desde esta página. Envíala por WhatsApp.',
+      409: 'Estamos recibiendo tu envío. Espera un momento y vuelve a intentarlo.',
+      413: 'Las fotos pesan demasiado para enviarlas juntas. Quita alguna o envíalas por WhatsApp.',
+      429: 'Hubo muchos envíos seguidos. Espera unos minutos o envía la solicitud por WhatsApp.'
+    };
+    const REINTENTAR = 'No pudimos confirmar el envío. Vuelve a intentarlo en un momento: si ya la habíamos recibido, no se duplicará.';
+    const listo = (ref) => {
+      titulo.textContent = 'Recibimos tu solicitud.';
+      sub.textContent = ref
+        ? `Tu número de solicitud es ${ref}. Revisaremos los antecedentes y te contactaremos para confirmar disponibilidad, valor y condiciones.`
+        : 'Revisaremos los antecedentes y te contactaremos para confirmar disponibilidad, valor y condiciones.';
+      avisar('');
+      boton.hidden = true;
+      rotuloEditar.textContent = 'Otra solicitud';  // vuelve al formulario con los datos de contacto ya escritos
+      if (fotosEnvio) fotosEnvio.hidden = true;  // ya van con la solicitud
+      wa.querySelector('.btn-pre').textContent = 'Escríbenos por ';
+      wa.href = window.SITE.whatsapp(ref ? `Hola, envié la solicitud ${ref} desde el sitio y quiero agregar información.` : 'Hola, envié una solicitud de cotización desde el sitio y quiero agregar información.');
+      resumen.focus({ preventScroll: true });
+      window.SITE.toast?.(ref ? `Solicitud ${ref} enviada` : 'Solicitud enviada');
+    };
+
+    boton.addEventListener('click', async () => {
+      if (enviando) return;
+      /* Lo que el asistente rechazaría por las fotos no sale (el formulario ya no deja pasar del tope) */
+      const fotos = fotosDe();
+      if (fotos.length > FOTOS_MAX || fotos.some((f) => f.size > FOTO_MAX_KB * 1024)) {
+        avisar(fotos.length > FOTOS_MAX ? `Puedes enviar hasta ${FOTOS_MAX} fotos con la solicitud. Quita alguna con «Editar».` : 'Una de las fotos pesa demasiado. Quítala con «Editar» o prueba con otra.');
+        return;
+      }
+      enviando = true;
+      avisar('');
+      preparar(true);
+      /* Mismo resumen que el intento anterior, aún sin confirmar: mismo identificador (no crea otra solicitud) */
+      const ahora = firmaDe(resumen.querySelector('pre').textContent);
+      if (confirmada || ahora !== firma) { id = nuevoId(); firma = ahora; confirmada = false; }
+      try {
+        /* Con Turnstile, sin el token no se envía: el asistente lo rechazaría */
+        if (sitekey && !(await conToken())) {
+          avisar(humano.classList.contains('is-visible')
+            ? 'Para enviar, completa la verificación que aparece sobre los botones.'
+            : 'No pudimos comprobar que eres una persona. Espera unos segundos y vuelve a intentarlo, o envía la solicitud por WhatsApp.');
+          return;
+        }
+        const r = await fetch(`${API}/api/quotes`, {
+          method: 'POST', headers: { Accept: 'application/json' }, body: await cuerpo(),
+          signal: AbortSignal.timeout ? AbortSignal.timeout(60000) : undefined
+        });
+        const json = await r.json().catch(() => ({}));
+        /* 201: recibida; 200 con «duplicate»: ya estaba recibida con este identificador (mismo número) */
+        if (r.ok && json.received) { confirmada = true; transition(() => listo(json.reference)); return; }
+        /* El identificador ya se usó con otros datos: el próximo intento lleva uno nuevo */
+        if (json.error === 'idempotency_conflict') firma = '';
+        /* Los mensajes del asistente ya vienen en español (validación y topes, con «error»); los genéricos, no */
+        const errores = Object.values(json.errors || {}).flat();
+        avisar((r.status === 422 && errores[0]) || (json.error && json.message) || POR_ESTADO[r.status] || REINTENTAR);
+      } catch {
+        avisar(REINTENTAR);
+      } finally {
+        enviando = false;
+        preparar(false);
+        if (sitekey && token) renovar();  // el token ya se usó; si no había, no hay nada que renovar
+      }
+    });
   }
 
   /* ---------- Hero: en escritorio la opción elegida cambia el propio hero; en móvil se abre en una hoja inferior ----------
@@ -1010,9 +1224,10 @@
   }
 
   /* NumberFlow (MIT, number-flow.barvian.me): los números cambian con una animación de dígitos. Opcional.
-     Solo se descarga donde hay un contador que lo usa (buscador, asistente o biblioteca de normas). */
+     Solo se carga donde hay un contador que lo usa (buscador, asistente o biblioteca de normas). Es una copia local
+     (assets/site/vendor/number-flow/): la dirección se resuelve respecto de este archivo. */
   if (motion.matches && d.querySelector('[data-finder], [data-guide], [data-lib]')) {
-    import('https://cdn.jsdelivr.net/npm/number-flow@0.6.2/+esm')
+    import('./vendor/number-flow/number-flow.js')
       .then(() => d.dispatchEvent(new Event('numberflow:ready')))
       .catch(() => {});
   }

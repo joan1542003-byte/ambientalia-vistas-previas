@@ -15,10 +15,12 @@
   const d = document;
   const panel = d.querySelector('[data-agente]');
   if (!panel) return;
-  /* Con servicio responde agente-chat.js: `data-agente-api`, o `data-agente-api-local` cuando el sitio corre en este
-     computador. `?agente=maqueta` fuerza la maqueta en local. La misma condición está en agente-chat.js */
-  const enLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).get('agente') !== 'maqueta';
-  if (panel.dataset.agenteApi || (enLocal && panel.dataset.agenteApiLocal)) return;
+  /* Con la dirección del asistente responde agente-chat.js (window.SITE.asistente: la del plugin, `data-agente-api` o,
+     en este computador, ?asistente=…), y sobre WordPress sin dirección agente-chat.js avisa que no está disponible: la
+     maqueta responde solo en las vistas previas. `?agente=maqueta` la fuerza en local. La misma condición está en
+     agente-chat.js */
+  const forzada = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).get('agente') === 'maqueta';
+  if (!forzada && (window.TA_API || window.SITE?.asistente?.(panel.dataset.agenteApi))) return;
   const marco = d.querySelector('[data-agente-sitio]');  // solo en agente-virtual.html: el sitio va detrás, en un <iframe>
   const boton = d.querySelector('[data-agente-abrir]');
   const charla = panel.querySelector('[data-agente-charla]');
