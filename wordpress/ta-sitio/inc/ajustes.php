@@ -1,7 +1,8 @@
 <?php
 /**
  * Ajustes del plugin: modo (privado o publicado), dirección de la vista privada, clave para compartirla, correo
- * que recibe las solicitudes y lo que el formulario rechaza (dominios de correo y países).
+ * que recibe las solicitudes, lo que el formulario rechaza (dominios de correo y países) y la dirección del asistente
+ * (servicio Laravel) que recibe las cotizaciones de Transporte, con la clave pública de Turnstile.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -21,8 +22,37 @@ function ta_sitio_opciones() {
 			'correos_bloqueados' => 'ru su xn--p1ai fr de yandex.com gmx.net gmx.com laposte.net',
 			// Países desde los que no se aceptan solicitudes (códigos de dos letras); solo si el servidor informa el país.
 			'paises_bloqueados'  => 'RU FR DE',
+			// Asistente de Transporte Autorizado (Laravel): recibe las cotizaciones de Transporte y las registra en Odoo.
+			// Una por instalación (pruebas o producción); vacía = el formulario no envía en línea.
+			'asistente'          => '',
+			'turnstile'          => '',  // clave pública del widget de Cloudflare Turnstile (la secreta va solo en el asistente)
 		)
 	);
+}
+
+/**
+ * Dirección del asistente tal como se guarda: https, sin usuario, clave, consulta ni fragmento, y sin barra final
+ * (http solo hacia este mismo computador, para probar). Vacía si no cumple.
+ */
+function ta_sitio_url_asistente( $valor ) {
+	$valor = trim( (string) $valor );
+	$p     = '' !== $valor ? wp_parse_url( $valor ) : false;
+	if ( ! is_array( $p ) || empty( $p['host'] ) || isset( $p['user'] ) || isset( $p['pass'] ) || isset( $p['query'] ) || isset( $p['fragment'] ) ) {
+		return '';
+	}
+	$esquema = strtolower( (string) ( $p['scheme'] ?? '' ) );
+	$host    = strtolower( (string) $p['host'] );
+	$ruta    = rtrim( (string) ( $p['path'] ?? '' ), '/' );
+	if ( ! ( 'https' === $esquema || ( 'http' === $esquema && in_array( $host, array( 'localhost', '127.0.0.1' ), true ) ) ) || ! preg_match( '#^[A-Za-z0-9.-]+$#', $host ) || ! preg_match( '#^[A-Za-z0-9/._~-]*$#', $ruta ) ) {
+		return '';
+	}
+	return $esquema . '://' . $host . ( isset( $p['port'] ) ? ':' . (int) $p['port'] : '' ) . $ruta;
+}
+
+/** Origen de una dirección (esquema, servidor y puerto), como lo nombran la política de contenido y CORS. */
+function ta_sitio_origen( $url ) {
+	$p = wp_parse_url( (string) $url );
+	return empty( $p['host'] ) || empty( $p['scheme'] ) ? '' : strtolower( $p['scheme'] ) . '://' . strtolower( $p['host'] ) . ( isset( $p['port'] ) ? ':' . (int) $p['port'] : '' );
 }
 
 /** ¿El correo es de un dominio bloqueado? Una regla sin punto es una terminación; con punto, un dominio y sus subdominios. */
@@ -153,16 +183,21 @@ add_action(
 			preg_match_all( '/\b[A-Z]{2}\b/', strtoupper( sanitize_text_field( wp_unslash( $_POST['paises_bloqueados'] ) ) ), $paises );
 			$op['paises_bloqueados'] = implode( ' ', array_unique( $paises[0] ) );
 		}
+		$pedida           = isset( $_POST['asistente'] ) ? sanitize_text_field( wp_unslash( $_POST['asistente'] ) ) : $op['asistente'];
+		$op['asistente']  = ta_sitio_url_asistente( $pedida );
+		$op['turnstile']  = isset( $_POST['turnstile'] ) ? substr( (string) preg_replace( '/[^A-Za-z0-9_-]/', '', sanitize_text_field( wp_unslash( $_POST['turnstile'] ) ) ), 0, 100 ) : $op['turnstile'];
 		if ( ! empty( $_POST['nueva_clave'] ) || '' === $op['clave'] ) {
 			$op['clave'] = wp_generate_password( 32, false, false );
 		}
 		update_option( 'ta_sitio', $op, false );
 		ta_sitio_reglas();
 		flush_rewrite_rules( true );
-		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] ) {
-			ta_sitio_purgar();  // la portada y la vista previa guardadas en caché son las de antes
+		// La portada y la vista previa guardadas en caché son las de antes (con la configuración y la política de antes)
+		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] ) {
+			ta_sitio_purgar();
 		}
-		wp_safe_redirect( add_query_arg( array( 'post_type' => 'ta_solicitud', 'page' => 'ta-sitio', 'guardado' => 1 ), admin_url( 'edit.php' ) ) );
+		$aviso = '' !== trim( $pedida ) && '' === $op['asistente'] ? array( 'asistente_invalido' => 1 ) : array();
+		wp_safe_redirect( add_query_arg( array( 'post_type' => 'ta_solicitud', 'page' => 'ta-sitio', 'guardado' => 1 ) + $aviso, admin_url( 'edit.php' ) ) );
 		exit;
 	}
 );
@@ -177,6 +212,9 @@ function ta_sitio_pagina_ajustes() {
 		<h1>Transporte Autorizado: sitio nuevo</h1>
 		<?php if ( isset( $_GET['guardado'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 			<div class="notice notice-success is-dismissible"><p>Ajustes guardados.</p></div>
+		<?php endif; ?>
+		<?php if ( isset( $_GET['asistente_invalido'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+			<div class="notice notice-error"><p>La dirección del asistente no se guardó: debe empezar con <code>https://</code> y no llevar consulta, fragmento ni datos de acceso. Mientras falte, el formulario de cotización no envía en línea.</p></div>
 		<?php endif; ?>
 		<p>El sitio nuevo vive dentro de este plugin. Mientras esté en <strong>privado</strong> solo se ve en la dirección de vista previa, con una sesión iniciada o con el enlace con clave; los buscadores no lo indexan. Al <strong>publicarlo</strong>, reemplaza la portada actual.</p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -208,6 +246,20 @@ function ta_sitio_pagina_ajustes() {
 				<tr>
 					<th scope="row"><label for="ta-remitente">Nombre con que se firman los correos</label></th>
 					<td><input id="ta-remitente" name="remitente" type="text" class="regular-text" value="<?php echo esc_attr( $op['remitente'] ); ?>"></td>
+				</tr>
+			</table>
+			<h2>Cotizaciones de Transporte</h2>
+			<p>El formulario de cotización envía cada solicitud, con sus fotografías, al asistente de Transporte Autorizado (servicio aparte), que la registra en Odoo y le da su número. WordPress no la recibe ni la guarda en «Solicitudes». El asistente de retiro lleva al mismo formulario. Sin dirección, el formulario avisa que el envío en línea no está disponible.</p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><label for="ta-asistente">Dirección del asistente</label></th>
+					<td><input id="ta-asistente" name="asistente" type="url" class="regular-text code" value="<?php echo esc_attr( $op['asistente'] ); ?>" placeholder="https://asistente.transporteautorizado.cl">
+						<p class="description">Con <code>https://</code>, la de esta instalación (pruebas o producción). Las páginas la pueden llamar (se agrega a su política de contenido). En el asistente, <code>CHAT_ALLOWED_ORIGINS</code> debe incluir <code><?php echo esc_html( ta_sitio_origen( home_url( '/' ) ) ); ?></code>.</p></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="ta-turnstile">Clave pública de Turnstile</label></th>
+					<td><input id="ta-turnstile" name="turnstile" type="text" class="regular-text code" value="<?php echo esc_attr( $op['turnstile'] ); ?>" autocomplete="off">
+						<p class="description">Opcional: solo si el asistente tiene la clave secreta del mismo widget de Cloudflare. La clave secreta nunca va aquí.</p></td>
 				</tr>
 			</table>
 			<h2>Protección del formulario</h2>

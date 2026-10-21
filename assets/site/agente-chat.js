@@ -11,6 +11,8 @@
    - Un enlace a este sitio se muestra en el sitio, como en la maqueta: las vistas del hero se abren con HERO.show, la
      «Ayuda» con su ancla y las secciones se recorren hasta su lugar. En agente-virtual.html, en el sitio de atrás.
    - Las fotos se reducen en el navegador a 1600 px en JPEG antes de subirlas (pesan menos y no llevan la ubicación).
+   - Contra bots, la puerta lleva el campo trampa («website», que una persona no ve) y, si la ventana trae
+     `data-turnstile` (la clave pública del widget de Cloudflare Turnstile), el token del widget, que sirve una vez.
    Sin lookbehind en las expresiones regulares (Safari < 16.4). */
 (() => {
   const d = document;
@@ -158,10 +160,22 @@
     aviso(texto);
   };
 
+  /* Turnstile: un solo script para la página, aunque lo pidan el chat y el formulario de cotización (transporte-ui.js) */
+  const TURNSTILE = panel.dataset.turnstile;
+  const turnstileListo = () => window.__turnstile || (window.__turnstile = new Promise((ok, mal) => {
+    window.__turnstileListo = () => ok(window.turnstile);
+    const s = d.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__turnstileListo';
+    s.async = true;
+    s.onerror = mal;
+    d.head.append(s);
+  }));
+
   /* ---------- La puerta: nadie conversa sin dejar sus datos ---------- */
   const puerta = () => {
     form.hidden = true;
     const error = h('p', { class: 'agente-error', role: 'alert' });
+    const humano = TURNSTILE ? h('div', { class: 'agente-humano' }) : null;
     const fila = (name, rotulo, extra) => h('label', { class: 'agente-campo' }, h('span', { text: rotulo }), h('input', { name, required: true, value: datos[name] || null, ...extra }));
     const f = h('form', { class: 'msg is-bot agente-puerta', novalidate: true },
       h('p', { class: 'msg-texto', text: 'Hola. Para empezar, escribe tu nombre, tu correo y tu teléfono.' }),
@@ -170,18 +184,37 @@
       fila('phone', 'Teléfono', { type: 'tel', autocomplete: 'tel', maxlength: 20, placeholder: '+56 9 1234 5678' }),
       h('label', { class: 'agente-acepto' },
         h('input', { type: 'checkbox', name: 'privacy_accepted', checked: datos.privacy_accepted || null }),
-        h('span', {}, 'Acepto el ', h('a', { href: `${API}/politica-de-privacidad`, target: '_blank', rel: 'noopener noreferrer' }, 'aviso de privacidad'), '.')),
+        h('span', {}, 'Acepto las ', h('a', { href: `${API}/condiciones-del-servicio`, target: '_blank', rel: 'noopener noreferrer' }, 'condiciones del servicio'), ' y el ', h('a', { href: `${API}/politica-de-privacidad`, target: '_blank', rel: 'noopener noreferrer' }, 'aviso de privacidad'), '.')),
+      /* Opcional y sin marcar: no condiciona el chat (el texto es el de chatbot.privacy.marketing.label del asistente) */
+      h('label', { class: 'agente-acepto' },
+        h('input', { type: 'checkbox', name: 'marketing_accepted', checked: datos.marketing_accepted || null }),
+        h('span', { text: 'Acepto que Transporte Autorizado me contacte por correo, teléfono o llamada para hacer seguimiento de mi consulta o cotización y ofrecerme sus servicios (opcional).' })),
+      h('div', { class: 'agente-trampa', 'aria-hidden': 'true' }, h('label', {}, 'No completes este campo ', h('input', { name: 'website', tabindex: '-1', autocomplete: 'off' }))),
+      humano,
       error,
       h('button', { class: 'btn btn-primary btn-small', type: 'submit', text: 'Comenzar' }));
+    let token = '';
+    let widget = null;
+    if (humano) {
+      turnstileListo().then((ts) => {
+        if (!humano.isConnected) return;
+        widget = ts.render(humano, {
+          sitekey: TURNSTILE, appearance: 'interaction-only', language: 'es',
+          callback: (t) => { token = t; }, 'expired-callback': () => { token = ''; }, 'error-callback': () => { token = ''; }
+        });
+      }).catch(() => {});
+    }
     f.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (f.classList.contains('is-enviando')) return;
-      datos = { name: f.elements.name.value.trim(), email: f.elements.email.value.trim(), phone: f.elements.phone.value.trim(), privacy_accepted: f.elements.privacy_accepted.checked };
+      datos = { name: f.elements.name.value.trim(), email: f.elements.email.value.trim(), phone: f.elements.phone.value.trim(), privacy_accepted: f.elements.privacy_accepted.checked, marketing_accepted: f.elements.marketing_accepted.checked };
       error.textContent = '';
+      if (humano && !token) { error.textContent = 'Estamos comprobando que eres una persona. Espera un momento y vuelve a intentarlo.'; return; }
       f.classList.add('is-enviando');
       try {
-        const { estado, json } = await llamar('/sessions', { method: 'POST', body: datos });
+        const { estado, json } = await llamar('/sessions', { method: 'POST', body: { ...datos, website: f.elements.website.value, ...(humano ? { 'cf-turnstile-response': token } : {}) } });
         if (estado === 201) {
+          if (widget !== null) window.turnstile?.remove(widget);
           sesion = { token: json.token, vence: json.expires_at };
           guardar(sesion);
           salir.hidden = false;
@@ -192,11 +225,14 @@
           if (!tactil.matches) campo.focus({ preventScroll: true });
           return;
         }
-        error.textContent = estado === 429 ? 'Hubo muchos intentos desde esta conexión. Espera un momento.' : Object.values(json.errors || {}).flat().join('\n') || json.message || 'No pude abrir el chat. Vuelve a intentarlo.';
+        /* Con «error», el mensaje es del asistente (p. ej., el tope de todo el servicio); el 429 genérico es por IP */
+        error.textContent = estado === 429 && !json.error ? 'Hubo muchos intentos desde esta conexión. Espera un momento.' : Object.values(json.errors || {}).flat().join('\n') || json.message || 'No pude abrir el chat. Vuelve a intentarlo.';
       } catch {
         error.textContent = 'No pude conectarme con el asistente. Vuelve a intentarlo en un rato.';
       } finally {
         f.classList.remove('is-enviando');
+        /* El token sirve una vez: si no se abrió la sesión, el widget entrega otro */
+        if (widget !== null && f.isConnected) { token = ''; window.turnstile?.reset(widget); }
       }
     });
     charla.append(f);
