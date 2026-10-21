@@ -75,8 +75,8 @@ seccion('2. Sin direcciones locales fijas en el envío de las páginas publicada
   const paginas = archivos('*.html');
   const conLocal = paginas.filter((f) => /data-cotizar-api(-local)?="[^"]*(127\.0\.0\.1|localhost)/.test(leer(f)) || leer(f).includes('data-cotizar-api-local'));
   ok(!conLocal.length, `ninguna página lleva data-cotizar-api-local ni una dirección local en el formulario${conLocal.length ? `: ${conLocal.join(', ')}` : ''}`);
-  const agente = paginas.filter((f) => /data-agente-api-local="http:\/\/127\.0\.0\.1/.test(leer(f)));
-  if (agente.length) avisos.push(`El agente (widget) aún lleva data-agente-api-local="http://127.0.0.1:8000" en ${agente.join(', ')}: pendiente del bloque del chat (solo cuenta en localhost).`);
+  const agente = paginas.filter((f) => /data-agente-api-local|data-agente-api="[^"]+"/.test(leer(f)));
+  ok(!agente.length, `ninguna página lleva una dirección fija para el chat (data-agente-api-local ni data-agente-api con valor)${agente.length ? `: ${agente.join(', ')}` : ''}`);
 }
 
 seccion('3. Formulario de Transporte: un solo destino, el asistente');
@@ -154,17 +154,21 @@ seccion('7. Plugin de WordPress conservado');
   }
 }
 
-seccion('8. Agente (widget del chat) conservado, sin duplicar');
+seccion('8. Agente (widget del chat): uno solo, conectado por configuración');
 {
-  ok(leer('assets/site/agente-chat.js') === enRama(ODOO, 'assets/site/agente-chat.js'), 'agente-chat.js igual a conexion-odoo (sin tocar en esta tarea)');
-  ok(leer('assets/site/agente-chat.css') === enRama(ODOO, 'assets/site/agente-chat.css'), 'agente-chat.css igual a conexion-odoo');
-  ok(leer('assets/site/agente.js') === enRama(JOHAN, 'assets/site/agente.js') && leer('assets/site/agente.css') === enRama(JOHAN, 'assets/site/agente.css'), 'maqueta (agente.js y agente.css) sin cambios');
+  /* La maqueta solo cambia en la condición que decide quién responde (el bloque que empieza en «Con la dirección») */
+  const sinCondicion = (s) => s.replace(/  \/\* Con (la dirección del asistente|servicio) responde[\s\S]*?\n  if \([^\n]*\) return;\n/, '');
+  ok(sinCondicion(leer('assets/site/agente.js')) === sinCondicion(enRama(JOHAN, 'assets/site/agente.js')) && leer('assets/site/agente.css') === enRama(JOHAN, 'assets/site/agente.css'), 'maqueta (agente.js y agente.css) igual salvo la condición de quién responde');
+  const chat = leer('assets/site/agente-chat.js');
+  ok(/window\.SITE\?\.asistente\?\.\(panel\.dataset\.agenteApi\)/.test(chat) && /window\.SITE\?\.asistente\?\.\(panel\.dataset\.agenteApi\)/.test(leer('assets/site/agente.js')) && !/agenteApiLocal/.test(chat), 'chat y maqueta toman la dirección de window.SITE.asistente (la misma de las cotizaciones), sin dirección local');
+  ok(!/\.innerHTML\s*=(?!\s*v;)|insertAdjacentHTML|outerHTML\s*=|document\.write|conEnlaces|RE_URL/.test(chat), 'el chat no inserta HTML del servicio ni convierte en enlaces las direcciones del texto');
+  ok(/client_message_id: p\.id/.test(chat) && /'\/session', \{ method: 'DELETE', body: \{ confirm: true \} \}/.test(chat), 'cada reintento conserva el client_message_id y el borrado usa DELETE /session con confirmación');
   for (const f of ['transporte-autorizado.html', 'agente-virtual.html']) {
     const s = leer(f);
     const veces = (re) => (s.match(re) || []).length;
     ok(veces(/assets\/site\/agente-chat\.js\?/g) === 1 && veces(/assets\/site\/agente\.js\?/g) === 1 && veces(/ data-agente /g) === 1 && veces(/data-agente-abrir/g) === 1,
       `${f}: una burbuja, una ventana y cada script del agente una vez`);
-    ok(/data-agente-api="" /.test(s) && /data-turnstile=""/.test(s), `${f}: la ventana conserva data-agente-api y data-turnstile (vacíos)`);
+    ok(/data-agente-api="" /.test(s) && /data-turnstile=""/.test(s) && s.indexOf('assets/site/site.js?') < s.indexOf('assets/site/agente.js?'), `${f}: data-agente-api y data-turnstile vacíos (los pone cada entorno) y site.js antes del agente`);
   }
 }
 
@@ -213,7 +217,7 @@ seccion('11. Frontend y backend desacoplados');
   ok(!['artisan', 'composer.json', 'app/Http/Kernel.php', 'routes/api.php'].some((f) => existsSync(join(ROOT, f))) && !archivos('wordpress/').some((f) => /laravel|vendor\//i.test(f)), 'no hay código Laravel dentro de este repositorio ni del plugin');
   const front = ['transporte-ui.js', 'agente-chat.js', 'site.js', 'asistente.js'].map((f) => leer(`assets/site/${f}`)).join('\n');
   const rutas = new Set([...front.matchAll(/\$\{API\}(\/[\w/-]*)/g)].map((m) => m[1]));
-  const CONTRATO = new Set(['/api/quotes', '/api/chat', '/politica-de-privacidad', '/condiciones-del-servicio']);
+  const CONTRATO = new Set(['/api/quotes', '/api/chat', '/politica-de-privacidad', '/condiciones-del-servicio', '/eliminacion-de-datos']);
   ok([...rutas].every((r) => CONTRATO.has(r)), `el navegador solo usa rutas públicas del contrato: ${[...rutas].sort().join(', ')}`);
   ok(!/project\.task|ir\.attachment|crm_leads|CrmLead|RetryUndelivered|ODOO_|DB_HOST|OPENAI|ANTHROPIC/.test(front + leer('transporte-autorizado.html')), 'el frontend no conoce modelos, tablas, jobs ni variables internas del asistente u Odoo');
   ok(/u\.protocol !== 'https:' && !\(LOCAL && u\.protocol === 'http:'\)/.test(leer('assets/site/site.js')), 'fuera de este computador, la dirección del asistente debe ser https');

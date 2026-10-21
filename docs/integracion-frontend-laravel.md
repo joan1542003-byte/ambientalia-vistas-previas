@@ -301,6 +301,8 @@ Fuente: el código del asistente, revisado en `049f18b`.
 
 ## Pendientes del widget del chat (siguiente bloque)
 
+**Resuelto** al completar el widget: ver [integracion-widget-chatbot.md](integracion-widget-chatbot.md). Lo que sigue es la lista tal como quedó al cerrar esta fusión.
+
 `agente-chat.js` se conserva tal como quedó en `conexion-odoo`, sin duplicar y con sus estilos. Pendiente:
 
 - **Configuración:**
@@ -439,4 +441,4 @@ Fuente: el código del asistente, revisado en `049f18b`.
 - **Claves de Cloudflare Turnstile** por entorno, si se usa: la pública en WordPress y la secreta en Laravel.
 - **Generador oficial:** correr `python3 tools/normativa.py` con Python 3.12 o más nuevo y confirmar que no deja diferencias.
 - **Prueba de punta a punta** del formulario contra Laravel de staging con Odoo de prueba, nunca el real.
-- **Widget del chat** completo (ver «Pendientes del widget del chat»).
+- **Widget del chat:** completado; lo que falta comprobar en staging está en [integracion-widget-chatbot.md](integracion-widget-chatbot.md).
