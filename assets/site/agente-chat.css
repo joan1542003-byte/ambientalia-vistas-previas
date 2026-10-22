@@ -19,7 +19,7 @@
 /* La puerta: nombre, correo, teléfono y el aviso de privacidad */
 .agente-puerta { display: grid; gap: 10px; }
 .agente-campo { display: grid; gap: 4px; color: var(--ink); font-size: var(--fs-small); font-weight: 700; }
-.agente-campo input { min-height: 44px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: #fff; color: var(--ink); font: 600 1rem/1.4 var(--font); }  /* 16 px: con menos, el iPhone acerca la página */
+.agente-campo input { min-height: 44px; padding: 0 14px; border: 1px solid rgb(21 26 45 / .14); border-radius: 14px; background: #fff; color: var(--ink); font: 600 1rem/1.4 var(--font); }  /* 16 px: con menos, el iPhone acerca la página */
 .agente-campo input::placeholder { color: var(--muted); font-weight: 500; }
 .agente-campo input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
 .agente-acepto { display: flex; align-items: flex-start; gap: 8px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; }
@@ -33,8 +33,8 @@
 .agente-puerta.is-enviando .btn { opacity: .6; pointer-events: none; }
 
 /* Adjuntar: al lado de «Enviar», sin el color del sitio (que queda para enviar) */
-.agente-escribir .agente-adjuntar { background: var(--bg-sunk); color: var(--ink-2); }
-.agente-escribir .agente-adjuntar:hover, .agente-escribir .agente-adjuntar:active { background: var(--line); color: var(--ink); }
+.agente-escribir .agente-adjuntar { background: none; color: var(--ink-2); }
+.agente-escribir .agente-adjuntar:hover, .agente-escribir .agente-adjuntar:active { background: rgb(21 26 45 / .06); color: var(--ink); }
 .agente-escribir .agente-adjuntar svg { width: 20px; height: 20px; }
 
 .agente-salir { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }

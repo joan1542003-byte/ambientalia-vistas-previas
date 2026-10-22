@@ -1,15 +1,16 @@
-/* Agente informativo (maqueta): assets/site/agente.js. Va en transporte-autorizado.html y en agente-virtual.html.
+/* Chat del sitio (assets/site/agente.js; conectado al asistente, agente-chat.js). Va en transporte-autorizado.html y en agente-virtual.html.
+   Diseño del 22-10-2026: el mismo vidrio y el mismo movimiento de la burbuja «?» (site.css, .dock).
    Misma familia que el sitio: Nunito, líneas finas en vez de tarjetas con sombra, íconos de trazo, color del sitio solo
    en lo que se toca. Cada respuesta es una «cita»: el texto del sitio tal cual y, al pie, su fuente. */
 
-/* agente-virtual.html muestra el sitio real detrás, a pantalla completa */
+/* agente-virtual.html muestra el sitio real detrás, a pantalla completa; ahí la burbuja propia del agente toma el lugar de la «?» */
 html.agente-maqueta { overflow: hidden; scrollbar-gutter: auto; }
 .agente-sitio { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
 
-/* Burbuja: abajo a la izquierda, del mismo vidrio que la «?» del sitio (que va a la derecha). Abierta, pasa a «X» */
+/* Burbuja propia (solo agente-virtual.html; en el sitio el chat se abre desde la «?»): abajo a la derecha, del mismo vidrio. Abierta, pasa a «X» */
 .agente-burbuja {
-  --lado: max(clamp(16px, 2.5vw, 28px), env(safe-area-inset-left, 0px)); --pie: calc(clamp(16px, 2.5vw, 28px) + env(safe-area-inset-bottom, 0px));
-  position: fixed; z-index: 44; left: var(--lado); bottom: var(--pie); isolation: isolate; overflow: hidden;
+  --lado: max(clamp(16px, 2.5vw, 28px), env(safe-area-inset-right, 0px)); --pie: calc(clamp(16px, 2.5vw, 28px) + env(safe-area-inset-bottom, 0px));
+  position: fixed; z-index: 44; right: var(--lado); bottom: var(--pie); isolation: isolate; overflow: hidden;
   display: grid; place-items: center; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; cursor: pointer;
   color: #fff; background: var(--accent); background: color-mix(in srgb, var(--accent) 80%, transparent);
   -webkit-backdrop-filter: blur(14.4px) saturate(1.8); backdrop-filter: blur(14.4px) saturate(1.8);
@@ -24,37 +25,59 @@ html.agente-maqueta { overflow: hidden; scrollbar-gutter: auto; }
 .agente-burbuja:focus-visible { outline: 2px solid currentColor; outline-offset: -6px; }
 .agente-burbuja.is-aparte { opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity .3s ease, transform .5s var(--ease), visibility 0s linear .5s; }
 
-/* Ventana pequeña sobre la burbuja. No bloquea la página: se puede seguir leyendo y usando el sitio */
+/* Ventana sobre la burbuja, del mismo vidrio que la «?» abierta: blanco translúcido, desenfoque y un borde de luz.
+   Nace desde la burbuja (se recorta desde su esquina, con la curva de la «?») y su contenido aparece de abajo arriba.
+   No bloquea la página: se puede seguir leyendo y usando el sitio */
 .agente {
+  --liquid: cubic-bezier(.32, .72, 0, 1);
   --lado: max(clamp(16px, 2.5vw, 28px), env(safe-area-inset-left, 0px)); --pie: calc(clamp(16px, 2.5vw, 28px) + env(safe-area-inset-bottom, 0px));
-  position: fixed; z-index: 46; left: var(--lado); bottom: calc(var(--pie) + 68px);
-  width: min(372px, calc(100vw - 32px)); height: max(min(540px, calc(100dvh - 210px)), min(360px, calc(100dvh - 112px)));
-  border-radius: 22px; background: #fff; color: var(--ink); overflow: clip;
-  box-shadow: 0 32px 70px -28px rgb(21 26 45 / .5), 0 0 0 1px rgb(21 26 45 / .08);
+  --desde: inset(calc(100% - 56px) 0 0 calc(100% - 56px) round 28px);  /* nace desde la «?», abajo a la derecha */
+  position: fixed; z-index: 46; right: max(clamp(16px, 2.5vw, 28px), env(safe-area-inset-right, 0px)); bottom: calc(var(--pie) + 68px); isolation: isolate;
+  width: min(380px, calc(100vw - 32px)); height: max(min(560px, calc(100dvh - 210px)), min(360px, calc(100dvh - 112px)));
+  border-radius: 26px; color: var(--ink); overflow: clip;
+  background: rgb(255 255 255 / .9); -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7);
+  box-shadow: 0 40px 90px -30px rgb(21 26 45 / .5), 0 3px 12px rgb(21 26 45 / .08);
 }
+/* Borde de luz del vidrio (el mismo de la «?») */
+.agente::after {
+  content: ""; position: absolute; inset: 0; z-index: 3; padding: 1px; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(150deg, rgb(255 255 255 / .95), rgb(21 26 45 / .1) 36%, rgb(21 26 45 / .06) 64%, rgb(255 255 255 / .7));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+}
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) { .agente { background: #fff; } }
 .agente:focus { outline: none; }
 .agente-panel { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-.agente-cab { flex: none; display: flex; align-items: center; gap: 8px; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--line); }
+.agente-cab { flex: none; display: flex; align-items: center; gap: 10px; padding: 14px 12px 12px 14px; }
+.agente-avatar {
+  display: grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 50%; color: #fff;
+  background: radial-gradient(130% 70% at 28% 0%, rgb(255 255 255 / .34), transparent 62%), var(--accent);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / .45), 0 6px 14px -6px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.agente-avatar svg { width: 19px; height: 19px; }
 .agente-quien { min-width: 0; margin-right: auto; }
-.agente-quien h2 { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: var(--fs-body); letter-spacing: -.012em; line-height: 1.25; }
-.agente-quien p { color: var(--muted); font-size: var(--fs-caption); line-height: 1.4; }
+.agente-quien h2 { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: var(--fs-card); letter-spacing: -.015em; line-height: 1.2; }
+.agente-quien p { margin-top: 2px; color: var(--muted); font-size: var(--fs-caption); font-weight: 700; line-height: 1.35; }
+.agente-quien p[hidden], .agente-tag[hidden] { display: none; }
 .agente-tag { padding: 1px 8px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink-2); font-size: var(--fs-caption); font-weight: 700; letter-spacing: 0; }
-.agente-icono { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border: 0; border-radius: 99px; background: var(--bg-sunk); color: var(--ink-2); cursor: pointer; transition: background-color .2s, color .2s; }
+.agente-icono { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border: 0; border-radius: 99px; background: rgb(21 26 45 / .05); color: var(--ink-2); cursor: pointer; transition: background-color .2s, color .2s; }
 .agente-icono svg { width: 17px; height: 17px; }
-.agente-icono:hover, .agente-icono:active { background: var(--line); color: var(--ink); }
+.agente-icono[hidden] { display: none; }
+.agente-icono:hover, .agente-icono:active { background: rgb(21 26 45 / .1); color: var(--ink); }
 .agente-icono:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.agente-charla { position: relative; flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 14px; padding: 14px 12px 16px; scrollbar-width: thin; }
+.agente-charla { position: relative; flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 14px; padding: 6px 14px 18px; scrollbar-width: thin;
+  -webkit-mask: linear-gradient(transparent, #000 14px, #000 calc(100% - 14px), transparent); mask: linear-gradient(transparent, #000 14px, #000 calc(100% - 14px), transparent); }  /* bordes que se difuminan: se entiende que hay más */
 .agente-charla:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .msg { display: grid; gap: 10px; min-width: 0; }
 .msg.is-user { justify-items: end; }
-.msg.is-user p { max-width: 86%; padding: 10px 14px; border-radius: 18px 18px 6px 18px; background: var(--accent); color: #fff; font-size: var(--fs-body-sm); font-weight: 600; line-height: 1.45; overflow-wrap: anywhere; }
-.msg-texto { justify-self: start; max-width: 94%; padding: 10px 14px; border-radius: 18px 18px 18px 6px; background: var(--bg-alt); color: var(--ink-2); font-size: var(--fs-body-sm); line-height: 1.5; }
-.msg.is-espera { display: flex; gap: 5px; justify-self: start; width: max-content; padding: 14px 16px; border-radius: 18px 18px 18px 6px; background: var(--bg-alt); }
-.msg.is-espera span { width: 6px; height: 6px; border-radius: 99px; background: var(--muted); opacity: .45; }
+.msg.is-user p { max-width: 86%; padding: 10px 15px; border-radius: 20px 20px 6px 20px; background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 88%, #fff), var(--accent)); color: #fff; font-size: var(--fs-body-sm); font-weight: 600; line-height: 1.45; overflow-wrap: anywhere; box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--accent) 80%, transparent); }
+.msg-texto { justify-self: start; max-width: 94%; padding: 11px 15px; border-radius: 20px 20px 20px 6px; background: rgb(255 255 255 / .82); border: 1px solid rgb(21 26 45 / .07); color: var(--ink); font-size: var(--fs-body-sm); line-height: 1.55; }
+.msg.is-espera { display: flex; gap: 5px; justify-self: start; width: max-content; padding: 15px 17px; border-radius: 20px 20px 20px 6px; background: rgb(255 255 255 / .82); border: 1px solid rgb(21 26 45 / .07); }
+.msg.is-espera span { width: 7px; height: 7px; border-radius: 99px; background: var(--accent); opacity: .35; }
 
 /* Cita: el texto del sitio tal cual; al pie, de dónde salió */
-.cita { min-width: 0; border: 1px solid var(--line-strong); border-radius: 16px; background: #fff; overflow: clip; }
+.cita { min-width: 0; border: 1px solid rgb(21 26 45 / .1); border-radius: 18px; background: rgb(255 255 255 / .9); overflow: clip; }
 .cita-cab { padding: 12px 14px 0; color: var(--muted); font-size: var(--fs-caption); font-weight: 700; }
 .cita-bloque { display: grid; gap: 6px; padding: 14px; color: var(--ink-2); font-size: var(--fs-body-sm); line-height: 1.5; overflow-wrap: anywhere; }
 .cita-bloque + .cita-bloque { border-top: 1px solid var(--line); }
@@ -89,7 +112,7 @@ button.ref:hover, button.ref:active { border-color: var(--ink); color: var(--ink
 .cita-enlaces a, .cita-ver { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-strong); font-size: var(--fs-small); font-weight: 800; text-decoration: none; }
 .cita-enlaces a:hover, .cita-ver:hover { text-decoration: underline; text-underline-offset: 3px; }
 .cita-enlaces svg, .cita-ver svg, .cita-ley svg { width: 14px; height: 14px; }
-.cita-fuente { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--bg-alt); }
+.cita-fuente { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 10px 14px; border-top: 1px solid var(--line); background: rgb(21 26 45 / .025); }
 .cita-origen { display: flex; gap: 8px; flex: 1 1 200px; min-width: 0; color: var(--ink-2); font-size: var(--fs-caption); font-weight: 700; line-height: 1.4; }
 .cita-origen svg { flex: none; width: 15px; height: 15px; margin-top: 1px; color: var(--muted); }
 .cita-origen-l { color: var(--muted); }
@@ -102,36 +125,48 @@ button.ref:hover, button.ref:active { border-color: var(--ink); color: var(--ink
 .msg-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .msg-chips-t { flex-basis: 100%; color: var(--muted); font-size: var(--fs-caption); font-weight: 700; }
 .chip {
-  max-width: 100%; padding: 7px 13px; border: 1px solid var(--line-strong); border-radius: 999px; background: #fff; color: var(--ink);
-  font: 700 var(--fs-small)/1.35 var(--font); text-align: left; cursor: pointer; transition: border-color .2s, background-color .2s;
+  max-width: 100%; min-height: 38px; padding: 8px 14px; border: 1px solid rgb(21 26 45 / .12); border-radius: 999px; background: rgb(255 255 255 / .78); color: var(--ink);
+  font: 700 var(--fs-small)/1.35 var(--font); text-align: left; cursor: pointer; transition: border-color .2s, background-color .2s, color .2s;
 }
-.chip:active { background: var(--bg-alt); }
-@media (hover: hover) { .chip:hover { border-color: var(--ink); } }
+.chip:active { background: #fff; border-color: var(--accent); color: var(--accent-strong); }
+@media (hover: hover) { .chip:hover { background: #fff; border-color: var(--accent); color: var(--accent-strong); } }
 
-.agente-escribir { flex: none; display: flex; gap: 8px; padding: 10px 12px 6px; border-top: 1px solid var(--line); background: #fff; }
-.agente-escribir input { flex: 1 1 auto; min-width: 0; min-height: 46px; padding: 0 16px; border: 1px solid var(--line-strong); border-radius: 999px; background: #fff; color: var(--ink); font: 600 1rem/1.4 var(--font); }  /* 16 px: con menos, el iPhone acerca la página */
+.agente-escribir {
+  flex: none; display: flex; align-items: center; gap: 6px; margin: 4px 12px 12px; padding: 5px 5px 5px 6px;
+  border: 1px solid rgb(21 26 45 / .12); border-radius: 999px; background: #fff;
+  box-shadow: 0 10px 24px -16px rgb(21 26 45 / .45); transition: border-color .2s, box-shadow .2s;
+}
+.agente-escribir:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent), 0 10px 24px -16px rgb(21 26 45 / .45); }
+.agente-escribir[hidden] { display: none; }
+.agente-escribir input { flex: 1 1 auto; min-width: 0; min-height: 40px; padding: 0 10px; border: 0; border-radius: 999px; background: none; color: var(--ink); font: 600 1rem/1.4 var(--font); }  /* 16 px: con menos, el iPhone acerca la página */
 .agente-escribir input::placeholder { color: var(--muted); font-weight: 500; }
-.agente-escribir input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
-.agente-escribir button { display: grid; place-items: center; flex: none; width: 46px; height: 46px; border: 0; border-radius: 99px; background: var(--accent); color: #fff; cursor: pointer; transition: background-color .2s; }
+.agente-escribir input:focus { outline: none; }
+.agente-escribir button { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border: 0; border-radius: 99px; background: var(--accent); color: #fff; cursor: pointer; transition: background-color .2s, opacity .2s; }
 .agente-escribir button:hover, .agente-escribir button:active { background: var(--accent-strong); }
 .agente-escribir button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.agente-pie { flex: none; padding: 0 14px 10px; color: var(--muted); font-size: var(--fs-caption); line-height: 1.4; text-align: center; }
+.agente-escribir:has(input:placeholder-shown) button[type="submit"] { opacity: .45; }  /* sin texto, «Enviar» espera */
+.agente-pie { flex: none; margin: -4px 0 0; padding: 0 14px 10px; color: var(--muted); font-size: var(--fs-caption); line-height: 1.4; text-align: center; }
+.agente-pie:empty, .agente-pie:not(:has(> :not([hidden]))) { display: none; }
 
 /* Teléfono: la ventana ocupa casi todo el ancho, sobre la burbuja; mientras se escribe se apoya sobre el teclado */
 @media (max-width: 860px) {
-  .agente { left: 12px; bottom: calc(var(--pie) + 64px); width: min(400px, calc(100vw - 24px)); height: min(520px, calc(100dvh - var(--pie) - 80px)); }
+  .agente { right: 12px; bottom: calc(var(--pie) + 64px); width: min(400px, calc(100vw - 24px)); height: min(540px, calc(100dvh - var(--pie) - 148px)); }  /* queda bajo el menú */
   .agente.is-teclado { bottom: calc(8px + var(--vv-abajo, 0px)); height: min(520px, calc(var(--vv-alto, 100dvh) - 16px)); }
 }
 
 /* Movimiento corto y sin rebote; nada se agranda ni gira */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes agente-sube { from { opacity: 0; transform: translateY(14px); } }
-  @keyframes agente-baja { to { opacity: 0; transform: translateY(10px); } }
-  @keyframes agente-msg { from { opacity: 0; transform: translateY(6px); } }
-  @keyframes agente-punto { 0%, 60%, 100% { opacity: .3; } 30% { opacity: .9; } }
-  .agente:not([hidden]) { animation: agente-sube .32s var(--ease) both; }
-  .agente.is-saliendo { animation: agente-baja .2s ease both; }
-  .msg { animation: agente-msg .3s var(--ease) both; }
+  @keyframes agente-nace { from { clip-path: var(--desde); opacity: .6; } to { clip-path: inset(0 round 26px); opacity: 1; } }
+  @keyframes agente-vuelve { to { clip-path: var(--desde); opacity: 0; } }
+  @keyframes agente-llega { from { opacity: 0; transform: translateY(12px); filter: blur(4px); } }
+  @keyframes agente-msg { from { opacity: 0; transform: translateY(8px); filter: blur(3px); } }
+  @keyframes agente-punto { 0%, 60%, 100% { opacity: .3; transform: none; } 30% { opacity: .9; transform: translateY(-3px); } }
+  .agente:not([hidden]) { animation: agente-nace .55s var(--liquid) both; }
+  .agente:not([hidden]) .agente-cab, .agente:not([hidden]) .agente-escribir { animation: agente-llega .5s var(--liquid) both; }
+  .agente:not([hidden]) .agente-cab { animation-delay: .12s; }
+  .agente:not([hidden]) .agente-escribir { animation-delay: .06s; }
+  .agente.is-saliendo { animation: agente-vuelve .2s cubic-bezier(.4, 0, 1, 1) both; }
+  .msg { animation: agente-msg .42s var(--liquid) both; }
   .msg.is-espera span { animation: agente-punto 1.2s ease-in-out infinite; }
   .msg.is-espera span:nth-child(2) { animation-delay: .15s; }
   .msg.is-espera span:nth-child(3) { animation-delay: .3s; }

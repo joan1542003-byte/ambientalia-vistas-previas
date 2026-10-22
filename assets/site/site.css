@@ -482,7 +482,8 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
 /* Banda secundaria */
 .partner { display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; margin-top: clamp(28px, 4vw, 40px); padding: 20px 22px; border-radius: var(--r-m); background: var(--bg-alt); }
 .partner > div { max-width: 600px; }
-.partner h3 { font-size: 1rem; }
+.partner h3, .partner .partner-title { font-size: 1rem; letter-spacing: 0; }
+.container > .partner:first-child { margin-top: 0; }
 .partner p { margin-top: 4px; color: var(--ink-2); font-size: .9375rem; }
 
 /* ---------- Footer ---------- */
@@ -496,6 +497,7 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
 .footer-grid .brand { margin: 0 0 10px; }
 .footer-grid p { max-width: 32ch; color: var(--muted); }
 .footer-legal { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--fs-caption); }
+.footer-grid:has(> :nth-child(3):last-child), .footer-grid:has(> :nth-child(4)[hidden]:last-child) { grid-template-columns: 1.5fr repeat(2, 1fr); }  /* Transporte: sin «Sitios relacionados» (22-10-2026); «Legal» solo con la dirección del asistente */
 @media (max-width: 860px) { .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .footer-grid > :first-child { grid-column: 1 / -1; } }
 @media (max-width: 420px) { .footer-grid li { white-space: normal; } }
 
@@ -541,8 +543,8 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
   width: var(--dock-size); height: var(--dock-size); padding: 0; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer;
 }
 .dock-toggle svg { grid-area: 1 / 1; width: 24px; height: 24px; transition: opacity .25s ease; }
-.dock-toggle .dock-x, .dock.is-open .dock-toggle .dock-q { opacity: 0; }
-.dock.is-open .dock-toggle .dock-x { opacity: 1; }
+.dock-toggle .dock-x, .dock.is-open .dock-toggle .dock-q, .dock.is-chat .dock-toggle .dock-q { opacity: 0; }
+.dock.is-open .dock-toggle .dock-x, .dock.is-chat .dock-toggle .dock-x { opacity: 1; }  /* con el chat abierto, la burbuja lo cierra */
 .dock-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: -6px; }
 .dock-menu { position: absolute; right: 0; bottom: 0; z-index: 1; display: grid; gap: 6px; width: min(17rem, calc(100vw - 32px)); padding: 8px 8px var(--dock-size); }
 .dock-action {
@@ -555,6 +557,17 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
 .dock-action:active { background: #fff; }
 .dock-action.is-primary:active { background: var(--accent-strong); }
 .dock-action:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* «Chat con IA» (Transporte): un borde de luz recorre los colores de la marca y un halo respira despacio. Sutil, pero
+   se distingue de las otras acciones; solo se mueve con la burbuja abierta */
+@property --ia-giro { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.dock-action.is-ia { position: relative; isolation: isolate; border-color: transparent; background: rgb(255 255 255 / .94); box-shadow: 0 6px 16px -10px rgb(103 8 199 / .55); }
+.dock-action.is-ia svg { color: var(--marca); }
+.dock-action.is-ia::before {
+  content: ""; position: absolute; inset: -1px; z-index: -1; padding: 1.5px; border-radius: 19px; pointer-events: none;
+  background: conic-gradient(from var(--ia-giro), var(--marca), var(--marca-2) 30%, var(--azul-2) 50%, var(--marca-2) 70%, var(--marca));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+}
 .dock-caption { position: absolute; left: 18px; bottom: 0; display: flex; align-items: center; height: var(--dock-size); margin: 0; color: var(--ink-2); font-size: var(--fs-small); font-weight: 800; }
 @media (hover: hover) {
   .dock-action:hover { background: rgb(255 255 255 / .92); }
@@ -568,9 +581,17 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
   }
   .dock-caption { --d: .06s; }
   .dock-action { --d: .1s; }
-  .dock-action:nth-child(3) { --d: .14s; }
-  .dock-action:nth-child(2) { --d: .18s; }
-  .dock-action:nth-child(1) { --d: .22s; }
+  .dock-action:nth-last-child(3) { --d: .14s; }
+  .dock-action:nth-last-child(4) { --d: .18s; }
+  .dock-action:nth-last-child(5) { --d: .22s; }
+  .dock-action:nth-last-child(6) { --d: .26s; }
+  @keyframes ia-giro { to { --ia-giro: 360deg; } }
+  @keyframes ia-halo {
+    0%, 100% { box-shadow: 0 6px 16px -10px rgb(103 8 199 / .55), 0 0 0 0 rgb(235 169 252 / 0); }
+    50% { box-shadow: 0 8px 18px -9px rgb(103 8 199 / .65), 0 0 12px 0 rgb(235 169 252 / .7); }
+  }
+  .dock.is-open .dock-action.is-ia { animation: ia-halo 3.2s ease-in-out infinite; }
+  .dock.is-open .dock-action.is-ia::before { animation: ia-giro 4.5s linear infinite; }
 }
 @media (prefers-reduced-motion: reduce) { .dock, .dock.is-visible, .dock.is-open { transition: none; } }
 /* Sin desenfoque disponible, el vidrio se vuelve casi opaco para que el texto de atrás no compita */

@@ -23,6 +23,15 @@
   if (!forzada && (window.TA_API || window.SITE?.asistente?.(panel.dataset.agenteApi))) return;
   const marco = d.querySelector('[data-agente-sitio]');  // solo en agente-virtual.html: el sitio va detrás, en un <iframe>
   const boton = d.querySelector('[data-agente-abrir]');
+  /* El chat se abre desde «Chat con IA», dentro de la «?» del sitio; en agente-virtual.html, desde su burbuja propia */
+  const enDock = boton.closest('[data-dock]');
+  const toggleDock = enDock?.querySelector('.dock-toggle');
+  const volver = toggleDock || boton;  // al cerrar, el foco vuelve aquí (la opción queda dentro del menú cerrado)
+  const marcarDock = (si) => {
+    enDock.classList.toggle('is-chat', si);
+    toggleDock.setAttribute('aria-label', si ? 'Cerrar el asistente' : 'Ayuda y contacto');
+    enDock.dispatchEvent(new Event('dock:refrescar'));
+  };
   const charla = panel.querySelector('[data-agente-charla]');
   const form = panel.querySelector('[data-agente-form]');
   const campo = form.elements.q;
@@ -94,14 +103,14 @@
   const resumenDe = (p) => pasajes.find((x) => x.grupo === p.grupo && x.resumen);
   let fuentes = [];  // lo que se leyó, para decirlo cuando preguntan de dónde salen las respuestas
 
-  /* Enlace de la página tal como está: a otro dominio (p. ej., hds.cl desde el 09-10-2026) o a otra página de este sitio */
+  /* Enlace de la página tal como está: a otro dominio o a otra página de este sitio */
   const enlaceDe = (a, rotulo) => {
     const href = a.getAttribute('href');
     return /^https?:/.test(href) ? { rotulo, href, externo: true } : { rotulo, href: href.replace(/^\.\//, ''), sitio: true };
   };
   const leerPrincipal = (doc) => {
     const menu = (hash) => texto(doc.querySelector(`#nav a[href="${hash}"]`));
-    const lugar = (id, el, extra) => ({ pagina: PRINCIPAL, etiqueta: `Página principal › ${menu(`#${id}`) || { proceso: 'Proceso', relacionados: 'Servicios relacionados' }[id] || sinPunto(texto(doc.querySelector(`#${id} h2`)))}`, sel: rutaDe(el), ...extra });
+    const lugar = (id, el, extra) => ({ pagina: PRINCIPAL, etiqueta: `Página principal › ${menu(`#${id}`) || { proceso: 'Proceso', red: 'Gestores y transportistas' }[id] || sinPunto(texto(doc.querySelector(`#${id} h2`)))}`, sel: rutaDe(el), ...extra });
     const antes = pasajes.length;
 
     intento(() => {
@@ -166,10 +175,8 @@
     })));
 
     intento(() => {
-      const s = doc.querySelector('#relacionados');
-      s.querySelectorAll('a.related').forEach((a) => pasaje({ tipo: 'principal', grupo: 'relacionados', titulo: texto(a.querySelector('strong')), parrafos: [texto(a.querySelector('small'))], enlaces: [enlaceDe(a, texto(a.querySelector('em')))], fuente: lugar('relacionados', a) }));
-      const red = s.querySelector('.partner');
-      if (red) pasaje({ tipo: 'principal', grupo: 'red', titulo: texto(red.querySelector('h3')), parrafos: [texto(red.querySelector('p'))], enlaces: [{ rotulo: texto(red.querySelector('a.btn')), href: red.querySelector('a.btn').href, externo: true }], fuente: lugar('relacionados', red), claves: 'gestor transportista sumarme inscribir registrar red plataforma trabajar con ustedes' });
+      const red = doc.querySelector('#red .partner');
+      if (red) pasaje({ tipo: 'principal', grupo: 'red', titulo: texto(red.querySelector('h2, h3')), parrafos: [texto(red.querySelector('p'))], enlaces: [{ rotulo: texto(red.querySelector('a.btn')), href: red.querySelector('a.btn').href, externo: true }], fuente: lugar('red', red), claves: 'gestor transportista sumarme inscribir registrar red plataforma trabajar con ustedes' });
     });
 
     intento(() => {
@@ -191,7 +198,7 @@
         fuente: { pagina: PRINCIPAL, etiqueta: 'Ayuda › Documentos › Checklist de autorización', hash: '#checklist', abre: true }, claves: 'checklist planilla excel descargar lista de verificacion revisar caso'
       });
     });
-    fuentes.push({ fuerte: 'Página principal', texto: `${pasajes.length - antes} pasajes: inicio, servicios, planes, proceso, preguntas frecuentes, servicios relacionados y contacto.` });
+    fuentes.push({ fuerte: 'Página principal', texto: `${pasajes.length - antes} pasajes: inicio, servicios, planes, proceso, preguntas frecuentes, gestores y transportistas, y contacto.` });
     return {
       guias: [...new Set([...doc.querySelectorAll('[data-docs-item]:not([data-docs-item="checklist"]):not([data-docs-item="normativa"])')].map((x) => `ayuda/${x.dataset.docsItem}.html`))],
       normas: doc.querySelector('[data-lib][data-src]')?.dataset.src,
@@ -507,7 +514,7 @@
   };
   const sobreMi = () => ({
     partes: [
-      'Soy un agente informativo en maqueta. Busco en lo que ya está publicado en este sitio y te lo muestro tal como está, con su fuente. No cotizo, no tomo solicitudes y no reemplazo a un especialista.',
+      'Busco en lo que ya está publicado en este sitio y te lo muestro tal como está, con su fuente. No cotizo, no tomo solicitudes y no reemplazo a un especialista.',
       h('article', { class: 'cita' }, h('div', { class: 'cita-bloque' }, h('h3', { class: 'cita-titulo', text: 'De dónde salen las respuestas' }), h('ul', { class: 'cita-lista' }, fuentes.map((f) => h('li', {}, h('strong', { text: f.fuerte }), ' ', f.texto)))))
     ],
     chips: inicio()
@@ -546,7 +553,7 @@
     }
     if (RE_MI.test(c.llano)) return sobreMi();
     if (!c.terminos.length && !c.extra.length) {
-      if (RE_SALUDO.test(c.llano)) return { partes: ['Hola. Pregúntame por retiros, planes, documentos o normativa: te muestro lo que dice el sitio, con su fuente.'], chips: inicio(), rotuloChips: 'Por ejemplo' };
+      if (RE_SALUDO.test(c.llano)) return { partes: ['Hola. Pregúntame por retiros, planes, documentos o normativa.'], chips: inicio(), rotuloChips: 'Por ejemplo' };
       if (RE_GRACIAS.test(c.llano)) return { partes: ['De nada. Si te queda otra duda, pregúntame.'] };
       return { partes: ['¿Sobre qué quieres saber? Puedo mostrarte lo que dice el sitio de estos temas:'], chips: inicio(), rotuloChips: 'Temas' };
     }
@@ -665,7 +672,7 @@
     try {
       await cargar();
       espera.remove();
-      decir({ partes: ['Hola. Soy el agente informativo de Transporte Autorizado. Te muestro lo que ya está publicado en este sitio, tal cual y con su fuente. Por ahora solo informo: no cotizo ni tomo solicitudes.'], chips: inicio(), rotuloChips: 'Puedes preguntar, por ejemplo' });
+      decir({ partes: ['Hola. ¿En qué te ayudo?'], chips: inicio(), rotuloChips: 'Puedes preguntar, por ejemplo' });
     } catch {
       espera.remove();
       saludado = false;
@@ -717,10 +724,13 @@
     clearTimeout(saliendo);
     panel.classList.remove('is-saliendo');
     panel.hidden = false;
-    boton.classList.add('is-abierto');
-    boton.classList.remove('is-aparte');
     boton.setAttribute('aria-expanded', 'true');
-    boton.setAttribute('aria-label', 'Cerrar el agente informativo');
+    if (enDock) marcarDock(true);
+    else {
+      boton.classList.add('is-abierto');
+      boton.classList.remove('is-aparte');
+      boton.setAttribute('aria-label', 'Cerrar el asistente');
+    }
     saludar();
     if (!tactil.matches) campo.focus({ preventScroll: true });
   };
@@ -728,22 +738,33 @@
     if (!abierto() || panel.classList.contains('is-saliendo')) return;
     const dentro = panel.contains(d.activeElement);
     const fin = () => { panel.classList.remove('is-saliendo'); panel.hidden = true; seguir(); };
-    boton.classList.remove('is-abierto');
     boton.setAttribute('aria-expanded', 'false');
-    boton.setAttribute('aria-label', 'Abrir el agente informativo (maqueta)');
-    if (dentro && !tactil.matches) boton.focus({ preventScroll: true });
+    if (enDock) marcarDock(false);
+    else {
+      boton.classList.remove('is-abierto');
+      boton.setAttribute('aria-label', 'Abrir el asistente');
+    }
+    if (dentro && !tactil.matches) volver.focus({ preventScroll: true });
     clearTimeout(saliendo);
     if (motion.matches) { panel.classList.add('is-saliendo'); saliendo = setTimeout(fin, 200); } else fin();
   }
   boton.addEventListener('click', () => (abierto() && !panel.classList.contains('is-saliendo') ? cerrar() : abrir()));
-  d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && abierto() && !e.defaultPrevented && (panel.contains(d.activeElement) || d.activeElement === boton)) { e.preventDefault(); cerrar(); } });
+  d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && abierto() && !e.defaultPrevented && (panel.contains(d.activeElement) || d.activeElement === volver)) { e.preventDefault(); cerrar(); } });
+  /* Con el chat abierto, la «?» muestra «X» y lo cierra (antes que su propio clic, que abriría el menú) */
+  toggleDock?.addEventListener('click', (e) => { if (abierto() && !panel.classList.contains('is-saliendo')) { e.stopImmediatePropagation(); cerrar(); } }, true);
   panel.querySelector('[data-agente-cerrar]').addEventListener('click', cerrar);
+  /* «Volver»: abierto desde la «?», cierra el chat y vuelve a mostrar sus opciones */
+  const atras = panel.querySelector('[data-agente-volver]');
+  if (atras && enDock) {
+    atras.hidden = false;
+    atras.addEventListener('click', () => { cerrar(); enDock.dispatchEvent(new Event('dock:abrir')); });
+  }
   panel.querySelector('[data-agente-nuevo]').addEventListener('click', () => { charla.textContent = ''; saludado = false; ultimaNorma = null; saludar(); });
   form.addEventListener('submit', (e) => { e.preventDefault(); const q = campo.value; campo.value = ''; preguntar(q); });
 
   /* Cuándo se ve la burbuja. En la página aparece y se oculta junto con la «?» del sitio (al pasar el hero, no sobre
      el pie ni con el menú abierto): así la primera pantalla queda como está. Con la ventana abierta no se oculta. */
-  const dock = marco ? null : d.querySelector('[data-dock]');
+  const dock = marco || enDock ? null : d.querySelector('[data-dock]');
   function seguir() { if (dock) boton.classList.toggle('is-aparte', !dock.classList.contains('is-visible') && !abierto()); }
   if (dock) new MutationObserver(seguir).observe(dock, { attributes: true, attributeFilter: ['class'] });
   seguir();
@@ -753,7 +774,7 @@
     let doc;
     try { doc = marco.contentDocument; } catch { return; }
     if (!doc?.head) return;
-    doc.head.append(Object.assign(doc.createElement('style'), { textContent: '.agente,.agente-burbuja{display:none!important}' }));
+    doc.head.append(Object.assign(doc.createElement('style'), { textContent: '.agente,.agente-burbuja,[data-dock]{display:none!important}' }));
     const ver = () => boton.classList.toggle('is-aparte', !abierto() && (!!doc.querySelector('dialog[open]') || doc.documentElement.classList.contains('sheet-open')));
     new MutationObserver(ver).observe(doc.documentElement, { attributes: true, subtree: true, attributeFilter: ['open', 'class'] });
     ver();
