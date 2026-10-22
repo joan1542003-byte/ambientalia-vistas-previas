@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Transporte Autorizado – Sitio
- * Description:       Sirve el sitio nuevo de Transporte Autorizado desde WordPress (en una dirección privada o publicado en la portada), recibe las solicitudes de sus formularios, les asigna un número y envía los correos.
+ * Description:       Sirve el sitio nuevo de Transporte Autorizado desde WordPress (en una dirección privada o publicado en la portada). Las cotizaciones de Transporte van al asistente (Laravel) configurado en los ajustes; el servicio de solicitudes con número y correos queda para otros formularios.
  * Version:           1.3.0
  * Requires at least: 6.2
  * Requires PHP:      7.4

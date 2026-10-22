@@ -215,9 +215,24 @@
     }
   };
 
-  /* Fotografías adjuntas (solo sobre WordPress). La franja se arma una vez y se conserva entre pasos: lo adjuntado no se
-     pierde si la persona vuelve a cambiar una respuesta. */
-  const fotosHost = window.SITE.fotos ? Object.assign(d.createElement('div'), { className: 'fotos' }) : null;
+  /* Las cotizaciones de Transporte las recibe solo el asistente Laravel, por el formulario (form[data-cotizar-api],
+     transporte-ui.js): este asistente no las envía a WordPress aunque el sitio corra ahí. Para enviarla en línea lleva
+     lo respondido a ese formulario («Enviar en línea»), que pide aceptar el aviso de privacidad y la envía con sus fotos.
+     El envío a WordPress (servidor) solo valdría en una página sin ese formulario, y hoy no hay ninguna. */
+  const servidor = Boolean(window.SITE.enviar) && !d.querySelector('form[data-cotizar-api]');
+  const enLinea = () => 'cotizarOn' in (d.querySelector('form[data-cotizar-api]')?.dataset || {});
+  const alFormulario = (alFinal) => {
+    const form = d.getElementById('cotizacion');
+    const out = form && d.getElementById(form.dataset.summary);
+    if (out && !out.hidden) out.querySelector('[data-edit]')?.click();  // un resumen anterior a la vista: vuelve al formulario
+    window.QUOTE?.fill({ answers, meta });
+    if (alFinal) form?.goTo?.(Infinity);  // contacto, fotos y la aceptación del aviso: de ahí sale la solicitud
+    window.HERO?.show('cotizar');
+  };
+
+  /* Fotografías adjuntas (solo con el envío a WordPress). La franja se arma una vez y se conserva entre pasos: lo
+     adjuntado no se pierde si la persona vuelve a cambiar una respuesta. */
+  const fotosHost = servidor && window.SITE.fotos ? Object.assign(d.createElement('div'), { className: 'fotos' }) : null;
   const fotos = fotosHost ? window.SITE.fotos(fotosHost) : null;
 
   /* Tras enviar una solicitud, la siguiente parte de cero */
@@ -230,28 +245,29 @@
 
   const renderDone = () => {
     composer.hidden = true;
+    const linea = !servidor && enLinea();
     actions.hidden = false;
     const rows = active().flatMap((s, i) => (s.type === 'contact'
       ? [{ label: 'Contacto', value: s.fields.map((f) => answers[f.id]).filter(Boolean).join(' · '), i }]
       : answers[s.id] ? [{ label: s.label, value: shown(s), i }, ...(s.id === 'direccion' && meta.punto ? [{ label: 'Ubicación en el mapa', value: 'Punto marcado (va como enlace de Google Maps)', i }] : [])] : []));
     body.innerHTML = `<div class="guide-step guide-final">
       <div class="guide-done"><svg width="28" height="28" class="summary-check" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M11 18.5l5 5 9-10"/></svg>
-        <div><h3 class="guide-q" tabindex="-1">${enviada ? 'Solicitud enviada.' : 'Tu solicitud está lista.'}</h3><p class="guide-help">${enviada ? esc(window.SITE.enviada(enviada.r, enviada.n)) : `${window.SITE.enviar ? 'Adjunta fotografías si las tienes y envíala' : 'Envíala con las fotografías'}; con eso revisamos el residuo, la cobertura, la disponibilidad y las condiciones del retiro para preparar la propuesta.`}</p></div></div>
+        <div><h3 class="guide-q" tabindex="-1">${enviada ? 'Solicitud enviada.' : 'Tu solicitud está lista.'}</h3><p class="guide-help">${enviada ? esc(window.SITE.enviada(enviada.r, enviada.n)) : `${servidor ? 'Adjunta fotografías si las tienes y envíala' : 'Envíala con las fotografías'}; con eso revisamos el residuo, la cobertura, la disponibilidad y las condiciones del retiro para preparar la propuesta.`}</p></div></div>
       <dl class="review">${rows.map((r) => `<div><dt>${esc(r.label)}</dt><dd>${esc(r.value)}</dd>${enviada ? '' : `<button type="button" class="text-link" data-edit="${r.i}">Cambiar<span class="sr-only"> ${esc(r.label)}</span></button>`}</div>`).join('')}</dl>
-      ${enviada ? '' : `<p class="guide-note">${window.SITE.enviar ? 'Al enviarla te llegará un correo con su número; usaremos tus datos solo para responder esta solicitud.' : 'Se abrirá con tu solicitud ya escrita. Revísala, adjunta las fotografías y envíala.'}</p>`}
+      ${enviada ? '' : `<p class="guide-note">${servidor ? 'Al enviarla te llegará un correo con su número; usaremos tus datos solo para responder esta solicitud.' : linea ? 'Para enviarla en línea y recibir su número, «Enviar en línea» la lleva al formulario: ahí agregas las fotos y aceptas el aviso de privacidad.' : 'Se abrirá con tu solicitud ya escrita. Revísala, adjunta las fotografías y envíala.'}</p>`}
     </div>`;
     /* La franja de fotografías queda fija sobre los botones, fuera de la zona que se desplaza */
     if (fotosHost && !enviada) { actions.before(fotosHost); fotos.bloquear(false); }
     /* WhatsApp (verde, con su ícono) y, si el formulario de cotización declara su correo de destino, también correo */
     const correo = d.getElementById('cotizacion')?.dataset.mail;
-    /* Sobre WordPress (window.SITE.enviar) la vía principal es enviarla al servidor: queda con número y llega por correo */
-    const servidor = Boolean(window.SITE.enviar);
+    /* Con el envío a WordPress (servidor) la vía principal es enviarla allí; con el asistente Laravel (linea), seguir
+       en el formulario, que la envía */
     if (servidor && !enviada) window.SITE.permiso();
-    actions.classList.toggle('has-mail', !!correo && !servidor);
-    actions.classList.toggle('has-envio', servidor);
-    actions.innerHTML = `${enviada ? '' : servidor ? `<button type="button" class="btn btn-primary btn-small" data-enviar>${ICON.send}<span>Enviar solicitud</span></button>` : correo ? '<span class="foot-label">Enviar por</span>' : ''
+    actions.classList.toggle('has-mail', !!correo && !servidor && !linea);
+    actions.classList.toggle('has-envio', servidor || linea);
+    actions.innerHTML = `${enviada ? '' : servidor ? `<button type="button" class="btn btn-primary btn-small" data-enviar>${ICON.send}<span>Enviar solicitud</span></button>` : linea ? `<button type="button" class="btn btn-primary btn-small" data-en-linea>${ICON.send}<span>Enviar en línea</span></button>` : correo ? '<span class="foot-label">Enviar por</span>' : ''
     }<a class="btn btn-wa btn-small" href="${window.SITE.whatsapp(summaryText())}" target="_blank" rel="noopener noreferrer">${window.SITE.ICON.wa}<span><span class="btn-pre">Enviar por </span>WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></span></a>${
-      correo && !servidor ? `<a class="btn btn-secondary btn-small" href="${esc(window.SITE.mailto(correo, summaryText()))}">${window.SITE.ICON.mail}<span><span class="btn-pre">Enviar por </span><span class="btn-cap">correo</span></span></a>` : ''
+      correo && !servidor && !linea ? `<a class="btn btn-secondary btn-small" href="${esc(window.SITE.mailto(correo, summaryText()))}">${window.SITE.ICON.mail}<span><span class="btn-pre">Enviar por </span><span class="btn-cap">correo</span></span></a>` : ''
     }<span class="foot-more"><button type="button" class="btn btn-secondary btn-small" data-copy>${ICON.copy}${ICON.done}<span>Copiar</span></button>${
       enviada ? '<button type="button" class="btn btn-quiet btn-small" data-nueva>Nueva solicitud</button>' : ''}</span>`;
   };
@@ -502,10 +518,7 @@
     });
   });
   /* «Ir al formulario»: se lleva todo lo respondido */
-  panel.querySelector('[data-mode="form"]')?.addEventListener('click', () => {
-    window.QUOTE?.fill({ answers, meta });
-    window.HERO?.show('cotizar');
-  });
+  panel.querySelector('[data-mode="form"]')?.addEventListener('click', () => alFormulario(false));
   d.addEventListener('numberflow:ready', paintHead);
   actions.addEventListener('click', async (e) => {
     const ship = e.target.closest('[data-enviar]');
@@ -535,6 +548,7 @@
       }
       return;
     }
+    if (e.target.closest('[data-en-linea]')) { alFormulario(true); return; }
     if (e.target.closest('[data-nueva]')) { go(reiniciar); return; }
     const copy = e.target.closest('[data-copy]');
     if (!copy) return;

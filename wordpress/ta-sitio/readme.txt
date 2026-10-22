@@ -3,13 +3,14 @@ Requires at least: 6.2
 Requires PHP: 7.4
 Stable tag: 1.3.0
 
-Sirve el sitio nuevo de Transporte Autorizado desde WordPress y recibe las solicitudes de sus formularios.
+Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
 == Qué hace ==
 
 * Muestra el sitio en una dirección privada (por defecto /nuevo/): solo con sesión iniciada o con el enlace con clave de «Solicitudes → Ajustes del sitio». Los buscadores no lo indexan.
 * Al pasar a «Publicado», el sitio reemplaza la portada y abre /normativa/, /ayuda/ y /documentos/.
-* Guarda cada solicitud en «Solicitudes», le asigna un número y envía dos correos: al equipo y a la persona.
+* Las cotizaciones de Transporte (formulario de cotización, y el asistente de retiro, que lleva a ese formulario) van solo al asistente cuya dirección se indica en «Solicitudes → Ajustes del sitio»: el asistente las registra en Odoo con sus fotografías y les da su número. WordPress no las recibe. Sin esa dirección, el formulario avisa que el envío en línea no está disponible.
+* Para otros formularios que lo usen, el servicio de solicitudes sigue disponible: guarda cada solicitud en «Solicitudes», le asigna un número y envía dos correos, al equipo y a la persona.
 * Recibe las fotografías que la persona adjunta (hasta 6): las revisa, las vuelve a generar, las guarda en una carpeta que no se entrega al público, las muestra en la solicitud y las adjunta al correo del equipo.
 * Rechaza los correos de los dominios bloqueados en los ajustes (por defecto, Rusia, Francia y Alemania), el texto en cirílico y los envíos hechos desde otros sitios; limita los envíos por visita, por correo, por hora y por día.
 * Al pasar una solicitud a «Lista», la persona recibe un correo de aviso.
@@ -20,7 +21,10 @@ El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `p
 
 == Cambios ==
 
-= 1.3.0 =
+= 1.3.0 (sin publicar) =
+* Las cotizaciones de Transporte van solo al asistente (Laravel), con su dirección y la clave pública de Turnstile en los ajustes de cada instalación (pruebas o producción). La página la recibe en window.TA_API y su política de contenido (CSP) admite esa dirección y, con Turnstile, challenges.cloudflare.com.
+* WordPress ya no recibe las cotizaciones de Transporte ni las del asistente de retiro; el servicio de solicitudes se conserva para otros formularios.
+* Las fotos del formulario: hasta 2, el tope del asistente.
 * Comunas que se atienden, en los ajustes (por defecto Quilicura, Lampa y Pudahuel): el formulario y el asistente solo ofrecen esas.
 * Correos con formato, logotipo y firma (texto e imagen de la biblioteca de medios) al final de todos los que recibe la persona.
 * Gestor de solicitudes: filtros por estado, búsqueda por número, empresa, nombre, correo o teléfono, cambio de estado en grupo, exportación a CSV, resumen en el escritorio y número de nuevas junto al menú.

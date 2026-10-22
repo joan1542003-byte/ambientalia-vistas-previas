@@ -12,9 +12,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site/site.css?v=20261016b">
-<link rel="stylesheet" href="assets/site/agente.css?v=20261016b">
-<link rel="stylesheet" href="assets/site/agente-chat.css?v=20261016b">
+<link rel="stylesheet" href="assets/site/site.css?v=20261022a">
+<link rel="stylesheet" href="assets/site/agente.css?v=20261022a">
+<link rel="stylesheet" href="assets/site/agente-chat.css?v=20261022a">
 </head>
 <body data-site="transporte">
 
@@ -22,14 +22,18 @@
      página» también muestra las guías y las normas, porque todo el sitio vive en el marco de atrás. -->
 <iframe class="agente-sitio" src="transporte-autorizado.html" title="Sitio de Transporte Autorizado" data-agente-sitio></iframe>
 
-<!-- Agente informativo: burbuja abajo a la izquierda que abre una ventana pequeña. Responde la maqueta (assets/site/agente.js);
-     con la dirección de un servicio del asistente responde assets/site/agente-chat.js: data-agente-api, o
-     data-agente-api-local solo cuando el sitio corre en este computador (en local, ?agente=maqueta fuerza la maqueta). -->
+<!-- Agente informativo: burbuja abajo a la izquierda que abre una ventana pequeña. Con la dirección del asistente
+     (servicio Laravel, aparte; la misma de las cotizaciones) responde assets/site/agente-chat.js: la del plugin en
+     WordPress, data-agente-api o, solo en este computador, ?asistente=<dirección local>. Sin dirección responde la
+     maqueta (assets/site/agente.js) en las vistas previas y, sobre WordPress, la ventana avisa que no está disponible.
+     En local, ?agente=maqueta fuerza la maqueta. data-turnstile: la clave pública de Cloudflare Turnstile, si el
+     asistente tiene la secreta (en WordPress la pone el plugin). data-agente-espera: segundos que se espera cada
+     respuesta (90 si no está). -->
 <button class="agente-burbuja" type="button" data-agente-abrir aria-haspopup="dialog" aria-controls="agente" aria-expanded="false" aria-label="Abrir el agente informativo (maqueta)">
   <svg class="agente-b-chat" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M9 10.5h6M9 14h3.5"/></svg>
   <svg class="agente-b-x" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
 </button>
-<div class="agente" id="agente" role="dialog" aria-labelledby="agente-titulo" data-agente data-agente-api-local="http://127.0.0.1:8000" hidden>
+<div class="agente" id="agente" role="dialog" aria-labelledby="agente-titulo" data-agente data-agente-api="" data-turnstile="" hidden>
   <div class="agente-panel">
     <div class="agente-cab">
       <div class="agente-quien">
@@ -49,8 +53,9 @@
   </div>
 </div>
 
-<script src="assets/site/pickers.js?v=20261016b" defer></script>
-<script src="assets/site/agente.js?v=20261016b" defer></script>
-<script src="assets/site/agente-chat.js?v=20261016b" defer></script>
+<script src="assets/site/site.js?v=20261022a" defer></script>
+<script src="assets/site/pickers.js?v=20261022a" defer></script>
+<script src="assets/site/agente.js?v=20261022a" defer></script>
+<script src="assets/site/agente-chat.js?v=20261022a" defer></script>
 </body>
 </html>

@@ -1,2 +1,5 @@
 # Descargas de OpenStreetMap que usa tools/direcciones.py (se regeneran; no se publican)
 tools/cache/osm/
+
+# Caché de Python de las herramientas (se regenera)
+tools/__pycache__/

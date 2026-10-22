@@ -216,12 +216,21 @@ function ta_sitio_entregar( $interna, $privado ) {
 function ta_sitio_pagina( $archivo, $privado ) {
 	$html = (string) file_get_contents( $archivo ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 
-	// Los formularios envían la solicitud a este WordPress (assets/site/site.js lee window.TA_API).
-	$api    = array(
+	// Configuración de la página (assets/site/site.js lee window.TA_API): el servicio de solicitudes de este WordPress
+	// (url) y, si está configurado, el asistente que recibe las cotizaciones de Transporte con su clave de Turnstile.
+	// La cotización de Transporte no usa url: va solo al asistente (transporte-ui.js).
+	$op  = ta_sitio_opciones();
+	$api = array(
 		'url' => esc_url_raw( rest_url( 'ta/v1/' ) ),
 		'v'   => TA_SITIO_VERSION,
 		'comunas' => ta_sitio_comunas(),  // comunas que se atienden (assets/site/pickers.js las usa en el formulario y el asistente)
 	);
+	if ( '' !== $op['asistente'] ) {
+		$api['asistente'] = $op['asistente'];
+	}
+	if ( '' !== $op['turnstile'] ) {
+		$api['turnstile'] = $op['turnstile'];
+	}
 	$config = '<script>window.TA_API=' . wp_json_encode( $api, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES ) . ';</script>';
 	$html   = preg_replace( '#</head>#i', $config . "\n</head>", $html, 1 );
 
@@ -232,25 +241,13 @@ function ta_sitio_pagina( $archivo, $privado ) {
 	}
 
 	// Seguridad: el navegador solo ejecuta los scripts del propio sitio y los escritos en la página (por su sello).
-	// De fuera solo llegan las tipografías (Google Fonts) y las imágenes del mapa (OpenStreetMap).
 	$sellos = array();
 	if ( preg_match_all( '#<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>(.*?)</script>#is', $html, $m ) ) {
 		foreach ( $m[1] as $codigo ) {
 			$sellos[] = "'sha256-" . base64_encode( hash( 'sha256', $codigo, true ) ) . "'"; // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		}
 	}
-	$csp = array(
-		"default-src 'self'",
-		"script-src 'self' " . implode( ' ', array_unique( $sellos ) ),
-		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-		"font-src 'self' https://fonts.gstatic.com",
-		"img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org",  // blob: miniaturas de las fotografías que se adjuntan
-		"connect-src 'self'",
-		"frame-ancestors 'self'",
-		"base-uri 'self'",
-		"form-action 'self'",
-		"object-src 'none'",
-	);
+	$csp = ta_sitio_politica( $sellos, $op );
 
 	// La misma política va también dentro de la página: hay servidores (el del cliente entre ellos) que reemplazan
 	// la cabecera Content-Security-Policy por la suya, y sin esto la página quedaría sin política. En una etiqueta
@@ -286,6 +283,34 @@ function ta_sitio_pagina( $archivo, $privado ) {
 		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- página estática del propio plugin.
 	}
 	exit;
+}
+
+/**
+ * Política de contenido (CSP) de las páginas. Scripts: los del propio sitio y los escritos en la página (sus sellos).
+ * De fuera solo llegan las tipografías (Google Fonts) y las imágenes del mapa (OpenStreetMap). Con el asistente
+ * configurado, la página lo puede llamar (connect-src: cotizaciones y, después, el chat); con la clave de Turnstile,
+ * cargar su script y su marco (challenges.cloudflare.com). Sin ellos, la política es la de siempre.
+ */
+function ta_sitio_politica( array $sellos, array $op ) {
+	$asistente = '' !== ( $op['asistente'] ?? '' ) ? ta_sitio_origen( $op['asistente'] ) : '';
+	$turnstile = '' !== ( $op['turnstile'] ?? '' ) ? 'https://challenges.cloudflare.com' : '';
+	return array_values(
+		array_filter(
+			array(
+				"default-src 'self'",
+				"script-src 'self' " . implode( ' ', array_unique( $sellos ) ) . ( '' !== $turnstile ? ' ' . $turnstile : '' ),
+				"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+				"font-src 'self' https://fonts.gstatic.com",
+				"img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org",  // blob: miniaturas de las fotografías que se adjuntan
+				"connect-src 'self'" . ( '' !== $asistente ? ' ' . $asistente : '' ),
+				'' !== $turnstile ? "frame-src 'self' " . $turnstile : '',
+				"frame-ancestors 'self'",
+				"base-uri 'self'",
+				"form-action 'self'",
+				"object-src 'none'",
+			)
+		)
+	);
 }
 
 /** Páginas del sitio con su fecha, para el mapa del sitio. */

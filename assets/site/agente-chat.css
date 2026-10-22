@@ -1,6 +1,6 @@
-/* Agente conectado al asistente (prueba local): assets/site/agente-chat.js. Va después de agente.css y solo suma lo
-   propio de esta versión: la puerta con los datos, el texto en varias líneas con sus enlaces, las fuentes y el botón
-   para adjuntar una foto. */
+/* Agente conectado al asistente: assets/site/agente-chat.js. Va después de agente.css y solo suma lo propio de esta
+   versión: la puerta con los datos, el texto en varias líneas, las fuentes con su enlace, las opciones que ya no
+   corresponden y el botón para adjuntar una foto. */
 
 .agente .msg-texto { white-space: pre-line; overflow-wrap: anywhere; }
 .agente .msg-texto strong { color: var(--ink); font-weight: 800; }
@@ -13,6 +13,9 @@
 .msg-fuentes li > span:first-child { display: contents; }
 .msg-fuentes svg { flex: none; width: 14px; height: 14px; margin-top: 1px; color: var(--muted); }
 
+/* Opciones de una respuesta anterior (ya no corresponden) y botones mientras se espera la respuesta */
+.agente .chip:disabled { opacity: .5; cursor: default; pointer-events: none; }
+
 /* La puerta: nombre, correo, teléfono y el aviso de privacidad */
 .agente-puerta { display: grid; gap: 10px; }
 .agente-campo { display: grid; gap: 4px; color: var(--ink); font-size: var(--fs-small); font-weight: 700; }
@@ -21,6 +24,9 @@
 .agente-campo input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
 .agente-acepto { display: flex; align-items: flex-start; gap: 8px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; }
 .agente-acepto input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); }
+/* Contra bots: el campo trampa, fuera de la vista, y el widget de Turnstile, que solo aparece si pide una interacción */
+.agente-trampa { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.agente-humano:empty { display: none; }
 .agente-error { color: #b42318; font-size: var(--fs-small); font-weight: 600; white-space: pre-line; }
 .agente-error:empty { display: none; }
 .agente-puerta .btn { justify-self: start; }

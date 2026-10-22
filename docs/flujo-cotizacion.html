@@ -54,7 +54,7 @@
   <p class="bajada">Transporte Autorizado: cómo una persona pide una cotización en el sitio y qué ocurre con su solicitud.</p>
   <ul class="leyenda">
     <li><i></i>Funciona hoy en el sitio</li>
-    <li class="plan"><i></i>Planificado para la integración en WordPress (aún sin implementar)</li>
+    <li class="plan"><i></i>Integrado (sin publicar; se activa con la dirección del asistente)</li>
     <li class="req">Dato obligatorio</li>
   </ul>
 
@@ -121,7 +121,8 @@
       <h2>«Tu solicitud está lista»</h2>
       <p>El sitio muestra el texto completo de la solicitud y ofrece:</p>
       <ul>
-        <li><span class="wa">Enviar por WhatsApp</span></li>
+        <li class="plan">«Enviar solicitud» (con la dirección del asistente; antes pide aceptar las condiciones y el aviso de privacidad). Sin esa dirección, el resumen avisa que el envío en línea no está disponible.</li>
+        <li><span class="wa">Enviar por WhatsApp</span> (la persona lo elige; nunca se abre solo)</li>
         <li>Enviar por correo (preparado: aparece cuando se defina el correo de destino)</li>
         <li>Copiar el texto</li>
         <li>Editar, que vuelve al formulario</li>
@@ -135,13 +136,13 @@
     </li>
 
     <li class="paso plan" data-via="Lo que reemplazará al envío manual">
-      <span class="etiqueta">Planificado</span>
-      <h2>Envío automático desde WordPress</h2>
+      <span class="etiqueta">Envío en línea</span>
+      <h2>Al asistente (Laravel), que la registra en Odoo</h2>
       <ol>
-        <li>Al enviar el formulario, los datos de la solicitud se guardan en la nube.</li>
-        <li>La solicitud llega al encargado de gestión.</li>
-        <li>La persona recibe un correo automático con el ID de su solicitud.</li>
-        <li>Cuando la solicitud está lista, se le contacta por correo, también de forma automática.</li>
+        <li>«Enviar solicitud» la envía una sola vez al asistente (<code>POST /api/quotes</code>) con sus fotografías (hasta dos). WordPress solo muestra el sitio: no la recibe.</li>
+        <li>El asistente la guarda, la registra como tarea en Odoo para el encargado de gestión y responde con su número (<code>TA-000123</code>), que el resumen muestra.</li>
+        <li>Si el envío falla, se reintenta con el mismo identificador: no se duplica. No se envía a otro canal en su lugar.</li>
+        <li>Correo automático a la persona con su número y aviso cuando esté lista: fuera de esta etapa.</li>
       </ol>
     </li>
   </ol>
@@ -150,17 +151,18 @@
   <ul class="lista">
     <li><strong>Buscar transportista:</strong> elige residuo y comuna, y pide «Solicitar cotización» en un transportista. Se abre WhatsApp con el mensaje escrito.</li>
     <li><strong>Hablar con un especialista:</strong> elige el tema (opcional) y se abre WhatsApp.</li>
-    <li><strong>Asistente de retiro:</strong> al terminar las siete preguntas muestra su resumen y abre WhatsApp.</li>
+    <li><strong>Asistente de retiro:</strong> al terminar las siete preguntas muestra su resumen y abre WhatsApp; con el envío en línea, «Enviar en línea» lo lleva al formulario, que lo envía al asistente.</li>
   </ul>
 
   <h2>Por definir</h2>
   <ul class="lista">
     <li>Correo de destino de las solicitudes.</li>
     <li>Lista de vehículos y de contenedores, con el tipo de residuo que admite cada uno.</li>
-    <li>Para la integración: dónde se guardan los datos, qué servicio envía los correos y qué formato tiene el ID.</li>
+    <li>Dirección pública del asistente para pruebas y producción, y si se usa Cloudflare Turnstile.</li>
+    <li>Correos automáticos a la persona (número y aviso de solicitud lista).</li>
   </ul>
 
-  <footer>Corresponde al sitio al 09-10-2026. Fuente: <code>transporte-autorizado.html</code> y <code>assets/site/</code> de este repositorio.</footer>
+  <footer>Corresponde al sitio al 20-10-2026. Fuente: <code>transporte-autorizado.html</code> y <code>assets/site/</code> de este repositorio.</footer>
 </main>
 </body>
 </html>

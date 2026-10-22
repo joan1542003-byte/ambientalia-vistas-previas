@@ -18,6 +18,31 @@
     }
   };
 
+  /* Dirección del asistente de Transporte Autorizado (servicio Laravel, repositorio aparte), que recibe las cotizaciones
+     de Transporte. Una por entorno, sin direcciones fijas en la página publicada:
+     - WordPress (pruebas o producción): la deja el plugin en window.TA_API.asistente («Ajustes del sitio») y la suma
+       a la política de contenido.
+     - Otro alojamiento estático: el atributo de la página (data-cotizar-api en el formulario), con https.
+     - Este computador: ?asistente=http://127.0.0.1:8000 la fija para la pestaña y ?asistente= la quita. Solo en
+       localhost: en el sitio publicado un enlace no puede desviar a otra dirección los datos de quien escribe.
+     Devuelve la dirección sin barra final, o '' si no hay ninguna válida (el envío en línea no está disponible). */
+  const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  window.SITE.asistente = (atributo = '') => {
+    let local = '';
+    if (LOCAL) {
+      const pedida = new URLSearchParams(location.search).get('asistente');
+      try {
+        if (pedida !== null) { if (pedida) sessionStorage.setItem('ta-asistente', pedida); else sessionStorage.removeItem('ta-asistente'); }
+        local = sessionStorage.getItem('ta-asistente') || '';
+      } catch { local = pedida || ''; }
+    }
+    try {
+      const u = new URL(local || window.TA_API?.asistente || atributo);
+      if (u.protocol !== 'https:' && !(LOCAL && u.protocol === 'http:')) return '';
+      return (u.origin + u.pathname).replace(/\/+$/, '');
+    } catch { return ''; }
+  };
+
   /* Envío al servidor. Solo existe cuando el sitio corre sobre WordPress: el plugin deja window.TA_API con la dirección
      de su servicio, que guarda la solicitud, le pone número y envía los correos. Sin eso (vista previa estática), la
      solicitud se sigue enviando por WhatsApp. El servicio pide un permiso con hora: se solicita al mostrar el resumen
@@ -441,7 +466,11 @@
   };
   const validate = (scope) => {
     const fields = [...scope.querySelectorAll('input, select, textarea')].filter((f) => !f.disabled);
-    fields.forEach((f) => { if (f.required && f.type !== 'radio') f.setCustomValidity(f.value.trim() ? '' : 'Completa este dato.'); });
+    fields.forEach((f) => {
+      /* Una casilla obligatoria (p. ej., aceptar un aviso) dice qué falta: data-required-text */
+      if (f.required && f.type === 'checkbox') f.setCustomValidity(f.checked ? '' : f.dataset.requiredText || 'Marca esta casilla para seguir.');
+      else if (f.required && f.type !== 'radio') f.setCustomValidity(f.value.trim() ? '' : 'Completa este dato.');
+    });
     /* Grupos de casillas que exigen al menos una opción: [data-required-group] */
     scope.querySelectorAll('[data-required-group]').forEach((g) => {
       const boxes = [...g.querySelectorAll('input')].filter((f) => !f.disabled);
@@ -473,8 +502,10 @@
     const pre = out?.querySelector('pre');
     const send = out?.querySelector('[data-send]');
     const mail = out?.querySelector('[data-mail]');  // «Enviar por correo»: aparece si el formulario declara su destino (data-mail)
-    /* «Enviar solicitud»: solo sobre WordPress (window.SITE.enviar). Al enviarla, el resumen muestra su número. */
-    const ship = window.SITE.enviar ? out?.querySelector('[data-enviar]') : null;
+    /* «Enviar solicitud»: solo sobre WordPress (window.SITE.enviar). Al enviarla, el resumen muestra su número.
+       La cotización de Transporte (form[data-cotizar-api]) no pasa por aquí, tenga o no dirección: la recibe solo el
+       asistente Laravel (transporte-ui.js), y sin dirección no se envía a otro lado en su lugar. */
+    const ship = window.SITE.enviar && !form.hasAttribute('data-cotizar-api') ? out?.querySelector('[data-enviar]') : null;
     /* Con envío al servidor, el resumen deja adjuntar fotografías (franja [data-fotos]) */
     const fotosHost = ship ? out.querySelector('[data-fotos]') : null;
     const fotos = fotosHost ? window.SITE.fotos(fotosHost) : null;
@@ -575,32 +606,39 @@
       paint(1, false);
     }
 
-    /* Lo respondido, por sección: [título, [[dato, valor, nombre del campo]…]] */
-    const sectionsOf = () => {
+    /* Las filas del resumen, en orden y agrupadas por su fieldset: { section, name, label, value }. El texto para
+       WhatsApp sale de aquí, y también lo que se envía: la cotización de Transporte al asistente (form.summaryRows,
+       transporte-ui.js) y los demás formularios a WordPress («Enviar solicitud», más abajo). Así todos dicen lo mismo */
+    const rowsOf = () => {
+      const rows = [];
       const seen = new Set();
-      const sections = [];
       form.querySelectorAll('fieldset').forEach((fs) => {
-        const rows = [];
+        const section = fs.dataset.summaryTitle || fs.querySelector('legend')?.textContent.trim() || '';
+        const row = (field, value) => rows.push({ group: fs, section, name: field.name, label: labelFor(field), value });
         fs.querySelectorAll('[name]').forEach((field) => {
           if (seen.has(field.name) || field.disabled || 'summarySkip' in field.dataset) return;
           if (field.type === 'radio' && !field.checked) return;
           if (field.type === 'checkbox') {
             seen.add(field.name);
             const on = [...fs.querySelectorAll(`[name="${field.name}"]:checked:not(:disabled)`)].map(valueOf);
-            if (on.length) rows.push([labelFor(field), on.join(', '), field.name]);
+            if (on.length) row(field, on.join(', '));
             return;
           }
           seen.add(field.name);
           const value = valueOf(field);
-          if (value) rows.push([labelFor(field), value, field.name]);
+          if (value) row(field, value);
         });
-        if (rows.length) sections.push([fs.dataset.summaryTitle || fs.querySelector('legend')?.textContent.trim() || '', rows]);
       });
-      return sections;
+      return rows;
     };
+    form.summaryRows = () => rowsOf().map(({ group, ...r }) => r);
     const summaryOf = () => {
       const lines = [`*${form.dataset.title || 'Consulta'}*`];
-      sectionsOf().forEach(([title, rows]) => lines.push('', `*${title}*`, ...rows.map(([label, value]) => `• ${label}: ${value}`)));
+      let group = null;
+      rowsOf().forEach((r) => {
+        if (r.group !== group) { group = r.group; lines.push('', `*${r.section}*`); }
+        lines.push(`• ${r.label}: ${r.value}`);
+      });
       if (form.dataset.closing) lines.push('', form.dataset.closing);
       return lines.join('\n');
     };
@@ -641,18 +679,20 @@
         out.hidden = false;
         if (edit) form.hidden = true;
         out.classList.toggle('is-shown', !form.transition);
+        /* Un resumen nuevo: quien envía la solicitud por otra vía (transporte-ui.js) vuelve a empezar */
+        form.dispatchEvent(new CustomEvent('summary:ready', { detail: { text } }));
       }, 1).then(() => {
         if (edit) bring(out); else out.scrollIntoView({ behavior: smooth(), block: 'nearest' });
-        (ship || send).focus({ preventScroll: true });
+        (ship || out.querySelector('[data-send-first]:not([hidden])') || send).focus({ preventScroll: true });
       });
     });
     ship?.addEventListener('click', async () => {
       const CONTACTO = ['empresa', 'organizacion', 'nombre', 'telefono', 'correo'];
-      const rows = sectionsOf().flatMap(([, list]) => list);
-      const dato = (name) => rows.find((r) => r[2] === name)?.[1] || '';
+      const rows = form.summaryRows();
+      const dato = (name) => rows.find((r) => r.name === name)?.value || '';
       ship.disabled = true;
       fotos?.bloquear(true);
-      const adjuntas = fotos?.blobs() || window.ADJUNTOS?.archivos() || [];
+      const adjuntas = fotos?.blobs() || [];
       /* Mientras sube, una capa cubre el resumen: con fotografías muestra el avance; sin ellas, que se está enviando */
       const capa = window.SITE.enviando(out, out.querySelector('.hcard-head'));
       capa.paso(adjuntas.length ? 'Subiendo fotografías…' : 'Enviando tu solicitud…', adjuntas.length ? 0 : null);
@@ -660,12 +700,11 @@
         const r = await window.SITE.enviar({
           origen: 'formulario', titulo: form.dataset.title || '',
           contacto: { empresa: dato('empresa') || dato('organizacion'), nombre: dato('nombre'), telefono: dato('telefono'), correo: dato('correo') },
-          campos: rows.filter((x) => !CONTACTO.includes(x[2])).map(([label, value]) => [label, value])
+          campos: rows.filter((r) => !CONTACTO.includes(r.name)).map((r) => [r.label, r.value])
         }, { fotos: adjuntas, avance: adjuntas.length ? (f) => capa.paso(f < 1 ? 'Subiendo fotografías…' : 'Enviando tu solicitud…', f < 1 ? f : null) : null });
         ship.hidden = true;
         pintaEditar(true);
         if (fotosHost) { fotosHost.hidden = true; fotos.vaciar(); }
-        window.ADJUNTOS?.vaciar();
         if (heading) heading.textContent = 'Solicitud enviada.';
         if (lead) lead.textContent = window.SITE.enviada(r, adjuntas.length);
         await capa.listo(`Solicitud ${r.numero} enviada`);
