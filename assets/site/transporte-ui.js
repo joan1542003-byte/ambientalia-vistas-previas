@@ -307,7 +307,7 @@
           groups: [
             { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, otherLabel: '¿Qué otra condición?', options: PICK.ACCESS.map((x) => ({ value: x, label: x, other: PICK.isOther(x) })) },
             { key: 'estado', label: 'Estado del residuo', options: PICK.STATES.map((x) => ({ value: x, label: x })) },
-            { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', otherLabel: '¿Cómo está almacenado?', options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) }
+            { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', otherLabel: '¿Cómo está almacenado?', allowed: (p) => PICK.STORAGE_BY_STATE[p.estado] || null, options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) }
           ],
           value: { acceso: acc.map(([base]) => base), accesoOtro: acc.find(([base]) => PICK.isOther(base))?.[1] || '', estado: field('estado').value, almacenamiento: alm, almacenamientoOtro: almOtro }
         });

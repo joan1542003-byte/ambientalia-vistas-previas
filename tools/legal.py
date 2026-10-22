@@ -59,6 +59,20 @@ def limpio(fragmento):
     return fragmento.strip()
 
 
+# Correcciones del cliente que el asistente aún no publica (se aplican sobre su texto): se quitan cuando ya las traiga
+CORRECCIONES = {
+    'politica-de-privacidad': [('Servidores donde funciona el asistente y se guardan las conversaciones y las solicitudes.</td><td>Por confirmar</td>',
+                                'Servidores donde funciona el asistente y se guardan las conversaciones y las solicitudes.</td><td>Chile</td>')],  # 22-10-2026
+}
+
+
+def corregir(slug, cuerpo):
+    for antes, despues in CORRECCIONES.get(slug, []):
+        if antes in cuerpo:
+            cuerpo = cuerpo.replace(antes, despues)
+    return cuerpo
+
+
 def leer(slug):
     pedido = urllib.request.Request(f'{ORIGEN}/{slug}', headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36'})
     with urllib.request.urlopen(pedido, timeout=20) as r:  # Cloudflare rechaza el agente de Python
@@ -70,7 +84,7 @@ def leer(slug):
         'titulo': texto(r'<h1>(.*?)</h1>'),
         'bajada': texto(r'<p class="hero-copy">(.*?)</p>'),
         'vigencia': texto(r'<aside class="hero-panel"[^>]*>.*?<p>(.*?)</p>'),
-        'cuerpo': limpio(doc.group(1)).replace('versión aprobado', 'versión aprobada'),
+        'cuerpo': corregir(slug, limpio(doc.group(1)).replace('versión aprobado', 'versión aprobada')),
     }
 
 

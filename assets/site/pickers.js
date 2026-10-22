@@ -116,6 +116,8 @@
     ['Otro', ic('<circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>')]
   ];
   const STATES = ['Sólido', 'Líquido', 'Lodo', 'Mixto'];
+  /* Almacenamiento posible según el estado del residuo (cliente, 22-10-2026): al elegir el estado, el resto se oculta */
+  const STORAGE_BY_STATE = { 'Sólido': ['Sacos', 'Contenedor', 'A granel', 'Otro'], 'Líquido': ['Tambores', 'Bins', 'Otro'], 'Lodo': ['Tambores', 'Bins', 'Otro'], 'Mixto': ['Tambores', 'Bins', 'Otro'] };
   const DOCS = ['HDS/FDS del producto original', 'HDSR u hoja del residuo', 'Análisis o caracterización', 'Sin documentos por ahora'];
   const ACCESS = ['Acceso restringido para camión', 'Bodega subterránea', 'Altura máxima', 'Grúa requerida', 'Horario de carga definido', 'Otra condición'];
   /* Las opciones «Otro», «Otra…» despliegan un campo para escribir cuál (seleccion.js) */
@@ -160,5 +162,5 @@
   const enCobertura = (c) => COBERTURA.includes(c);
   const coberturaTexto = COBERTURA.length > 1 ? `${COBERTURA.slice(0, -1).join(', ')} y ${COBERTURA[COBERTURA.length - 1]}` : COBERTURA[0] || '';
 
-  window.PICK = { COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, DOCS, ACCESS, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
+  window.PICK = { COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
 })();

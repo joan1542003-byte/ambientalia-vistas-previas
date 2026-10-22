@@ -430,6 +430,18 @@
       f.querySelector('input').focus({ preventScroll: true });
       reveal(f, [...f.closest('[data-group]').querySelectorAll('.opt[data-value]')].find((b) => b.dataset.value === f.dataset.other));
     });
+    /* Un grupo con `allowed(picked)` muestra solo las opciones que esa función devuelve según lo elegido en los otros
+       (p. ej., el almacenamiento según el estado del residuo; null = todas). Si lo marcado queda fuera, se desmarca */
+    const filtrar = () => groups.forEach((g) => {
+      if (!g.allowed) return;
+      const ok = g.allowed(picked);
+      if (ok) picked[g.key] = g.multi ? picked[g.key].filter((v) => ok.includes(v)) : ok.includes(picked[g.key]) ? picked[g.key] : '';
+      el.body.querySelectorAll(`[data-group="${g.key}"] .opt[data-value]`).forEach((x) => {
+        x.hidden = Boolean(ok) && !ok.includes(x.dataset.value);
+        x.setAttribute('aria-pressed', String(on(g, x.dataset.value)));
+      });
+    });
+    filtrar();
     syncOther();
     el.body.onclick = (e) => {
       const b = e.target.closest('.opt[data-value]');
@@ -439,6 +451,7 @@
       if (g.multi) picked[g.key] = on(g, v) ? picked[g.key].filter((x) => x !== v) : [...picked[g.key], v];
       else picked[g.key] = picked[g.key] === v ? '' : v;
       b.closest('.opts').querySelectorAll('.opt').forEach((x) => x.setAttribute('aria-pressed', String(on(g, x.dataset.value))));
+      filtrar();
       syncOther(otherOf(g)?.value === v ? b.closest('[data-group]').querySelector('[data-other]') : null);
     };
     hooks.done = () => {
