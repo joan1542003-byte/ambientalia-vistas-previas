@@ -326,7 +326,7 @@ try {
     await abrir();
     await sleep(300);
     const v = await evaluar(() => ({ maqueta: typeof window.AGENTE?.buscar === 'function', tag: document.querySelector('.agente-tag')?.textContent || '' }));
-    ok(v.maqueta && v.tag === 'Maqueta' && llamadas.length === 0, 'vista previa sin dirección (GitHub Pages): responde la maqueta, como antes, y no hay llamadas al asistente');
+    ok(v.maqueta && v.tag === '' && llamadas.length === 0, 'vista previa sin dirección (GitHub Pages): responde la maqueta, sin rótulo de maqueta (22-10), y no hay llamadas al asistente');
 
     await conWordPress({ url: 'https://wordpress.ejemplo/wp-json/ta/v1/', v: '1.3.0' });
     await navegar(pagUrl());
@@ -373,7 +373,7 @@ try {
     await hasta(() => /Respuesta a «¿Qué es un residuo peligroso\?»/.test(document.querySelector('[data-agente-charla]').textContent), 'respuesta');
     const m = de('/messages', 'POST')[0];
     ok(m && m.cuerpo.text === '¿Qué es un residuo peligroso?' && /^[A-Za-z0-9_-]{8,64}$/.test(m.cuerpo.client_message_id) && m.token === 'tok-1', 'el mensaje va con su texto, un client_message_id válido y el token Bearer');
-    ok(/9 de 10 consultas/.test(await evaluar(() => document.querySelector('.agente-quien p').textContent)), 'muestra el consumo de consultas (usage)');
+    ok((await evaluar(() => document.querySelector('.agente-quien p').textContent)) === '', 'con muchas consultas disponibles (usage 9 de 10) no muestra el consumo: solo avisa cuando quedan 3 o menos');
     ok((await evaluar(() => [...document.querySelectorAll('[data-agente-charla] [data-opcion]')].filter((b) => b.disabled).length)) === 2, 'las opciones del saludo quedan inactivas al llegar otra respuesta');
     await tocar('Otra consulta');
     await hasta(() => /Respuesta a «otra»/.test(document.querySelector('[data-agente-charla]').textContent), 'respuesta a la opción');

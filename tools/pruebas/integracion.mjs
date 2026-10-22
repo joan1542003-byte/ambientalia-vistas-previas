@@ -17,6 +17,9 @@ const ROOT = resolve(new URL('../..', import.meta.url).pathname);
 /* Puntas de las dos ramas integradas (cambios-15-10 de Johan y conexion-odoo): lo que debe quedar igual se compara con ellas */
 const JOHAN = 'c1f073fb3101e907b2a3b7e49f87dd2732565862';
 const ODOO = '906b1c9097ccc817731d2d0d18077d4d7911c5a0';
+/* Cambios posteriores de Johan, ya integrados: el plugin 1.3.0 del 16-10 y el diseño del chat del 22-10 */
+const JOHAN_PLUGIN = '415821b60ff8c6ac841a3f6778c704aec6e1d3a2';
+const JOHAN_CHAT = 'c0e7801a5de7f2c6aa3e8d0e9e409901336ca9ff';
 const leer = (f) => readFileSync(join(ROOT, f), 'utf8');
 const git = (...a) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 });
 /* Archivos del repositorio, sin repetir (durante una fusión sin cerrar, git ls-files nombra tres veces cada archivo en conflicto) */
@@ -119,7 +122,8 @@ seccion('6. Páginas generadas (normativa y ayuda) al día con la fuente');
 {
   const s = leer('transporte-autorizado.html');
   const tarjeta = bloque(s, '<div class="hcard">').replace(/ role="tabpanel" aria-labelledby="tab-[\w-]+"/g, '');
-  const burbuja = bloque(s, '<div class="dock" data-dock>').replace('<div class="dock" data-dock>', '<div class="dock" data-dock data-dock-always>');
+  /* Como en tools/normativa.py: «Chat con IA» abre el chat de Transporte, que estas páginas no cargan */
+  const burbuja = bloque(s, '<div class="dock" data-dock>').replace('<div class="dock" data-dock>', '<div class="dock" data-dock data-dock-always>').replace(/\n *<button class="dock-action is-ia"[\s\S]*?<\/button>/, '');
   const paginas = archivos('normativa/*.html', 'ayuda/*.html');
   const malas = paginas.filter((f) => { const p = leer(f); return bloque(p, '<div class="hcard">') !== tarjeta || bloque(p, '<div class="dock" data-dock data-dock-always>') !== burbuja; });
   ok(!malas.length, `${paginas.length} páginas con la tarjeta y la burbuja idénticas a las de transporte-autorizado.html (lo que copian tools/normativa.py y tools/ayuda.py)${malas.length ? `: ${malas.join(', ')}` : ''}`);
@@ -135,8 +139,8 @@ seccion('7. Plugin de WordPress conservado');
 {
   const P = 'wordpress/ta-sitio/';
   ok(['ta-sitio.php', 'readme.txt', 'inc/ajustes.php', 'inc/sitio.php', 'inc/fotos.php', 'inc/solicitudes.php'].every((f) => existsSync(join(ROOT, P, f))), 'están los seis archivos del plugin');
-  ok(leer(`${P}inc/solicitudes.php`) === enRama(JOHAN, `${P}inc/solicitudes.php`), 'inc/solicitudes.php sin cambios: el servicio /wp-json/ta/v1/ (permiso y solicitudes) sigue para otros formularios');
-  ok(leer(`${P}inc/fotos.php`) === enRama(JOHAN, `${P}inc/fotos.php`), 'inc/fotos.php sin cambios');
+  ok(leer(`${P}inc/solicitudes.php`) === enRama(JOHAN_PLUGIN, `${P}inc/solicitudes.php`), 'inc/solicitudes.php sin cambios: el servicio /wp-json/ta/v1/ (permiso y solicitudes) sigue para otros formularios');
+  ok(leer(`${P}inc/fotos.php`) === enRama(JOHAN_PLUGIN, `${P}inc/fotos.php`), 'inc/fotos.php sin cambios');
   const main = leer(`${P}ta-sitio.php`);
   const v1 = main.match(/Version:\s+([\d.]+)/)?.[1];
   const v2 = main.match(/TA_SITIO_VERSION', '([\d.]+)'/)?.[1];
@@ -158,7 +162,7 @@ seccion('8. Agente (widget del chat): uno solo, conectado por configuración');
 {
   /* La maqueta solo cambia en la condición que decide quién responde (el bloque que empieza en «Con la dirección») */
   const sinCondicion = (s) => s.replace(/  \/\* Con (la dirección del asistente|servicio) responde[\s\S]*?\n  if \([^\n]*\) return;\n/, '');
-  ok(sinCondicion(leer('assets/site/agente.js')) === sinCondicion(enRama(JOHAN, 'assets/site/agente.js')) && leer('assets/site/agente.css') === enRama(JOHAN, 'assets/site/agente.css'), 'maqueta (agente.js y agente.css) igual salvo la condición de quién responde');
+  ok(sinCondicion(leer('assets/site/agente.js')) === sinCondicion(enRama(JOHAN_CHAT, 'assets/site/agente.js')) && leer('assets/site/agente.css') === enRama(JOHAN_CHAT, 'assets/site/agente.css'), 'maqueta (agente.js y agente.css) igual a la del diseño del 22-10 salvo la condición de quién responde');
   const chat = leer('assets/site/agente-chat.js');
   ok(/window\.SITE\?\.asistente\?\.\(panel\.dataset\.agenteApi\)/.test(chat) && /window\.SITE\?\.asistente\?\.\(panel\.dataset\.agenteApi\)/.test(leer('assets/site/agente.js')) && !/agenteApiLocal/.test(chat), 'chat y maqueta toman la dirección de window.SITE.asistente (la misma de las cotizaciones), sin dirección local');
   ok(!/\.innerHTML\s*=(?!\s*v;)|insertAdjacentHTML|outerHTML\s*=|document\.write|conEnlaces|RE_URL/.test(chat), 'el chat no inserta HTML del servicio ni convierte en enlaces las direcciones del texto');
@@ -183,7 +187,13 @@ seccion('9. Paquete del plugin (tools/wordpress.py, en una carpeta temporal)');
       'se arma el zip con el plugin y el sitio dentro');
     ok(!lista.some((f) => /filas\.js$|tools\/|wordpress\/|docs\//.test(f)), 'el paquete no lleva herramientas, documentación ni lo que es solo de HDS y Campañas');
     const pagina = readFileSync(join(destino, 'ta-sitio/sitio/transporte-autorizado.html'), 'utf8');
-    ok(pagina === leer('transporte-autorizado.html'), 'la página empaquetada es la del repositorio (destino Laravel, sin dirección local en el formulario)');
+    /* El sitio oficial no muestra el agente (pedido del cliente, 16-10): la página empaquetada es la del repositorio sin él, y nada más */
+    const lineasPagina = pagina.split('\n');
+    const quitadas = [];
+    let k = 0;
+    for (const l of leer('transporte-autorizado.html').split('\n')) { if (k < lineasPagina.length && l === lineasPagina[k]) k += 1; else quitadas.push(l); }
+    ok(k === lineasPagina.length && quitadas.some((l) => / data-agente /.test(l)) && !/data-agente|assets\/site\/agente|is-ia/.test(pagina),
+      'la página empaquetada es la del repositorio (destino Laravel, sin dirección local en el formulario) sin el agente: solo se quitan líneas, y no queda nada de él');
     const enPaquete = lista.filter((f) => f && TEXTO.test(f) && !/\/assets\/transporte\/(direcciones\/|calles)/.test(f)).map((f) => f.replace(/^ta-sitio\//, ''));
     const hallazgos = secretos(join(destino, 'ta-sitio'), enPaquete);
     ok(!hallazgos.length, `el paquete no lleva secretos (${enPaquete.length} archivos de texto revisados)${hallazgos.length ? `: ${hallazgos.join('; ')}` : ''}`);

@@ -20,6 +20,9 @@ function wp_parse_url( $url, $componente = -1 ) {
 function wp_parse_args( $a, $b ) {
 	return array_merge( $b, $a );
 }
+function remove_accents( $texto ) {
+	return strtr( $texto, array( 'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n', 'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ü' => 'U', 'Ñ' => 'N' ) );
+}
 function get_option() {
 	global $opciones;
 	return $opciones;
