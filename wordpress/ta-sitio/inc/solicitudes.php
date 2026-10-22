@@ -14,13 +14,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const TA_SITIO_ESTADOS = array(
-	'nueva'       => 'Nueva',
-	'en_revision' => 'En revisión',
-	'lista'       => 'Lista',
-	'cerrada'     => 'Cerrada',
-);
-
 /* ---------- Tipo de contenido ---------- */
 
 function ta_sitio_tipo_solicitud() {
@@ -290,7 +283,7 @@ function ta_sitio_rest_crear( WP_REST_Request $pedido ) {
 	}
 
 	$al_equipo = ta_sitio_correo_equipo( $id, $codigo, $c, $campos, $origen, $fotos );
-	$a_persona = ta_sitio_correo_persona( $codigo, $c, $campos, count( $fotos ) );
+	$a_persona = ta_sitio_correo_persona( $id, $codigo, $c, $campos, count( $fotos ) );
 	update_post_meta( $id, '_ta_correos', array( 'equipo' => $al_equipo, 'persona' => $a_persona ) );
 
 	return ta_sitio_sin_cache(
@@ -305,7 +298,7 @@ function ta_sitio_rest_crear( WP_REST_Request $pedido ) {
 	);
 }
 
-/* ---------- Correos (texto simple) ---------- */
+/* ---------- Correos de la solicitud (formato y firma en inc/correos.php) ---------- */
 
 /** Los datos en líneas «• dato: valor». Sin enlaces ajenos: solo se conserva el del mapa que arma el propio sitio. */
 function ta_sitio_lineas( $campos ) {
@@ -323,13 +316,8 @@ function ta_sitio_lineas( $campos ) {
 	return implode( "\n", $lineas );
 }
 
-function ta_sitio_cabeceras( $nombre, $correo ) {
-	$nombre = trim( preg_replace( '/[\r\n"<>]+/', ' ', (string) $nombre ) );
-	return array( 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . ( '' !== $nombre ? '"' . $nombre . '" ' : '' ) . '<' . $correo . '>' );
-}
-
 function ta_sitio_correo_equipo( $id, $codigo, $c, $campos, $origen, $fotos = array() ) {
-	$cuerpo = "Llegó una solicitud desde el sitio.\n\n"
+	$texto = "Llegó una solicitud desde el sitio.\n\n"
 		. "Número: $codigo\n"
 		. 'Fecha: ' . wp_date( 'd-m-Y H:i' ) . "\n"
 		. 'Origen: ' . ( 'asistente' === $origen ? 'Asistente de retiro' : 'Formulario de cotización' ) . "\n\n"
@@ -340,161 +328,60 @@ function ta_sitio_correo_equipo( $id, $codigo, $c, $campos, $origen, $fotos = ar
 		. '• Correo: ' . $c['correo'] . "\n\n"
 		. "Solicitud\n" . ta_sitio_lineas( $campos ) . "\n\n"
 		. ( $fotos ? 'Fotografías: ' . count( $fotos ) . " (adjuntas a este correo; también están en la solicitud).\n\n" : '' )
-		. "Para escribirle a la persona, responde este correo.\n"
-		. 'Para cambiar el estado: ' . admin_url( 'post.php?post=' . (int) $id . '&action=edit' ) . "\n";
-	$adjuntos = array_values( array_filter( array_map( 'ta_sitio_ruta_foto', $fotos ) ) );
-	return (bool) wp_mail( ta_sitio_correo_destino(), "[$codigo] Nueva solicitud · " . ( '' !== $c['empresa'] ? $c['empresa'] : $c['nombre'] ), $cuerpo, ta_sitio_cabeceras( $c['nombre'], $c['correo'] ), $adjuntos );
+		. "Para escribirle a la persona, responde este correo o usa «Responder» en la solicitud:\n"
+		. admin_url( 'post.php?post=' . (int) $id . '&action=edit' );
+	return ta_sitio_correo(
+		array(
+			'id'        => $id,
+			'tipo'      => 'equipo',
+			'para'      => ta_sitio_correos_destino(),
+			'asunto'    => "[$codigo] Nueva solicitud · " . ( '' !== $c['empresa'] ? $c['empresa'] : $c['nombre'] ),
+			'texto'     => $texto,
+			'responder' => array( $c['nombre'], $c['correo'] ),
+			'adjuntos'  => array_values( array_filter( array_map( 'ta_sitio_ruta_foto', $fotos ) ) ),
+			'firma'     => false,  // aviso interno: la firma es para lo que recibe la persona
+		)
+	);
 }
 
-function ta_sitio_correo_persona( $codigo, $c, $campos, $fotos = 0 ) {
-	$op     = ta_sitio_opciones();
-	$cuerpo = 'Hola, ' . $c['nombre'] . ":\n\n"
+function ta_sitio_correo_persona( $id, $codigo, $c, $campos, $fotos = 0 ) {
+	$op    = ta_sitio_opciones();
+	$texto = 'Hola, ' . $c['nombre'] . ":\n\n"
 		. "Recibimos tu solicitud. Su número es $codigo.\n\n"
 		. "Revisaremos los antecedentes y te escribiremos a este correo cuando esté lista.\n"
 		. ( $fotos
 			? ( 1 === $fotos ? 'Recibimos también tu fotografía.' : "Recibimos también tus $fotos fotografías." ) . " Si quieres sumar otras, responde este correo y adjúntalas.\n\n"
 			: "Si tienes fotografías del residuo, su envase o el lugar donde está almacenado, responde este correo y adjúntalas: nos ayudan a evaluar tu caso.\n\n" )
-		. "Esto fue lo que nos enviaste:\n" . ta_sitio_lineas( $campos ) . "\n\n"
-		. $op['remitente'] . "\n" . home_url( '/' ) . "\n";
-	return (bool) wp_mail( $c['correo'], "Recibimos tu solicitud $codigo · " . $op['remitente'], $cuerpo, ta_sitio_cabeceras( $op['remitente'], ta_sitio_correo_destino() ) );
+		. "Esto fue lo que nos enviaste:\n" . ta_sitio_lineas( $campos );
+	return ta_sitio_correo(
+		array(
+			'id'     => $id,
+			'tipo'   => 'confirmacion',
+			'para'   => $c['correo'],
+			'asunto' => "Recibimos tu solicitud $codigo · " . $op['remitente'],
+			'texto'  => $texto,
+		)
+	);
 }
 
 function ta_sitio_correo_lista( $id, $mensaje ) {
 	$op     = ta_sitio_opciones();
 	$codigo = (string) get_post_meta( $id, '_ta_codigo', true );
-	$c      = (array) get_post_meta( $id, '_ta_contacto', true );
+	$c      = ta_sitio_meta_lista( $id, '_ta_contacto' );
 	if ( empty( $c['correo'] ) || ! is_email( $c['correo'] ) ) {
 		return false;
 	}
-	$cuerpo = 'Hola, ' . ( $c['nombre'] ?? '' ) . ":\n\n"
+	$texto = 'Hola, ' . ( $c['nombre'] ?? '' ) . ":\n\n"
 		. "Tu solicitud $codigo está lista.\n\n"
 		. ( '' !== $mensaje ? $mensaje . "\n\n" : '' )
-		. "Si tienes dudas, responde este correo.\n\n"
-		. $op['remitente'] . "\n" . home_url( '/' ) . "\n";
-	return (bool) wp_mail( $c['correo'], "Tu solicitud $codigo está lista · " . $op['remitente'], $cuerpo, ta_sitio_cabeceras( $op['remitente'], ta_sitio_correo_destino() ) );
+		. 'Si tienes dudas, responde este correo.';
+	return ta_sitio_correo(
+		array(
+			'id'     => $id,
+			'tipo'   => 'lista',
+			'para'   => $c['correo'],
+			'asunto' => "Tu solicitud $codigo está lista · " . $op['remitente'],
+			'texto'  => $texto,
+		)
+	);
 }
-
-/* ---------- Escritorio: lista y ficha de cada solicitud ---------- */
-
-add_filter(
-	'manage_ta_solicitud_posts_columns',
-	static function ( $columnas ) {
-		return array(
-			'cb'          => $columnas['cb'] ?? '',
-			'title'       => 'Solicitud',
-			'ta_estado'   => 'Estado',
-			'ta_contacto' => 'Contacto',
-			'ta_pedido'   => 'Pedido',
-			'date'        => 'Recibida',
-		);
-	}
-);
-
-add_action(
-	'manage_ta_solicitud_posts_custom_column',
-	static function ( $columna, $id ) {
-		if ( 'ta_estado' === $columna ) {
-			$estado = (string) get_post_meta( $id, '_ta_estado', true );
-			echo esc_html( TA_SITIO_ESTADOS[ $estado ] ?? 'Nueva' );
-		} elseif ( 'ta_contacto' === $columna ) {
-			$c = (array) get_post_meta( $id, '_ta_contacto', true );
-			echo esc_html( $c['nombre'] ?? '' ) . '<br>' . esc_html( $c['correo'] ?? '' ) . '<br>' . esc_html( $c['telefono'] ?? '' );
-		} elseif ( 'ta_pedido' === $columna ) {
-			$campos = array_slice( (array) get_post_meta( $id, '_ta_campos', true ), 0, 3 );
-			foreach ( $campos as $par ) {
-				echo esc_html( $par[0] . ': ' . $par[1] ) . '<br>';
-			}
-		}
-	},
-	10,
-	2
-);
-
-add_action(
-	'add_meta_boxes_ta_solicitud',
-	static function () {
-		add_meta_box( 'ta-solicitud-datos', 'Solicitud', 'ta_sitio_caja_datos', 'ta_solicitud', 'normal', 'high' );
-		add_meta_box( 'ta-solicitud-estado', 'Estado y aviso a la persona', 'ta_sitio_caja_estado', 'ta_solicitud', 'side', 'high' );
-		remove_meta_box( 'submitdiv', 'ta_solicitud', 'side' );
-	}
-);
-
-function ta_sitio_caja_datos( $post ) {
-	$c      = (array) get_post_meta( $post->ID, '_ta_contacto', true );
-	$campos = (array) get_post_meta( $post->ID, '_ta_campos', true );
-	echo '<p><strong>Número:</strong> ' . esc_html( (string) get_post_meta( $post->ID, '_ta_codigo', true ) ) . ' &nbsp;·&nbsp; <strong>Recibida:</strong> ' . esc_html( get_the_date( 'd-m-Y H:i', $post ) ) . '</p>';
-	echo '<h3>Contacto</h3><table class="widefat striped"><tbody>';
-	foreach ( array( 'empresa' => 'Empresa', 'nombre' => 'Nombre', 'telefono' => 'Teléfono', 'correo' => 'Correo' ) as $k => $titulo ) {
-		$valor = (string) ( $c[ $k ] ?? '' );
-		echo '<tr><th style="width:30%">' . esc_html( $titulo ) . '</th><td>' . ( 'correo' === $k && is_email( $valor ) ? '<a href="' . esc_url( 'mailto:' . $valor ) . '">' . esc_html( $valor ) . '</a>' : esc_html( $valor ) ) . '</td></tr>';
-	}
-	echo '</tbody></table><h3>Lo que pidió</h3><table class="widefat striped"><tbody>';
-	foreach ( $campos as $par ) {
-		echo '<tr><th style="width:30%">' . esc_html( $par[0] ?? '' ) . '</th><td>' . esc_html( $par[1] ?? '' ) . '</td></tr>';
-	}
-	echo '</tbody></table>';
-}
-
-function ta_sitio_caja_estado( $post ) {
-	$estado  = (string) get_post_meta( $post->ID, '_ta_estado', true );
-	$avisada = (int) get_post_meta( $post->ID, '_ta_aviso_lista', true );
-	wp_nonce_field( 'ta_sitio_estado_' . $post->ID, 'ta_sitio_estado_nonce' );
-	echo '<p><label for="ta-estado"><strong>Estado</strong></label><br><select id="ta-estado" name="ta_estado" style="width:100%">';
-	foreach ( TA_SITIO_ESTADOS as $valor => $nombre ) {
-		echo '<option value="' . esc_attr( $valor ) . '"' . selected( $estado ? $estado : 'nueva', $valor, false ) . '>' . esc_html( $nombre ) . '</option>';
-	}
-	echo '</select></p>';
-	echo '<p><label for="ta-mensaje"><strong>Mensaje para la persona</strong></label><br><textarea id="ta-mensaje" name="ta_mensaje" rows="5" style="width:100%" placeholder="Opcional. Se incluye en el correo que avisa que la solicitud está lista.">' . esc_textarea( (string) get_post_meta( $post->ID, '_ta_mensaje', true ) ) . '</textarea></p>';
-	if ( $avisada ) {
-		echo '<p>El aviso de «Lista» se envió el ' . esc_html( wp_date( 'd-m-Y H:i', $avisada ) ) . '.</p>';
-		echo '<p><label><input type="checkbox" name="ta_reenviar" value="1"> Enviar el aviso de nuevo</label></p>';
-	} else {
-		echo '<p class="description">Al pasar a «Lista» y guardar, la persona recibe un correo con su número de solicitud.</p>';
-	}
-	submit_button( 'Guardar', 'primary', 'save', false );
-}
-
-add_action(
-	'save_post_ta_solicitud',
-	static function ( $id ) {
-		if ( ! isset( $_POST['ta_sitio_estado_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ta_sitio_estado_nonce'] ) ), 'ta_sitio_estado_' . $id ) ) {
-			return;
-		}
-		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! current_user_can( 'edit_post', $id ) ) {
-			return;
-		}
-		$estado  = isset( $_POST['ta_estado'] ) ? sanitize_key( wp_unslash( $_POST['ta_estado'] ) ) : 'nueva';
-		$estado  = isset( TA_SITIO_ESTADOS[ $estado ] ) ? $estado : 'nueva';
-		$mensaje = isset( $_POST['ta_mensaje'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ta_mensaje'] ) ) : '';
-		update_post_meta( $id, '_ta_estado', $estado );
-		update_post_meta( $id, '_ta_mensaje', $mensaje );
-		$avisada = (int) get_post_meta( $id, '_ta_aviso_lista', true );
-		if ( 'lista' === $estado && ( ! $avisada || ! empty( $_POST['ta_reenviar'] ) ) ) {
-			if ( ta_sitio_correo_lista( $id, $mensaje ) ) {
-				update_post_meta( $id, '_ta_aviso_lista', time() );
-			} else {
-				set_transient( 'ta_aviso_fallo_' . get_current_user_id(), 1, 60 );
-			}
-		}
-	}
-);
-
-add_action(
-	'admin_notices',
-	static function () {
-		if ( get_transient( 'ta_aviso_fallo_' . get_current_user_id() ) ) {
-			delete_transient( 'ta_aviso_fallo_' . get_current_user_id() );
-			echo '<div class="notice notice-error"><p>La solicitud quedó guardada, pero el correo de aviso no se pudo enviar. Revisa la configuración de correo del sitio.</p></div>';
-		}
-	}
-);
-
-/** En la ficha no se edita el título. */
-add_filter(
-	'enter_title_here',
-	static function ( $texto, $post ) {
-		return 'ta_solicitud' === $post->post_type ? '' : $texto;
-	},
-	10,
-	2
-);

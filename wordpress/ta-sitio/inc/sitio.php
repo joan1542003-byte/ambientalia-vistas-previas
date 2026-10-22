@@ -220,6 +220,7 @@ function ta_sitio_pagina( $archivo, $privado ) {
 	$api    = array(
 		'url' => esc_url_raw( rest_url( 'ta/v1/' ) ),
 		'v'   => TA_SITIO_VERSION,
+		'comunas' => ta_sitio_comunas(),  // comunas que se atienden (assets/site/pickers.js las usa en el formulario y el asistente)
 	);
 	$config = '<script>window.TA_API=' . wp_json_encode( $api, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES ) . ';</script>';
 	$html   = preg_replace( '#</head>#i', $config . "\n</head>", $html, 1 );

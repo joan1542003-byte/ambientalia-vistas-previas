@@ -151,5 +151,14 @@
     return `${WD_SHORT[new Date(y, m - 1, dd, 12).getDay()]} ${dd} ${MONTH_SHORT[m - 1]}`;
   };
 
-  window.PICK = { CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, DOCS, ACCESS, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
+  /* Comunas donde hoy se coordinan retiros (cliente, 16-10-2026). Sobre WordPress las fija el plugin («Comunas que se
+     atienden», window.TA_API.comunas). Solo se aceptan nombres de la Región Metropolitana. */
+  const COBERTURA_BASE = ['Quilicura', 'Lampa', 'Pudahuel'];
+  const RM = communesOf('Metropolitana');
+  const pedidas = Array.isArray(window.TA_API?.comunas) && window.TA_API.comunas.length ? window.TA_API.comunas : COBERTURA_BASE;
+  const COBERTURA = RM.filter((c) => pedidas.includes(c));
+  const enCobertura = (c) => COBERTURA.includes(c);
+  const coberturaTexto = COBERTURA.length > 1 ? `${COBERTURA.slice(0, -1).join(', ')} y ${COBERTURA[COBERTURA.length - 1]}` : COBERTURA[0] || '';
+
+  window.PICK = { COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, DOCS, ACCESS, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
 })();

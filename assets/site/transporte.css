@@ -1547,6 +1547,10 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 .has-mail > .foot-more, .has-envio > .foot-more { display: flex; gap: 8px; }
 /* Sobre WordPress el resumen se envía al servidor («Enviar solicitud») y WhatsApp queda al lado, como alternativa */
 [data-enviar]:disabled { opacity: .6; cursor: progress; }
+/* «Enviar solicitud» (la acción principal) va a la derecha: WhatsApp a su izquierda y, debajo, copiar y editar */
+.has-envio > a.btn-wa { order: 1; }
+.has-envio > [data-enviar] { order: 2; }
+.has-envio > .foot-more { order: 3; flex-basis: 100%; }
 
 /* Fotografías adjuntas (solo sobre WordPress; site.js: window.SITE.fotos). Franja fija sobre los botones, siempre a la
    vista: un botón para adjuntar y las miniaturas al lado; tocar una miniatura la quita. */

@@ -1,0 +1,45 @@
+/* Gestor de solicitudes (escritorio de WordPress) */
+.ta-estado { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 600; line-height: 1.6; white-space: nowrap; }
+.ta-estado.is-nueva { background: #f3e8ff; color: #5b06b3; }
+.ta-estado.is-en_revision { background: #fff4d6; color: #8a5300; }
+.ta-estado.is-lista { background: #dff5e6; color: #0b6b33; }
+.ta-estado.is-cerrada { background: #eceef2; color: #50575e; }
+.ta-gris { color: #646970; }
+.ta-dato { display: block; }
+.column-ta_estado { width: 110px; }
+.column-ta_fotos { width: 56px; }
+.column-ta_actividad { width: 150px; }
+.ta-cabecera { font-size: 14px; }
+.ta-tabla th { width: 28%; font-weight: 600; }
+#ta-solicitud-datos h3 { margin: 18px 0 8px; }
+.ta-responder .ta-para { font-size: 14px; }
+.ta-responder label strong { display: inline-block; margin-bottom: 4px; }
+.ta-adjuntos { margin: 6px 0 14px; }
+.ta-adjuntos .dashicons { vertical-align: text-bottom; }
+.ta-adjuntos-lista { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+.ta-adjuntos-lista li { display: flex; align-items: center; gap: 6px; margin: 0; padding: 4px 8px 4px 4px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; }
+.ta-adjuntos-lista img { width: 36px; height: 36px; object-fit: cover; border-radius: 4px; }
+.ta-adjuntos-lista .ta-nombre { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ta-quitar { font-size: 18px; line-height: 1; text-decoration: none; color: #b32d2e; }
+.ta-check { margin-left: 10px; }
+.ta-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ta-historial { margin: 0; list-style: none; }
+.ta-historial li { margin: 0; padding: 10px 0 10px 14px; border-left: 3px solid #dcdcde; border-bottom: 1px solid #f0f0f1; }
+.ta-historial li.is-respuesta, .ta-historial li.is-confirmacion, .ta-historial li.is-lista { border-left-color: #6708C7; }
+.ta-historial li.is-recibido { border-left-color: #0b6b33; }
+.ta-historial li.is-nota { border-left-color: #dba617; background: #fffbea; }
+.ta-historial li.is-falla { border-left-color: #b32d2e; }
+.ta-h-cab { margin-bottom: 2px; }
+.ta-h-texto { margin-top: 6px; white-space: normal; }
+.ta-falla { color: #b32d2e; font-weight: 600; }
+.ta-comunas { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 4px 12px; max-width: 900px; margin: 0 0 8px; }
+.ta-firma-imagen { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ta-firma-vista img { display: block; max-width: 260px; height: auto; border: 1px solid #dcdcde; border-radius: 4px; }
+.ta-resumen { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 12px; }
+.ta-resumen a { text-decoration: none; }
+.ta-ultimas td { vertical-align: middle; }
+
+.ta-casillas { border-collapse: collapse; margin-bottom: 6px; }
+.ta-casillas th { padding: 4px 12px 4px 0; text-align: left; font-weight: 600; font-size: 12px; color: #646970; }
+.ta-casillas td { padding: 6px 12px 6px 0; vertical-align: middle; }
+.ta-quitar-casilla { color: #b32d2e; }

@@ -6,6 +6,35 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/** Comunas de la Región Metropolitana (las mismas de assets/site/pickers.js). */
+const TA_SITIO_COMUNAS_RM = 'Santiago, Cerrillos, Cerro Navia, Conchalí, El Bosque, Estación Central, Huechuraba, Independencia, La Cisterna, La Florida, La Granja, La Pintana, La Reina, Las Condes, Lo Barnechea, Lo Espejo, Lo Prado, Macul, Maipú, Ñuñoa, Pedro Aguirre Cerda, Peñalolén, Providencia, Pudahuel, Quilicura, Quinta Normal, Recoleta, Renca, San Joaquín, San Miguel, San Ramón, Vitacura, Puente Alto, Pirque, San José de Maipo, Colina, Lampa, Tiltil, San Bernardo, Buin, Calera de Tango, Paine, Melipilla, Alhué, Curacaví, María Pinto, San Pedro, Talagante, El Monte, Isla de Maipo, Padre Hurtado, Peñaflor';
+
+/** Comunas de la región, ordenadas. */
+function ta_sitio_comunas_rm() {
+	$lista = array_map( 'trim', explode( ',', TA_SITIO_COMUNAS_RM ) );
+	usort( $lista, static function ( $a, $b ) { return strcmp( remove_accents( $a ), remove_accents( $b ) ); } );
+	return $lista;
+}
+
+/** Comunas que hoy se atienden (el sitio solo ofrece estas en el formulario y el asistente). */
+function ta_sitio_comunas() {
+	$op = ta_sitio_opciones();
+	return array_values( array_intersect( ta_sitio_comunas_rm(), (array) $op['comunas'] ) );
+}
+
+/** Respuestas rápidas de los ajustes: [[título, texto]…]. Se separan con una línea «---»; la primera línea es el título. */
+function ta_sitio_plantillas() {
+	$op  = ta_sitio_opciones();
+	$out = array();
+	foreach ( preg_split( "/\n-{3,}\s*\n/", trim( str_replace( "\r", '', (string) $op['plantillas'] ) ) ) as $bloque ) {
+		$lineas = explode( "\n", trim( $bloque ), 2 );
+		if ( '' !== trim( $lineas[0] ) ) {
+			$out[] = array( trim( $lineas[0] ), trim( $lineas[1] ?? '' ) );
+		}
+	}
+	return $out;
+}
+
 /** Opciones con sus valores por defecto. */
 function ta_sitio_opciones() {
 	$guardadas = get_option( 'ta_sitio', array() );
@@ -15,12 +44,24 @@ function ta_sitio_opciones() {
 			'modo'           => 'privado',  // privado: solo en la dirección de vista previa; publicado: en la portada.
 			'ruta'           => 'nuevo',    // dirección de la vista privada: /nuevo/
 			'clave'          => '',         // permite ver la vista privada sin iniciar sesión (enlace para compartir).
-			'correo_destino' => '',         // quién recibe las solicitudes; vacío = correo de administración del sitio.
+			'correo_destino' => '',         // correo principal: recibe y es a donde contestan las personas; vacío = administración.
+			'correos_guardados' => array(), // casillas que se pueden elegir (se agregan escribiéndolas en los ajustes)
+			'correos_destino'   => array(), // las elegidas para recibir las solicitudes (además de la principal)
 			'remitente'      => 'Transporte Autorizado',
 			// Correos que el formulario no acepta: terminaciones («ru») o dominios completos («yandex.com»).
 			'correos_bloqueados' => 'ru su xn--p1ai fr de yandex.com gmx.net gmx.com laposte.net',
 			// Países desde los que no se aceptan solicitudes (códigos de dos letras); solo si el servidor informa el país.
 			'paises_bloqueados'  => 'RU FR DE',
+			// Comunas donde hoy se coordinan retiros (cliente, 16-10-2026)
+			'comunas'            => array( 'Quilicura', 'Lampa', 'Pudahuel' ),
+			// Firma al final de todos los correos a las personas: texto y una imagen de la biblioteca de medios
+			'firma_texto'        => "Equipo Transporte Autorizado\nWhatsApp +56 9 8606 7930\nhttps://transporteautorizado.cl",
+			'firma_imagen'       => 0,
+			'firma_ancho'        => 220,
+			// Respuestas rápidas del gestor. {nombre}, {empresa} y {numero} se reemplazan por los de la solicitud
+			'plantillas'         => "Necesitamos más antecedentes\nHola, {nombre}:\n\nGracias por tu solicitud {numero}. Para preparar la cotización necesitamos algunos antecedentes más:\n\n- \n\nPuedes responder este correo con la información y, si las tienes, fotografías del residuo y del lugar.\n---\nCotización adjunta\nHola, {nombre}:\n\nTe enviamos adjunta la cotización de tu solicitud {numero}. Si estás de acuerdo, responde este correo para coordinar el retiro.\n---\nRetiro coordinado\nHola, {nombre}:\n\nTu retiro de la solicitud {numero} quedó coordinado para el día  en el horario . Te escribiremos si hay algún cambio.",
+			// Copia oculta de cada respuesta al correo que recibe las solicitudes (queda registro en la casilla del equipo)
+			'copia_respuestas'   => true,
 		)
 	);
 }
@@ -59,6 +100,18 @@ function ta_sitio_pais_bloqueado() {
 function ta_sitio_correo_destino() {
 	$op = ta_sitio_opciones();
 	return is_email( $op['correo_destino'] ) ? $op['correo_destino'] : get_option( 'admin_email' );
+}
+
+/** Todas las casillas que reciben las solicitudes: la principal primero. */
+function ta_sitio_correos_destino() {
+	$op = ta_sitio_opciones();
+	return array_values( array_unique( array_filter( array_merge( array( ta_sitio_correo_destino() ), (array) $op['correos_destino'] ), 'is_email' ) ) );
+}
+
+/** Casillas que se ofrecen para elegir: las guardadas, la principal y la de administración. */
+function ta_sitio_correos_guardados() {
+	$op = ta_sitio_opciones();
+	return array_values( array_unique( array_filter( array_merge( array( ta_sitio_correo_destino() ), (array) $op['correos_guardados'], (array) $op['correos_destino'], array( get_option( 'admin_email' ) ) ), 'is_email' ) ) );
 }
 
 /** Dirección de la vista privada, con la clave si se pide el enlace para compartir. */
@@ -140,7 +193,27 @@ add_action(
 		$antes = $op;
 		$modo  = isset( $_POST['modo'] ) ? sanitize_key( wp_unslash( $_POST['modo'] ) ) : 'privado';
 		$ruta  = isset( $_POST['ruta'] ) ? sanitize_title( wp_unslash( $_POST['ruta'] ) ) : 'nuevo';
-		$mail  = isset( $_POST['correo_destino'] ) ? sanitize_email( wp_unslash( $_POST['correo_destino'] ) ) : '';
+		// Casillas: las guardadas (menos las quitadas) y la que se escribió; la principal y las que reciben, entre ellas
+		$quitar    = isset( $_POST['correo_quitar'] ) ? array_map( 'sanitize_email', (array) wp_unslash( $_POST['correo_quitar'] ) ) : array();
+		$nueva     = isset( $_POST['correo_nuevo'] ) ? sanitize_email( wp_unslash( $_POST['correo_nuevo'] ) ) : '';
+		$guardados = array_values( array_diff( array_merge( ta_sitio_correos_guardados(), is_email( $nueva ) ? array( $nueva ) : array() ), $quitar ) );
+		$reciben   = isset( $_POST['correos_reciben'] ) ? array_map( 'sanitize_email', (array) wp_unslash( $_POST['correos_reciben'] ) ) : array();
+		if ( is_email( $nueva ) && ! empty( $_POST['correo_nuevo_recibe'] ) ) {
+			$reciben[] = $nueva;
+		}
+		$reciben = array_values( array_intersect( $guardados, $reciben ) );
+		$mail    = isset( $_POST['correo_principal'] ) ? sanitize_email( wp_unslash( $_POST['correo_principal'] ) ) : '';
+		if ( 'nuevo' === ( $_POST['correo_principal'] ?? '' ) && is_email( $nueva ) ) {
+			$mail = $nueva;
+		}
+		if ( ! in_array( $mail, $guardados, true ) ) {
+			$mail = $reciben[0] ?? '';
+		}
+		if ( $mail && ! in_array( $mail, $reciben, true ) ) {
+			array_unshift( $reciben, $mail );  // la principal siempre recibe
+		}
+		$op['correos_guardados'] = $guardados;
+		$op['correos_destino']   = $reciben;
 		$op['modo']           = in_array( $modo, array( 'privado', 'publicado' ), true ) ? $modo : 'privado';
 		$op['ruta']           = '' !== $ruta ? $ruta : 'nuevo';
 		$op['correo_destino'] = is_email( $mail ) ? $mail : '';
@@ -152,6 +225,18 @@ add_action(
 		if ( isset( $_POST['paises_bloqueados'] ) ) {
 			preg_match_all( '/\b[A-Z]{2}\b/', strtoupper( sanitize_text_field( wp_unslash( $_POST['paises_bloqueados'] ) ) ), $paises );
 			$op['paises_bloqueados'] = implode( ' ', array_unique( $paises[0] ) );
+		}
+		if ( isset( $_POST['ta_comunas_enviado'] ) ) {
+			$pedidas       = isset( $_POST['comunas'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['comunas'] ) ) : array();
+			$op['comunas'] = array_values( array_intersect( ta_sitio_comunas_rm(), $pedidas ) );
+		}
+		if ( isset( $_POST['firma_texto'] ) ) {
+			$op['firma_texto']      = sanitize_textarea_field( wp_unslash( $_POST['firma_texto'] ) );
+			$imagen                 = isset( $_POST['firma_imagen'] ) ? absint( $_POST['firma_imagen'] ) : 0;
+			$op['firma_imagen']     = $imagen && wp_attachment_is_image( $imagen ) ? $imagen : 0;
+			$op['firma_ancho']      = isset( $_POST['firma_ancho'] ) ? max( 60, min( 560, absint( $_POST['firma_ancho'] ) ) ) : 220;
+			$op['plantillas']       = isset( $_POST['plantillas'] ) ? sanitize_textarea_field( wp_unslash( $_POST['plantillas'] ) ) : $op['plantillas'];
+			$op['copia_respuestas'] = ! empty( $_POST['copia_respuestas'] );
 		}
 		if ( ! empty( $_POST['nueva_clave'] ) || '' === $op['clave'] ) {
 			$op['clave'] = wp_generate_password( 32, false, false );
@@ -201,15 +286,76 @@ function ta_sitio_pagina_ajustes() {
 						<p class="description">Quien tenga este enlace ve la vista previa sin iniciar sesión. <label><input type="checkbox" name="nueva_clave" value="1"> Cambiar la clave (el enlace anterior deja de servir)</label></p></td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="ta-correo">Correo que recibe las solicitudes</label></th>
-					<td><input id="ta-correo" name="correo_destino" type="email" class="regular-text" value="<?php echo esc_attr( $op['correo_destino'] ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>">
-						<p class="description">Si queda vacío, llegan al correo de administración del sitio (<?php echo esc_html( get_option( 'admin_email' ) ); ?>). La persona que envía la solicitud responde a esta dirección.</p></td>
+					<th scope="row">Correos que reciben las solicitudes</th>
+					<td><?php $reciben = ta_sitio_correos_destino(); $principal = ta_sitio_correo_destino(); ?>
+						<table class="ta-casillas">
+							<thead><tr><th>Recibe</th><th>Principal</th><th>Correo</th><th></th></tr></thead>
+							<tbody>
+							<?php foreach ( ta_sitio_correos_guardados() as $i => $casilla ) : ?>
+								<tr>
+									<td><input type="checkbox" name="correos_reciben[]" value="<?php echo esc_attr( $casilla ); ?>" aria-label="<?php echo esc_attr( "Recibe: $casilla" ); ?>" <?php checked( in_array( $casilla, $reciben, true ) ); ?>></td>
+									<td><input type="radio" name="correo_principal" value="<?php echo esc_attr( $casilla ); ?>" aria-label="<?php echo esc_attr( "Principal: $casilla" ); ?>" <?php checked( $casilla, $principal ); ?>></td>
+									<td><code><?php echo esc_html( $casilla ); ?></code><?php echo get_option( 'admin_email' ) === $casilla ? ' <span class="description">(administración de WordPress)</span>' : ''; ?></td>
+									<td><?php if ( get_option( 'admin_email' ) !== $casilla ) : ?><label class="ta-quitar-casilla"><input type="checkbox" name="correo_quitar[]" value="<?php echo esc_attr( $casilla ); ?>"> Quitar de la lista</label><?php endif; ?></td>
+								</tr>
+							<?php endforeach; ?>
+								<tr>
+									<td><input type="checkbox" name="correo_nuevo_recibe" value="1" checked aria-label="El correo nuevo recibe"></td>
+									<td><input type="radio" name="correo_principal" value="nuevo" aria-label="El correo nuevo es el principal"></td>
+									<td colspan="2"><input name="correo_nuevo" type="email" class="regular-text" placeholder="Escribe otro correo para agregarlo" aria-label="Agregar otro correo"></td>
+								</tr>
+							</tbody>
+						</table>
+						<p class="description">Marca en «Recibe» todas las casillas a las que debe llegar cada solicitud (pueden ser varias). La <strong>principal</strong> es a donde llegan las respuestas de las personas y la copia de tus respuestas; siempre recibe. Para agregar una casilla, escríbela en la última fila y guarda.</p></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="ta-remitente">Nombre con que se firman los correos</label></th>
 					<td><input id="ta-remitente" name="remitente" type="text" class="regular-text" value="<?php echo esc_attr( $op['remitente'] ); ?>"></td>
 				</tr>
 			</table>
+			<h2>Comunas que se atienden</h2>
+			<p>El formulario y el asistente solo ofrecen estas comunas; si alguien escribe otra, el sitio le dice que por ahora no se atiende y le ofrece WhatsApp.</p>
+			<input type="hidden" name="ta_comunas_enviado" value="1">
+			<fieldset class="ta-comunas"><legend class="screen-reader-text">Comunas que se atienden</legend>
+				<?php foreach ( ta_sitio_comunas_rm() as $comuna ) : ?>
+					<label><input type="checkbox" name="comunas[]" value="<?php echo esc_attr( $comuna ); ?>" <?php checked( in_array( $comuna, (array) $op['comunas'], true ) ); ?>> <?php echo esc_html( $comuna ); ?></label>
+				<?php endforeach; ?>
+			</fieldset>
+
+			<h2>Correos y firma</h2>
+			<p>Todos los correos a las personas (confirmación, «Lista» y respuestas) llevan al final esta firma. Se envían con formato y con una versión de solo texto.</p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><label for="ta-firma-texto">Texto de la firma</label></th>
+					<td><textarea id="ta-firma-texto" name="firma_texto" rows="4" class="large-text"><?php echo esc_textarea( $op['firma_texto'] ); ?></textarea>
+						<p class="description">Una línea por renglón. Las direcciones web quedan como enlace.</p></td>
+				</tr>
+				<tr>
+					<th scope="row">Imagen de la firma</th>
+					<td><div class="ta-firma-imagen" data-ta-firma>
+							<input type="hidden" name="firma_imagen" value="<?php echo esc_attr( (int) $op['firma_imagen'] ); ?>" data-ta-firma-id>
+							<div class="ta-firma-vista" data-ta-firma-vista><?php echo $op['firma_imagen'] ? wp_get_attachment_image( (int) $op['firma_imagen'], 'medium' ) : ''; ?></div>
+							<button type="button" class="button" data-ta-firma-elegir><?php echo $op['firma_imagen'] ? 'Cambiar imagen' : 'Subir o elegir imagen'; ?></button>
+							<button type="button" class="button-link button-link-delete" data-ta-firma-quitar <?php echo $op['firma_imagen'] ? '' : 'hidden'; ?>>Quitar</button>
+						</div>
+						<p class="description">PNG o JPG (por ejemplo, el logo con tus datos de contacto). <label>Ancho en el correo: <input type="number" name="firma_ancho" min="60" max="560" step="10" value="<?php echo esc_attr( (int) $op['firma_ancho'] ); ?>" style="width:6em"> px</label></p></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="ta-plantillas">Respuestas rápidas</label></th>
+					<td><textarea id="ta-plantillas" name="plantillas" rows="10" class="large-text code"><?php echo esc_textarea( $op['plantillas'] ); ?></textarea>
+						<p class="description">Aparecen al responder una solicitud. Sepáralas con una línea <code>---</code>; la primera línea de cada una es su nombre. <code>{nombre}</code>, <code>{empresa}</code> y <code>{numero}</code> se completan con los datos de la solicitud.</p></td>
+				</tr>
+				<tr>
+					<th scope="row">Copia de las respuestas</th>
+					<td><label><input type="checkbox" name="copia_respuestas" value="1" <?php checked( $op['copia_respuestas'] ); ?>> Enviar una copia oculta de cada respuesta a <?php echo esc_html( ta_sitio_correo_destino() ); ?></label></td>
+				</tr>
+				<tr>
+					<th scope="row">Vista previa</th>
+					<td><a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ta_sitio_vista_correo' ), 'ta_sitio_vista_correo' ) ); ?>" target="_blank" rel="noopener">Ver cómo se ve un correo</a>
+						<p class="description">Muestra la firma guardada; guarda los ajustes antes de mirarla.</p></td>
+				</tr>
+			</table>
+
 			<h2>Protección del formulario</h2>
 			<p>Cada solicitud pasa por un permiso de un solo uso, un campo trampa y límites por visita, por correo, por hora y por día; las fotografías se revisan y se vuelven a generar antes de guardarlas. Además se rechaza lo siguiente:</p>
 			<table class="form-table" role="presentation">

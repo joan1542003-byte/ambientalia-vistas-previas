@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress y recibe las solicitudes de sus formularios.
 
@@ -19,6 +19,14 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress y recibe las solic
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.3.0 =
+* Comunas que se atienden, en los ajustes (por defecto Quilicura, Lampa y Pudahuel): el formulario y el asistente solo ofrecen esas.
+* Correos con formato, logotipo y firma (texto e imagen de la biblioteca de medios) al final de todos los que recibe la persona.
+* Gestor de solicitudes: filtros por estado, búsqueda por número, empresa, nombre, correo o teléfono, cambio de estado en grupo, exportación a CSV, resumen en el escritorio y número de nuevas junto al menú.
+* En cada solicitud: «Responder» con respuestas rápidas, imágenes o archivos adjuntos y copia; notas internas; registro de respuestas recibidas e historial de todo lo enviado.
+* El agente del sitio (en desarrollo) no se muestra.
+* Correos que reciben las solicitudes: se eligen de una lista (una o varias casillas), se agregan escribiéndolas y una es la principal (a donde contestan las personas).
 
 = 1.2.0 =
 * Logotipo oficial nuevo (placa «Transporte / Autorizado»); cambia de color solo mientras el puntero está encima.

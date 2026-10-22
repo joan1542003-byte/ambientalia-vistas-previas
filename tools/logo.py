@@ -13,6 +13,8 @@ Este programa separa el original por color, sin redibujar nada, y escribe:
                                                                           el logo cambia de colores mientras se le pasa el puntero
   assets/transporte/favicon.svg         ícono de la pestaña: una placa chica con la «T» y la «A» del logotipo
   assets/transporte/apple-touch-icon.png   lo mismo, para la pantalla de inicio del teléfono (180 × 180)
+  assets/transporte/logo/logotipo-correo.png   el logotipo en PNG para el encabezado de los correos (muchos
+                                         programas de correo no muestran SVG)
 
 Uso: python3 tools/logo.py   (el PNG se dibuja con sips, que viene con macOS)
 Si el cliente entrega un logotipo nuevo, reemplaza docs/marca/logotipo.svg y vuelve a ejecutarlo.
@@ -93,7 +95,9 @@ def main():
              '</svg>\n')
     FAVICON.write_text(icono, encoding='utf-8')
     subprocess.run(['sips', '-s', 'format', 'png', '-z', '180', '180', str(FAVICON), '--out', str(TOQUE)], check=True, capture_output=True)
-    for f in (DESTINO / 'logotipo.svg', DESTINO / 'claro.svg', DESTINO / 'oscuro.svg', FAVICON, TOQUE):
+    correo = DESTINO / 'logotipo-correo.png'
+    subprocess.run(['sips', '-s', 'format', 'png', '-z', str(round(600 * h / w)), '600', str(DESTINO / 'logotipo.svg'), '--out', str(correo)], check=True, capture_output=True)
+    for f in (DESTINO / 'logotipo.svg', DESTINO / 'claro.svg', DESTINO / 'oscuro.svg', FAVICON, TOQUE, correo):
         print(f'{f.relative_to(ROOT)}  {f.stat().st_size / 1024:.1f} KB')
     print(f'Proporción del logotipo: {w:.0f} / {h:.0f} (va en .logo-ta, assets/site/transporte.css)')
 

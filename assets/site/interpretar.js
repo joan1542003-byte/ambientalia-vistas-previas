@@ -180,6 +180,7 @@
     const d = day(t);
     const qty = quantity(t);
     const route = intent(t, Boolean(qty || d));
+    const enRM = commune(t);
     return {
       text: text.trim(),
       folded: t,
@@ -190,8 +191,9 @@
       tipo: cat ? cat[0] : '',
       categoria: cat ? cat[1] : '',
       cantidad: qty,
-      comuna: commune(t),
-      fueraDeCobertura: commune(t) ? '' : commune(t, OTHERS)?.commune || '',
+      /* Comuna atendida; si se nombra otra (de la región o de fuera), se avisa */
+      comuna: enRM && PICK.enCobertura(enRM.commune) ? enRM : null,
+      fueraDeCobertura: enRM ? (PICK.enCobertura(enRM.commune) ? '' : enRM.commune) : commune(t, OTHERS)?.commune || '',
       modalidad: mode(t) || (d?.value ? 'programado' : ''),
       fecha: d?.value || '',
       fechaError: d?.error || '',
@@ -206,7 +208,7 @@
     const k = fold(text);
     if (k.length < 3) return [];
     const exact = COMMUNES.filter((c) => c.key === k);
-    return exact.length ? exact : COMMUNES.filter((c) => c.key.includes(k)).slice(0, 8);
+    return exact.length ? exact : COMMUNES.filter((c) => c.key.includes(k)).slice(0, 8);  // de la región: quien llama separa las atendidas
   };
 
   window.PARSE = { read, communeSearch, quantity: (text) => quantity(fold(text)), day: (text) => day(fold(text)), slot: (text) => slot(fold(text)) };

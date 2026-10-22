@@ -40,7 +40,7 @@
     { id: 'residuo', label: 'Residuo', type: 'residuo', ask: '¿Qué necesitas retirar?', help: 'Elige el tipo de residuo o escríbelo abajo con tus palabras.', hint: 'Ej.: 20 sacos de cartón en Quilicura' },
     { id: 'cantidad', label: 'Cantidad aproximada', type: 'options', layout: 'list', ask: '¿Cuánto residuo tienes aproximadamente?', help: 'Un rango aproximado basta; lo precisamos al cotizar.', hint: 'Ej.: 600 kg',
       options: PICK.AMOUNTS.map((a, i) => ({ value: a, label: a, icon: PICK.AMOUNT_ICONS[i] })) },
-    { id: 'comuna', label: 'Comuna', type: 'commune', ask: '¿En qué comuna se encuentra?', help: 'Comunas de la Región Metropolitana. Elige la tuya o escríbela abajo.', hint: 'Escribe tu comuna' },
+    { id: 'comuna', label: 'Comuna', type: 'commune', ask: '¿En qué comuna se encuentra?', help: `Por ahora atendemos ${PICK.coberturaTexto}. Elige la tuya.`, hint: 'Escribe tu comuna' },
     { id: 'direccion', label: 'Dirección', type: 'text', sub: true, ask: '¿Cuál es la dirección del retiro?', help: 'Calle, número y alguna referencia.', hint: 'Escribe la dirección' },
     { id: 'almacenamiento', label: 'Almacenamiento', type: 'options', layout: 'cards', ask: '¿Cómo está almacenado?', hint: 'Ej.: en tambores',
       options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon })) },
@@ -289,10 +289,12 @@
       answers.direccion = raw;
       /* Si se eligió una calle sugerida, la comuna queda la de esa calle */
       const g = geoPicked && raw.startsWith(geoPicked.label) ? geoPicked : null;
-      const cambia = Boolean(g?.comuna) && g.comuna !== answers.comuna;
+      const fuera = Boolean(g?.comuna) && !PICK.enCobertura(g.comuna);
+      const cambia = Boolean(g?.comuna) && !fuera && g.comuna !== answers.comuna;
       if (cambia) answers.comuna = g.comuna;
       geoPicked = null;
-      exchange = { user: raw, bot: cambia ? `Perfecto, anoté la dirección y la comuna: ${g.comuna}.` : 'Perfecto, anoté la dirección.' };
+      exchange = { user: raw, bot: fuera ? `Anoté la dirección, pero queda en ${g.comuna} y por ahora atendemos ${PICK.coberturaTexto}. Si quieres, escríbenos por WhatsApp y lo revisamos.`
+        : cambia ? `Perfecto, anoté la dirección y la comuna: ${g.comuna}.` : 'Perfecto, anoté la dirección.' };
       firstMissing();
       return;
     }
@@ -342,10 +344,12 @@
       if (step.id === 'residuo') { answers.residuo = cap(raw); meta.tipo = ''; got.push(`«${raw}»`); }
       else if (step.id === 'cantidad' && /\d/.test(raw)) { answers.cantidad = raw; got.push(raw); }
       else if (step.id === 'comuna') {
-        const hits = PARSE.communeSearch(raw);
+        const todas = PARSE.communeSearch(raw);
+        const hits = todas.filter((c) => PICK.enCobertura(c.name));
         if (hits.length === 1) { answers.comuna = hits[0].name; got.push(hits[0].name); }
         else if (hits.length) { meta.search = raw; reply = `Encontré ${hits.length} comunas con «${raw}». Elige la tuya.`; }
-        else reply = `No encontré «${raw}» entre las comunas de la Región Metropolitana. Elígela en la lista.`;
+        else if (todas.length) reply = `Por ahora atendemos ${PICK.coberturaTexto}; ${todas[0].name} queda fuera. Si quieres, escríbenos por WhatsApp y lo revisamos.`;
+        else reply = `No encontré «${raw}». Por ahora atendemos ${PICK.coberturaTexto}: elige la tuya en la lista.`;
       } else if (step.id === 'almacenamiento') { answers.almacenamiento = cap(raw); got.push(raw); }
       else if (step.id === 'documentos') { answers.documentos = cap(raw); got.push(raw); }
       else if (step.type === 'calendar') reply = r.fechaError || 'No reconocí el día. Elígelo en el calendario.';
@@ -360,7 +364,7 @@
       else if (r.modalidad === 'programado') parts.push('Lo coordinamos como Retiro Programado.');
       else if (r.modalidad === 'flexible') parts.push('Lo coordinamos como Espera y ahorra, según nuestra disponibilidad.');
       if (r.fechaError && !r.fecha) parts.push(r.fechaError);
-      if (r.fueraDeCobertura) parts.push(`Por ahora coordinamos retiros en la Región Metropolitana, y ${r.fueraDeCobertura} queda fuera. Si quieres, un especialista revisa tu caso.`);
+      if (r.fueraDeCobertura) parts.push(`Por ahora coordinamos retiros en ${PICK.coberturaTexto}, y ${r.fueraDeCobertura} queda fuera. Si quieres, un especialista revisa tu caso.`);
       reply = parts.length ? (got.length ? parts.join(' ') : `Entendido. ${parts.join(' ')}`) : 'No logré entenderlo. Elige una opción o escríbelo de otra forma.';
     }
     exchange = { user: raw, bot: reply };
@@ -386,7 +390,7 @@
     const v = await Picker.text({
       title: '¿Dónde retiramos?', sub: 'Calle y número, y una referencia si ayuda: bodega, portón o piso.', label: 'Dirección del retiro',
       value: input.value.trim() || answers.direccion || '', placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address',
-      suggest: (q, signal) => GEO.suggest(q, { comuna: answers.comuna || '', signal }), onSuggest: (it) => { elegido = it; }, source: GEO.fuente,
+      suggest: (q, signal) => GEO.suggest(q, { comuna: answers.comuna || '', signal }).then((l) => l.filter((x) => !x.comuna || PICK.enCobertura(x.comuna))), onSuggest: (it) => { elegido = it; }, source: GEO.fuente,
       map: window.MAPA.paraTexto({ comuna: () => answers.comuna || '', value: punto, onDone: (p) => { punto = p; }, onPlace: (x) => { lugar = x; } })
     });
     if (!v) return;  // cerró sin confirmar
@@ -430,7 +434,7 @@
       geoCtrl = new AbortController();
       const mine = ++geoTurn;
       let list = [];
-      try { list = await window.GEO.suggest(q, { comuna: answers.comuna || '', signal: geoCtrl.signal }); } catch { list = []; }
+      try { list = (await window.GEO.suggest(q, { comuna: answers.comuna || '', signal: geoCtrl.signal })).filter((x) => !x.comuna || PICK.enCobertura(x.comuna)); } catch { list = []; }
       if (mine === geoTurn) geoDraw(list || []);
     }, 140);
   });

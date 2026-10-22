@@ -126,7 +126,7 @@ add_action(
 			return;
 		}
 		$carpetas = array();
-		foreach ( (array) get_post_meta( $id, '_ta_fotos', true ) as $relativa ) {
+		foreach ( ta_sitio_meta_lista( $id, '_ta_fotos' ) as $relativa ) {
 			$ruta = ta_sitio_ruta_foto( $relativa );
 			if ( '' !== $ruta ) {
 				wp_delete_file( $ruta );
@@ -155,7 +155,7 @@ add_action(
 			wp_die( 'No tienes permiso para ver esta fotografía.', '', array( 'response' => 403 ) );
 		}
 		check_admin_referer( 'ta_sitio_foto_' . $id );
-		$fotos = (array) get_post_meta( $id, '_ta_fotos', true );
+		$fotos = ta_sitio_meta_lista( $id, '_ta_fotos' );
 		$ruta  = ta_sitio_ruta_foto( $fotos[ $n ] ?? '' );
 		if ( '' === $ruta ) {
 			wp_die( 'La fotografía ya no está.', '', array( 'response' => 404 ) );
@@ -183,7 +183,7 @@ add_action(
 );
 
 function ta_sitio_caja_fotos( $post ) {
-	$fotos = (array) get_post_meta( $post->ID, '_ta_fotos', true );
+	$fotos = ta_sitio_meta_lista( $post->ID, '_ta_fotos' );
 	echo '<p class="description">Las adjuntó la persona al enviar la solicitud. Haz clic en una para verla completa.</p><div style="display:flex;flex-wrap:wrap;gap:10px">';
 	foreach ( array_keys( $fotos ) as $n ) {
 		$url = ta_sitio_url_foto( $post->ID, $n );

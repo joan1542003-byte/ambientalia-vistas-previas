@@ -22,7 +22,19 @@ ROOT = Path(__file__).resolve().parent.parent
 ORIGEN = ROOT / 'wordpress' / 'ta-sitio'
 DOMINIO = 'https://transporteautorizado.cl/'
 SITIO = ['transporte-autorizado.html', 'assets/site/', 'assets/transporte/', 'normativa/', 'ayuda/', 'documentos/']
-FUERA = {'filas.js'}  # solo lo usan HDS y Campañas
+FUERA = {'filas.js', 'agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.css'}  # filas: HDS y Campañas; agente: en desarrollo
+
+
+def sin_agente(html):
+    """El agente (y su versión con IA) sigue en desarrollo: el sitio oficial no lo muestra (pedido del cliente, 16-10-2026).
+    Se quitan su bloque (del comentario «Agente informativo» al cierre de su ventana) y sus estilos y scripts."""
+    i = html.find('<!-- Agente informativo')
+    if i > -1:
+        j = html.index('\n</div>\n', html.index('<div class="agente"', i)) + len('\n</div>\n')
+        html = html[:i] + html[j:]
+    html = re.sub(r'<(?:link|script)[^>]*assets/site/agente(?:-chat)?\.(?:css|js)[^>]*>(?:</script>)?\n?', '', html)
+    assert 'data-agente' not in html and 'assets/site/agente' not in html, 'quedó algo del agente en la página'
+    return html
 
 
 def git(*args):
@@ -40,7 +52,7 @@ def llms():
         guias.append(f'- [{titulo}]({DOMINIO}ayuda/{f.name})')
     lineas = [
         '# Transporte Autorizado', '', f'> {bajada}', '',
-        'Sitio de retiro y coordinación de residuos para empresas en Chile. No tramita autorizaciones sanitarias. Por ahora coordina retiros en la Región Metropolitana.', '',
+        'Sitio de retiro y coordinación de residuos para empresas en Chile. No tramita autorizaciones sanitarias. Por ahora coordina retiros en Quilicura, Lampa y Pudahuel (Región Metropolitana).', '',
         '## Qué se puede hacer',
         f'- [Cotizar un retiro]({DOMINIO}#cotizar): formulario en dos pasos (residuo, cantidad, comuna, dirección, tipo de retiro y contacto). También cotiza el arriendo de contenedores.',
         f'- [Asistente de retiro]({DOMINIO}#asistente): las mismas preguntas, una por una.',
@@ -85,12 +97,15 @@ def main():
     for f in git('ls-files', '-co', '--exclude-standard').splitlines():
         if (f in SITIO or any(f.startswith(p) for p in SITIO if p.endswith('/'))) and Path(f).name not in FUERA and (ROOT / f).is_file():
             (sitio / f).parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(ROOT / f, sitio / f)
+            if f.endswith('.html'):
+                (sitio / f).write_text(sin_agente((ROOT / f).read_text(encoding='utf-8')), encoding='utf-8')
+            else:
+                shutil.copy2(ROOT / f, sitio / f)
             n += 1
     (sitio / 'llms.txt').write_text(llms(), encoding='utf-8')
     (sitio / '.htaccess').write_text(HTACCESS, encoding='utf-8')
     (sitio / 'index.php').write_text("<?php // Silencio.\n", encoding='utf-8')
-    for carpeta in (plugin, plugin / 'inc'):
+    for carpeta in (plugin, plugin / 'inc', plugin / 'admin'):
         (carpeta / 'index.php').write_text("<?php // Silencio.\n", encoding='utf-8')
 
     comprimido = salida / 'ta-sitio.zip'

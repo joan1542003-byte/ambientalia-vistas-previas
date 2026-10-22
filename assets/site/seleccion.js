@@ -105,14 +105,14 @@
     return { filter: draw, get: () => [...picked], others, other: () => text.trim().replace(/\s+/g, ' ') };
   };
 
-  /* Comunas de la Región Metropolitana (cobertura del servicio): todas a la vista; buscar es opcional */
+  /* Comunas que se atienden (PICK.COBERTURA): todas a la vista; buscar es opcional */
   const REGION = 'Metropolitana';
   const communes = (host, { value = {}, onPick }) => {
-    const list = PICK.communesOf(REGION);
+    const list = PICK.COBERTURA;
     const draw = (names, q = '') => {
       host.innerHTML = names.length
         ? `<div class="opts is-grid">${names.map((c) => `<button type="button" class="opt" data-commune="${esc(c)}" aria-pressed="${c === value.commune}"><span class="opt-text"><strong>${esc(c)}</strong></span><i class="opt-check" aria-hidden="true"></i></button>`).join('')}</div>`
-        : `<p class="opt-empty">No encontramos «${esc(q)}» entre las comunas de la Región Metropolitana.</p>`;
+        : `<p class="opt-empty">Por ahora atendemos ${esc(PICK.coberturaTexto)}. Si estás en otra comuna, escríbenos por WhatsApp.</p>`;
     };
     const search = (q) => {
       const k = fold(q);
@@ -452,9 +452,9 @@
     return p;
   };
 
-  /* Comuna (Región Metropolitana) */
+  /* Comuna (solo las que se atienden; con pocas, sin buscador) */
   const commune = ({ value = {}, title = '¿En qué comuna está el residuo?' } = {}) => {
-    const p = open({ title, sub: 'Comunas de la Región Metropolitana', search: 'Buscar comuna' });
+    const p = open({ title, sub: `Por ahora atendemos ${PICK.coberturaTexto}.`, search: PICK.COBERTURA.length > 8 ? 'Buscar comuna' : '' });
     const ctrl = communes(el.body, { value, onPick: (v) => finish(v) });
     hooks.search = (q) => ctrl.search(q);
     focusFirst();

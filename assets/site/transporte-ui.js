@@ -250,7 +250,7 @@
         const v = await Picker.text({
           title: textos().donde, sub: 'Calle y número, y una referencia si ayuda: bodega, portón o piso.',
           label: textos().direccion, value: field('direccion').value, placeholder: 'Ej.: Av. Las Industrias 1234, bodega 3', autocomplete: 'street-address',
-          suggest: GEO ? (q, signal) => GEO.suggest(q, { comuna: field('comuna').value, signal }) : null,
+          suggest: GEO ? (q, signal) => GEO.suggest(q, { comuna: field('comuna').value, signal }).then((l) => l.filter((x) => !x.comuna || PICK.enCobertura(x.comuna))) : null,
           onSuggest: (it) => { picked = it; }, source: GEO?.fuente || '',
           map: MAPA?.paraTexto({ comuna: () => field('comuna').value, value: punto, onDone: (p) => { punto = p; }, onPlace: (x) => { lugar = x; } }) || null
         });
@@ -265,7 +265,9 @@
           if (MAPA) set('ubicacion', MAPA.enlace(punto));
           /* La comuna queda la del punto marcado o, si no hay, la de la calle sugerida */
           const comuna = (punto && lugar?.comuna) || (picked?.comuna && v.startsWith(picked.label) ? picked.comuna : '');
-          if (comuna && comuna !== field('comuna').value) {
+          if (comuna && !PICK.enCobertura(comuna)) {
+            window.SITE.toast?.(`Esa dirección queda en ${comuna}: por ahora atendemos ${PICK.coberturaTexto}`);
+          } else if (comuna && comuna !== field('comuna').value) {
             set('comuna', comuna);
             form.querySelector('[data-pick="comuna"]')?.removeAttribute('data-invalid');
             window.SITE.toast?.(`Comuna: ${comuna}`);
@@ -404,7 +406,7 @@
         else if (r.modalidad) a.modalidad = PICK.MODE_LABEL[r.modalidad];
         if (r.horario) a.horario = r.horario;
         window.QUOTE.fill({ answers: a, meta });
-        return r.fueraDeCobertura ? `Por ahora coordinamos retiros en la Región Metropolitana; ${r.fueraDeCobertura} queda fuera.` : (r.fechaError && !r.fecha ? r.fechaError : '');
+        return r.fueraDeCobertura ? `Por ahora coordinamos retiros en ${PICK.coberturaTexto}; ${r.fueraDeCobertura} queda fuera.` : (r.fechaError && !r.fecha ? r.fechaError : '');
       }
     };
     normalize();
