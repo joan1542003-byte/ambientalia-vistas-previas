@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -21,7 +21,12 @@ El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `p
 
 == Cambios ==
 
-= 1.3.0 (sin publicar) =
+= 1.4.0 =
+* El agente vuelve al sitio: «Chat con IA», en la burbuja «?», conversa con el asistente cuya dirección se indica en «Solicitudes → Ajustes del sitio» (la misma de las cotizaciones). Sin esa dirección, la ventana avisa que el asistente no está disponible.
+* El sitio incluido es el del 22-10-2026 (burbuja «?» y chat). `python3 tools/wordpress.py` arma el paquete con el agente; con `--sin-agente` lo deja fuera.
+* Al actualizar, el plugin vacía las cachés de páginas (LiteSpeed y otras) y vuelve a registrar sus reglas.
+
+= 1.3.0 =
 * Las cotizaciones de Transporte van solo al asistente (Laravel), con su dirección y la clave pública de Turnstile en los ajustes de cada instalación (pruebas o producción). La página la recibe en window.TA_API y su política de contenido (CSP) admite esa dirección y, con Turnstile, challenges.cloudflare.com.
 * WordPress ya no recibe las cotizaciones de Transporte ni las del asistente de retiro; el servicio de solicitudes se conserva para otros formularios.
 * Las fotos del formulario: hasta 2, el tope del asistente.

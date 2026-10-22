@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Arma el plugin de WordPress que sirve Transporte Autorizado: código de wordpress/ta-sitio/ + el sitio.
 
-    python3 tools/wordpress.py [destino]
+    python3 tools/wordpress.py [destino] [--sin-agente]
 
 Sin destino, deja la carpeta del plugin y su .zip junto a este repositorio: ../wordpress/ta-sitio y ../wordpress/ta-sitio.zip
+El paquete lleva el agente (la opción «Chat con IA» de la burbuja «?»), que responde el asistente de la dirección que se
+indique en los ajustes del plugin; con --sin-agente se arma sin él.
 
 El plugin (wordpress/ta-sitio/) muestra el sitio desde WordPress, primero en una dirección privada, y recibe las
 solicitudes de los formularios (número, correos). El sitio va dentro, en sitio/: la página, assets/site,
@@ -22,11 +24,12 @@ ROOT = Path(__file__).resolve().parent.parent
 ORIGEN = ROOT / 'wordpress' / 'ta-sitio'
 DOMINIO = 'https://transporteautorizado.cl/'
 SITIO = ['transporte-autorizado.html', 'assets/site/', 'assets/transporte/', 'normativa/', 'ayuda/', 'documentos/']
-FUERA = {'filas.js', 'agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.css'}  # filas: HDS y Campañas; agente: en desarrollo
+FUERA = {'filas.js'}  # solo de HDS y Campañas
+AGENTE = {'agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.css'}  # no van con --sin-agente
 
 
 def sin_agente(html):
-    """El agente (y su versión con IA) sigue en desarrollo: el sitio oficial no lo muestra (pedido del cliente, 16-10-2026).
+    """Para armar el paquete sin el agente (--sin-agente; el cliente lo pidió así el 16-10-2026, mientras estaba en desarrollo).
     Se quitan su bloque (del comentario «Agente informativo» al cierre de su ventana), su opción «Chat con IA» de la burbuja
     «?» y sus estilos y scripts."""
     i = html.find('<!-- Agente informativo')
@@ -91,7 +94,12 @@ HTACCESS = """# Las páginas las entrega WordPress (con su control de acceso); a
 
 
 def main():
-    salida = Path(sys.argv[1]).expanduser().resolve() if len(sys.argv) > 1 else ROOT.parent / 'wordpress'
+    banderas = {a for a in sys.argv[1:] if a.startswith('--')}
+    if banderas - {'--sin-agente'}:
+        sys.exit('Uso: python3 tools/wordpress.py [destino] [--sin-agente]')
+    con_agente = '--sin-agente' not in banderas
+    argumentos = [a for a in sys.argv[1:] if not a.startswith('--')]
+    salida = Path(argumentos[0]).expanduser().resolve() if argumentos else ROOT.parent / 'wordpress'
     if salida == ROOT or ROOT in salida.parents:
         sys.exit('El destino no puede quedar dentro del repositorio.')
     plugin = salida / 'ta-sitio'
@@ -102,13 +110,17 @@ def main():
     sitio.mkdir()
     n = 0
     for f in git('ls-files', '-co', '--exclude-standard').splitlines():
-        if (f in SITIO or any(f.startswith(p) for p in SITIO if p.endswith('/'))) and Path(f).name not in FUERA and (ROOT / f).is_file():
+        if (f in SITIO or any(f.startswith(p) for p in SITIO if p.endswith('/'))) and Path(f).name not in FUERA and (con_agente or Path(f).name not in AGENTE) and (ROOT / f).is_file():
             (sitio / f).parent.mkdir(parents=True, exist_ok=True)
-            if f.endswith('.html'):
+            if f.endswith('.html') and not con_agente:
                 (sitio / f).write_text(sin_agente((ROOT / f).read_text(encoding='utf-8')), encoding='utf-8')
             else:
                 shutil.copy2(ROOT / f, sitio / f)
             n += 1
+    if con_agente:
+        pagina = (sitio / 'transporte-autorizado.html').read_text(encoding='utf-8')
+        assert 'data-agente-abrir' in pagina and 'assets/site/agente-chat.js' in pagina, 'la página no trae el agente'
+        assert all((sitio / 'assets' / 'site' / a).is_file() for a in AGENTE), 'faltan archivos del agente en el paquete'
     (sitio / 'llms.txt').write_text(llms(), encoding='utf-8')
     (sitio / '.htaccess').write_text(HTACCESS, encoding='utf-8')
     (sitio / 'index.php').write_text("<?php // Silencio.\n", encoding='utf-8')
@@ -121,7 +133,7 @@ def main():
             if f.is_file():
                 z.write(f, f.relative_to(salida))
     version = git('rev-parse', '--short', 'HEAD').strip() + (' + cambios sin confirmar' if git('status', '--porcelain').strip() else '')
-    print(f'{n} archivos del sitio ({version})')
+    print(f'{n} archivos del sitio ({version}), {"con" if con_agente else "sin"} agente')
     print(f'{plugin}')
     print(f'{comprimido}  {comprimido.stat().st_size / 1e6:.1f} MB')
 
