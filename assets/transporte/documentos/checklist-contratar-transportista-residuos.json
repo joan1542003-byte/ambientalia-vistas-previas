@@ -1,0 +1,258 @@
+{
+ "titulo": "Antes de contratar un transportista de residuos",
+ "finalidad": "Verificar antecedentes legales, operacionales, del vehículo, destino y trazabilidad antes de contratar un servicio de transporte de residuos.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Proveedor",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Identificar razón social",
+     "revisar": "Registrar la identidad legal del proveedor que ofrece el servicio.",
+     "evidencia": "RUT, razón social, cotización o contrato.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 2,
+     "item": "Identificar transportista efectivo",
+     "revisar": "Confirmar quién ejecutará efectivamente el transporte, especialmente si existe intermediación comercial.",
+     "evidencia": "Datos del transportista, orden de servicio o contrato.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 3,
+     "item": "Comparar proveedor y ejecutor",
+     "revisar": "Verificar si quien factura/intermedia coincide o no con quien realizará el transporte y dejarlo documentado.",
+     "evidencia": "Contrato, cotización y datos del ejecutor.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Residuo",
+   "puntos": [
+    {
+     "n": 4,
+     "item": "Identificar tipo de residuo",
+     "revisar": "Definir el residuo que se retirará antes de evaluar al proveedor.",
+     "evidencia": "Ficha del residuo, fotografías y antecedentes técnicos.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Autorización / registro",
+   "puntos": [
+    {
+     "n": 5,
+     "item": "Determinar exigencia aplicable",
+     "revisar": "Revisar si el tipo de residuo y la operación requieren autorización sanitaria, registro como gestor u otra verificación.",
+     "evidencia": "Pauta de clasificación y revisión normativa interna.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Solicitar autorización o registro",
+     "revisar": "Pedir al proveedor el antecedente que corresponda al tipo de operación.",
+     "evidencia": "Resolución sanitaria, registro u otro respaldo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 7,
+     "item": "Verificar vigencia",
+     "revisar": "Cuando exista autorización sanitaria, confirmar que se encuentre vigente al momento de la revisión.",
+     "evidencia": "Resolución y fecha de vigencia.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 8,
+     "item": "Revisar alcance",
+     "revisar": "Confirmar que el alcance de la autorización/registro sea coherente con el residuo y actividad solicitada.",
+     "evidencia": "Resolución/registro y descripción de la operación.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 9,
+     "item": "No aceptar documento sin revisar alcance",
+     "revisar": "No dar por suficiente la sola existencia de una resolución.",
+     "evidencia": "Registro de revisión de alcance.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Vehículo",
+   "puntos": [
+    {
+     "n": 10,
+     "item": "Identificar vehículo",
+     "revisar": "Registrar vehículo previsto para el retiro.",
+     "evidencia": "Patente, ficha del vehículo o confirmación del proveedor.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 11,
+     "item": "Revisar compatibilidad con el residuo",
+     "revisar": "Confirmar que el tipo de vehículo sea compatible con el residuo, su estado físico y forma de carga.",
+     "evidencia": "Ficha del vehículo y descripción del residuo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Contenedores",
+   "puntos": [
+    {
+     "n": 12,
+     "item": "Revisar compatibilidad de contenedores",
+     "revisar": "Confirmar que los contenedores o embalajes sean adecuados para el residuo y su condición.",
+     "evidencia": "Fotografías, ficha de contenedores o descripción.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Destino",
+   "puntos": [
+    {
+     "n": 13,
+     "item": "Identificar destino antes del retiro",
+     "revisar": "Definir instalación de recepción, valorización o eliminación antes de contratar/coordinar.",
+     "evidencia": "Nombre, dirección y datos del destinatario.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 14,
+     "item": "Confirmar que puede recibir el residuo",
+     "revisar": "Verificar que el destino pueda recibir el tipo de residuo en la operación acordada.",
+     "evidencia": "Antecedentes del destino y alcance aplicable.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 15,
+     "item": "Evitar coordinar sin destino confirmado",
+     "revisar": "No cerrar la contratación mientras el destino final no esté definido.",
+     "evidencia": "Correo o confirmación del destinatario.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Operación",
+   "puntos": [
+    {
+     "n": 16,
+     "item": "Definir condiciones de carga",
+     "revisar": "Acordar cómo se realizará la carga y qué apoyo se requiere.",
+     "evidencia": "Procedimiento, correo o cotización.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 17,
+     "item": "Revisar acceso",
+     "revisar": "Confirmar condiciones de acceso para el vehículo y la maniobra.",
+     "evidencia": "Fotografías, croquis o descripción del punto de carga.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 18,
+     "item": "Confirmar horarios",
+     "revisar": "Acordar ventanas horarias y restricciones del sitio.",
+     "evidencia": "Correo, agenda u orden de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 19,
+     "item": "Confirmar estado y cantidad",
+     "revisar": "Asegurar que el proveedor conozca cantidad, estado físico y condiciones relevantes del residuo.",
+     "evidencia": "Ficha del retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Trazabilidad",
+   "puntos": [
+    {
+     "n": 20,
+     "item": "Definir documento de retiro",
+     "revisar": "Acordar qué documento respaldará la salida del residuo.",
+     "evidencia": "Orden/acta/documento aplicable.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 21,
+     "item": "Definir respaldo posterior",
+     "revisar": "Acordar qué certificado, declaración o evidencia de recepción será entregado después del retiro.",
+     "evidencia": "Compromiso en cotización/contrato o correo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 22,
+     "item": "Definir conservación de evidencia",
+     "revisar": "Establecer dónde se archivarán los respaldos del servicio.",
+     "evidencia": "Carpeta digital, sistema interno o expediente.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 23,
+     "item": "Registrar la verificación interna",
+     "revisar": "Completar una pauta interna antes de aprobar al transportista.",
+     "evidencia": "Checklist completado.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Control de errores",
+   "puntos": [
+    {
+     "n": 24,
+     "item": "No confundir intermediario con transportista",
+     "revisar": "Confirmar siempre el ejecutor real del traslado.",
+     "evidencia": "Contrato y datos del vehículo/transportista.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 25,
+     "item": "No omitir evidencias de recepción",
+     "revisar": "Acordar los respaldos de cierre antes de ejecutar el retiro.",
+     "evidencia": "Cláusula, correo o pauta de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "02_Checklist_Contratar_Transportista_Residuos.xlsx (cliente, 22-10-2026)"
+}

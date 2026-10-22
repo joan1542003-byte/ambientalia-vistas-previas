@@ -497,7 +497,7 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
 .footer-grid .brand { margin: 0 0 10px; }
 .footer-grid p { max-width: 32ch; color: var(--muted); }
 .footer-legal { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--fs-caption); }
-.footer-grid:has(> :nth-child(3):last-child), .footer-grid:has(> :nth-child(4)[hidden]:last-child) { grid-template-columns: 1.5fr repeat(2, 1fr); }  /* Transporte: sin «Sitios relacionados» (22-10-2026); «Legal» solo con la dirección del asistente */
+.footer-grid:has(> :nth-child(5):last-child:not([hidden])) { grid-template-columns: 1.4fr repeat(4, 1fr); }  /* Transporte con «Legal» (solo con la dirección del asistente) */
 @media (max-width: 860px) { .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .footer-grid > :first-child { grid-column: 1 / -1; } }
 @media (max-width: 420px) { .footer-grid li { white-space: normal; } }
 

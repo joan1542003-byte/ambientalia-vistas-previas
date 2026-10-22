@@ -1,0 +1,273 @@
+{
+ "titulo": "¿Necesitas autorización sanitaria para transportar residuos?",
+ "finalidad": "Apoyar una revisión previa del tipo de residuo, peligrosidad, régimen REP, actor que transporta y antecedentes necesarios para definir si corresponde autorización sanitaria, registro u otra revisión aplicable.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Identificación del residuo",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Identificar el residuo",
+     "revisar": "Registrar nombre o descripción específica del residuo que será transportado.",
+     "evidencia": "Ficha del residuo, listado interno o antecedente del generador.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 2,
+     "item": "Identificar proceso de origen",
+     "revisar": "Registrar la actividad o proceso que genera el residuo.",
+     "evidencia": "Descripción del proceso, ficha operativa o declaración del generador.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 3,
+     "item": "Definir estado físico",
+     "revisar": "Indicar si el residuo es sólido, líquido u otra condición relevante para su manejo.",
+     "evidencia": "Ficha del residuo o registro de levantamiento.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Peligrosidad",
+   "puntos": [
+    {
+     "n": 4,
+     "item": "Revisar antecedentes de peligrosidad",
+     "revisar": "Confirmar si existen antecedentes técnicos que permitan evaluar peligrosidad.",
+     "evidencia": "HDS/FDS del producto original, HDSR, análisis u otra caracterización.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 148 / Guía base"
+    },
+    {
+     "n": 5,
+     "item": "No clasificar por fotografía",
+     "revisar": "Evitar usar una fotografía como única base para definir si el residuo es peligroso o no peligroso.",
+     "evidencia": "Registro de revisión técnica complementaria.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Declarar incertidumbre",
+     "revisar": "Si faltan antecedentes suficientes, dejar constancia de que la clasificación requiere revisión adicional.",
+     "evidencia": "Observación en ficha o derivación a revisión técnica.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Ley REP / D.S. 29",
+   "puntos": [
+    {
+     "n": 7,
+     "item": "Revisar si es producto prioritario",
+     "revisar": "Determinar si el residuo corresponde a un producto prioritario sujeto al régimen REP indicado en la guía.",
+     "evidencia": "Antecedente del producto/residuo y revisión interna.",
+     "aplica": "Siempre",
+     "referencia": "Ley 20.920 / D.S. 29"
+    },
+    {
+     "n": 8,
+     "item": "Definir si el producto prioritario es peligroso",
+     "revisar": "Si corresponde a producto prioritario, confirmar si además presenta peligrosidad.",
+     "evidencia": "Caracterización, HDSR, análisis u otros antecedentes.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 29 / D.S. 148"
+    }
+   ]
+  },
+  {
+   "nombre": "Actor que transporta",
+   "puntos": [
+    {
+     "n": 9,
+     "item": "Identificar quién realiza el transporte",
+     "revisar": "Definir si transporta el generador, un gestor o un tercero.",
+     "evidencia": "Orden de servicio, contrato o identificación del prestador.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 10,
+     "item": "Distinguir transportista de destino",
+     "revisar": "Confirmar que la autorización del transportista no se confunda con la autorización de la instalación de destino.",
+     "evidencia": "Resolución del transportista y antecedentes del destino.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Residuos peligrosos",
+   "puntos": [
+    {
+     "n": 11,
+     "item": "Verificar regla general de autorización",
+     "revisar": "Para residuos peligrosos transportados por calles y caminos públicos, revisar que el transportista cuente con autorización sanitaria.",
+     "evidencia": "Resolución sanitaria vigente del transportista.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148"
+    },
+    {
+     "n": 12,
+     "item": "Revisar excepción del artículo 42",
+     "revisar": "Si se pretende aplicar la excepción indicada en la guía, verificar conjuntamente las condiciones señaladas: cantidad, tipo de residuo, transporte por el propio generador y situación respecto del plan de manejo.",
+     "evidencia": "Antecedentes de cantidad, tipo de residuo, identidad del transportador y respaldo sobre plan de manejo.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148 art. 42"
+    }
+   ]
+  },
+  {
+   "nombre": "Producto prioritario no peligroso",
+   "puntos": [
+    {
+     "n": 13,
+     "item": "Revisar exigencia de registro como gestor",
+     "revisar": "Para recolección/transporte de residuos no peligrosos de productos prioritarios, revisar el registro de gestor indicado en la guía.",
+     "evidencia": "Registro o antecedente de inscripción del gestor.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 29 art. 29"
+    },
+    {
+     "n": 14,
+     "item": "No exigir autorización sanitaria solo por art. 29",
+     "revisar": "Verificar que el escenario efectivamente corresponda a recolección/transporte de residuos no peligrosos de productos prioritarios antes de concluir que no requiere autorización sanitaria para esa actividad.",
+     "evidencia": "Clasificación del residuo y antecedente de producto prioritario.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 29 art. 29"
+    }
+   ]
+  },
+  {
+   "nombre": "Otros residuos no peligrosos",
+   "puntos": [
+    {
+     "n": 15,
+     "item": "No extrapolar el artículo 29",
+     "revisar": "Si el residuo no encaja en el supuesto de producto prioritario no peligroso, derivar a revisión según clasificación, operación y normativa sanitaria aplicable.",
+     "evidencia": "Registro de revisión y antecedentes del caso.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Vehículo",
+   "puntos": [
+    {
+     "n": 16,
+     "item": "Verificar vehículo aplicable",
+     "revisar": "Confirmar que el vehículo y la forma de transporte correspondan al escenario revisado.",
+     "evidencia": "Datos del vehículo, fotografías o ficha del transportista.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Destino",
+   "puntos": [
+    {
+     "n": 17,
+     "item": "Confirmar destino",
+     "revisar": "Identificar la instalación de recepción, valorización o eliminación que recibirá el residuo.",
+     "evidencia": "Datos del destinatario y respaldo de recepción acordada.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 18,
+     "item": "Revisar habilitación del destino",
+     "revisar": "Verificar que el destino informado sea coherente con el residuo y la operación.",
+     "evidencia": "Autorización/alcance del destino cuando corresponda.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Documentación",
+   "puntos": [
+    {
+     "n": 19,
+     "item": "Definir documentación requerida",
+     "revisar": "Listar los documentos que deben acompañar o respaldar la operación según el escenario definido.",
+     "evidencia": "Pauta documental interna.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 20,
+     "item": "Revisar coherencia entre residuos y documentos",
+     "revisar": "Confirmar que la descripción del residuo sea consistente entre la ficha, autorización/registro y documentos del retiro.",
+     "evidencia": "Documentos comparados y observaciones.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Trazabilidad",
+   "puntos": [
+    {
+     "n": 21,
+     "item": "Conservar evidencia de la revisión",
+     "revisar": "Guardar evidencia de la revisión realizada antes del retiro.",
+     "evidencia": "Checklist firmado/digital, correos, resoluciones, fotografías u otros respaldos.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 22,
+     "item": "Registrar decisión final",
+     "revisar": "Dejar registrada la conclusión: requiere autorización sanitaria, requiere registro, requiere revisión adicional o escenario distinto.",
+     "evidencia": "Resultado del checklist y observaciones.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Control de errores",
+   "puntos": [
+    {
+     "n": 23,
+     "item": "Evitar equivalencia 'no peligroso = sin autorización'",
+     "revisar": "Confirmar que la conclusión se base en el escenario completo y no solo en la etiqueta 'no peligroso'.",
+     "evidencia": "Registro de revisión.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 24,
+     "item": "Evitar confundir autorizaciones",
+     "revisar": "Revisar por separado transportista y destino/instalación.",
+     "evidencia": "Resoluciones y datos de cada actor.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 25,
+     "item": "No omitir registro de gestor",
+     "revisar": "Cuando aplique D.S. 29, verificar el registro del gestor antes de cerrar la revisión.",
+     "evidencia": "Respaldo de registro.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 29"
+    }
+   ]
+  }
+ ],
+ "fuente": "01_Checklist_Autorizacion_Sanitaria_Transporte.xlsx (cliente, 22-10-2026)"
+}

@@ -1,13 +1,14 @@
-/* Checklist de autorización en línea (ayuda/checklist-autorizacion-transporte.html, lo genera tools/ayuda.py).
+/* Checklists en línea (ayuda/checklist-*.html, los genera tools/ayuda.py): el de autorización de 50 puntos y los diez
+   del cliente, cada uno con sus marcas guardadas aparte (data-clave).
    Cada punto se marca con un toque en su círculo (Cumple ↔ Pendiente); sus otros estados (Por confirmar, No cumple,
    No aplica) se eligen en la ventana de selección del sitio. Las marcas quedan en este dispositivo (localStorage):
    si no se pueden guardar, el checklist funciona igual mientras la página esté abierta. «Guardar con mis marcas»
    imprime la página (o la guarda en PDF) con el estado de cada punto. */
 (() => {
   const d = document;
-  const root = d.querySelector('[data-checklist]');
+  const root = d.querySelector('article[data-checklist]');
   if (!root) return;
-  const CLAVE = 'ta-checklist-autorizacion';
+  const CLAVE = root.dataset.clave || 'ta-checklist-autorizacion';
   const ESTADOS = JSON.parse(root.dataset.estados);           // [[valor, nombre]…]
   const NOMBRE = Object.fromEntries(ESTADOS);
   const puntos = [...root.querySelectorAll('.ck-punto')];
@@ -82,7 +83,7 @@
     }
     if (e.target.closest('[data-ck-borrar]')) {
       const v = window.Picker
-        ? await window.Picker.choose({ title: '¿Borrar todas las marcas?', sub: 'Los 50 puntos vuelven a quedar pendientes en este dispositivo.', groups: [{ options: [{ value: 'si', label: 'Sí, borrar las marcas' }, { value: 'no', label: 'No, mantenerlas' }] }], layout: 'list' })
+        ? await window.Picker.choose({ title: '¿Borrar todas las marcas?', sub: `Los ${puntos.length} puntos vuelven a quedar pendientes en este dispositivo.`, groups: [{ options: [{ value: 'si', label: 'Sí, borrar las marcas' }, { value: 'no', label: 'No, mantenerlas' }] }], layout: 'list' })
         : 'si';
       if (v !== 'si') return;
       marcas = {};

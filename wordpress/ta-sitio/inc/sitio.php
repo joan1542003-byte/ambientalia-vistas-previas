@@ -224,6 +224,7 @@ function ta_sitio_pagina( $archivo, $privado ) {
 		'url' => esc_url_raw( rest_url( 'ta/v1/' ) ),
 		'v'   => TA_SITIO_VERSION,
 		'comunas' => ta_sitio_comunas(),  // comunas que se atienden (assets/site/pickers.js las usa en el formulario y el asistente)
+		'linkedin' => rest_url( 'ta/v1/linkedin' ),  // publicaciones recientes, al día sin subir otro zip (inc/linkedin.php)
 	);
 	if ( '' !== $op['asistente'] ) {
 		$api['asistente'] = $op['asistente'];
@@ -301,7 +302,7 @@ function ta_sitio_politica( array $sellos, array $op ) {
 				"script-src 'self' " . implode( ' ', array_unique( $sellos ) ) . ( '' !== $turnstile ? ' ' . $turnstile : '' ),
 				"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 				"font-src 'self' https://fonts.gstatic.com",
-				"img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org",  // blob: miniaturas de las fotografías que se adjuntan
+				"img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://joan1542003-byte.github.io",  // blob: miniaturas de las fotografías que se adjuntan; github.io: portadas de LinkedIn
 				"connect-src 'self'" . ( '' !== $asistente ? ' ' . $asistente : '' ),
 				'' !== $turnstile ? "frame-src 'self' " . $turnstile : '',
 				"frame-ancestors 'self'",

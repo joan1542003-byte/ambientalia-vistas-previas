@@ -1,0 +1,288 @@
+{
+ "titulo": "Prevención de errores al gestionar un retiro de residuos",
+ "finalidad": "Reducir retrasos y retiros fallidos mediante un levantamiento estandarizado de identificación, cantidad, condición, embalaje, acceso, equipos, documentación y destino.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Identificación",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Usar descripción específica",
+     "revisar": "Evitar descripciones genéricas como 'varios residuos'.",
+     "evidencia": "Ficha de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 2,
+     "item": "Registrar nombre del residuo",
+     "revisar": "Indicar material/residuo de forma clara y consistente.",
+     "evidencia": "Ficha del residuo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 3,
+     "item": "Revisar clasificación antes de cotizar",
+     "revisar": "Confirmar que la clasificación esté suficientemente revisada antes de cerrar una cotización definitiva.",
+     "evidencia": "Registro de revisión técnica.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cantidad",
+   "puntos": [
+    {
+     "n": 4,
+     "item": "Registrar cantidad",
+     "revisar": "Indicar cantidad estimada o final.",
+     "evidencia": "Ficha de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 5,
+     "item": "Registrar unidad",
+     "revisar": "Acompañar toda cantidad con su unidad.",
+     "evidencia": "Ficha de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Aclarar forma de estimación",
+     "revisar": "Si la cantidad es estimada, dejarlo indicado y explicar la base disponible.",
+     "evidencia": "Observación del levantamiento.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 7,
+     "item": "Distinguir volumen, masa y unidades",
+     "revisar": "Evitar informar volúmenes o cantidades sin identificar qué representan.",
+     "evidencia": "Ficha de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Condición",
+   "puntos": [
+    {
+     "n": 8,
+     "item": "Registrar contaminación",
+     "revisar": "Informar si el residuo está contaminado.",
+     "evidencia": "Ficha, fotografías o antecedentes técnicos.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 9,
+     "item": "Registrar mezcla",
+     "revisar": "Informar si existen materiales mezclados.",
+     "evidencia": "Ficha y fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 10,
+     "item": "Registrar deterioro",
+     "revisar": "Informar deterioro, daño o condición anormal.",
+     "evidencia": "Fotografías y observación.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Almacenamiento",
+   "puntos": [
+    {
+     "n": 11,
+     "item": "Indicar cómo está almacenado",
+     "revisar": "Describir contenedor, pallet, granel u otra forma de almacenamiento.",
+     "evidencia": "Fotografías y ficha.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 12,
+     "item": "Indicar necesidad de trasvasije",
+     "revisar": "Informar si se requerirá trasvasije antes o durante la carga.",
+     "evidencia": "Ficha operativa.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Equipos",
+   "puntos": [
+    {
+     "n": 13,
+     "item": "Identificar equipos de carga",
+     "revisar": "Definir si se requiere grúa, transpaleta u otro equipo.",
+     "evidencia": "Plan de carga/cotización.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Personal",
+   "puntos": [
+    {
+     "n": 14,
+     "item": "Identificar apoyo adicional",
+     "revisar": "Indicar si se necesita personal adicional para manipulación/carga.",
+     "evidencia": "Plan de carga.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Acceso",
+   "puntos": [
+    {
+     "n": 15,
+     "item": "Describir acceso al punto de carga",
+     "revisar": "Registrar restricciones físicas o de circulación.",
+     "evidencia": "Fotografías, croquis o descripción.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 16,
+     "item": "Confirmar espacio de maniobra",
+     "revisar": "Verificar que exista espacio suficiente para el vehículo/equipos previstos.",
+     "evidencia": "Fotografías o visita.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Horarios",
+   "puntos": [
+    {
+     "n": 17,
+     "item": "Registrar restricciones horarias",
+     "revisar": "Indicar ventanas de carga y restricciones de acceso.",
+     "evidencia": "Correo/orden de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Fotografías",
+   "puntos": [
+    {
+     "n": 18,
+     "item": "Solicitar fotos del residuo",
+     "revisar": "Contar con imágenes que apoyen la preparación operativa, sin reemplazar la clasificación técnica.",
+     "evidencia": "Fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 19,
+     "item": "Solicitar fotos del punto de carga",
+     "revisar": "Visualizar accesos, espacio y almacenamiento.",
+     "evidencia": "Fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Embalaje",
+   "puntos": [
+    {
+     "n": 20,
+     "item": "Confirmar embalaje/contención",
+     "revisar": "Definir cómo se encuentra contenido el residuo y si requiere ajustes previos.",
+     "evidencia": "Ficha y fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Documentación",
+   "puntos": [
+    {
+     "n": 21,
+     "item": "Confirmar documentos antes de coordinar",
+     "revisar": "Revisar que los antecedentes necesarios estén disponibles.",
+     "evidencia": "Expediente del retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Destino",
+   "puntos": [
+    {
+     "n": 22,
+     "item": "Confirmar destino antes de coordinar",
+     "revisar": "No programar retiro definitivo sin destino acordado.",
+     "evidencia": "Confirmación del destinatario.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cambios",
+   "puntos": [
+    {
+     "n": 23,
+     "item": "Controlar cambios de carga",
+     "revisar": "Si cambia la carga el día del retiro, detener y revisar el impacto antes de continuar.",
+     "evidencia": "Registro de cambio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Levantamiento",
+   "puntos": [
+    {
+     "n": 24,
+     "item": "Usar ficha estándar",
+     "revisar": "Consolidar la información en un formato único para evitar omisiones.",
+     "evidencia": "Ficha estándar completada.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cierre previo",
+   "puntos": [
+    {
+     "n": 25,
+     "item": "Validar datos con cliente",
+     "revisar": "Confirmar con el cliente la información final antes del servicio.",
+     "evidencia": "Correo o aprobación de ficha.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "07_Checklist_Errores_Gestion_Retiro_Residuos.xlsx (cliente, 22-10-2026)"
+}

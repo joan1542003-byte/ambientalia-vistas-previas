@@ -1,0 +1,278 @@
+{
+ "titulo": "Preparación correcta de residuos antes del retiro",
+ "finalidad": "Verificar segregación, identificación, contención, accesibilidad, cantidad, documentos y responsable antes de la llegada del vehículo.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Segregación",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Separar por tipo",
+     "revisar": "Mantener separados los residuos de clasificación o tipo distinto.",
+     "evidencia": "Inspección y fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 2,
+     "item": "Separar incompatibles",
+     "revisar": "Mantener separados residuos incompatibles según la información disponible.",
+     "evidencia": "Inspección y antecedentes técnicos.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Identificación",
+   "puntos": [
+    {
+     "n": 3,
+     "item": "Identificar cada contenedor",
+     "revisar": "Rotular o identificar cada contenedor para evitar confusiones durante la carga.",
+     "evidencia": "Etiquetas y fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 4,
+     "item": "Identificar grupos de materiales",
+     "revisar": "Cuando no se utilicen contenedores individuales, identificar claramente cada grupo de materiales.",
+     "evidencia": "Señalización/fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Contenedores",
+   "puntos": [
+    {
+     "n": 5,
+     "item": "Usar contenedor compatible",
+     "revisar": "Confirmar que el contenedor sea compatible con el residuo cuando corresponda.",
+     "evidencia": "Ficha del residuo y contenedor.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Revisar estado",
+     "revisar": "Confirmar que no esté dañado.",
+     "evidencia": "Inspección y fotografía.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 7,
+     "item": "Revisar cierre",
+     "revisar": "Mantener contenedores cerrados cuando corresponda.",
+     "evidencia": "Inspección.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 8,
+     "item": "Evitar sobrellenado",
+     "revisar": "Asegurar que los contenedores no estén sobrecargados.",
+     "evidencia": "Inspección visual.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Material suelto",
+   "puntos": [
+    {
+     "n": 9,
+     "item": "Evitar dispersión",
+     "revisar": "No dejar materiales sueltos que puedan dispersarse durante la preparación/carga.",
+     "evidencia": "Inspección.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Área de retiro",
+   "puntos": [
+    {
+     "n": 10,
+     "item": "Mantener acceso libre",
+     "revisar": "Despejar el punto de carga para ingreso y maniobra segura.",
+     "evidencia": "Fotografías del área.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 11,
+     "item": "Mantener área ordenada",
+     "revisar": "Ordenar el punto de retiro para evitar demoras y confusiones.",
+     "evidencia": "Inspección.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Acceso",
+   "puntos": [
+    {
+     "n": 12,
+     "item": "Confirmar acceso del vehículo",
+     "revisar": "Revisar que el vehículo pueda llegar al punto de carga.",
+     "evidencia": "Croquis, fotos o validación previa.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Equipos",
+   "puntos": [
+    {
+     "n": 13,
+     "item": "Identificar necesidad de equipo especial",
+     "revisar": "Informar con anticipación si se requiere equipo especial.",
+     "evidencia": "Correo/orden de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 14,
+     "item": "Identificar necesidad de trasvasije",
+     "revisar": "Informar si debe realizarse trasvasije.",
+     "evidencia": "Ficha operativa.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 15,
+     "item": "Identificar necesidad de pallets",
+     "revisar": "Confirmar si la preparación requiere pallets.",
+     "evidencia": "Ficha operativa.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cantidad",
+   "puntos": [
+    {
+     "n": 16,
+     "item": "Confirmar cantidad final",
+     "revisar": "Actualizar cantidad antes del retiro para evitar diferencias con lo cotizado/programado.",
+     "evidencia": "Ficha final de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 17,
+     "item": "Confirmar unidad de medida",
+     "revisar": "Asegurar que la cantidad final tenga unidad.",
+     "evidencia": "Ficha final.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Documentación",
+   "puntos": [
+    {
+     "n": 18,
+     "item": "Preparar documentos",
+     "revisar": "Tener listos los documentos aplicables antes de la llegada del vehículo.",
+     "evidencia": "Expediente del retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Responsable",
+   "puntos": [
+    {
+     "n": 19,
+     "item": "Designar responsable de entrega",
+     "revisar": "Asegurar que esté disponible la persona que conoce el residuo y entregará la carga.",
+     "evidencia": "Nombre/contacto del responsable.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 20,
+     "item": "Confirmar disponibilidad",
+     "revisar": "Validar que el responsable esté presente o localizable en la ventana de retiro.",
+     "evidencia": "Confirmación previa.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Revisión final",
+   "puntos": [
+    {
+     "n": 21,
+     "item": "Realizar revisión el mismo día",
+     "revisar": "Revisar segregación, contenedores, acceso, cantidad y documentos antes del retiro.",
+     "evidencia": "Checklist de revisión final.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cambios",
+   "puntos": [
+    {
+     "n": 22,
+     "item": "No mezclar después de cotizar",
+     "revisar": "Si cambian materiales o composición después de cotizar, informar y revisar antes del retiro.",
+     "evidencia": "Registro de cambio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 23,
+     "item": "No cambiar ubicación sin informar",
+     "revisar": "Si cambia el punto de carga, confirmar nuevamente acceso y condiciones.",
+     "evidencia": "Correo/actualización de ficha.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Control de errores",
+   "puntos": [
+    {
+     "n": 24,
+     "item": "No dejar contenedores abiertos o dañados",
+     "revisar": "Corregir condiciones de contención antes de cargar.",
+     "evidencia": "Inspección.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 25,
+     "item": "No ubicar carga en punto inaccesible",
+     "revisar": "Reubicar o coordinar solución antes de la llegada del vehículo.",
+     "evidencia": "Fotografías/plan de carga.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "08_Checklist_Preparacion_Residuos_Antes_Retiro.xlsx (cliente, 22-10-2026)"
+}

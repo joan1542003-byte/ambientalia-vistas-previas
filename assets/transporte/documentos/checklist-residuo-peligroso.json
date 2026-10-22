@@ -1,0 +1,276 @@
+{
+ "titulo": "¿Residuo peligroso o no peligroso?",
+ "finalidad": "Ordenar los antecedentes mínimos para comenzar a identificar la peligrosidad de un residuo y derivar a revisión técnica cuando la información sea insuficiente.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Origen",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Describir proceso generador",
+     "revisar": "Registrar el proceso o actividad que origina el residuo.",
+     "evidencia": "Descripción del proceso o ficha del generador.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Identificación",
+   "puntos": [
+    {
+     "n": 2,
+     "item": "Registrar nombre del material",
+     "revisar": "Indicar nombre específico del residuo o material.",
+     "evidencia": "Ficha del residuo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 3,
+     "item": "Registrar composición conocida",
+     "revisar": "Incorporar componentes conocidos y antecedentes relevantes.",
+     "evidencia": "Ficha técnica, HDS/FDS o declaración del generador.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Condición",
+   "puntos": [
+    {
+     "n": 4,
+     "item": "Indicar si está limpio",
+     "revisar": "Registrar si el material se encuentra sin uso/contaminación relevante, cuando corresponda.",
+     "evidencia": "Inspección y antecedentes del proceso.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 5,
+     "item": "Indicar si está usado",
+     "revisar": "Registrar si el material ha sido utilizado y cómo pudo cambiar su condición.",
+     "evidencia": "Descripción de uso.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Indicar contaminación",
+     "revisar": "Registrar presencia de contaminantes conocidos o posibles.",
+     "evidencia": "Ficha del residuo, HDS/FDS, análisis.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 7,
+     "item": "Indicar mezcla",
+     "revisar": "Confirmar si el residuo contiene mezcla con otros materiales o sustancias.",
+     "evidencia": "Descripción del generador y antecedentes técnicos.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Estado físico",
+   "puntos": [
+    {
+     "n": 8,
+     "item": "Definir estado físico",
+     "revisar": "Indicar condición física del residuo.",
+     "evidencia": "Ficha del residuo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cantidad",
+   "puntos": [
+    {
+     "n": 9,
+     "item": "Registrar cantidad aproximada",
+     "revisar": "Indicar cantidad y unidad estimada para contextualizar la operación.",
+     "evidencia": "Inventario o levantamiento.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Antecedentes técnicos",
+   "puntos": [
+    {
+     "n": 10,
+     "item": "Reunir HDS/FDS del producto original",
+     "revisar": "Usar la hoja/ficha de seguridad del producto original como antecedente, sin asumir que describe automáticamente al residuo final.",
+     "evidencia": "HDS/FDS disponible.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 11,
+     "item": "Reunir HDSR",
+     "revisar": "Solicitar Hoja de Seguridad del Residuo cuando exista.",
+     "evidencia": "HDSR vigente/disponible.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 12,
+     "item": "Reunir ficha técnica",
+     "revisar": "Incorporar fichas técnicas que aporten composición o propiedades.",
+     "evidencia": "Ficha técnica.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 13,
+     "item": "Reunir análisis o caracterización",
+     "revisar": "Incorporar resultados analíticos cuando existan o sean necesarios para resolver incertidumbre.",
+     "evidencia": "Informe de laboratorio o caracterización.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Peligrosidad",
+   "puntos": [
+    {
+     "n": 14,
+     "item": "Revisar características de peligrosidad",
+     "revisar": "Evaluar la información reunida bajo el marco del D.S. 148 señalado en la guía.",
+     "evidencia": "Registro de revisión técnica.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 148"
+    },
+    {
+     "n": 15,
+     "item": "No clasificar por color",
+     "revisar": "Evitar concluir peligrosidad únicamente por apariencia/color.",
+     "evidencia": "Registro de revisión.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 16,
+     "item": "No clasificar por olor",
+     "revisar": "Evitar concluir peligrosidad únicamente por olor.",
+     "evidencia": "Registro de revisión.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 17,
+     "item": "No clasificar por fotografía",
+     "revisar": "Usar imágenes solo como apoyo para observar estado físico, envase o condición visible.",
+     "evidencia": "Fotografías y otros antecedentes complementarios.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Mezcla / contaminación",
+   "puntos": [
+    {
+     "n": 18,
+     "item": "Revisar el conjunto",
+     "revisar": "Cuando exista mezcla o contaminación, evaluar el conjunto y no solo el material principal.",
+     "evidencia": "Ficha de composición, análisis u otros antecedentes.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Condiciones anormales",
+   "puntos": [
+    {
+     "n": 19,
+     "item": "Registrar derrames",
+     "revisar": "Identificar presencia de derrames o pérdidas.",
+     "evidencia": "Fotografías y observación del sitio.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 20,
+     "item": "Registrar daños",
+     "revisar": "Identificar envases o materiales dañados que puedan afectar la evaluación.",
+     "evidencia": "Fotografías y observación.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 21,
+     "item": "Registrar otras anomalías",
+     "revisar": "Anotar condiciones no habituales detectadas durante el levantamiento.",
+     "evidencia": "Observaciones y fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Incertidumbre",
+   "puntos": [
+    {
+     "n": 22,
+     "item": "Declarar información insuficiente",
+     "revisar": "Si faltan antecedentes, dejarlo explícito antes de decidir transporte y destino.",
+     "evidencia": "Observación en checklist.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 23,
+     "item": "Solicitar antecedentes adicionales",
+     "revisar": "Definir qué HDS/FDS, HDSR, ficha, análisis o caracterización falta.",
+     "evidencia": "Solicitud al generador/cliente.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 24,
+     "item": "Derivar a revisión técnica",
+     "revisar": "Si la clasificación sigue incierta, derivar el caso antes de coordinar el manejo.",
+     "evidencia": "Registro de derivación.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Control de errores",
+   "puntos": [
+    {
+     "n": 25,
+     "item": "No clasificar solo por nombre genérico",
+     "revisar": "Evitar decidir por términos como 'aceite', 'plástico', 'solvente' o 'batería' sin antecedentes adicionales.",
+     "evidencia": "Registro de revisión.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 26,
+     "item": "No equiparar HDS de producto con residuo final",
+     "revisar": "Confirmar si el residuo cambió por uso, mezcla, contaminación o proceso.",
+     "evidencia": "Comparación entre proceso y HDS/FDS.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "03_Checklist_Residuo_Peligroso_No_Peligroso.xlsx (cliente, 22-10-2026)"
+}

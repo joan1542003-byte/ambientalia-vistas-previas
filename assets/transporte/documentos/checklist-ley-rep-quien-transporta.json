@@ -1,0 +1,239 @@
+{
+ "titulo": "Ley REP y relevancia de quién transporta los residuos",
+ "finalidad": "Verificar roles, registro/autorización, destino y trazabilidad cuando la gestión involucra residuos y, especialmente, residuos de productos prioritarios.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Residuo",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Identificar el residuo",
+     "revisar": "Registrar qué residuo será gestionado.",
+     "evidencia": "Ficha del residuo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Ley REP",
+   "puntos": [
+    {
+     "n": 2,
+     "item": "Determinar si corresponde a producto prioritario",
+     "revisar": "Confirmar si el residuo está dentro del ámbito de productos prioritarios tratado por la guía.",
+     "evidencia": "Antecedente del producto y revisión interna.",
+     "aplica": "Siempre",
+     "referencia": "Ley 20.920 / D.S. 29"
+    }
+   ]
+  },
+  {
+   "nombre": "Actores",
+   "puntos": [
+    {
+     "n": 3,
+     "item": "Identificar generador",
+     "revisar": "Registrar quién genera y entrega el residuo.",
+     "evidencia": "Datos de la empresa/establecimiento.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 4,
+     "item": "Identificar transportista",
+     "revisar": "Registrar quién realizará físicamente el traslado.",
+     "evidencia": "Orden de servicio, datos del proveedor y vehículo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 5,
+     "item": "Identificar gestor",
+     "revisar": "Definir quién realiza la operación de manejo correspondiente.",
+     "evidencia": "Contrato, registro u otro antecedente.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Identificar destinatario",
+     "revisar": "Registrar la instalación que recibirá el residuo.",
+     "evidencia": "Datos del destino.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 7,
+     "item": "Distinguir roles",
+     "revisar": "Confirmar si una misma empresa cumple varios roles o si son actores distintos.",
+     "evidencia": "Mapa de actores/contrato.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Generador",
+   "puntos": [
+    {
+     "n": 8,
+     "item": "Revisar entrega a gestor autorizado",
+     "revisar": "Verificar el antecedente de que el residuo será entregado a un gestor autorizado, salvo manejo por el propio generador conforme a la normativa señalada.",
+     "evidencia": "Autorización/registro y orden de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Ley 20.920"
+    }
+   ]
+  },
+  {
+   "nombre": "Gestor",
+   "puntos": [
+    {
+     "n": 9,
+     "item": "Revisar autorizaciones aplicables",
+     "revisar": "Confirmar que el gestor cuente con las autorizaciones que correspondan a la operación indicada.",
+     "evidencia": "Resoluciones/antecedentes del gestor.",
+     "aplica": "Siempre",
+     "referencia": "Ley 20.920"
+    },
+    {
+     "n": 10,
+     "item": "Revisar registro aplicable",
+     "revisar": "Confirmar registro cuando corresponda al escenario de la guía.",
+     "evidencia": "Registro del gestor.",
+     "aplica": "Según corresponda",
+     "referencia": "Ley 20.920 / D.S. 29"
+    }
+   ]
+  },
+  {
+   "nombre": "Transporte REP",
+   "puntos": [
+    {
+     "n": 11,
+     "item": "Revisar registro para recolección/transporte",
+     "revisar": "Para residuos no peligrosos de productos prioritarios, revisar el registro como gestor del actor que realiza recolección/transporte.",
+     "evidencia": "Respaldo de registro.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 29 art. 29"
+    },
+    {
+     "n": 12,
+     "item": "No confundir ausencia de autorización sanitaria con ausencia de obligaciones",
+     "revisar": "Si la actividad no requiere autorización sanitaria bajo el supuesto indicado, confirmar de todos modos el registro y demás requisitos del escenario.",
+     "evidencia": "Registro y checklist del servicio.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 29 art. 29"
+    }
+   ]
+  },
+  {
+   "nombre": "Destino",
+   "puntos": [
+    {
+     "n": 13,
+     "item": "Definir destino antes del retiro",
+     "revisar": "Acordar instalación de recepción/almacenamiento o manejo antes de la salida.",
+     "evidencia": "Confirmación del destino.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 14,
+     "item": "Revisar compatibilidad del destino",
+     "revisar": "Confirmar que la instalación pueda recibir el residuo bajo el alcance correspondiente.",
+     "evidencia": "Autorización/alcance o antecedente aplicable.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 15,
+     "item": "No cerrar gestión al cargar el camión",
+     "revisar": "Mantener control hasta contar con respaldo del destino.",
+     "evidencia": "Documento de recepción.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Trazabilidad",
+   "puntos": [
+    {
+     "n": 16,
+     "item": "Registrar origen",
+     "revisar": "Conservar evidencia del lugar/actor de origen del residuo.",
+     "evidencia": "Orden de retiro, ficha o acta.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 17,
+     "item": "Registrar transporte",
+     "revisar": "Conservar evidencia de quién transportó y, cuando corresponda, del vehículo utilizado.",
+     "evidencia": "Orden de servicio, patente o documento de transporte.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 18,
+     "item": "Registrar destino",
+     "revisar": "Conservar evidencia del destinatario acordado y recepción.",
+     "evidencia": "Certificado/acta/documento de recepción.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 19,
+     "item": "Registrar cantidades",
+     "revisar": "Mantener evidencia de cantidades gestionadas cuando corresponda a reportabilidad o control.",
+     "evidencia": "Pesaje, documento de retiro o recepción.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Archivo",
+   "puntos": [
+    {
+     "n": 20,
+     "item": "No archivar solo factura",
+     "revisar": "Conservar respaldo técnico/documental además de la documentación comercial.",
+     "evidencia": "Expediente del retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Control de errores",
+   "puntos": [
+    {
+     "n": 21,
+     "item": "No confundir transportista con gestor/destinatario",
+     "revisar": "Identificar con precisión la función de cada actor.",
+     "evidencia": "Registro de roles.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 22,
+     "item": "Confirmar destino antes de la salida",
+     "revisar": "Evitar retiros sin instalación receptora definida.",
+     "evidencia": "Correo o confirmación del destino.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "05_Checklist_Ley_REP_Quien_Transporta.xlsx (cliente, 22-10-2026)"
+}

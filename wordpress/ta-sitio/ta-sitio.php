@@ -22,6 +22,7 @@ require_once TA_SITIO_DIR . 'inc/fotos.php';
 require_once TA_SITIO_DIR . 'inc/correos.php';
 require_once TA_SITIO_DIR . 'inc/solicitudes.php';
 require_once TA_SITIO_DIR . 'inc/gestor.php';
+require_once TA_SITIO_DIR . 'inc/linkedin.php';
 
 register_activation_hook( __FILE__, 'ta_sitio_activar' );
 register_deactivation_hook( __FILE__, 'ta_sitio_desactivar' );

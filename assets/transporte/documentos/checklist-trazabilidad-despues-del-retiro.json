@@ -1,0 +1,239 @@
+{
+ "titulo": "Trazabilidad después del retiro de residuos",
+ "finalidad": "Cerrar la gestión verificando salida, transportista, vehículo, destino y evidencias de recepción, valorización o eliminación.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Salida",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Registrar fecha de salida",
+     "revisar": "Dejar registrada la fecha del retiro.",
+     "evidencia": "Orden/acta de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 2,
+     "item": "Registrar residuo retirado",
+     "revisar": "Identificar el residuo efectivamente cargado.",
+     "evidencia": "Documento de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 3,
+     "item": "Registrar cantidad",
+     "revisar": "Anotar cantidad y unidad retirada.",
+     "evidencia": "Pesaje, acta o documento de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Generador",
+   "puntos": [
+    {
+     "n": 4,
+     "item": "Conservar información entregada",
+     "revisar": "Mantener respaldo de la información proporcionada al transportista sobre el residuo.",
+     "evidencia": "Ficha/HDSR/antecedentes entregados.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Transportista",
+   "puntos": [
+    {
+     "n": 5,
+     "item": "Identificar transportista",
+     "revisar": "Registrar quién asumió la carga.",
+     "evidencia": "Orden de servicio/documento de transporte.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Identificar vehículo",
+     "revisar": "Registrar patente u otro dato del vehículo utilizado.",
+     "evidencia": "Documento de retiro/fotografía.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 7,
+     "item": "Confirmar destino definido",
+     "revisar": "Verificar que el transportista conduzca la carga al destino previamente acordado.",
+     "evidencia": "Documento de transporte/orden de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Destino",
+   "puntos": [
+    {
+     "n": 8,
+     "item": "Identificar destinatario",
+     "revisar": "Registrar instalación receptora.",
+     "evidencia": "Datos del destino.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 9,
+     "item": "Confirmar función del destino",
+     "revisar": "Registrar si corresponde a recepción, procesamiento, valorización o eliminación según el servicio acordado.",
+     "evidencia": "Orden/contrato o documento de recepción.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 10,
+     "item": "Revisar alcance del destinatario",
+     "revisar": "Confirmar que el destino corresponda al residuo gestionado.",
+     "evidencia": "Antecedente de autorización/alcance cuando corresponda.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Residuos peligrosos",
+   "puntos": [
+    {
+     "n": 11,
+     "item": "Conservar declaración y seguimiento",
+     "revisar": "Cuando corresponda, conservar los respaldos del sistema formal de declaración y seguimiento.",
+     "evidencia": "Documentos del sistema.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148 / Guía base"
+    },
+    {
+     "n": 12,
+     "item": "Cerrar seguimiento con recepción",
+     "revisar": "Verificar que exista evidencia de recepción en la instalación definida.",
+     "evidencia": "Respaldo de recepción.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "REP / trazabilidad",
+   "puntos": [
+    {
+     "n": 13,
+     "item": "Registrar origen",
+     "revisar": "Conservar evidencia del origen del residuo.",
+     "evidencia": "Orden/ficha de retiro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 14,
+     "item": "Registrar cantidades",
+     "revisar": "Conservar evidencia de cantidades para cumplimiento, auditoría y reportabilidad cuando corresponda.",
+     "evidencia": "Pesaje/documentos.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 15,
+     "item": "Registrar destino",
+     "revisar": "Conservar evidencia de destino final o etapa de manejo declarada.",
+     "evidencia": "Certificado/acta/documento.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cierre documental",
+   "puntos": [
+    {
+     "n": 16,
+     "item": "Recibir respaldo de recepción",
+     "revisar": "Solicitar y archivar evidencia de que el destinatario recibió el residuo.",
+     "evidencia": "Acta, certificado o documento equivalente.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 17,
+     "item": "Recibir respaldo de valorización o eliminación",
+     "revisar": "Cuando corresponda, solicitar el respaldo de la gestión declarada.",
+     "evidencia": "Certificado o evidencia del proceso.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 18,
+     "item": "Cruzar con factura/orden de servicio",
+     "revisar": "Relacionar el respaldo técnico con la documentación comercial del retiro.",
+     "evidencia": "Factura, orden de servicio y certificado.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Consistencia",
+   "puntos": [
+    {
+     "n": 19,
+     "item": "Comparar cantidad retirada y recepcionada",
+     "revisar": "Revisar que las cantidades sean consistentes o que las diferencias estén explicadas.",
+     "evidencia": "Documentos de salida y recepción.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Archivo",
+   "puntos": [
+    {
+     "n": 20,
+     "item": "Relacionar documentos con retiro específico",
+     "revisar": "Evitar archivar documentos sueltos sin vínculo con fecha, residuo y servicio.",
+     "evidencia": "Carpeta/expediente con identificador.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Control de errores",
+   "puntos": [
+    {
+     "n": 21,
+     "item": "No cerrar sin evidencia de destino",
+     "revisar": "Mantener la orden abierta hasta contar con el respaldo previsto.",
+     "evidencia": "Estado del servicio y expediente.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 22,
+     "item": "No confundir declaración con evidencia de tratamiento",
+     "revisar": "Distinguir lo informado/comprometido de la evidencia efectiva de la gestión realizada.",
+     "evidencia": "Documento de recepción/tratamiento.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "09_Checklist_Trazabilidad_Despues_Retiro.xlsx (cliente, 22-10-2026)"
+}

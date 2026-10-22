@@ -237,7 +237,7 @@
     d.addEventListener('keydown', (e) => {
       if (e.key !== '/' || e.target.closest('input, textarea, select, [contenteditable]') || d.querySelector('dialog[open]')) return;
       /* Solo con la biblioteca a la vista (panel «Ayuda» abierto en Normativa) */
-      if (lib.closest('[inert]') || !lib.closest('.docs-item')?.classList.contains('is-on')) return;
+      if (lib.closest('[inert]') || lib.closest('[data-docs-pane]')?.hidden) return;
       e.preventDefault();
       input.focus();
     });
@@ -312,10 +312,13 @@
         <a class="post-li" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver en LinkedIn ${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a>
       </li>`;
 
-    Promise.all([fetch(postsRoot.dataset.src, { cache: 'no-cache' }).then((r) => r.json()).catch(() => null), normas()]).then(([feed, norms]) => {
-      const org = feed?.organizacion || { nombre: 'Vínculo Verde', url: company };
+    Promise.all([fetch(window.TA_API?.linkedin || postsRoot.dataset.src, { cache: 'no-cache' }).then((r) => r.json()).catch(() => null), normas()]).then(([feed, norms]) => {
+      const org = feed?.organizacion || { nombre: 'Transporte Autorizado', url: company };
       const items = (feed?.posts || []).slice(0, 10);
-      if (!items.length) { track.innerHTML = empty(org); return; }
+      /* Sin publicaciones la sección no se muestra (la página de LinkedIn es nueva); aparece sola con la primera */
+      const seccion = postsRoot.closest('[data-posts-seccion]');
+      if (!items.length) { if (seccion) return; track.innerHTML = empty(org); return; }
+      if (seccion) seccion.hidden = false;
       const list = norms?.normas || [];
       track.innerHTML = items.map((p, i) => post(p, org, list.find((n) => n.slug === (p.normas || [])[0]) || related(p.texto, list), i)).join('');
       track.querySelectorAll('.post-cover img').forEach((img) => { const on = () => img.classList.add('is-loaded'); if (img.complete) on(); else { img.addEventListener('load', on, { once: true }); img.addEventListener('error', () => img.closest('.post-cover').remove(), { once: true }); } });
