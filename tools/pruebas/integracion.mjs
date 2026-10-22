@@ -19,7 +19,9 @@ const JOHAN = 'c1f073fb3101e907b2a3b7e49f87dd2732565862';
 const ODOO = '906b1c9097ccc817731d2d0d18077d4d7911c5a0';
 /* Cambios posteriores de Johan, ya integrados: el plugin 1.3.0 del 16-10 y el diseño del chat del 22-10 */
 const JOHAN_PLUGIN = '415821b60ff8c6ac841a3f6778c704aec6e1d3a2';
-const JOHAN_CHAT = '05a72080e2ffac62cb36076fb3f8477bf7f256b5';
+/* Ayuda del 22-10 (guías, checklists y panel por pestañas), con HDS y Campañas sin «Vista previa de diseño» en el pie */
+const JOHAN_AYUDA = 'b0df9e6b257c97d31debbf7dbedbed35f1accfa6';
+const JOHAN_CHAT = 'b0df9e6b257c97d31debbf7dbedbed35f1accfa6';
 const leer = (f) => readFileSync(join(ROOT, f), 'utf8');
 const git = (...a) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 });
 /* Archivos del repositorio, sin repetir (durante una fusión sin cerrar, git ls-files nombra tres veces cada archivo en conflicto) */
@@ -103,9 +105,9 @@ seccion('3. Formulario de Transporte: un solo destino, el asistente');
 seccion('4. HDS y Campañas sin cambios de comportamiento');
 for (const f of ['hds.html', 'campanas-reciclaje.html']) {
   const s = leer(f);
-  const antes = enRama(JOHAN, f);
-  if (antes === null) { avisos.push(`No encontré ${JOHAN.slice(0, 7)} para comparar ${f}.`); continue; }
-  ok(sinVersion(s) === sinVersion(antes), `${f}: igual a cambios-15-10 salvo la versión de los archivos (?v=)`);
+  const antes = enRama(JOHAN_AYUDA, f);
+  if (antes === null) { avisos.push(`No encontré ${JOHAN_AYUDA.slice(0, 7)} para comparar ${f}.`); continue; }
+  ok(sinVersion(s) === sinVersion(antes), `${f}: igual a la versión del 22-10 salvo la versión de los archivos (?v=)`);
   ok(!/data-cotizar-api/.test(s) && /data-enviar hidden/.test(s), `${f}: sin destino Laravel; conserva su «Enviar solicitud» de WordPress`);
 }
 for (const f of ['assets/site/filas.js']) ok(leer(f) === enRama(JOHAN, f), `${f} sin cambios`);
@@ -127,12 +129,12 @@ seccion('6. Páginas generadas (normativa y ayuda) al día con la fuente');
   const paginas = archivos('normativa/*.html', 'ayuda/*.html');
   const malas = paginas.filter((f) => { const p = leer(f); return bloque(p, '<div class="hcard">') !== tarjeta || bloque(p, '<div class="dock" data-dock data-dock-always>') !== burbuja; });
   ok(!malas.length, `${paginas.length} páginas con la tarjeta y la burbuja idénticas a las de transporte-autorizado.html (lo que copian tools/normativa.py y tools/ayuda.py)${malas.length ? `: ${malas.join(', ')}` : ''}`);
-  const antes = paginas.filter((f) => enRama(JOHAN, f) !== null);
+  const antes = paginas.filter((f) => enRama(JOHAN_AYUDA, f) !== null);
   const editadas = antes.filter((f) => {
     const neutro = (p) => sinVersion(p.replace(bloque(p, '<div class="hcard">'), '').replace(bloque(p, '<div class="dock" data-dock data-dock-always>'), ''));
-    return neutro(leer(f)) !== neutro(enRama(JOHAN, f));
+    return neutro(leer(f)) !== neutro(enRama(JOHAN_AYUDA, f));
   });
-  ok(!editadas.length, `fuera de la tarjeta, la burbuja y la versión, las ${antes.length} páginas quedan como en cambios-15-10 (contenido normativo y editorial intacto)`);
+  ok(!editadas.length, `fuera de la tarjeta, la burbuja y la versión, las ${antes.length} páginas quedan como en la versión del 22-10 (contenido normativo y editorial intacto)`);
 }
 
 seccion('7. Plugin de WordPress conservado');
