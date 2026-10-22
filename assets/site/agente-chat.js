@@ -39,6 +39,15 @@
   if (!API && (maqueta || !window.TA_API)) return;  // responde la maqueta (agente.js)
   const marco = d.querySelector('[data-agente-sitio]');  // solo en agente-virtual.html: el sitio va detrás, en un <iframe>
   const boton = d.querySelector('[data-agente-abrir]');
+  /* El chat se abre desde «Chat con IA», dentro de la «?» del sitio; en agente-virtual.html, desde su burbuja propia */
+  const enDock = boton.closest('[data-dock]');
+  const toggleDock = enDock?.querySelector('.dock-toggle');
+  const volver = toggleDock || boton;  // al cerrar, el foco vuelve aquí (la opción queda dentro del menú cerrado)
+  const marcarDock = (si) => {
+    enDock.classList.toggle('is-chat', si);
+    toggleDock.setAttribute('aria-label', si ? 'Cerrar el asistente' : 'Ayuda y contacto');
+    enDock.dispatchEvent(new Event('dock:refrescar'));
+  };
   const charla = panel.querySelector('[data-agente-charla]');
   const form = panel.querySelector('[data-agente-form]');
   const campo = form.elements.q;
@@ -80,16 +89,17 @@
     foto: svg('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 17l4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/>')
   };
 
-  /* La cabecera y el pie dicen lo que hace esta versión (la maqueta dice que solo muestra lo publicado) */
+  /* Cabecera limpia: «Asistente»; debajo solo se dice algo si no está disponible (y «Prueba local» en este computador) */
   const sub = panel.querySelector('.agente-quien p');
   const ROTULO = 'Abrir el asistente de Transporte Autorizado';
-  const CONECTADO = API ? 'Conectado al asistente' : 'No disponible por ahora';
   panel.querySelector('#agente-titulo').firstChild.textContent = 'Asistente ';
-  if (LOCAL) panel.querySelector('.agente-tag').textContent = 'Prueba local'; else panel.querySelector('.agente-tag').remove();
-  sub.textContent = CONECTADO;
-  const pie = panel.querySelector('.agente-pie');
-  pie.textContent = 'Orientación general con su fuente: no reemplaza la revisión técnica ni legal de cada caso. ';
-  boton.setAttribute('aria-label', ROTULO);
+  const tag = panel.querySelector('.agente-tag');
+  if (tag && LOCAL) { tag.textContent = 'Prueba local'; tag.hidden = false; } else tag?.remove();
+  if (sub) { sub.textContent = API ? '' : 'No disponible por ahora'; sub.hidden = Boolean(API); }
+  /* El pie ya no lleva texto: solo «Borrar mis datos» cuando hay una sesión (se agrega más abajo) */
+  const pie = panel.querySelector('.agente-pie') || Object.assign(d.createElement('p'), { className: 'agente-pie' });
+  if (!pie.isConnected) panel.querySelector('.agente-panel').append(pie);
+  if (!enDock) boton.setAttribute('aria-label', ROTULO);  // en la «?» se lee su texto, «Chat con IA»
 
   /* ---------- Sesión ---------- */
   const leer = () => { try { return JSON.parse(sessionStorage.getItem(CLAVE)) || null; } catch { return null; } };
@@ -122,7 +132,12 @@
   /* Los mensajes de validación del servicio (los de la puerta y las fotos están en español); una clave sin traducir
      («validation.max.string») no se muestra */
   const errores = (json) => Object.values(json.errors || {}).flat().filter((x) => typeof x === 'string' && !/^[\w-]+(\.[\w-]+)+$/.test(x)).join('\n');
-  const uso = (u) => { if (u && Number.isFinite(u.remaining) && Number.isFinite(u.max)) sub.textContent = `${CONECTADO} · ${u.remaining} de ${u.max} consultas`; };
+  /* Cuántas consultas quedan: solo se dice cuando quedan pocas */
+  const uso = (u) => {
+    if (!sub || !u || !Number.isFinite(u.remaining) || !Number.isFinite(u.max)) return;
+    sub.textContent = u.remaining <= 3 ? `Te ${u.remaining === 1 ? 'queda 1 consulta' : `quedan ${u.remaining} consultas`}` : '';
+    sub.hidden = !sub.textContent;
+  };
 
   /* ---------- Enlaces: solo los de las fuentes, y lo que es de este sitio se muestra aquí ---------- */
   /* La dirección de una fuente, si se puede enlazar: http(s) sin usuario ni clave, de este mismo sitio o con https y un
@@ -295,7 +310,7 @@
   const salir = h('button', { class: 'agente-salir', type: 'button', text: 'Borrar esta conversación' });
   const subidas = new Set();  // las fotos que el servicio confirmó en esta página (para no subir dos veces la misma)
   /* Sin sesión: lo local se olvida (el token, sus fotos y el mensaje pendiente) */
-  const olvidar = () => { sesion = null; guardar(null); pendiente = null; subidas.clear(); sub.textContent = CONECTADO; salir.hidden = true; };
+  const olvidar = () => { sesion = null; guardar(null); pendiente = null; subidas.clear(); if (sub && API) { sub.textContent = ''; sub.hidden = true; } salir.hidden = true; };
   /* La sesión ya no sirve (401 session_expired): vuelta a la puerta; lo que se estaba escribiendo vuelve al campo */
   const vencida = (texto) => {
     olvidar();
@@ -573,10 +588,13 @@
     clearTimeout(saliendo);
     panel.classList.remove('is-saliendo');
     panel.hidden = false;
-    boton.classList.add('is-abierto');
-    boton.classList.remove('is-aparte');
     boton.setAttribute('aria-expanded', 'true');
-    boton.setAttribute('aria-label', 'Cerrar el asistente');
+    if (enDock) marcarDock(true);
+    else {
+      boton.classList.add('is-abierto');
+      boton.classList.remove('is-aparte');
+      boton.setAttribute('aria-label', 'Cerrar el asistente');
+    }
     empezar();
     if (!tactil.matches && !form.hidden) campo.focus({ preventScroll: true });
   };
@@ -584,16 +602,27 @@
     if (!abierto() || panel.classList.contains('is-saliendo')) return;
     const dentro = panel.contains(d.activeElement);
     const fin = () => { panel.classList.remove('is-saliendo'); panel.hidden = true; seguir(); };
-    boton.classList.remove('is-abierto');
     boton.setAttribute('aria-expanded', 'false');
-    boton.setAttribute('aria-label', ROTULO);
-    if (dentro && !tactil.matches) boton.focus({ preventScroll: true });
+    if (enDock) marcarDock(false);
+    else {
+      boton.classList.remove('is-abierto');
+      boton.setAttribute('aria-label', ROTULO);
+    }
+    if (dentro && !tactil.matches) volver.focus({ preventScroll: true });
     clearTimeout(saliendo);
     if (motion.matches) { panel.classList.add('is-saliendo'); saliendo = setTimeout(fin, 200); } else fin();
   }
   boton.addEventListener('click', () => (abierto() && !panel.classList.contains('is-saliendo') ? cerrar() : abrir()));
-  d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && abierto() && !e.defaultPrevented && (panel.contains(d.activeElement) || d.activeElement === boton)) { e.preventDefault(); cerrar(); } });
+  d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && abierto() && !e.defaultPrevented && (panel.contains(d.activeElement) || d.activeElement === volver)) { e.preventDefault(); cerrar(); } });
+  /* Con el chat abierto, la «?» muestra «X» y lo cierra (antes que su propio clic, que abriría el menú) */
+  toggleDock?.addEventListener('click', (e) => { if (abierto() && !panel.classList.contains('is-saliendo')) { e.stopImmediatePropagation(); cerrar(); } }, true);
   panel.querySelector('[data-agente-cerrar]').addEventListener('click', cerrar);
+  /* «Volver»: abierto desde la «?», cierra el chat y vuelve a mostrar sus opciones */
+  const atras = panel.querySelector('[data-agente-volver]');
+  if (atras && enDock) {
+    atras.hidden = false;
+    atras.addEventListener('click', () => { cerrar(); enDock.dispatchEvent(new Event('dock:abrir')); });
+  }
   /* «Empezar una conversación nueva»: la misma sesión, desde el menú (el comando «inicio» del asistente) */
   panel.querySelector('[data-agente-nuevo]').addEventListener('click', () => {
     if (ocupado || !API) return;
@@ -617,7 +646,7 @@
 
   /* Cuándo se ve la burbuja. En la página aparece y se oculta junto con la «?» del sitio (al pasar el hero, no sobre
      el pie ni con el menú abierto): así la primera pantalla queda como está. Con la ventana abierta no se oculta. */
-  const dock = marco ? null : d.querySelector('[data-dock]');
+  const dock = marco || enDock ? null : d.querySelector('[data-dock]');
   function seguir() { if (dock) boton.classList.toggle('is-aparte', !dock.classList.contains('is-visible') && !abierto()); }
   if (dock) new MutationObserver(seguir).observe(dock, { attributes: true, attributeFilter: ['class'] });
   seguir();
@@ -627,7 +656,7 @@
     let doc;
     try { doc = marco.contentDocument; } catch { return; }
     if (!doc?.head) return;
-    doc.head.append(Object.assign(doc.createElement('style'), { textContent: '.agente,.agente-burbuja{display:none!important}' }));
+    doc.head.append(Object.assign(doc.createElement('style'), { textContent: '.agente,.agente-burbuja,[data-dock]{display:none!important}' }));
     const ver = () => boton.classList.toggle('is-aparte', !abierto() && (!!doc.querySelector('dialog[open]') || doc.documentElement.classList.contains('sheet-open')));
     new MutationObserver(ver).observe(doc.documentElement, { attributes: true, subtree: true, attributeFilter: ['open', 'class'] });
     ver();

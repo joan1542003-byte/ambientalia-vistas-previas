@@ -1782,5 +1782,11 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 /* Sello «Yo Reciclo» del pie (logo entregado por el cliente el 15-10-2026): pequeño, a modo de distintivo, con el texto
    del logo aún legible. No se presenta como certificación. */
 .site-footer .sello { margin-top: 18px; }
-.site-footer .sello img { display: block; width: auto; height: 85px; }
-@media (max-width: 560px) { .site-footer .sello img { height: 80px; } }
+/* Sello Yo Reciclo (22-10-2026): sus colores y, al pasar el mouse, los morados de la marca */
+.yo-reciclo { --yr-a: #1E1E1E; --yr-b: #02895E; --yr-c: #AFCA46; --yr-d: #1E1E1E; display: block; width: 64px; height: 64px; }
+.yo-reciclo path { transition: fill .45s ease; }
+.yo-reciclo .yr-a { fill: var(--yr-a); }
+.yo-reciclo .yr-b { fill: var(--yr-b); }
+.yo-reciclo .yr-c { fill: var(--yr-c); }
+.yo-reciclo .yr-d { fill: var(--yr-d); }
+@media (hover: hover) { .yo-reciclo:hover { --yr-a: #3D0577; --yr-b: var(--marca); --yr-c: var(--marca-2); --yr-d: #3D0577; } }

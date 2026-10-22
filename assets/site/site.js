@@ -43,6 +43,18 @@
     } catch { return ''; }
   };
 
+  /* Pie: «Condiciones del servicio» y «Política de privacidad» las publica el asistente (servicio de Jeremy, el mismo
+     que recibe las cotizaciones y enlaza la casilla del formulario). Sin su dirección no hay a dónde llevar: la columna
+     queda oculta, igual que esa casilla */
+  const legal = d.querySelector('[data-legal]');
+  if (legal) {
+    const api = window.SITE.asistente(d.querySelector('[data-cotizar-api]')?.dataset.cotizarApi);
+    if (api) {
+      legal.querySelectorAll('[data-legal-ruta]').forEach((a) => { a.href = api + a.dataset.legalRuta; });
+      legal.hidden = false;
+    }
+  }
+
   /* Envío al servidor. Solo existe cuando el sitio corre sobre WordPress: el plugin deja window.TA_API con la dirección
      de su servicio, que guarda la solicitud, le pone número y envía los correos. Sin eso (vista previa estática), la
      solicitud se sigue enviando por WhatsApp. El servicio pide un permiso con hora: se solicita al mostrar el resumen
@@ -761,7 +773,8 @@
     const refresh = () => {
       /* En las páginas de lectura (data-dock-always) está siempre a mano */
       const past = dock.hasAttribute('data-dock-always') || (hero ? hero.getBoundingClientRect().bottom < 80 : scrollY > innerHeight * .6);
-      const show = past && blockers.size === 0 && !nav?.classList.contains('is-open');
+      /* Con el chat abierto (is-chat, agente.js) se queda: es la que lo cierra */
+      const show = (dock.classList.contains('is-chat') || (past && blockers.size === 0)) && !nav?.classList.contains('is-open');
       if (!show) setOpen(false);
       dock.classList.toggle('is-visible', show);
       dock.inert = !show;
@@ -780,6 +793,8 @@
       d.querySelectorAll('[data-hide-dock], .site-footer').forEach((el) => watch.observe(el));
     }
     addEventListener('scroll', refresh, { passive: true });
+    dock.addEventListener('dock:refrescar', refresh);
+    dock.addEventListener('dock:abrir', () => { refresh(); setOpen(true); });  // «Volver» del chat: de vuelta a las opciones
     toggle?.addEventListener('click', () => setTimeout(refresh));
     refresh();
   }

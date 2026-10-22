@@ -625,11 +625,13 @@ def bloque(s, inicio):
 
 
 def herramientas():
-    """Tarjeta de cotizar, buscar y conversar, y la burbuja «?», tal como están en la página de Transporte.
+    """Tarjeta de cotizar, buscar y conversar, y la burbuja «?», tal como están en la página de Transporte (sin el chat con IA).
     En cada norma quedan ocultas y se abren desde la burbuja en el mismo lugar (transporte-ui.js, modo data-float-only)."""
     s = (ROOT / 'transporte-autorizado.html').read_text(encoding='utf-8')
     tarjeta_html = re.sub(r' role="tabpanel" aria-labelledby="tab-[\w-]+"', '', bloque(s, '<div class="hcard">'))
     burbuja = bloque(s, '<div class="dock" data-dock>').replace('<div class="dock" data-dock>', '<div class="dock" data-dock data-dock-always>', 1)
+    # «Chat con IA» abre el chat de la página de Transporte, que estas páginas no cargan
+    burbuja = re.sub(r'\n *<button class="dock-action is-ia".*?</button>', '', burbuja, count=1, flags=re.S)
     return tarjeta_html, burbuja
 
 
