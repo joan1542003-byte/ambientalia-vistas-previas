@@ -179,6 +179,7 @@ seccion('8. Agente (widget del chat): uno solo, conectado por configuración');
 seccion('9. Paquete del plugin (tools/wordpress.py, en una carpeta temporal)');
 {
   const destino = mkdtempSync(join(tmpdir(), 'ta-plugin-'));
+  const sinAgente = mkdtempSync(join(tmpdir(), 'ta-plugin-sin-'));
   try {
     execFileSync('python3', [join(ROOT, 'tools/wordpress.py'), destino], { cwd: ROOT, stdio: 'ignore' });
     const zip = join(destino, 'ta-sitio.zip');
@@ -186,20 +187,31 @@ seccion('9. Paquete del plugin (tools/wordpress.py, en una carpeta temporal)');
     ok(statSync(zip).size > 0 && ['ta-sitio/ta-sitio.php', 'ta-sitio/inc/solicitudes.php', 'ta-sitio/sitio/transporte-autorizado.html', 'ta-sitio/sitio/assets/site/transporte-ui.js', 'ta-sitio/sitio/llms.txt'].every((f) => lista.includes(f)),
       'se arma el zip con el plugin y el sitio dentro');
     ok(!lista.some((f) => /filas\.js$|tools\/|wordpress\/|docs\//.test(f)), 'el paquete no lleva herramientas, documentación ni lo que es solo de HDS y Campañas');
+    /* Desde el 22-10 el sitio oficial lleva el agente: la página empaquetada es la del repositorio, sin tocar, y van sus cuatro archivos */
     const pagina = readFileSync(join(destino, 'ta-sitio/sitio/transporte-autorizado.html'), 'utf8');
-    /* El sitio oficial no muestra el agente (pedido del cliente, 16-10): la página empaquetada es la del repositorio sin él, y nada más */
-    const lineasPagina = pagina.split('\n');
-    const quitadas = [];
-    let k = 0;
-    for (const l of leer('transporte-autorizado.html').split('\n')) { if (k < lineasPagina.length && l === lineasPagina[k]) k += 1; else quitadas.push(l); }
-    ok(k === lineasPagina.length && quitadas.some((l) => / data-agente /.test(l)) && !/data-agente|assets\/site\/agente|is-ia/.test(pagina),
-      'la página empaquetada es la del repositorio (destino Laravel, sin dirección local en el formulario) sin el agente: solo se quitan líneas, y no queda nada de él');
+    ok(pagina === leer('transporte-autorizado.html') && /data-agente-abrir/.test(pagina) && /data-agente-api="" /.test(pagina),
+      'la página empaquetada es la del repositorio, con el agente y sin dirección fija (la pone el plugin)');
+    const archivosAgente = ['agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.css'].map((f) => `ta-sitio/sitio/assets/site/${f}`);
+    ok(archivosAgente.every((f) => lista.includes(f)) && archivosAgente.every((f) => readFileSync(join(destino, f), 'utf8') === leer(f.replace('ta-sitio/sitio/', ''))),
+      'el paquete lleva los cuatro archivos del agente, idénticos a los del repositorio');
+    ok(!lista.some((f) => /ta-sitio\/sitio\/(?!transporte-autorizado\.html)[^/]*\.html$/.test(f)), 'del sitio solo va transporte-autorizado.html en la raíz (agente-virtual.html es la maqueta y no se empaqueta)');
     const enPaquete = lista.filter((f) => f && TEXTO.test(f) && !/\/assets\/transporte\/(direcciones\/|calles)/.test(f)).map((f) => f.replace(/^ta-sitio\//, ''));
     const hallazgos = secretos(join(destino, 'ta-sitio'), enPaquete);
     ok(!hallazgos.length, `el paquete no lleva secretos (${enPaquete.length} archivos de texto revisados)${hallazgos.length ? `: ${hallazgos.join('; ')}` : ''}`);
+
+    /* --sin-agente conserva el paquete anterior (pedido del cliente, 16-10): solo se quitan líneas de la página, y no queda nada del agente */
+    execFileSync('python3', [join(ROOT, 'tools/wordpress.py'), sinAgente, '--sin-agente'], { cwd: ROOT, stdio: 'ignore' });
+    const listaSin = execFileSync('unzip', ['-Z1', join(sinAgente, 'ta-sitio.zip')], { encoding: 'utf8' }).split('\n');
+    const paginaSin = readFileSync(join(sinAgente, 'ta-sitio/sitio/transporte-autorizado.html'), 'utf8');
+    const lineasPagina = paginaSin.split('\n');
+    const quitadas = [];
+    let k = 0;
+    for (const l of leer('transporte-autorizado.html').split('\n')) { if (k < lineasPagina.length && l === lineasPagina[k]) k += 1; else quitadas.push(l); }
+    ok(k === lineasPagina.length && quitadas.some((l) => / data-agente /.test(l)) && !/data-agente|assets\/site\/agente|is-ia/.test(paginaSin) && !listaSin.some((f) => /assets\/site\/agente/.test(f)),
+      'con --sin-agente, la página es la del repositorio sin el agente (solo se quitan líneas, y no queda nada de él) y sus archivos no van');
   } catch (e) {
     ok(false, `no se pudo armar el paquete: ${e.message.split('\n')[0]}`);
-  } finally { rmSync(destino, { recursive: true, force: true }); }
+  } finally { rmSync(destino, { recursive: true, force: true }); rmSync(sinAgente, { recursive: true, force: true }); }
 }
 
 seccion('10. WhatsApp: contacto opcional, igual que antes');

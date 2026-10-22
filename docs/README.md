@@ -15,6 +15,7 @@ Contexto, normativa y procedimientos que sustentan las vistas previas. Empieza p
 | [flujo-cotizacion.html](flujo-cotizacion.html) | Esquema del flujo de cotización de Transporte Autorizado: lo que hace el sitio hoy y el envío en línea al asistente (Laravel → Odoo). |
 | [integracion-frontend-laravel.md](integracion-frontend-laravel.md) | Integración de las ramas y del formulario de Transporte con el asistente Laravel (`POST /api/quotes`): contrato, duplicados, configuración por entorno, WordPress y pruebas. |
 | [integracion-widget-chatbot.md](integracion-widget-chatbot.md) | Widget del chat conectado al asistente (`/api/chat/*`): configuración por entorno, sesión, idempotencia y reintentos, historial, fotos, borrado, seguridad de enlaces, CSP, errores, pruebas y pendientes de staging. |
+| [despliegue-chat-wordpress.md](despliegue-chat-wordpress.md) | Pasos para publicar en WordPress el plugin 1.4.0 con el chat conectado al asistente: antes, durante y después, y cómo volver atrás. |
 | [preguntas-y-apartados.html](preguntas-y-apartados.html) | Preguntas que podría hacerse una persona, con el apartado del sitio que las responde y su enlace en transporteautorizado.cl. |
 | [activos-visuales.md](activos-visuales.md) | Catálogo de imágenes de categorías de residuos usadas como recursos ilustrativos de Transporte Autorizado. |
 | [linkedin.md](linkedin.md) | Publicaciones de LinkedIn en Transporte: API, secretos y actualización automática. |
