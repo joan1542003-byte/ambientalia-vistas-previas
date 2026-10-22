@@ -27,11 +27,13 @@ FUERA = {'filas.js', 'agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.c
 
 def sin_agente(html):
     """El agente (y su versión con IA) sigue en desarrollo: el sitio oficial no lo muestra (pedido del cliente, 16-10-2026).
-    Se quitan su bloque (del comentario «Agente informativo» al cierre de su ventana) y sus estilos y scripts."""
+    Se quitan su bloque (del comentario «Agente informativo» al cierre de su ventana), su opción «Chat con IA» de la burbuja
+    «?» y sus estilos y scripts."""
     i = html.find('<!-- Agente informativo')
     if i > -1:
         j = html.index('\n</div>\n', html.index('<div class="agente"', i)) + len('\n</div>\n')
         html = html[:i] + html[j:]
+    html = re.sub(r'\n *<button class="dock-action is-ia".*?</button>', '', html, count=1, flags=re.S)
     html = re.sub(r'<(?:link|script)[^>]*assets/site/agente(?:-chat)?\.(?:css|js)[^>]*>(?:</script>)?\n?', '', html)
     assert 'data-agente' not in html and 'assets/site/agente' not in html, 'quedó algo del agente en la página'
     return html
