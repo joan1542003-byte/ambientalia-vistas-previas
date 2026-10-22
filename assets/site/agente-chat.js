@@ -39,6 +39,8 @@
   if (!API && (maqueta || !window.TA_API)) return;  // responde la maqueta (agente.js)
   const marco = d.querySelector('[data-agente-sitio]');  // solo en agente-virtual.html: el sitio va detrás, en un <iframe>
   const boton = d.querySelector('[data-agente-abrir]');
+  /* Condiciones, privacidad y borrado: las copias del sitio (legal/, tools/legal.py), con el texto que publica el asistente */
+  const LEGAL = (slug) => `${window.SITE_ROOT || ''}legal/${slug}.html`;
   /* El chat se abre desde «Chat con IA», dentro de la «?» del sitio; en agente-virtual.html, desde su burbuja propia */
   const enDock = boton.closest('[data-dock]');
   const toggleDock = enDock?.querySelector('.dock-toggle');
@@ -253,7 +255,7 @@
       fila('phone', 'Teléfono', { type: 'tel', autocomplete: 'tel', maxlength: 20, placeholder: '+56 9 1234 5678' }),
       h('label', { class: 'agente-acepto' },
         h('input', { type: 'checkbox', name: 'privacy_accepted', checked: datos.privacy_accepted || null }),
-        h('span', {}, 'Acepto las ', h('a', { href: `${API}/condiciones-del-servicio`, target: '_blank', rel: 'noopener noreferrer' }, 'condiciones del servicio'), ' y el ', h('a', { href: `${API}/politica-de-privacidad`, target: '_blank', rel: 'noopener noreferrer' }, 'aviso de privacidad'), '.')),
+        h('span', {}, 'Acepto las ', h('a', { href: LEGAL('condiciones-del-servicio'), target: '_blank', rel: 'noopener' }, 'condiciones del servicio'), ' y el ', h('a', { href: LEGAL('politica-de-privacidad'), target: '_blank', rel: 'noopener' }, 'aviso de privacidad'), '.')),
       /* Opcional y sin marcar: no condiciona el chat (el texto es el de chatbot.privacy.marketing.label del asistente) */
       h('label', { class: 'agente-acepto' },
         h('input', { type: 'checkbox', name: 'marketing_accepted', checked: datos.marketing_accepted || null }),
@@ -459,7 +461,7 @@
       ['Sí, borrar', () => borrar(confirmacion, false)],
       ['Cancelar', () => { confirmacion.remove(); confirmacion = null; }]
     ]);
-    confirmacion.querySelector('.msg-texto').append(' ', h('a', { href: `${API}/eliminacion-de-datos`, target: '_blank', rel: 'noopener noreferrer' }, 'Más información'));
+    confirmacion.querySelector('.msg-texto').append(' ', h('a', { href: LEGAL('eliminacion-de-datos'), target: '_blank', rel: 'noopener' }, 'Más información'));
     if (!tactil.matches) confirmacion.querySelector('button').focus({ preventScroll: true });
   });
 

@@ -4,7 +4,7 @@
  *
  * - Privado: solo en la dirección de vista previa (/nuevo/ por defecto), con sesión iniciada o con la clave del enlace
  *   para compartir. Para todos los demás esa dirección no existe (404 del tema). Nada se indexa.
- * - Publicado: la portada del dominio muestra el sitio, y también /normativa/, /ayuda/, /documentos/ y /assets/.
+ * - Publicado: la portada del dominio muestra el sitio, y también /normativa/, /ayuda/, /documentos/, /legal/ y /assets/.
  *
  * Las páginas pasan por aquí (se les agrega la conexión con los formularios y las cabeceras de seguridad). Los
  * archivos (CSS, JS, imágenes, datos) los entrega el servidor directamente gracias a una regla en .htaccess; si esa
@@ -153,7 +153,7 @@ function ta_sitio_despachar() {
 		wp_safe_redirect( home_url( '/' ), 301 );
 		exit;
 	}
-	if ( 'llms.txt' === $ruta || preg_match( '#^(normativa|ayuda|documentos|assets)/#', $ruta ) ) {
+	if ( 'llms.txt' === $ruta || preg_match( '#^(normativa|ayuda|documentos|legal|assets)/#', $ruta ) ) {
 		ta_sitio_entregar( $ruta, false );
 		return;
 	}
@@ -236,6 +236,7 @@ function ta_sitio_pagina( $archivo, $privado ) {
 	if ( '' !== $op['turnstile'] ) {
 		$api['turnstile'] = $op['turnstile'];
 	}
+	$html   = ta_sitio_imagenes_aplicar( $html );  // portadas y fotos elegidas en los ajustes (inc/imagenes.php)
 	$config = '<script>window.TA_API=' . wp_json_encode( $api, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES ) . ';</script>';
 	$html   = preg_replace( '#</head>#i', $config . "\n</head>", $html, 1 );
 
@@ -322,7 +323,7 @@ function ta_sitio_politica( array $sellos, array $op ) {
 function ta_sitio_paginas() {
 	$base    = TA_SITIO_DIR . 'sitio/';
 	$paginas = array( '' => (int) @filemtime( $base . 'transporte-autorizado.html' ) ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-	foreach ( array( 'ayuda', 'normativa' ) as $carpeta ) {
+	foreach ( array( 'ayuda', 'normativa', 'legal' ) as $carpeta ) {
 		foreach ( (array) glob( $base . $carpeta . '/*.html' ) as $archivo ) {
 			$paginas[ $carpeta . '/' . basename( $archivo ) ] = (int) filemtime( $archivo );
 		}

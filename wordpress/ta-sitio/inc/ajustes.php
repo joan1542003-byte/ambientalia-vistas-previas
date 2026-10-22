@@ -67,6 +67,7 @@ function ta_sitio_opciones() {
 			// Una por instalación (pruebas o producción); vacía = el formulario no envía en línea.
 			'asistente'          => '',
 			'turnstile'          => '',  // clave pública del widget de Cloudflare Turnstile (la secreta va solo en el asistente)
+			'imagenes'           => array(),  // portadas y fotos elegidas en la biblioteca de medios: [espacio => id] (inc/imagenes.php)
 		)
 	);
 }
@@ -268,6 +269,9 @@ add_action(
 			$op['plantillas']       = isset( $_POST['plantillas'] ) ? sanitize_textarea_field( wp_unslash( $_POST['plantillas'] ) ) : $op['plantillas'];
 			$op['copia_respuestas'] = ! empty( $_POST['copia_respuestas'] );
 		}
+		if ( isset( $_POST['ta_imagenes_enviado'] ) ) {
+			$op['imagenes'] = ta_sitio_imagenes_desde_post();
+		}
 		$pedida           = isset( $_POST['asistente'] ) ? sanitize_text_field( wp_unslash( $_POST['asistente'] ) ) : $op['asistente'];
 		$op['asistente']  = ta_sitio_url_asistente( $pedida );
 		$op['turnstile']  = isset( $_POST['turnstile'] ) ? substr( (string) preg_replace( '/[^A-Za-z0-9_-]/', '', sanitize_text_field( wp_unslash( $_POST['turnstile'] ) ) ), 0, 100 ) : $op['turnstile'];
@@ -278,7 +282,7 @@ add_action(
 		ta_sitio_reglas();
 		flush_rewrite_rules( true );
 		// La portada y la vista previa guardadas en caché son las de antes (con la configuración y la política de antes)
-		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] ) {
+		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] ) {
 			ta_sitio_purgar();
 		}
 		$aviso = '' !== trim( $pedida ) && '' === $op['asistente'] ? array( 'asistente_invalido' => 1 ) : array();
@@ -394,6 +398,12 @@ function ta_sitio_pagina_ajustes() {
 				</tr>
 			</table>
 
+			<h2>Imágenes del sitio</h2>
+			<p>Cambia las portadas del inicio y las fotos de los servicios por imágenes de la biblioteca de medios. Las del hero para cada opción se ven en escritorio, al pasar el mouse por la opción. Usa fotos horizontales y livianas (WebP o JPG de menos de 400 KB); «Volver a la del sitio» deja la original.</p>
+			<input type="hidden" name="ta_imagenes_enviado" value="1">
+			<table class="form-table" role="presentation">
+				<?php ta_sitio_imagenes_filas(); ?>
+			</table>
 			<h2>Cotizaciones de Transporte</h2>
 			<p>El formulario de cotización envía cada solicitud, con sus fotografías, al asistente de Transporte Autorizado (servicio aparte), que la registra en Odoo y le da su número. WordPress no la recibe ni la guarda en «Solicitudes». El asistente de retiro lleva al mismo formulario. Sin dirección, el formulario avisa que el envío en línea no está disponible.</p>
 			<table class="form-table" role="presentation">

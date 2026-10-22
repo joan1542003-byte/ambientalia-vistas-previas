@@ -1776,3 +1776,52 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 .yo-reciclo .yr-d { fill: var(--yr-d); }
 .yo-reciclo .yr-t { fill: var(--yr-t); }
 @media (hover: hover) { .yo-reciclo:hover { --yr-a: #3D0577; --yr-b: var(--marca); --yr-c: var(--marca-2); --yr-d: #3D0577; --yr-t: #3D0577; } }
+
+/* ---------- Condiciones, privacidad y borrado de la conversación (legal/*.html, tools/legal.py) ---------- */
+.legal-vigencia { max-width: 64ch; margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--accent-soft); color: var(--ink); font-size: var(--fs-small); font-weight: 700; line-height: 1.5; }
+.legal-doc { max-width: 72ch; margin-top: 8px; color: var(--ink-2); font-size: var(--fs-body-sm); line-height: 1.65; }
+.legal-doc h2 { margin: 34px 0 8px; color: var(--ink); font-size: var(--fs-card); letter-spacing: -.01em; line-height: 1.3; }
+.legal-doc h3 { margin: 22px 0 6px; color: var(--ink); font-size: var(--fs-body); }
+.legal-doc p + p { margin-top: 10px; }
+.legal-doc ul, .legal-doc ol { display: grid; gap: 6px; margin: 8px 0 0; padding-left: 1.2em; }
+.legal-doc li::marker { color: var(--accent); }
+.legal-doc a { color: var(--accent-strong); font-weight: 700; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.legal-doc strong { color: var(--ink); }
+.legal-doc table { width: 100%; margin-top: 12px; border-collapse: collapse; font-size: var(--fs-small); }
+.legal-doc th, .legal-doc td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.legal-doc th { color: var(--ink); font-weight: 800; }
+.legal-otras { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 14px; padding: 0; }
+.legal-otras a { color: var(--ink); font-weight: 800; text-underline-offset: 3px; }
+@media (max-width: 560px) {
+  .legal-doc table, .legal-doc tbody, .legal-doc tr, .legal-doc td, .legal-doc th { display: block; }
+  .legal-doc thead { display: none; }
+  .legal-doc tr { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .legal-doc td, .legal-doc th { padding: 2px 0; border: 0; }
+  .legal-doc td:first-child { color: var(--ink); font-weight: 800; }
+}
+
+/* ---------- Brillo leve (22-10-2026): el mismo lenguaje de «Chat con IA», más sutil ---------- */
+/* Hero: «Necesito gestionar mis residuos» lleva un borde de luz que recorre los colores de la marca, muy tenue */
+.routes-tabs .route:first-of-type { position: relative; isolation: isolate; }
+.routes-tabs .route:first-of-type::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; padding: 1px; border-radius: inherit; pointer-events: none; opacity: .7;
+  background: conic-gradient(from var(--ia-giro), rgb(235 169 252 / .9), rgb(255 255 255 / .15) 30%, rgb(168 223 253 / .75) 55%, rgb(255 255 255 / .15) 78%, rgb(235 169 252 / .9));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+}
+.routes-tabs .route:first-of-type .route-icon { box-shadow: 0 0 0 0 rgb(235 169 252 / 0); }
+.routes-tabs .route:first-of-type[aria-selected="false"] { background: linear-gradient(100deg, rgb(103 8 199 / .26), rgb(103 8 199 / .05) 70%); }
+/* Cotizar: el tipo de retiro elegido queda con un halo de su color */
+.seg [data-modalidad][aria-checked="true"] { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -6px color-mix(in srgb, var(--tone) 75%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ta-giro-suave { to { --ia-giro: 360deg; } }
+  @keyframes ta-halo-icono { 0%, 100% { box-shadow: 0 0 0 0 rgb(235 169 252 / 0); } 50% { box-shadow: 0 0 14px 1px rgb(235 169 252 / .45); } }
+  @keyframes ta-halo-plan {
+    0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -6px color-mix(in srgb, var(--tone) 75%, transparent); }
+    50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 45%, transparent), 0 8px 20px -6px color-mix(in srgb, var(--tone) 90%, transparent); }
+  }
+  .routes-tabs .route:first-of-type::before { animation: ta-giro-suave 7s linear infinite; }
+  .routes-tabs .route:first-of-type .route-icon { animation: ta-halo-icono 3.6s ease-in-out infinite; }
+  .seg [data-modalidad][aria-checked="true"] { animation: ta-halo-plan 3.2s ease-in-out infinite; }
+}
+
