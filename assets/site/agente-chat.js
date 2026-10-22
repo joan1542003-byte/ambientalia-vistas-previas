@@ -616,7 +616,7 @@
   d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && abierto() && !e.defaultPrevented && (panel.contains(d.activeElement) || d.activeElement === volver)) { e.preventDefault(); cerrar(); } });
   /* Con el chat abierto, la «?» muestra «X» y lo cierra (antes que su propio clic, que abriría el menú) */
   toggleDock?.addEventListener('click', (e) => { if (abierto() && !panel.classList.contains('is-saliendo')) { e.stopImmediatePropagation(); cerrar(); } }, true);
-  panel.querySelector('[data-agente-cerrar]').addEventListener('click', cerrar);
+  panel.querySelector('[data-agente-cerrar]')?.addEventListener('click', cerrar);  // sin «X» en la cabecera: la burbuja muestra la única
   /* «Volver»: abierto desde la «?», cierra el chat y vuelve a mostrar sus opciones */
   const atras = panel.querySelector('[data-agente-volver]');
   if (atras && enDock) {
