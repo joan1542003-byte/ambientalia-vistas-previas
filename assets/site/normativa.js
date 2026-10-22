@@ -321,7 +321,9 @@
     Promise.all([feedP, normas()]).then(([feed, norms]) => {
       const abs = (u) => (u ? new URL(u, feed.base).href : u);
       const org = feed?.organizacion ? { ...feed.organizacion, logo: abs(feed.organizacion.logo) } : { nombre: 'Transporte Autorizado', url: company };
-      const items = (feed?.posts || []).slice(0, 10).map((p) => (p.imagen ? { ...p, imagen: abs(p.imagen) } : p));
+      /* Solo las de la página de esta empresa (la lista de GitHub pudo quedar con la de otra página mientras se publica la nueva) */
+      const propia = /\/company\/transporte-autorizado\/?$/i.test(feed?.organizacion?.url || '');
+      const items = (propia ? feed.posts || [] : []).slice(0, 10).map((p) => (p.imagen ? { ...p, imagen: abs(p.imagen) } : p));
       /* Sin publicaciones la sección no se muestra (la página de LinkedIn es nueva); aparece sola con la primera */
       const seccion = postsRoot.closest('[data-posts-seccion]');
       if (!items.length) { if (seccion) return; track.innerHTML = empty(org); return; }
