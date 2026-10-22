@@ -19,7 +19,7 @@ const JOHAN = 'c1f073fb3101e907b2a3b7e49f87dd2732565862';
 const ODOO = '906b1c9097ccc817731d2d0d18077d4d7911c5a0';
 /* Cambios posteriores de Johan, ya integrados: el plugin 1.3.0 del 16-10 y el diseño del chat del 22-10 */
 const JOHAN_PLUGIN = '415821b60ff8c6ac841a3f6778c704aec6e1d3a2';
-const JOHAN_CHAT = 'c0e7801a5de7f2c6aa3e8d0e9e409901336ca9ff';
+const JOHAN_CHAT = '05a72080e2ffac62cb36076fb3f8477bf7f256b5';
 const leer = (f) => readFileSync(join(ROOT, f), 'utf8');
 const git = (...a) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 });
 /* Archivos del repositorio, sin repetir (durante una fusión sin cerrar, git ls-files nombra tres veces cada archivo en conflicto) */
