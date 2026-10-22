@@ -312,9 +312,16 @@
         <a class="post-li" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver en LinkedIn ${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a>
       </li>`;
 
-    Promise.all([fetch(window.TA_API?.linkedin || postsRoot.dataset.src, { cache: 'no-cache' }).then((r) => r.json()).catch(() => null), normas()]).then(([feed, norms]) => {
-      const org = feed?.organizacion || { nombre: 'Transporte Autorizado', url: company };
-      const items = (feed?.posts || []).slice(0, 10);
+    /* Sobre WordPress la lista se lee de la copia publicada en GitHub (window.TA_API.linkedin, al día cada 6 horas); si no
+       responde, la que trae el sitio. Las portadas y el logo se resuelven desde donde vino la lista */
+    const leerFeed = (u) => fetch(u, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then((j) => ({ ...j, base: new URL(u.replace(/assets\/transporte\/linkedin\.json(\?.*)?$/, ''), location.href).href }));
+    const remoto = window.TA_API?.linkedin;
+    const feedP = (remoto ? leerFeed(remoto).catch(() => leerFeed(postsRoot.dataset.src)) : leerFeed(postsRoot.dataset.src)).catch(() => null);
+    Promise.all([feedP, normas()]).then(([feed, norms]) => {
+      const abs = (u) => (u ? new URL(u, feed.base).href : u);
+      const org = feed?.organizacion ? { ...feed.organizacion, logo: abs(feed.organizacion.logo) } : { nombre: 'Transporte Autorizado', url: company };
+      const items = (feed?.posts || []).slice(0, 10).map((p) => (p.imagen ? { ...p, imagen: abs(p.imagen) } : p));
       /* Sin publicaciones la sección no se muestra (la página de LinkedIn es nueva); aparece sola con la primera */
       const seccion = postsRoot.closest('[data-posts-seccion]');
       if (!items.length) { if (seccion) return; track.innerHTML = empty(org); return; }

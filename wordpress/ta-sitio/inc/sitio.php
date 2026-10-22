@@ -13,6 +13,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/** Publicaciones de LinkedIn: las actualiza una tarea de GitHub cada 6 horas en la copia publicada en GitHub Pages; la
+    página las lee de ahí desde el navegador (el servidor no se conecta a nada). Si no responde, usa las que trae el zip. */
+define( 'TA_SITIO_LINKEDIN', 'https://joan1542003-byte.github.io/ambientalia-vistas-previas/assets/transporte/linkedin.json' );
+
 /** Reglas externas (.htaccess): los archivos del sitio los sirve el servidor web, sin pasar por PHP. */
 function ta_sitio_reglas() {
 	$op      = ta_sitio_opciones();
@@ -224,7 +228,7 @@ function ta_sitio_pagina( $archivo, $privado ) {
 		'url' => esc_url_raw( rest_url( 'ta/v1/' ) ),
 		'v'   => TA_SITIO_VERSION,
 		'comunas' => ta_sitio_comunas(),  // comunas que se atienden (assets/site/pickers.js las usa en el formulario y el asistente)
-		'linkedin' => rest_url( 'ta/v1/linkedin' ),  // publicaciones recientes, al día sin subir otro zip (inc/linkedin.php)
+		'linkedin' => TA_SITIO_LINKEDIN,  // publicaciones recientes, al día sin subir otro zip: las lee el navegador (docs/linkedin.md)
 	);
 	if ( '' !== $op['asistente'] ) {
 		$api['asistente'] = $op['asistente'];
@@ -303,7 +307,7 @@ function ta_sitio_politica( array $sellos, array $op ) {
 				"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 				"font-src 'self' https://fonts.gstatic.com",
 				"img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://joan1542003-byte.github.io",  // blob: miniaturas de las fotografías que se adjuntan; github.io: portadas de LinkedIn
-				"connect-src 'self'" . ( '' !== $asistente ? ' ' . $asistente : '' ),
+				"connect-src 'self' https://joan1542003-byte.github.io" . ( '' !== $asistente ? ' ' . $asistente : '' ),  // github.io: publicaciones de LinkedIn
 				'' !== $turnstile ? "frame-src 'self' " . $turnstile : '',
 				"frame-ancestors 'self'",
 				"base-uri 'self'",

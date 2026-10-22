@@ -5,9 +5,10 @@ Autorizado** (`https://www.linkedin.com/company/transporte-autorizado/`, desde e
 cada una con la norma relacionada (ver o descargar). **Mientras la página no tenga publicaciones, la sección no se muestra**
 (`data-posts-seccion hidden`); aparece sola con la primera. El pie lleva siempre el enlace a LinkedIn.
 
-En el sitio oficial (WordPress) el plugin trae esta misma lista desde GitHub Pages cada hora (`/wp-json/ta/v1/linkedin`,
-`wordpress/ta-sitio/inc/linkedin.php`; la página la pide por `window.TA_API.linkedin`), así lo nuevo aparece sin subir otro
-zip. Si GitHub no responde, usa la lista que venía en el zip; las portadas se cargan desde GitHub Pages.
+En el sitio oficial (WordPress) la página lee esta misma lista desde la copia publicada en GitHub Pages
+(`window.TA_API.linkedin`, constante `TA_SITIO_LINKEDIN` del plugin), así lo nuevo aparece sin subir otro zip. La lee el
+navegador, no el servidor (el plugin no se conecta a nada: regla de `tools/pruebas/integracion.mjs`); la política de
+contenido permite `github.io` para la lista y las portadas. Si GitHub no responde, usa la lista que venía en el zip.
 
 ## Cómo se actualiza
 
