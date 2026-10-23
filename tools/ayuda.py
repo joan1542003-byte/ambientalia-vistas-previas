@@ -729,9 +729,9 @@ def envoltura(titulo, descripcion, url, ld, tema, cuerpo, version, tools, clase=
 <meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" href="../assets/transporte/favicon-48.png" sizes="48x48" type="image/png">
-<link rel="icon" href="../assets/transporte/favicon-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png">
+<link rel="icon" href="../assets/transporte/favicon-48.png?v={version}" sizes="48x48" type="image/png">
+<link rel="icon" href="../assets/transporte/favicon-192.png?v={version}" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png?v={version}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">

@@ -1836,11 +1836,13 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
    (el ícono, sin brillo ni sombra: pedido del 22-10-2026) */
 .routes-tabs .route:first-of-type { position: relative; isolation: isolate; }
 .routes-tabs .route:first-of-type::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; padding: 1px; border-radius: inherit; pointer-events: none; opacity: .7;
+  content: ""; position: absolute; inset: 0; z-index: -1; padding: 1px; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .6s var(--ease);
   background: conic-gradient(from var(--ia-giro), rgb(235 169 252 / .9), rgb(255 255 255 / .15) 30%, rgb(168 223 253 / .75) 55%, rgb(255 255 255 / .15) 78%, rgb(235 169 252 / .9));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
 }
+/* El borde se enciende con la página ya cargada (site.js, .ta-cargada); sin JavaScript, desde el principio */
+html.ta-cargada .routes-tabs .route:first-of-type::before, html:not(.js) .routes-tabs .route:first-of-type::before { opacity: .7; }
 .routes-tabs .route:first-of-type[aria-selected="false"] { background: linear-gradient(100deg, rgb(103 8 199 / .26), rgb(103 8 199 / .05) 70%); }
 /* Cotizar: el tipo de retiro elegido brilla como «Chat con IA» de la burbuja: un borde de luz que gira y un halo que
    respira, en su color (23-10-2026; sin el destello al elegirlo, que se veía raro) */

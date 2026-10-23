@@ -77,6 +77,12 @@
     if (d.readyState === 'complete') luego(); else addEventListener('load', luego, { once: true });
     marcar();
   }
+  /* Página ya cargada y pintada (clase .ta-cargada): los bordes de luz aparecen recién ahí; durante la carga el navegador
+     podía pintarlos un momento sin su máscara, como un relleno de toda la fila (23-10-2026) */
+  {
+    const cargada = () => requestAnimationFrame(() => requestAnimationFrame(() => d.documentElement.classList.add('ta-cargada')));
+    if (d.readyState === 'complete') cargada(); else addEventListener('load', cargada, { once: true });
+  }
 
   /* Envío al servidor. Solo existe cuando el sitio corre sobre WordPress: el plugin deja window.TA_API con la dirección
      de su servicio, que guarda la solicitud, le pone número y envía los correos. Sin eso (vista previa estática), la
