@@ -42,6 +42,7 @@ function ta_sitio_imagenes_espacios() {
 	// Las opciones del hero que hoy usan la portada del inicio: se les agrega una foto propia
 	$espacios['hero_cotizar']      = array( 'grupo' => 'Portada', 'rotulo' => 'Hero: «Necesito gestionar mis residuos»', 'archivos' => array(), 'tipo' => 'insertar', 'buscar' => 'data-route="cotizar">', 'reemplazo' => 'data-route="cotizar" data-foto="%s">' );
 	$espacios['hero_especialista'] = array( 'grupo' => 'Portada', 'rotulo' => 'Hero: «¿Necesitas orientación?»', 'archivos' => array(), 'tipo' => 'insertar', 'buscar' => 'data-route="especialista">', 'reemplazo' => 'data-route="especialista" data-foto="%s">' );
+	$espacios['hero_reciclador']   = array( 'grupo' => 'Portada', 'rotulo' => 'Hero: «Quiero hacer convenio con un reciclador de base»', 'archivos' => array(), 'tipo' => 'insertar', 'buscar' => '<a class="route route-link" href="https://recicladordebase.cl"', 'reemplazo' => '<a class="route route-link" href="https://recicladordebase.cl" data-foto="%s"' );
 	return $espacios;
 }
 
