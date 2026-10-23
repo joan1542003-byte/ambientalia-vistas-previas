@@ -20,8 +20,8 @@ const ODOO = '906b1c9097ccc817731d2d0d18077d4d7911c5a0';
 /* Cambios posteriores de Johan, ya integrados: el plugin 1.3.0 del 16-10 y el diseño del chat del 22-10 */
 const JOHAN_PLUGIN = '415821b60ff8c6ac841a3f6778c704aec6e1d3a2';
 /* Ayuda del 22-10 (guías, checklists y panel por pestañas), con HDS y Campañas sin «Vista previa de diseño» en el pie */
-const JOHAN_AYUDA = '9fcffb533e2cae4d805ab90097f8052317ccba12';
-const JOHAN_CHAT = '9fcffb533e2cae4d805ab90097f8052317ccba12';
+const JOHAN_AYUDA = '22944cb';
+const JOHAN_CHAT = '22944cb';
 const leer = (f) => readFileSync(join(ROOT, f), 'utf8');
 const git = (...a) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 });
 /* Archivos del repositorio, sin repetir (durante una fusión sin cerrar, git ls-files nombra tres veces cada archivo en conflicto) */
@@ -406,9 +406,10 @@ async function enNavegador() {
      con target="_blank" activados por código, que no pasan por window.open */
   const pestanas = async () => (await (await fetch(`http://127.0.0.1:${puerto}/json/list`)).json()).filter((t) => t.type === 'page' && t.id !== objetivos[0].id);
   const cerrarPestanas = async () => { for (const t of await pestanas()) await fetch(`http://127.0.0.1:${puerto}/json/close/${t.id}`).catch(() => {}); await sleep(200); };
-  /* Un clic de persona (evento de confianza, como el del mouse), no element.click() */
+  /* Un clic de persona (evento de confianza, como el del mouse), no element.click(). El desplazamiento es instantáneo: con
+     el suave del sitio (scroll-behavior: smooth), el botón se movía entre la medida y el clic (23-10-2026) */
   const clicReal = async (selector) => {
-    const p = await evaluar((sel) => { const el = document.querySelector(sel); el.scrollIntoView({ block: 'center' }); const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; }, selector);
+    const p = await evaluar((sel) => { const el = document.querySelector(sel); el.scrollIntoView({ block: 'center', behavior: 'instant' }); const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; }, selector);
     for (const type of ['mouseMoved', 'mousePressed', 'mouseReleased']) await cdp('Input.dispatchMouseEvent', { type, x: p.x, y: p.y, button: 'left', clickCount: 1 });
   };
 
