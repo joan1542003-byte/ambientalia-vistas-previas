@@ -192,6 +192,15 @@
     }
     return si;
   };
+  /* Límites de unas comunas, para dibujarlos en el mapa: [{ nombre, anillos: [[[lat, lng]…]…] }] */
+  const limitesDe = async (nombres) => {
+    const L = await cargarLimites();
+    if (!L) return [];
+    return L.filter((x) => nombres.includes(x.nombre)).map((x) => ({
+      nombre: x.nombre,
+      anillos: x.rings.map((r) => { const out = []; for (let i = 0; i < r.length; i += 2) out.push([r[i], r[i + 1]]); return out; })
+    }));
+  };
   /* Comuna del punto: «» si queda fuera de todas, null si los límites no cargaron */
   const comunaEn = async ({ lat, lng }) => {
     const L = await cargarLimites();
@@ -391,5 +400,5 @@
   /* Deja a mano los datos que el mapa va a necesitar (los límites y, si se sabe, la comuna) */
   const calentar = (comuna = '') => { cargarLimites(); if (comuna) datos(comuna); };
 
-  window.GEO = { suggest, partes, nucleo, locate, search, reverse, junto, comunaEn, calentar, prepare: cargar, fuente: 'Calles: © colaboradores de OpenStreetMap' };
+  window.GEO = { suggest, partes, nucleo, locate, search, reverse, junto, comunaEn, limitesDe, calentar, prepare: cargar, fuente: 'Calles: © colaboradores de OpenStreetMap' };
 })();

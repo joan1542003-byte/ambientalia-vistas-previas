@@ -13,13 +13,13 @@
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const svg = (p) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
   const ICON = {
-    close: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
-    back: svg('<path d="M15 5l-7 7 7 7"/>'),
-    next: svg('<path d="M9 5l7 7-7 7"/>'),
-    search: svg('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>'),
-    check: svg('<path d="M5 12.5l4.5 4.5L19 7"/>'),
-    help: svg('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01"/>'),
-    range: svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12h4M4 21h4M16 21h4"/>')
+    close: svg('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'),
+    back: svg('<path d="m15 18-6-6 6-6"/>'),
+    next: svg('<path d="m9 18 6-6-6-6"/>'),
+    search: svg('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'),
+    check: svg('<path d="M20 6 9 17l-5-5"/>'),
+    help: svg('<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>'),
+    range: svg('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>')
   };
 
   /* ---------- Renderizadores en línea ---------- */
@@ -615,7 +615,7 @@
       const abrir = () => {
         if (ctl) return;
         map.warm?.();  // datos para convertir punto ↔ dirección
-        ctl = window.MAPA.mount(zone.querySelector('[data-map-slot]'), { value: point, vista: point ? null : map.locate?.(input.value), onChange: alMover });
+        ctl = window.MAPA.mount(zone.querySelector('[data-map-slot]'), { value: point, vista: point ? null : map.locate?.(input.value), onChange: alMover, zona: map.zona });
       };
       /* Cuando la persona toca el mapa, lo toma ella: lo que ya estaba escrito deja de moverlo (hasta que el texto
          cambie), y se descarta la búsqueda que venía en camino. Si no, el mapa se correría bajo su dedo y el toque

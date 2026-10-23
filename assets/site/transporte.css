@@ -217,9 +217,14 @@
 .map-clear:hover { text-decoration-color: var(--ink); }
 .map-clear[hidden] { display: none; }
 /* «Marcar aquí»: confirma el lugar que está bajo el marcador gris */
-.map-mark { flex: none; height: 36px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 999px; background: #fff; color: var(--ink); font: 800 var(--fs-small) var(--font); cursor: pointer; transition: border-color .2s; }
-.map-mark:hover { border-color: var(--ink); }
+/* «Marcar aquí»: el botón que fija el punto, destacado (23-10-2026) */
+.map-mark { flex: none; display: inline-flex; align-items: center; height: 38px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font: 800 var(--fs-small) var(--font); cursor: pointer; box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--accent) 80%, transparent); transition: background-color .2s var(--ease); }
+.map-mark:hover { background: var(--accent-strong); }
 .map-mark:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes map-mark-pulso { 0%, 100% { box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--accent) 80%, transparent), 0 0 0 0 color-mix(in srgb, var(--accent) 35%, transparent); } 50% { box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--accent) 80%, transparent), 0 0 0 6px color-mix(in srgb, var(--accent) 0%, transparent); } }
+  .map-mark:not([hidden]) { animation: map-mark-pulso 2.2s ease-in-out infinite; }
+}
 .map-mark[hidden] { display: none; }
 /* Controles de Leaflet con el lenguaje del sitio: línea fina, sin sombra */
 .map-canvas .leaflet-bar { border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: none; overflow: hidden; }
@@ -1011,6 +1016,7 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
 .doc:has(.doc-title a:focus-visible) { outline: 2px solid var(--ink); outline-offset: -2px; }
 .doc-sub { margin-top: 2px; color: var(--ink-2); font-size: var(--fs-small); font-weight: 600; line-height: 1.4; }
 .doc-sub strong { color: var(--ink-2); font-weight: 700; }
+.doc-fechas { margin-top: 2px; color: var(--muted); font-size: var(--fs-caption); font-weight: 600; line-height: 1.4; font-variant-numeric: tabular-nums; }
 .doc-off { color: var(--hazard); font-weight: 800; }
 .doc-rel { margin-top: 4px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .doc-pdf { position: relative; z-index: 2; align-self: center; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px 0 10px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink); font-size: var(--fs-small); font-weight: 800; text-decoration: none; transition: border-color .2s, background-color .2s, color .2s; }
@@ -1838,7 +1844,13 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 .routes-tabs .route:first-of-type[aria-selected="false"] { background: linear-gradient(100deg, rgb(103 8 199 / .26), rgb(103 8 199 / .05) 70%); }
 /* Cotizar: el tipo de retiro elegido brilla como «Chat con IA» de la burbuja: un borde de luz que gira y un halo que
    respira, en su color (23-10-2026; sin el destello al elegirlo, que se veía raro) */
-.seg [data-modalidad] { position: relative; isolation: isolate; transition: background-color .2s var(--ease), color .2s, box-shadow .45s var(--ease); }
+/* Sin transición de fondo ni sombra: el cambio de tipo se ve en el mismo toque (el halo late con la opacidad de ::after,
+   que no repinta el botón en cada cuadro como la sombra animada, lo que en Firefox retrasaba el cambio) */
+.seg [data-modalidad] { position: relative; isolation: isolate; transition: none; }
+.seg [data-modalidad][aria-checked="true"]::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0;
+  box-shadow: 0 0 14px 0 color-mix(in srgb, var(--tone) 45%, transparent), 0 8px 18px -8px color-mix(in srgb, var(--tone) 90%, transparent);
+}
 .seg [data-modalidad][aria-checked="true"] { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -8px color-mix(in srgb, var(--tone) 80%, transparent); }
 .seg [data-modalidad][aria-checked="true"]::before {
   content: ""; position: absolute; inset: 0; z-index: 1; padding: 1.5px; border-radius: inherit; pointer-events: none;
@@ -1849,11 +1861,8 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 @media (prefers-reduced-motion: no-preference) {
   @keyframes ta-giro-suave { to { --ia-giro: 360deg; } }
   .routes-tabs .route:first-of-type::before { animation: ta-giro-suave 7s linear infinite; }
-  @keyframes ta-halo-plan {
-    0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -8px color-mix(in srgb, var(--tone) 80%, transparent), 0 0 0 0 color-mix(in srgb, var(--tone) 0%, transparent); }
-    50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 40%, transparent), 0 8px 18px -8px color-mix(in srgb, var(--tone) 90%, transparent), 0 0 14px 0 color-mix(in srgb, var(--tone) 45%, transparent); }
-  }
-  .seg [data-modalidad][aria-checked="true"] { animation: ta-halo-plan 3.2s ease-in-out infinite; }
+  @keyframes ta-halo-plan { 50% { opacity: 1; } }
+  .seg [data-modalidad][aria-checked="true"]::after { animation: ta-halo-plan 3.2s ease-in-out infinite; will-change: opacity; }
   .seg [data-modalidad][aria-checked="true"]::before { animation: ta-giro-suave 4.5s linear infinite; }
 }
 
@@ -1883,3 +1892,7 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 .hcard-title:has(.hcard-wa) .hcard-close { grid-column: 3; }
 @media (max-width: 380px) { .hcard-wa span { display: none; } .hcard-wa { padding: 0 9px; } }
 
+/* Pilas con ícono (acceso, estado, documentos; 23-10-2026) */
+.is-chips .opt:has(.opt-icon) { gap: 8px; padding-left: 11px; }
+.is-chips .opt-icon { width: 18px; height: 18px; }
+.is-chips .opt-icon svg { width: 17px; height: 17px; }

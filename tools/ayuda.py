@@ -509,8 +509,9 @@ def fila_norma(n, root, i=0):
     return (f'<li class="doc" data-slug="{n["slug"]}" data-tema="{t}" style="--i:{min(i, 8)}">'
             f'<span class="doc-icon">{N.icono_tema(t)}</span>'
             f'<div class="doc-body"><p class="doc-title"><a href="{root}{n["pagina"]}">{esc(n["tema"])}</a></p>'
-            f'<p class="doc-sub"><strong>{esc(n["corto"])}</strong><span class="doc-org"> · {esc(n["organismo"])}</span>{off}</p></div>'
-            f'<a class="doc-pdf" href="{root}{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICO["descarga"]}<span>PDF</span></a></li>')
+            f'<p class="doc-sub"><strong>{esc(n["corto"])}</strong><span class="doc-org"> · {esc(n["organismo"])}</span>{off}</p>'
+            f'<p class="doc-fechas">Publicada el <time datetime="{n["publicacion"]}">{N.fecha_corta(n["publicacion"])}</time> · texto al <time datetime="{n["version"]}">{N.fecha_corta(n["version"])}</time></p></div>'
+            f'<a class="doc-pdf" href="{root}{n.get("oficial") or n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF{" oficial" if n.get("oficial") else ""} de {esc(n["corto"])}" title="{"PDF oficial de Ley Chile" if n.get("oficial") else "PDF"}">{ICO["descarga"]}<span>PDF</span></a></li>')
 
 
 BUSCAR = _i('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>', 20, 2)

@@ -67,9 +67,43 @@ function ta_sitio_opciones() {
 			// Una por instalación (pruebas o producción); vacía = el formulario no envía en línea.
 			'asistente'          => '',
 			'turnstile'          => '',  // clave pública del widget de Cloudflare Turnstile (la secreta va solo en el asistente)
+			'whatsapp'           => '56986067930',  // número del sitio (wa.me), con código de país; ta_sitio_whatsapp_aplicar() lo cambia en las páginas
 			'imagenes'           => array(),  // portadas y fotos elegidas en la biblioteca de medios: [espacio => id] (inc/imagenes.php)
 		)
 	);
+}
+
+/** El número como lo usa wa.me (569 y ocho dígitos), o vacío si no es un celular de Chile. */
+function ta_sitio_whatsapp_normal( $valor ) {
+	$d = preg_replace( '/\D/', '', (string) $valor );
+	if ( 9 === strlen( $d ) && '9' === $d[0] ) {
+		$d = '56' . $d;
+	}
+	return preg_match( '/^569\d{8}$/', $d ) ? $d : '';
+}
+
+/** 56986067930 → «+56 9 8606 7930». */
+function ta_sitio_whatsapp_texto( $numero ) {
+	return preg_match( '/^(56)(9)(\d{4})(\d{4})$/', (string) $numero, $m ) ? "+{$m[1]} {$m[2]} {$m[3]} {$m[4]}" : (string) $numero;
+}
+
+/** Si en los ajustes hay otro número que el que trae el sitio. */
+function ta_sitio_whatsapp_cambiado() {
+	$numero = ta_sitio_opciones()['whatsapp'];
+	return '' !== $numero && '56986067930' !== $numero;
+}
+
+/**
+ * Una página o un script con el número de los ajustes en lugar del que trae el sitio (enlaces wa.me, tel: y el texto
+ * visible). En las páginas, los scripts cambian de ?v= con el número, para que el navegador no use los guardados.
+ */
+function ta_sitio_whatsapp_aplicar( $texto ) {
+	if ( ! ta_sitio_whatsapp_cambiado() ) {
+		return $texto;
+	}
+	$numero = ta_sitio_opciones()['whatsapp'];
+	$texto  = str_replace( array( '56986067930', '+56 9 8606 7930' ), array( $numero, ta_sitio_whatsapp_texto( $numero ) ), $texto );
+	return preg_replace( '#(\.js\?v=[\w.-]+)#', '$1-' . substr( $numero, -4 ), $texto );
 }
 
 /**
@@ -269,6 +303,10 @@ add_action(
 			$op['plantillas']       = isset( $_POST['plantillas'] ) ? sanitize_textarea_field( wp_unslash( $_POST['plantillas'] ) ) : $op['plantillas'];
 			$op['copia_respuestas'] = ! empty( $_POST['copia_respuestas'] );
 		}
+		if ( isset( $_POST['whatsapp'] ) ) {
+			$numero = ta_sitio_whatsapp_normal( sanitize_text_field( wp_unslash( $_POST['whatsapp'] ) ) );
+			$op['whatsapp'] = '' !== $numero ? $numero : $op['whatsapp'];
+		}
 		if ( isset( $_POST['ta_imagenes_enviado'] ) ) {
 			$op['imagenes'] = ta_sitio_imagenes_desde_post();
 		}
@@ -282,7 +320,7 @@ add_action(
 		ta_sitio_reglas();
 		flush_rewrite_rules( true );
 		// La portada y la vista previa guardadas en caché son las de antes (con la configuración y la política de antes)
-		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] ) {
+		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] || $antes['whatsapp'] !== $op['whatsapp'] ) {
 			ta_sitio_purgar();
 		}
 		$aviso = '' !== trim( $pedida ) && '' === $op['asistente'] ? array( 'asistente_invalido' => 1 ) : array();
@@ -354,6 +392,11 @@ function ta_sitio_pagina_ajustes() {
 					<th scope="row"><label for="ta-remitente">Nombre con que se firman los correos</label></th>
 					<td><input id="ta-remitente" name="remitente" type="text" class="regular-text" value="<?php echo esc_attr( $op['remitente'] ); ?>"></td>
 				</tr>
+				<tr>
+					<th scope="row"><label for="ta-whatsapp">WhatsApp del sitio</label></th>
+					<td><input id="ta-whatsapp" name="whatsapp" type="tel" class="regular-text code" value="<?php echo esc_attr( ta_sitio_whatsapp_texto( $op['whatsapp'] ) ); ?>" placeholder="+56 9 1234 5678">
+						<p class="description">El número de todos los botones y enlaces de WhatsApp del sitio, del texto que lo muestra y del pie de los PDF. Un celular de Chile: +56 9 y ocho dígitos. Si no es válido, queda el anterior.</p></td>
+				</tr>
 			</table>
 			<h2>Comunas que se atienden</h2>
 			<p>El formulario y el asistente solo ofrecen estas comunas; si alguien escribe otra, el sitio le dice que por ahora no se atiende y le ofrece WhatsApp.</p>
@@ -399,7 +442,7 @@ function ta_sitio_pagina_ajustes() {
 			</table>
 
 			<h2>Imágenes del sitio</h2>
-			<p>Cambia las portadas del inicio y las fotos de los servicios por imágenes de la biblioteca de medios. Las del hero para cada opción se ven en escritorio, al pasar el mouse por la opción. Usa fotos horizontales y livianas (WebP o JPG de menos de 400 KB); «Volver a la del sitio» deja la original.</p>
+			<p>Cualquier imagen del sitio se puede cambiar por una de la biblioteca de medios: portadas, servicios, otras secciones, las miniaturas de cada residuo, el logo, el ícono de la pestaña y la imagen que se ve al compartir el enlace. Las del hero para cada opción se ven en escritorio, al pasar el mouse por la opción. Usa imágenes livianas (WebP o JPG de menos de 400 KB) con la misma forma que la original; «Volver a la del sitio» deja la original.</p>
 			<input type="hidden" name="ta_imagenes_enviado" value="1">
 			<table class="form-table" role="presentation">
 				<?php ta_sitio_imagenes_filas(); ?>

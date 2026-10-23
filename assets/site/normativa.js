@@ -14,12 +14,12 @@
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const svg = (p, w = 20, vb = 24, sw = 1.8) => `<svg width="${w}" height="${w}" viewBox="0 0 ${vb} ${vb}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
   const ICON = {
-    pdf: svg('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', 20, 24, 2),
-    doc: svg('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>'),
-    out: svg('<path d="M5 11l6-6M6 5h5v5"/>', 16, 16, 2),
+    pdf: svg('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>', 20, 24, 2),
+    doc: svg('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>'),
+    out: svg('<path d="M7 7h10v10"/><path d="M7 17 17 7"/>', 16, 16, 2),
     li: '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>'
   };
-  const DATO = { leer: svg('<path d="M5 12h14M13 6l6 6-6 6"/>') };
+  const DATO = { leer: svg('<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>') };
   /* Ícono de cada tema (el mismo mapa está en tools/normativa.py) */
   const TEMA_ICON = {
     peligrosos: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
@@ -91,6 +91,9 @@
       const head = fold(`${n.tema} ${n.corto} ${n.organismo}`);
       return tt.some((t) => !head.includes(t) && fold(n.rel).includes(t));
     };
+    /* «16 jun. 2004», como fecha_corta de tools/normativa.py */
+    const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const fechaCorta = (iso) => { const [y, m, dd] = String(iso || '').split('-').map(Number); return y ? `${dd} ${MES[m - 1]}. ${y}` : ''; };
     const row = (n, i, fresh) => {
       const tt = terms();
       const t = n.temas[0];
@@ -98,8 +101,9 @@
         + `<span class="doc-icon">${temaIcon(t)}</span>`
         + `<div class="doc-body"><p class="doc-title"><a href="${esc(ROOT + n.pagina)}">${mark(n.tema, tt)}</a></p>`
         + `<p class="doc-sub"><strong>${mark(n.corto, tt)}</strong><span class="doc-org"> · ${mark(n.organismo, tt)}</span>${n.vigente ? '' : ' · <span class="doc-off">Derogada</span>'}</p>`
+        + `<p class="doc-fechas">Publicada el <time datetime="${n.publicacion}">${fechaCorta(n.publicacion)}</time> · texto al <time datetime="${n.version}">${fechaCorta(n.version)}</time></p>`
         + `${inRel(n) ? `<p class="doc-rel">${mark(n.rel, tt)}</p>` : ''}</div>`
-        + `<a class="doc-pdf" href="${esc(ROOT + n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a></li>`;
+        + `<a class="doc-pdf" href="${esc(ROOT + (n.oficial || n.pdf))}" download data-doc-pdf aria-label="Descargar PDF${n.oficial ? ' oficial' : ''} de ${esc(n.corto)}" title="${n.oficial ? 'PDF oficial de Ley Chile' : 'PDF'}">${ICON.pdf}<span>PDF</span></a></li>`;
     };
     const byText = (n) => {
       const q = fold(st.q).trim();
@@ -307,7 +311,7 @@
         ${n ? `<div class="post-rel" data-tema="${n.temas[0]}">
           <small>Norma relacionada</small>
           <a class="post-rel-link" href="${esc(ROOT + n.pagina)}"><span class="doc-icon" aria-hidden="true">${temaIcon(n.temas[0])}</span><span><strong>${esc(n.corto)}</strong> · ${esc(n.tema)}</span>${DATO.leer}</a>
-          <a class="post-rel-pdf" href="${esc(ROOT + n.pdf)}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a>
+          <a class="post-rel-pdf" href="${esc(ROOT + (n.oficial || n.pdf))}" download data-doc-pdf aria-label="Descargar PDF de ${esc(n.corto)}">${ICON.pdf}<span>PDF</span></a>
         </div>` : ''}
         <a class="post-li" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver en LinkedIn ${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a>
       </li>`;

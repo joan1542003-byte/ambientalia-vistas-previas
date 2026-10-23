@@ -7,7 +7,8 @@ https://www.bcn.cl/leychile/Consulta/obtxml?opt=7&idNorma=...) y genera:
   con la fuente citada y datos estructurados (schema.org/Legislation). Texto visible = mejor para SEO y GEO.
 - assets/transporte/normativa.json: índice que lee la biblioteca del panel «Ayuda» (búsqueda y filtro por tema).
 
-Los PDF se generan después desde estas páginas: node tools/normativa-pdf.mjs
+Los PDF se generan después desde estas páginas: node tools/normativa-pdf.mjs. Los oficiales (los que exporta Ley Chile) los
+descarga python3 tools/normativa_oficial.py, antes de este script.
 Uso: python3 tools/normativa.py            (todas)   ·   python3 tools/normativa.py ds-148-2003-minsal   (una)
      python3 tools/normativa.py --actualizar   vuelve a descargar el texto desde Ley Chile (si no, usa la copia de tools/cache/)
      --aceptar-cambios   publica un texto que cambió sin cambiar de versión oficial (por defecto se conserva el publicado y se avisa)
@@ -449,7 +450,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
                 'url': f'{SITE}/normativa/{n["slug"]}.html',
                 'isBasedOn': n['fuente'],
                 'sameAs': n['fuente'],
-                'encoding': {'@type': 'MediaObject', 'contentUrl': f'{SITE}/{n["pdf"]}', 'encodingFormat': 'application/pdf'},
+                'encoding': {'@type': 'MediaObject', 'contentUrl': f'{SITE}/{n.get("oficial") or n["pdf"]}', 'encodingFormat': 'application/pdf'},
                 'about': [TEMAS[t] for t in n['temas']],
             },
             {
@@ -528,7 +529,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
       <p class="reader-where"><small>{esc(n["corto"])}</small><strong data-reader-now>{esc(n["tema"])}</strong></p>
       <button class="reader-btn" type="button" data-find-open aria-label="Buscar en esta norma">{DATO["buscar"]}</button>
       <button class="reader-btn reader-toc" type="button" data-toc-open aria-label="Índice">{DATO["indice"]}</button>
-      <a class="reader-btn" href="../{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF">{ICON["pdf"]}</a>
+      <a class="reader-btn" href="../{n.get("oficial") or n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF{" oficial" if n.get("oficial") else ""}">{ICON["pdf"]}</a>
     </div>
     <form class="textfind" data-textfind role="search" inert>
       <span class="textfind-icon" aria-hidden="true">{DATO["buscar"]}</span>
@@ -552,7 +553,8 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
       <p class="norm-lead">{esc(n["rel"])}</p>
       <ul class="norm-facts" data-tips>{datos}</ul>
       <div class="norm-actions">
-        <a class="btn btn-ink btn-small" href="../{n["pdf"]}" download data-doc-pdf>{ICON["pdf"]}<span><span class="lg">Descargar </span>PDF</span></a>
+        {f'<a class="btn btn-ink btn-small" href="../{n["oficial"]}" download data-doc-pdf title="El PDF de Ley Chile (Biblioteca del Congreso Nacional), versión del {fecha_larga(n["version"])}">{ICON["pdf"]}<span><span class="lg">Descargar </span>PDF oficial</span></a>' if n.get("oficial") else ''}
+        <a class="btn {"btn-quiet" if n.get("oficial") else "btn-ink"} btn-small" href="../{n["pdf"]}" download data-doc-pdf>{ICON["pdf"]}<span>{"Copia del sitio" if n.get("oficial") else '<span class="lg">Descargar </span>PDF'}</span></a>
         <button class="btn btn-quiet btn-small" type="button" data-find-open>{DATO["buscar"]}<span>Buscar<span class="lg"> en el texto</span></span></button>
         {f'<button class="btn btn-quiet btn-small norm-toc-btn" type="button" data-toc-open>{DATO["indice"]}Índice</button>' if indice else ''}
       </div>
@@ -567,7 +569,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
     </div>
 
     <footer class="norm-source">
-      <p><strong>Fuente:</strong> <a href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ley Chile, Biblioteca del Congreso Nacional</a>. Texto obtenido el {fecha_larga(n["consulta"])} (versión del {fecha_larga(n["version"])}). Esta copia es referencial: para efectos legales, consulta siempre la fuente oficial y el Diario Oficial.</p>
+      <p><strong>Fuente:</strong> <a href="{esc(n["fuente"])}" target="_blank" rel="noopener noreferrer">Ley Chile, Biblioteca del Congreso Nacional</a>. Texto obtenido el {fecha_larga(n["consulta"])} (versión del {fecha_larga(n["version"])}).{" El «PDF oficial» es el documento que entrega Ley Chile, sin cambios." if n.get("oficial") else ""} Esta copia es referencial: para efectos legales, consulta siempre la fuente oficial y el Diario Oficial.</p>
       <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#normativa" data-docs-open="normativa">{ICON["back"]}Ver toda la normativa</a>
     </footer>
   </article>
@@ -688,6 +690,8 @@ def main():
             'version': root.get('fechaVersion'), 'vigente': root.get('derogado') != 'derogado',
             'fuente': f'https://www.bcn.cl/leychile/navegar?idNorma={id_norma}',
             'pagina': f'normativa/{slug}.html', 'pdf': f'assets/transporte/normativa/{slug}.pdf',
+            # El PDF que exporta Ley Chile, alojado en el sitio (tools/normativa_oficial.py lo descarga)
+            'oficial': f'assets/transporte/normativa/oficial/{slug}.pdf' if (ROOT / f'assets/transporte/normativa/oficial/{slug}.pdf').is_file() else '',
             'consulta': consulta, 'alias': ALIAS.get(slug, []),
         }
         n['objeto'] = primer_articulo(root)

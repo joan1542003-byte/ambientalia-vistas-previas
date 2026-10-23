@@ -87,8 +87,37 @@
   };
   const svg = (path) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
   const I = {
-    doc: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
-    foto: svg('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 17l4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/>')
+    doc: svg('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>'),
+    foto: svg('<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>')
+  };
+  /* Íconos (Lucide) de las opciones del chat según lo que dicen (23-10-2026: «ícono a todas las pilas»). Las opciones
+     las decide el asistente en cada respuesta; aquí solo se elige su ícono */
+  const ICONOS_OPCION = [
+    [/no peligros/, svg('<path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/><path d="m14 16-3 3 3 3"/><path d="M8.293 13.596 7.196 9.5 3.1 10.598"/><path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/><path d="m13.378 9.633 4.096 1.098 1.097-4.096"/>')],
+    [/peligros/, svg('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>')],
+    [/cotiz|presupuest|precio|valor|costo/, svg('<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/>')],
+    [/plan/, svg('<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>')],
+    [/retir|recolec|transport/, svg('<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>')],
+    [/normativ|\bley\b|decreto|reglamento|norma/, svg('<line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/>')],
+    [/document|hds|hoja|declaraci/, svg('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>')],
+    [/autoriz|permiso|registro/, svg('<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>')],
+    [/contact|persona|especialista|ejecutiv|asesor|humano|llam/, svg('<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>')],
+    [/foto|imagen/, svg('<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>')],
+    [/comuna|direcci|zona|cobertura/, svg('<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>')],
+    [/contenedor|arriendo/, svg('<path d="M22 7.7c0-.6-.4-1.2-.8-1.5l-6.3-3.9a1.72 1.72 0 0 0-1.7 0l-10.3 6c-.5.2-.9.8-.9 1.4v6.6c0 .5.4 1.2.8 1.5l6.3 3.9a1.72 1.72 0 0 0 1.7 0l10.3-6c.5-.3.9-1 .9-1.5Z"/><path d="M10 21.9V14L2.1 9.1"/><path d="m10 14 11.9-6.9"/><path d="M14 19.8v-8.1"/><path d="M18 17.5V9.4"/>')],
+    [/volver|inicio|menu/, svg('<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>')],
+    [/otra|otro/, svg('<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>')]
+  ];
+  const ICONO_OTRA = svg('<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>');
+  /* El ícono va como máscara en ::before (variable --chip-icono): el botón no lleva elementos dentro, solo su texto */
+  const conIcono = (el, icono) => {
+    el.classList.add('chip-con-icono');
+    el.style.setProperty('--chip-icono', `url("data:image/svg+xml,${encodeURIComponent(icono.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace('currentColor', '#000'))}")`);
+    return el;
+  };
+  const iconoOpcion = (texto) => {
+    const t = String(texto).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    return (ICONOS_OPCION.find(([re]) => re.test(t)) || [null, ICONO_OTRA])[1];
   };
 
   /* Cabecera limpia: «Asistente»; debajo solo se dice algo si no está disponible (y «Prueba local» en este computador) */
@@ -109,7 +138,12 @@
   let sesion = API ? leer() : null;
   /* Vencida, sin token o con datos que no son de esta versión: se descarta sin preguntar al servicio */
   if (sesion && (typeof sesion.token !== 'string' || !sesion.token || !(Date.parse(sesion.vence) > Date.now()))) { sesion = null; guardar(null); }
-  let datos = {};  // lo escrito en la puerta, para no volver a pedirlo en esta página (solo en memoria)
+  /* Nombre, correo y teléfono quedan en este navegador (localStorage) desde que la sesión empieza, para no pedirlos cada
+     vez; los consentimientos no: se marcan en cada conversación. «Usar otros datos» y «Borrar mis datos» los olvidan. */
+  const CONTACTO = 'ta-chat-contacto';
+  const recordado = () => { try { const c = JSON.parse(localStorage.getItem(CONTACTO)); return c && typeof c.email === 'string' ? { name: String(c.name || ''), email: c.email, phone: String(c.phone || '') } : {}; } catch { return {}; } };
+  const recordar = (c) => { try { if (c) localStorage.setItem(CONTACTO, JSON.stringify({ name: c.name, email: c.email, phone: c.phone })); else localStorage.removeItem(CONTACTO); } catch {} };
+  let datos = recordado();  // lo escrito en la puerta, para no volver a pedirlo
 
   const idMensaje = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
   /* Una llamada al servicio. No lanza: devuelve el estado HTTP y el JSON, o estado 0 con `falla` ('red' o 'espera')
@@ -200,10 +234,10 @@
     }
     const lista = opciones && Array.isArray(r.options) ? r.options.filter((o) => o && typeof o.id === 'string' && typeof o.label === 'string' && o.label) : [];
     if (lista.length) {
-      m.append(h('div', { class: 'msg-chips' }, lista.map((o) => h('button', {
-        class: 'chip', type: 'button', 'data-opcion': true, text: o.label, title: typeof o.description === 'string' ? o.description : null,
-        onclick: () => enviar({ option_id: o.id }, o.label)
-      }))));
+      m.append(h('div', { class: 'msg-chips' }, lista.map((o) => conIcono(h('button', {
+        class: 'chip', type: 'button', 'data-opcion': true, title: typeof o.description === 'string' ? o.description : null,
+        text: o.label, onclick: () => enviar({ option_id: o.id }, o.label)
+      }), iconoOpcion(`${o.label} ${o.id}`)))));
     }
     charla.append(m);
     return m;
@@ -249,7 +283,8 @@
     const humano = TURNSTILE ? h('div', { class: 'agente-humano' }) : null;
     const fila = (name, rotulo, extra) => h('label', { class: 'agente-campo' }, h('span', { text: rotulo }), h('input', { name, required: true, value: datos[name] || null, ...extra }));
     const f = h('form', { class: 'msg is-bot agente-puerta', novalidate: true },
-      h('p', { class: 'msg-texto', text: 'Hola. Para empezar, escribe tu nombre, tu correo y tu teléfono.' }),
+      h('p', { class: 'msg-texto', text: datos.email ? `Hola${datos.name ? ' de nuevo, ' + datos.name.split(' ')[0] : ''}. Tus datos quedaron guardados en este dispositivo: revisa que sigan bien, acepta las condiciones y toca «Comenzar».` : 'Hola. Para empezar, escribe tu nombre, tu correo y tu teléfono.' }),
+      datos.email ? h('button', { class: 'agente-otros', type: 'button', text: 'Usar otros datos', onclick: () => { recordar(null); datos = {}; if (widget !== null) window.turnstile?.remove(widget); f.remove(); puerta(); } }) : null,
       fila('name', 'Nombre', { type: 'text', autocomplete: 'name', maxlength: 150 }),
       fila('email', 'Correo', { type: 'email', autocomplete: 'email', maxlength: 150, spellcheck: 'false', placeholder: 'nombre@empresa.cl' }),
       fila('phone', 'Teléfono', { type: 'tel', autocomplete: 'tel', maxlength: 20, placeholder: '+56 9 1234 5678' }),
@@ -288,6 +323,7 @@
         if (widget !== null) window.turnstile?.remove(widget);
         sesion = { token: json.token, vence: json.expires_at, fotos: 0 };
         guardar(sesion);
+        recordar(datos);
         salir.hidden = false;
         f.remove();
         form.hidden = false;
@@ -437,7 +473,7 @@
     e.remove();
     ocupado = false;
     const fin = (texto) => { nota.remove(); confirmacion = null; olvidar(); charla.textContent = ''; aviso(texto); puerta(); };
-    if (estado === 200 && json.deleted === true) { fin('Listo: borramos esta conversación y los datos que dejaste en el chat.'); return; }
+    if (estado === 200 && json.deleted === true) { recordar(null); datos = {}; fin('Listo: borramos esta conversación y los datos que dejaste en el chat.'); return; }
     /* Se aceptó y la sesión ya no sirve, pero el borrado no terminó: lo completa el propio servicio */
     if (estado === 500 && json.error === 'erasure_pending') { fin('Recibimos tu solicitud y cerramos la sesión. El borrado quedó en curso y el asistente lo completa en breve.'); return; }
     if (estado === 401) {

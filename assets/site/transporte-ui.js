@@ -292,7 +292,7 @@
       antecedentes: async () => {
         const v = await Picker.choose({
           title: '¿Qué antecedentes tienes?', sub: 'Podrás adjuntarlos al enviar la solicitud por WhatsApp.',
-          groups: [{ options: PICK.DOCS.map((x) => ({ value: x, label: x })) }],
+          groups: [{ options: PICK.DOCS.map((x) => ({ value: x, label: x, icon: PICK.DOC_ICONS[x] })) }],
           value: list(field('documentos').value), multi: true, exclusive: ['Sin documentos por ahora'], layout: 'list'
         });
         if (v) set('documentos', sorted(v, PICK.DOCS).join(', '));
@@ -305,8 +305,8 @@
         const v = await Picker.chooseEach({
           title: 'Detalles del retiro', sub: 'Todo es opcional, pero ayuda a evitar retiros fallidos.',
           groups: [
-            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, otherLabel: '¿Qué otra condición?', options: PICK.ACCESS.map((x) => ({ value: x, label: x, other: PICK.isOther(x) })) },
-            { key: 'estado', label: 'Estado del residuo', options: PICK.STATES.map((x) => ({ value: x, label: x })) },
+            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, otherLabel: '¿Qué otra condición?', options: PICK.ACCESS.map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x) })) },
+            { key: 'estado', label: 'Estado del residuo', options: PICK.STATES.map((x) => ({ value: x, label: x, icon: PICK.STATE_ICONS[x] })) },
             { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', otherLabel: '¿Cómo está almacenado?', allowed: (p) => PICK.STORAGE_BY_STATE[p.estado] || null, options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) }
           ],
           value: { acceso: acc.map(([base]) => base), accesoOtro: acc.find(([base]) => PICK.isOther(base))?.[1] || '', estado: field('estado').value, almacenamiento: alm, almacenamientoOtro: almOtro }
@@ -336,9 +336,13 @@
       when.modalidad = b.dataset.modalidad;
       if (when.modalidad === 'express') when.dates = [];
       if (when.modalidad === 'programado') when.dates = when.dates.slice(0, 1);
-      writeWhen();
+      /* El botón se marca al instante; el resto del formulario se pinta en el cuadro siguiente (en Firefox se notaba la espera) */
+      b.parentElement.querySelectorAll('[data-modalidad]').forEach((x) => x.setAttribute('aria-checked', String(x === b)));
       b.closest('.pick')?.removeAttribute('data-invalid');
-      field('modalidad').dispatchEvent(new Event('change', { bubbles: true }));
+      requestAnimationFrame(() => setTimeout(() => {
+        writeWhen();
+        field('modalidad').dispatchEvent(new Event('change', { bubbles: true }));
+      }));
     });
     /* Período del arriendo: mensual, semanal o diario, con un toque */
     form.addEventListener('click', (e) => {

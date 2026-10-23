@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.6
+Stable tag: 1.4.7
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,13 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.7 =
+* «Imágenes del sitio»: se puede cambiar cualquier imagen (portadas, servicios, otras secciones, las miniaturas de cada residuo, el logo, el ícono de la pestaña y la imagen al compartir), ordenadas por grupo. La lista se arma sola con el paquete (sitio/imagenes.json).
+* «WhatsApp del sitio» en los ajustes: cambia el número de todos los enlaces, del texto y de los scripts.
+* Normativa: el PDF oficial de Ley Chile de cada norma, alojado en el sitio, y sus fechas en la biblioteca.
+* Chat: recuerda nombre, correo y teléfono en el navegador («Usar otros datos» y «Borrar mis datos» los olvidan); íconos en las opciones.
+* Cotizar: el tipo de retiro cambia al instante (en Firefox se notaba una espera). Mapa: «Marcar aquí» destacado y el contorno de la comuna elegida.
 
 = 1.4.6 =
 * Chat en el teléfono a pantalla completa: ocupa justo el área visible (con el teclado abierto o cerrado), la página de atrás queda quieta y el chat se cierra con su «X».

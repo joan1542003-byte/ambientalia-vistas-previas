@@ -93,7 +93,7 @@
      onChange(punto | null, origen, extra) avisa lo que hace la persona: 'mapa' (movió, tocó o confirmó), 'ubicacion'
      (con extra.margen, el margen de error del dispositivo), 'quitar' o 'lejos' (recorrió el mapa desde lejos y el
      punto dejó de estar bajo el marcador). */
-  const mount = (host, { value = null, vista = null, onChange = null } = {}) => {
+  const mount = (host, { value = null, vista = null, onChange = null, zona = null } = {}) => {
     let actual = value;
     let map = null;
     let vivo = true;
@@ -247,6 +247,11 @@
       canvas.addEventListener('mousedown', () => { if (d.activeElement !== canvas) canvas.focus({ preventScroll: true }); }, true);
       L.control.zoom({ position: 'bottomright', zoomInTitle: 'Acercar', zoomOutTitle: 'Alejar' }).addTo(map);
       L.tileLayer(TILES, { maxZoom: 19, attribution: ATRIBUCION }).addTo(map);
+      /* La zona: el límite de la comuna elegida o, sin comuna, el de las que se atienden (23-10-2026) */
+      zona?.().then((zs) => {
+        if (!vivo || !map) return;
+        zs.forEach((z) => z.anillos.forEach((a) => L.polygon(a, { interactive: false, color: '#6708C7', weight: 2, opacity: .7, dashArray: '6 5', fillColor: '#6708C7', fillOpacity: .05 }).addTo(map)));
+      }).catch(() => {});
       /* El marcador está fijo al centro: lo que se mueve es el mapa. Al soltar, ese centro es el punto.
          Solo un desplazamiento real cuenta: si el centro no cambió (fue solo zoom), no pasa nada. Y solo con el mapa
          acercado: recorrerlo desde lejos no marca (y deja sin efecto el punto que había, que ya no está bajo el marcador) */
@@ -322,6 +327,7 @@
     if (!GEO) return null;
     return {
       value, onDone, onPlace,
+      zona: () => GEO.limitesDe(comuna() ? [comuna()] : window.PICK?.COBERTURA || []),
       key: (t) => GEO.nucleo(GEO.partes(t).calle),
       parts: GEO.partes,
       locate: (t, preferida = '') => GEO.locate(t, { comuna: comuna(), preferida }),

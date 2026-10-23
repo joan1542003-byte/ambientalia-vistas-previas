@@ -193,7 +193,12 @@ function ta_sitio_entregar( $interna, $privado ) {
 		return;
 	}
 	$fecha    = (int) filemtime( $archivo );
-	$etiqueta = '"' . md5( $archivo . '|' . $fecha . '|' . filesize( $archivo ) ) . '"';
+	// Con otro número de WhatsApp en los ajustes, los scripts y llms.txt salen con ese número (inc/ajustes.php)
+	$contenido = null;
+	if ( in_array( $ext, array( 'js', 'txt' ), true ) && ta_sitio_whatsapp_cambiado() ) {
+		$contenido = ta_sitio_whatsapp_aplicar( (string) file_get_contents( $archivo ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	}
+	$etiqueta = '"' . md5( $archivo . '|' . $fecha . '|' . filesize( $archivo ) . ( null === $contenido ? '' : '|' . ta_sitio_opciones()['whatsapp'] ) ) . '"';
 	header( 'Content-Type: ' . $tipos[ $ext ] );
 	header( 'X-Content-Type-Options: nosniff' );
 	header( 'ETag: ' . $etiqueta );
@@ -209,9 +214,13 @@ function ta_sitio_entregar( $interna, $privado ) {
 		exit;
 	}
 	status_header( 200 );
-	header( 'Content-Length: ' . filesize( $archivo ) );
+	header( 'Content-Length: ' . ( null === $contenido ? filesize( $archivo ) : strlen( $contenido ) ) );
 	if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'HEAD' !== $_SERVER['REQUEST_METHOD'] ) {
-		readfile( $archivo ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+		if ( null === $contenido ) {
+			readfile( $archivo ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+		} else {
+			echo $contenido; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- un script del propio sitio, con el número cambiado.
+		}
 	}
 	exit;
 }
@@ -236,6 +245,11 @@ function ta_sitio_pagina( $archivo, $privado ) {
 	if ( '' !== $op['turnstile'] ) {
 		$api['turnstile'] = $op['turnstile'];
 	}
+	$imagenes = ta_sitio_imagenes_mapa();  // las que pone el navegador, como las miniaturas de los residuos (pickers.js)
+	if ( $imagenes ) {
+		$api['imagenes'] = $imagenes;
+	}
+	$html   = ta_sitio_whatsapp_aplicar( $html );  // el número de WhatsApp de los ajustes (inc/ajustes.php)
 	$html   = ta_sitio_imagenes_aplicar( $html );  // portadas y fotos elegidas en los ajustes (inc/imagenes.php)
 	$config = '<script>window.TA_API=' . wp_json_encode( $api, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES ) . ';</script>';
 	$html   = preg_replace( '#</head>#i', $config . "\n</head>", $html, 1 );

@@ -28,8 +28,8 @@
   /* Tipos de residuo: [valor, nombre, clave en PICK.CATEGORIES, ejemplos, ícono] */
   const svg = (trazos) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${trazos}</svg>`;
   const TIPOS = [
-    ['no-peligroso', 'No peligrosos', 'safe', 'Papel y cartón, plásticos, metales y más', svg('<path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/>')],
-    ['peligroso', 'Peligrosos', 'hazard', 'Aceites, baterías, solventes y más', svg('<path d="M12 4l9 15.5H3z"/><path d="M12 10v4.5M12 17.2v.1"/>')]
+    ['no-peligroso', 'No peligrosos', 'safe', 'Papel y cartón, plásticos, metales y más', svg('<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/>')],
+    ['peligroso', 'Peligrosos', 'hazard', 'Aceites, baterías, solventes y más', svg('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>')]
   ];
   /* Teléfono: solo caracteres de teléfono y al menos 8 números (lo mismo que pide el formulario y revisa el servidor) */
   const TEL = { patron: String.raw`(?=(?:\D*\d){8})[+\d\s.\-\(\)]{8,30}`, titulo: 'Escribe un teléfono con al menos 8 números' };
@@ -52,7 +52,7 @@
     { id: 'horario', label: 'Horario', type: 'options', layout: 'cards', sub: true, ask: '¿En qué horario se puede retirar?', hint: 'Ej.: en la mañana', options: SLOT_OPTIONS },
     { id: 'documentos', label: 'Documentación del residuo', type: 'multi', layout: 'list', exclusive: 'Sin documentos por ahora', hint: 'Ej.: tengo la HDS',
       ask: '¿Tienes algún antecedente o documento del residuo?', help: 'Si tienes HDS/FDS, análisis u otra documentación, podrás adjuntarla por WhatsApp.',
-      options: PICK.DOCS.map((x) => ({ value: x, label: x })) },
+      options: PICK.DOCS.map((x) => ({ value: x, label: x, icon: PICK.DOC_ICONS[x] })) },
     { id: 'contacto', type: 'contact', ask: 'Necesito algunos datos para preparar tu solicitud.', help: 'Usaremos estos datos para enviarte la propuesta.',
       fields: [
         { id: 'empresa', label: 'Empresa', autocomplete: 'organization' },

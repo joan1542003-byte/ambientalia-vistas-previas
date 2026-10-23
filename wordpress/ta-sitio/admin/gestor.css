@@ -44,3 +44,7 @@
 .ta-casillas td { padding: 6px 12px 6px 0; vertical-align: middle; }
 .ta-quitar-casilla { color: #b32d2e; }
 .ta-imagen-sin { color: #646970; font-style: italic; }
+.ta-imagen-grupo th { padding: 18px 0 0; }
+.ta-imagen-grupo h3 { margin: 0; padding-bottom: 6px; border-bottom: 1px solid #dcdcde; }
+.ta-imagen-cuenta { margin-left: 6px; color: #646970; font-size: 13px; font-weight: 400; }
+.ta-imagen .ta-firma-vista img { max-width: 200px; max-height: 140px; width: auto; object-fit: contain; background: #f6f7f7; }

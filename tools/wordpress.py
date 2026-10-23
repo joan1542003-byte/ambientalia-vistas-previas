@@ -9,7 +9,8 @@ indique en los ajustes del plugin; con --sin-agente se arma sin él.
 
 El plugin (wordpress/ta-sitio/) muestra el sitio desde WordPress, primero en una dirección privada, y recibe las
 solicitudes de los formularios (número, correos). El sitio va dentro, en sitio/: la página, assets/site,
-assets/transporte, normativa/, ayuda/ y documentos/, más llms.txt (resumen del sitio para asistentes de IA).
+assets/transporte, normativa/, ayuda/ y documentos/, más llms.txt (resumen del sitio para asistentes de IA) e imagenes.json
+(las imágenes que se cambian desde los ajustes).
 Se instala en WordPress con Plugins → Añadir nuevo → Subir plugin.
 """
 import json
@@ -80,6 +81,49 @@ def llms():
     return '\n'.join(lineas)
 
 
+# Imágenes que se pueden cambiar desde WordPress («Ajustes del sitio» → «Imágenes del sitio», inc/imagenes.php). La lista se
+# arma sola al armar el paquete: toda imagen de assets/transporte/ que usan las páginas, las miniaturas de los residuos (las
+# pone pickers.js), el logo y el ícono de la pestaña. Aquí solo van los rótulos y las claves antiguas (ajustes ya guardados).
+ROTULOS = {  # archivo → (grupo, rótulo, clave antigua o None)
+    'transporte-hero-flota-ciudad-cielo.webp': ('Portada', 'Portada del inicio', 'hero'),
+    'transporte-hero-flota-ciudad-movil.webp': ('Portada', 'Portada del inicio en el teléfono', 'hero_movil'),
+    'transporte-hero-panorama.webp': ('Portada', 'Hero: «¿Buscas un transportista autorizado?»', 'hero_buscar'),
+    'transporte-camion-lluvia-1200.webp': ('Servicios', 'Servicio: retiro de residuos no peligrosos', 'servicio_1'),
+    'transporte-camion-industrial-dia-1200.webp': ('Servicios', 'Servicio: retiro de residuos peligrosos', 'servicio_2'),
+    'transporte-portacontenedor-azul-1200.webp': ('Servicios', 'Servicio: arriendo de contenedores', 'servicio_3'),
+    'ecosistema-hds-transporte-1200.webp': ('Otras secciones', 'Otros sitios: HDS', None),
+    'ecosistema-campanas-1200.webp': ('Otras secciones', 'Otros sitios: Campañas de reciclaje', None),
+    'og-transporte.jpg': ('Al compartir', 'Imagen al compartir el enlace (WhatsApp, LinkedIn, redes)', None),
+}
+ICONOS = ['favicon-48.png', 'favicon-192.png', 'apple-touch-icon.png']  # un solo espacio: el ícono de la pestaña
+
+
+def imagenes():
+    """[{clave, grupo, rotulo, archivos}] de las imágenes que se pueden cambiar (rutas desde la raíz del sitio)."""
+    paginas = ['transporte-autorizado.html', *[str(f.relative_to(ROOT)) for c in ('ayuda', 'normativa', 'legal') for f in sorted((ROOT / c).glob('*.html'))]]
+    vistas = []
+    for pagina in paginas:
+        for m in re.finditer(r'(?:\.\./)*(?:https://transporteautorizado\.cl/)?(assets/transporte/[\w./-]+\.(?:webp|png|jpe?g|avif))', (ROOT / pagina).read_text(encoding='utf-8')):
+            if m.group(1) not in vistas:
+                vistas.append(m.group(1))
+    out = [{'clave': 'logo', 'grupo': 'Logo e ícono', 'rotulo': 'Logo (arriba y en el pie; la imagen elegida no cambia de color al pasar el mouse)', 'archivos': ['assets/transporte/logo/logotipo.svg'], 'tipo': 'logo'},
+           {'clave': 'icono', 'grupo': 'Logo e ícono', 'rotulo': 'Ícono de la pestaña del navegador (cuadrado, de al menos 192 px)', 'archivos': [f'assets/transporte/{i}' for i in ICONOS]}]
+    for ruta in vistas:
+        nombre = Path(ruta).name
+        if nombre in ICONOS:
+            continue
+        grupo, rotulo, clave = ROTULOS.get(nombre, ('Otras secciones', re.sub(r'[-_]+', ' ', Path(ruta).stem).capitalize(), None))
+        out.append({'clave': clave or 'img_' + re.sub(r'[^a-z0-9]+', '_', Path(ruta).stem.lower()), 'grupo': grupo, 'rotulo': rotulo, 'archivos': [ruta]})
+    pickers = (ROOT / 'assets/site/pickers.js').read_text(encoding='utf-8')
+    for nombre, archivo in re.findall(r"\['([^']+)', '((?:np|p)-[a-z-]+)'\]", pickers):
+        peligro = 'peligroso' if archivo.startswith('p-') else 'no peligroso'
+        out.append({'clave': 'cat_' + archivo.replace('-', '_'), 'grupo': 'Residuos', 'rotulo': nombre if 'peligros' in nombre else f'{nombre} ({peligro})', 'archivos': [f'assets/transporte/cat/residuo-{archivo}.webp']})
+    for e in out:
+        assert all((ROOT / a).is_file() for a in e['archivos']), f'no existe la imagen de {e["rotulo"]}'
+    assert len({e['clave'] for e in out}) == len(out), 'dos imágenes con la misma clave'
+    return out
+
+
 HTACCESS = """# Las páginas las entrega WordPress (con su control de acceso); aquí solo se sirven los archivos.
 <FilesMatch "\\.html$">
   <IfModule mod_authz_core.c>
@@ -122,6 +166,7 @@ def main():
         assert 'data-agente-abrir' in pagina and 'assets/site/agente-chat.js' in pagina, 'la página no trae el agente'
         assert all((sitio / 'assets' / 'site' / a).is_file() for a in AGENTE), 'faltan archivos del agente en el paquete'
     (sitio / 'llms.txt').write_text(llms(), encoding='utf-8')
+    (sitio / 'imagenes.json').write_text(json.dumps(imagenes(), ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     (sitio / '.htaccess').write_text(HTACCESS, encoding='utf-8')
     (sitio / 'index.php').write_text("<?php // Silencio.\n", encoding='utf-8')
     for carpeta in (plugin, plugin / 'inc', plugin / 'admin'):
