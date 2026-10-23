@@ -798,8 +798,11 @@
     let entro = false;
     const refresh = () => {
       const past = entro || dock.hasAttribute('data-dock-always') || (hero ? hero.getBoundingClientRect().bottom < 80 : scrollY > innerHeight * .6);
-      /* Con el chat abierto (is-chat, agente.js) se queda: es la que lo cierra */
-      const show = (dock.classList.contains('is-chat') || (past && blockers.size === 0)) && !nav?.classList.contains('is-open');
+      /* Con un formulario del hero abierto y a la vista (cotizar, buscar, especialista, asistente) se aparta: si no, podría
+         quedar encima de sus botones de abajo (23-10-2026). Con el chat abierto (is-chat, agente.js) se queda: lo cierra */
+      const escena = d.querySelector('[data-hero]:not([data-float-only])');
+      const formulario = escena && escena.dataset.view && escena.dataset.view !== 'inicio' && escena.getBoundingClientRect().bottom > 80;
+      const show = (dock.classList.contains('is-chat') || (past && blockers.size === 0 && !formulario)) && !nav?.classList.contains('is-open');
       if (!show) setOpen(false);
       dock.classList.toggle('is-visible', show);
       dock.inert = !show;
@@ -819,6 +822,8 @@
     }
     addEventListener('scroll', refresh, { passive: true });
     dock.addEventListener('dock:refrescar', refresh);
+    const escenaHero = d.querySelector('[data-hero]:not([data-float-only])');
+    if (escenaHero) new MutationObserver(refresh).observe(escenaHero, { attributes: true, attributeFilter: ['data-view'] });
     dock.addEventListener('dock:abrir', () => { refresh(); setOpen(true); });  // «Volver» del chat: de vuelta a las opciones
     toggle?.addEventListener('click', () => setTimeout(refresh));
     refresh();

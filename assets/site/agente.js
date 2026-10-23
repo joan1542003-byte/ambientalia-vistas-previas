@@ -727,9 +727,25 @@
   panel.before(fondo);
   fondo.addEventListener('click', () => cerrar());
   let fondoFuera = 0;
+  /* Teléfono: la página de atrás no se desplaza mientras el chat está abierto (en iOS no basta con overflow: se fija
+     el cuerpo donde estaba y al cerrar se vuelve al mismo lugar) */
+  let alturaPagina = 0;
+  const fijarPagina = (si) => {
+    if (!matchMedia('(max-width: 860px)').matches && si) return;
+    const b = d.body.style;
+    if (si && b.position !== 'fixed') {
+      alturaPagina = scrollY;
+      Object.assign(b, { position: 'fixed', top: `-${alturaPagina}px`, left: '0', right: '0', width: '100%' });
+    } else if (!si && b.position === 'fixed') {
+      Object.assign(b, { position: '', top: '', left: '', right: '', width: '' });
+      scrollTo({ top: alturaPagina, behavior: 'instant' });
+    }
+  };
   const conFondo = (si) => {
     clearTimeout(fondoFuera);
     d.documentElement.classList.toggle('agente-abierto', si);
+    fijarPagina(si);
+    if (si) window.dispatchEvent(new Event('agente:abierto'));  // mide el área visible antes de mostrarse
     if (si) { fondo.hidden = false; void fondo.offsetWidth; fondo.classList.add('is-on'); }  // el reflujo deja que la opacidad se anime
     else { fondo.classList.remove('is-on'); fondoFuera = setTimeout(() => { fondo.hidden = true; }, 350); }
   };
@@ -801,22 +817,31 @@
   /* Teclado del teléfono: mientras se escribe, la ventana se apoya sobre el teclado y cabe en el área visible */
   const vv = window.visualViewport;
   if (vv) {
-    /* Con el teclado abierto (teléfono), la ventana se apoya arriba del área visible y ocupa lo que queda sobre el teclado:
-       así nunca queda una parte fuera de la pantalla. Al abrirse el teclado, la conversación baja a lo último */
-    const ajustar = () => {
-      const quieto = vv.scale <= 1.01;
-      const teclado = quieto ? Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop)) : 0;
+    /* Teléfono: la ventana ocupa justo el área visible (sigue al teclado, a las barras de Safari y a cualquier
+       desplazamiento del teléfono). Se mide en el cuadro siguiente para no hacerlo varias veces por evento. Con el
+       teclado abierto, el campo que se está llenando queda a la vista y, al abrirse, la conversación baja a lo último */
+    const movil = matchMedia('(max-width: 860px)');
+    let cuadro = 0;
+    const medir = () => {
+      if (!movil.matches || panel.hidden || vv.scale > 1.01) return;  // con zoom de pellizco no se toca nada
       panel.style.setProperty('--vv-alto', `${Math.round(vv.height)}px`);
-      panel.style.setProperty('--vv-arriba', `${quieto ? Math.round(vv.offsetTop) : 0}px`);
+      panel.style.setProperty('--vv-arriba', `${Math.round(vv.offsetTop)}px`);
       const antes = panel.classList.contains('is-teclado');
-      panel.classList.toggle('is-teclado', teclado > 80 && panel.contains(d.activeElement));
-      if (!antes && panel.classList.contains('is-teclado')) { const c = panel.querySelector('[data-agente-charla]'); if (c) c.scrollTop = c.scrollHeight; }
+      const teclado = innerHeight - vv.height - vv.offsetTop > 80 && panel.contains(d.activeElement);
+      panel.classList.toggle('is-teclado', teclado);
+      const charla = panel.querySelector('[data-agente-charla]');
+      const foco = d.activeElement;
+      if (teclado && charla?.contains(foco)) (foco.closest('label, .agente-campo') || foco).scrollIntoView({ block: 'nearest' });
+      else if (teclado && !antes && charla) charla.scrollTop = charla.scrollHeight;
     };
+    const ajustar = () => { cancelAnimationFrame(cuadro); cuadro = requestAnimationFrame(medir); };
     vv.addEventListener('resize', ajustar);
     vv.addEventListener('scroll', ajustar);
-    panel.addEventListener('focusin', ajustar);
-    panel.addEventListener('focusout', () => setTimeout(ajustar, 0));
-    ajustar();
+    panel.addEventListener('focusin', () => { ajustar(); setTimeout(ajustar, 300); });  // el teclado termina de abrirse después
+    panel.addEventListener('focusout', () => setTimeout(ajustar, 50));
+    movil.addEventListener?.('change', ajustar);
+    window.addEventListener('agente:abierto', medir);
+    medir();
   }
 
   /* El sitio se lee cuando la página queda libre: la primera respuesta no espera */

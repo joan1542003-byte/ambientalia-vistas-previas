@@ -148,28 +148,28 @@ button.ref:hover, button.ref:active { border-color: var(--ink); color: var(--ink
 .agente-pie { flex: none; margin: -4px 0 0; padding: 0 14px 10px; color: var(--muted); font-size: var(--fs-caption); line-height: 1.4; text-align: center; }
 .agente-pie:empty, .agente-pie:not(:has(> :not([hidden]))) { display: none; }
 
-/* Teléfono (22 y 23-10-2026): la ventana es opaca y alta (deja a la vista el menú de arriba); con el teclado abierto se
-   apoya arriba del área visible y ocupa lo que queda, sin quedar cortada. Lo de atrás se desenfoca; con ahorro de
-   batería (.ta-ahorro, site.js) solo se oscurece */
+/* Teléfono (pantalla completa, 23-10-2026: «debe funcionar perfecto en cualquier teléfono»). La ventana ocupa justo
+   el área visible del teléfono —se ajusta a ella con --vv-arriba y --vv-alto (visualViewport, agente.js / agente-chat.js)—,
+   así con el teclado abierto o cerrado nada queda fuera ni cortado: arriba la cabecera, al medio la conversación (o la
+   puerta con los datos) que se desplaza sola, y abajo el campo para escribir, siempre sobre el teclado. La página de
+   atrás queda quieta (se bloquea su desplazamiento) y la burbuja se oculta: el chat se cierra con su «X» */
 .agente-fondo { display: none; }
+.agente-cerrar-movil { display: none; }
 @media (max-width: 860px) {
   .agente {
-    /* Casi toda la pantalla (23-10-2026: «todavía queda pequeño»): de arriba (bajo la barra del teléfono) hasta la burbuja,
-       de borde a borde con un margen chico. Se ancla con top y bottom, así sigue al alto real de Safari con sus barras */
-    z-index: 72; top: calc(env(safe-area-inset-top, 0px) + 10px); right: 8px; bottom: calc(var(--pie) + 64px); left: 8px; width: auto; height: auto;
-    background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none;
+    z-index: 72; top: var(--vv-arriba, 0px); right: 0; bottom: auto; left: 0; width: 100%; height: var(--vv-alto, 100dvh);
+    border-radius: 0; background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none;
   }
-  .agente.is-teclado { top: calc(var(--vv-arriba, 0px) + 8px); bottom: auto; height: calc(var(--vv-alto, 100dvh) - 16px); transition: height .18s ease, top .18s ease; }
-  html.agente-maqueta .agente { left: 8px; right: 8px; }
-  .agente-fondo { display: block; position: fixed; inset: 0; z-index: 70; background: rgb(21 26 45 / .18); -webkit-backdrop-filter: blur(12px) saturate(1.1); backdrop-filter: blur(12px) saturate(1.1); opacity: 0; transition: opacity .35s ease; }
-  .agente-fondo[hidden] { display: none; }
-  .agente-fondo.is-on { opacity: 1; }
-  .ta-ahorro .agente-fondo { background: rgb(0 0 0 / .6); -webkit-backdrop-filter: none; backdrop-filter: none; }
-  html.agente-abierto { overflow: hidden; }
-  .dock.is-chat, .agente-burbuja.is-abierto { z-index: 71; }  /* la «X» que cierra queda sobre el fondo */
+  .agente::after { display: none; }
+  .agente-cab { padding-top: calc(env(safe-area-inset-top, 0px) + 10px); padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px)); border-bottom: 1px solid var(--line); }
+  .agente-cerrar-movil { display: grid; }
+  .agente-charla { overscroll-behavior: contain; -webkit-mask: none; mask: none; padding-top: 12px; }
+  .agente-escribir { margin: 6px 10px calc(env(safe-area-inset-bottom, 0px) + 10px); }
+  .agente.is-teclado .agente-escribir { margin-bottom: 8px; }  /* sobre el teclado ya no hay barra de inicio que esquivar */
+  .agente-pie { padding-bottom: 6px; }
+  html.agente-abierto, html.agente-abierto body { overflow: hidden; overscroll-behavior: none; }
+  html.agente-abierto .dock, html.agente-abierto .agente-burbuja { opacity: 0; visibility: hidden; pointer-events: none; }
 }
-
-/* Movimiento corto y sin rebote; nada se agranda ni gira */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes agente-nace { from { clip-path: var(--desde); opacity: .6; } to { clip-path: inset(0 round 26px); opacity: 1; } }
   @keyframes agente-vuelve { to { clip-path: var(--desde); opacity: 0; } }
@@ -185,5 +185,12 @@ button.ref:hover, button.ref:active { border-color: var(--ink); color: var(--ink
   .msg.is-espera span { animation: agente-punto 1.2s ease-in-out infinite; }
   .msg.is-espera span:nth-child(2) { animation-delay: .15s; }
   .msg.is-espera span:nth-child(3) { animation-delay: .3s; }
+}
+/* Teléfono: la ventana sube desde abajo (sin recorte, que en pantalla completa no se ve bien) */
+@media (max-width: 860px) and (prefers-reduced-motion: no-preference) {
+  @keyframes agente-sube-movil { from { opacity: 0; transform: translateY(28px); } }
+  @keyframes agente-baja-movil { to { opacity: 0; transform: translateY(28px); } }
+  .agente:not([hidden]) { animation: agente-sube-movil .34s var(--liquid) both; }
+  .agente.is-saliendo { animation: agente-baja-movil .2s ease both; }
 }
 @media print { .agente, .agente-burbuja { display: none !important; } }
