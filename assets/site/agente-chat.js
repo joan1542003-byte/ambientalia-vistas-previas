@@ -428,10 +428,12 @@
   };
   const reiniciar = () => enviar({ text: 'inicio' });  // comando del asistente: vuelve al menú (no gasta consultas)
 
-  /* Al volver a abrir con una sesión viva: la conversación tal como quedó, con sus fuentes; las opciones, solo las de
-     la última respuesta (las anteriores ya no corresponden). El servicio no devuelve el consumo de consultas ni las
-     fotos: el consumo aparece con la próxima respuesta */
-  const retomar = async () => {
+  /* Al volver a abrir con una sesión viva (al recargar o al volver a la página): la persona sigue conectada, pero no se
+     repinta la conversación: un saludo con las opciones del menú del asistente (las de su primera respuesta) y «Ver la
+     conversación anterior» (23-10-2026: «que se vea un mensaje predeterminado, no mi último mensaje»). Con completa, la
+     conversación tal como quedó, con sus fuentes; las opciones, solo las de la última respuesta (las anteriores ya no
+     corresponden). El servicio no devuelve el consumo de consultas ni las fotos: el consumo aparece con la próxima respuesta */
+  const retomar = async (completa = false) => {
     form.hidden = true;
     ocupado = true;
     const e = espera();
@@ -440,17 +442,27 @@
     ocupado = false;
     if (estado === 401) { vencida(); return; }
     if (estado !== 200 || !Array.isArray(json.messages)) {
-      const m = avisoCon(falla ? SIN_CONEXION : 'No pude recuperar la conversación en este momento.', [['Reintentar', () => { m.remove(); retomar(); }]]);
+      const m = avisoCon(falla ? SIN_CONEXION : 'No pude recuperar la conversación en este momento.', [['Reintentar', () => { m.remove(); retomar(completa); }]]);
       return;
     }
     form.hidden = false;
     const mensajes = json.messages.filter((m) => m && typeof m.text === 'string');
     if (!mensajes.length) { reiniciar(); return; }
+    if (!completa) {
+      const menu = mensajes.find((m) => m.role !== 'user' && Array.isArray(m.options) && m.options.length);
+      const nombre = (datos.name || '').trim().split(/\s+/)[0];
+      const m = decir({ text: `Hola de nuevo${nombre ? `, ${nombre}` : ''}. Sigues conectado: escribe tu consulta o elige una opción.`, options: menu?.options || [] });
+      if (mensajes.some((x) => x.role === 'user')) {
+        m.append(h('p', { class: 'msg-anterior' }, h('button', { type: 'button', text: 'Ver la conversación anterior', onclick: () => { if (ocupado) return; charla.textContent = ''; retomar(true); } })));
+      }
+      abajo();
+      return;
+    }
     const ultimo = mensajes[mensajes.length - 1];
     mensajes.forEach((m) => (m.role === 'user' ? decirYo(m.text) : decir(m, { opciones: m === ultimo })));
     if (ultimo.role === 'user') {
       /* Un turno sin respuesta (en curso o fallido): se puede volver a leer, sin enviarlo otra vez */
-      avisoCon('Tu último mensaje todavía no tiene respuesta.', [['Actualizar', () => { if (ocupado) return; charla.textContent = ''; retomar(); }]]);
+      avisoCon('Tu último mensaje todavía no tiene respuesta.', [['Actualizar', () => { if (ocupado) return; charla.textContent = ''; retomar(true); }]]);
     }
     abajo();
   };

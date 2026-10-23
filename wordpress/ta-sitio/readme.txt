@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.7
+Stable tag: 1.4.8
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,10 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.8 =
+* Chat: al recargar la página sigue conectado y muestra un saludo con el menú, no la última conversación («Ver la conversación anterior» la trae).
+* Cotizar: el brillo del tipo de retiro vuelve a ser el de antes.
 
 = 1.4.7 =
 * «Imágenes del sitio»: se puede cambiar cualquier imagen (portadas, servicios, otras secciones, las miniaturas de cada residuo, el logo, el ícono de la pestaña y la imagen al compartir), ordenadas por grupo. La lista se arma sola con el paquete (sitio/imagenes.json).

@@ -1844,13 +1844,8 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 .routes-tabs .route:first-of-type[aria-selected="false"] { background: linear-gradient(100deg, rgb(103 8 199 / .26), rgb(103 8 199 / .05) 70%); }
 /* Cotizar: el tipo de retiro elegido brilla como «Chat con IA» de la burbuja: un borde de luz que gira y un halo que
    respira, en su color (23-10-2026; sin el destello al elegirlo, que se veía raro) */
-/* Sin transición de fondo ni sombra: el cambio de tipo se ve en el mismo toque (el halo late con la opacidad de ::after,
-   que no repinta el botón en cada cuadro como la sombra animada, lo que en Firefox retrasaba el cambio) */
-.seg [data-modalidad] { position: relative; isolation: isolate; transition: none; }
-.seg [data-modalidad][aria-checked="true"]::after {
-  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0;
-  box-shadow: 0 0 14px 0 color-mix(in srgb, var(--tone) 45%, transparent), 0 8px 18px -8px color-mix(in srgb, var(--tone) 90%, transparent);
-}
+/* El fondo y el color cambian sin transición: el tipo elegido se ve en el mismo toque (en Firefox se notaba la espera) */
+.seg [data-modalidad] { position: relative; isolation: isolate; transition: box-shadow .45s var(--ease); }
 .seg [data-modalidad][aria-checked="true"] { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -8px color-mix(in srgb, var(--tone) 80%, transparent); }
 .seg [data-modalidad][aria-checked="true"]::before {
   content: ""; position: absolute; inset: 0; z-index: 1; padding: 1.5px; border-radius: inherit; pointer-events: none;
@@ -1861,8 +1856,11 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 @media (prefers-reduced-motion: no-preference) {
   @keyframes ta-giro-suave { to { --ia-giro: 360deg; } }
   .routes-tabs .route:first-of-type::before { animation: ta-giro-suave 7s linear infinite; }
-  @keyframes ta-halo-plan { 50% { opacity: 1; } }
-  .seg [data-modalidad][aria-checked="true"]::after { animation: ta-halo-plan 3.2s ease-in-out infinite; will-change: opacity; }
+  @keyframes ta-halo-plan {
+    0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -8px color-mix(in srgb, var(--tone) 80%, transparent), 0 0 0 0 color-mix(in srgb, var(--tone) 0%, transparent); }
+    50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 40%, transparent), 0 8px 18px -8px color-mix(in srgb, var(--tone) 90%, transparent), 0 0 14px 0 color-mix(in srgb, var(--tone) 45%, transparent); }
+  }
+  .seg [data-modalidad][aria-checked="true"] { animation: ta-halo-plan 3.2s ease-in-out infinite; }
   .seg [data-modalidad][aria-checked="true"]::before { animation: ta-giro-suave 4.5s linear infinite; }
 }
 

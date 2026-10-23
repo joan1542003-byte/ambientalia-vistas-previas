@@ -481,24 +481,34 @@ try {
     ];
     await navegar(local(), { limpiar: false });
     await abrir();
+    /* 23-10-2026 (pedido de Johan): al recargar sigue conectado, pero ve un saludo con el menú, no su último mensaje */
+    await hasta(() => /Hola de nuevo/.test(document.querySelector('[data-agente-charla]').textContent), 'saludo al recargar');
+    const s0 = await evaluar(() => {
+      const c = document.querySelector('[data-agente-charla]');
+      return { texto: c.textContent, opciones: [...c.querySelectorAll('[data-opcion]')].map((b) => b.textContent), puerta: !!c.querySelector('.agente-puerta'), anterior: !!c.querySelector('.msg-anterior button') };
+    });
+    ok(de('/history', 'GET').length === 1 && de('/history', 'GET')[0].token === token && !s0.puerta, 'recarga con token vigente: GET /api/chat/history con el mismo token, sin volver a pedir los datos');
+    ok(!/regula los residuos peligrosos|¿Qué dice el D\.S\. 148\?/.test(s0.texto) && s0.opciones.join() === 'Retiro de residuos' && s0.anterior, 'al recargar: un saludo con las opciones del menú y «Ver la conversación anterior», sin repintar los mensajes');
+    await evaluar(() => { document.querySelector('[data-agente-charla] .msg-anterior button').click(); return true; });
     await hasta(() => /regula los residuos peligrosos/.test(document.querySelector('[data-agente-charla]').textContent), 'historial');
     const h = await evaluar(() => {
       const c = document.querySelector('[data-agente-charla]');
-      return { opciones: [...c.querySelectorAll('[data-opcion]')].map((b) => b.textContent), fuentes: [...c.querySelectorAll('.msg-fuentes a')].map((a) => a.href), negrita: c.querySelector('.msg-texto strong')?.textContent, puerta: !!c.querySelector('.agente-puerta') };
+      return { opciones: [...c.querySelectorAll('[data-opcion]')].map((b) => b.textContent), fuentes: [...c.querySelectorAll('.msg-fuentes a')].map((a) => a.href), negrita: c.querySelector('.msg-texto strong')?.textContent };
     });
-    ok(de('/history', 'GET').length === 1 && de('/history', 'GET')[0].token === token && !h.puerta, 'recarga con token vigente: GET /api/chat/history con el mismo token, sin volver a pedir los datos');
-    ok(h.opciones.join() === 'Ver más' && h.fuentes.length === 1 && h.negrita === 'D.S. 148', 'el historial repinta mensajes, negritas y fuentes; solo las opciones de la última respuesta');
-    ok(de('/messages', 'POST').length === 0, 'repintar el historial no envía mensajes');
+    ok(h.opciones.join() === 'Ver más' && h.fuentes.length === 1 && h.negrita === 'D.S. 148', '«Ver la conversación anterior» repinta mensajes, negritas y fuentes; solo las opciones de la última respuesta');
+    ok(de('/messages', 'POST').length === 0, 'el saludo y el historial no envían mensajes');
 
     reiniciarAsistente();
     S.historial = [{ role: 'user', text: 'Pregunta sin respuesta', options: [], sources: [] }];
     await navegar(local(), { limpiar: false });
     await abrir();
+    await hasta(() => !!document.querySelector('[data-agente-charla] .msg-anterior button'), 'saludo con la conversación anterior');
+    await evaluar(() => { document.querySelector('[data-agente-charla] .msg-anterior button').click(); return true; });
     await hasta(() => /todavía no tiene respuesta/.test(document.querySelector('[data-agente-charla]').textContent), 'último sin respuesta');
     S.historial = [...S.historial, { role: 'assistant', text: 'Ahora sí, la respuesta.', options: [], sources: [] }];
     await tocar('Actualizar');
     await hasta(() => /Ahora sí, la respuesta/.test(document.querySelector('[data-agente-charla]').textContent), 'actualizado');
-    ok(de('/history', 'GET').length === 2 && de('/messages', 'POST').length === 0, 'último mensaje sin respuesta: «Actualizar» vuelve a leer el historial, sin reenviar el mensaje');
+    ok(de('/history', 'GET').length === 3 && de('/messages', 'POST').length === 0, 'último mensaje sin respuesta: «Actualizar» vuelve a leer el historial, sin reenviar el mensaje');
 
     reiniciarAsistente();
     S.historial = [];
