@@ -236,8 +236,8 @@
     /* Teclado: «/» lleva a la búsqueda (con el panel abierto); ↓ baja a la lista y ↑ ↓ recorren las normas */
     d.addEventListener('keydown', (e) => {
       if (e.key !== '/' || e.target.closest('input, textarea, select, [contenteditable]') || d.querySelector('dialog[open]')) return;
-      /* Solo con la biblioteca a la vista (panel «Ayuda» abierto en Normativa) */
-      if (lib.closest('[inert]') || lib.closest('[data-docs-pane]')?.hidden) return;
+      /* Solo con la biblioteca a la vista (panel «Ayuda» abierto en el tema «Normativa») */
+      if (lib.closest('[inert]')) return;  // panel cerrado o tema «Normativa» plegado
       e.preventDefault();
       input.focus();
     });

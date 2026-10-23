@@ -148,10 +148,22 @@ button.ref:hover, button.ref:active { border-color: var(--ink); color: var(--ink
 .agente-pie { flex: none; margin: -4px 0 0; padding: 0 14px 10px; color: var(--muted); font-size: var(--fs-caption); line-height: 1.4; text-align: center; }
 .agente-pie:empty, .agente-pie:not(:has(> :not([hidden]))) { display: none; }
 
-/* Teléfono: la ventana ocupa casi todo el ancho, sobre la burbuja; mientras se escribe se apoya sobre el teclado */
+/* Teléfono (22-10-2026): la ventana es opaca y de alto fijo —no cambia de tamaño al escribir: solo sube sobre el
+   teclado— y lo de atrás se desenfoca para que no estorbe; con ahorro de batería (.ta-ahorro, site.js) solo se oscurece */
+.agente-fondo { display: none; }
 @media (max-width: 860px) {
-  .agente { right: 12px; bottom: calc(var(--pie) + 64px); width: min(400px, calc(100vw - 24px)); height: min(540px, calc(100dvh - var(--pie) - 148px)); }  /* queda bajo el menú */
-  .agente.is-teclado { bottom: calc(8px + var(--vv-abajo, 0px)); height: min(520px, calc(var(--vv-alto, 100dvh) - 16px)); }
+  .agente {
+    --agente-alto: min(400px, calc(100svh - var(--pie) - 148px));  /* cabe también sobre el teclado en casi todos los teléfonos */
+    z-index: 72; right: 12px; bottom: calc(var(--pie) + 64px); width: min(400px, calc(100vw - 24px)); height: var(--agente-alto);
+    background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  .agente.is-teclado { bottom: calc(8px + var(--vv-abajo, 0px)); height: min(var(--agente-alto), calc(var(--vv-alto, 100dvh) - 16px)); }
+  .agente-fondo { display: block; position: fixed; inset: 0; z-index: 70; background: rgb(21 26 45 / .18); -webkit-backdrop-filter: blur(12px) saturate(1.1); backdrop-filter: blur(12px) saturate(1.1); opacity: 0; transition: opacity .35s ease; }
+  .agente-fondo[hidden] { display: none; }
+  .agente-fondo.is-on { opacity: 1; }
+  .ta-ahorro .agente-fondo { background: rgb(0 0 0 / .6); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  html.agente-abierto { overflow: hidden; }
+  .dock.is-chat, .agente-burbuja.is-abierto { z-index: 71; }  /* la «X» que cierra queda sobre el fondo */
 }
 
 /* Movimiento corto y sin rebote; nada se agranda ni gira */

@@ -585,11 +585,24 @@
   /* ---------- Burbuja y ventana ---------- */
   const abierto = () => !panel.hidden;
   let saliendo = 0;
+  /* Teléfono: lo de atrás se desenfoca (con ahorro de batería, solo se oscurece), la página no se desplaza debajo y
+     tocar fuera cierra el chat (pedido del 22-10-2026). En escritorio el fondo no se muestra (agente.css) */
+  const fondo = Object.assign(d.createElement('div'), { className: 'agente-fondo', hidden: true });
+  panel.before(fondo);
+  fondo.addEventListener('click', () => cerrar());
+  let fondoFuera = 0;
+  const conFondo = (si) => {
+    clearTimeout(fondoFuera);
+    d.documentElement.classList.toggle('agente-abierto', si);
+    if (si) { fondo.hidden = false; void fondo.offsetWidth; fondo.classList.add('is-on'); }  // el reflujo deja que la opacidad se anime
+    else { fondo.classList.remove('is-on'); fondoFuera = setTimeout(() => { fondo.hidden = true; }, 350); }
+  };
   const abrir = () => {
     if (abierto() && !panel.classList.contains('is-saliendo')) return;
     clearTimeout(saliendo);
     panel.classList.remove('is-saliendo');
     panel.hidden = false;
+    conFondo(true);
     boton.setAttribute('aria-expanded', 'true');
     if (enDock) marcarDock(true);
     else {
@@ -604,6 +617,7 @@
     if (!abierto() || panel.classList.contains('is-saliendo')) return;
     const dentro = panel.contains(d.activeElement);
     const fin = () => { panel.classList.remove('is-saliendo'); panel.hidden = true; seguir(); };
+    conFondo(false);
     boton.setAttribute('aria-expanded', 'false');
     if (enDock) marcarDock(false);
     else {

@@ -43,6 +43,41 @@
     } catch { return ''; }
   };
 
+  /* Ahorro de batería (pedido del 22-10-2026: con él, el chat en el teléfono oscurece el fondo en vez de desenfocarlo).
+     No hay una señal directa: se infiere si el sistema pide menos transparencia, si la batería está baja y sin cargar
+     (donde el navegador la informa) o si la pantalla va a 30 cuadros por segundo, como en el modo de bajo consumo del
+     iPhone. Deja la clase .ta-ahorro en <html>. */
+  {
+    const raiz = d.documentElement;
+    const pide = matchMedia('(prefers-reduced-transparency: reduce)');
+    let bateria = false;
+    let cuadros = false;
+    const marcar = () => raiz.classList.toggle('ta-ahorro', pide.matches || bateria || cuadros);
+    pide.addEventListener?.('change', marcar);
+    navigator.getBattery?.().then((b) => {
+      const ver = () => { bateria = !b.charging && b.level <= 0.2; marcar(); };
+      b.addEventListener('levelchange', ver);
+      b.addEventListener('chargingchange', ver);
+      ver();
+    }).catch(() => {});
+    /* 20 cuadros con la página quieta y a la vista: a 30 por segundo cada uno dura unos 33 ms (a 60 o 120, 17 u 8) */
+    const medir = () => {
+      if (d.visibilityState !== 'visible') { d.addEventListener('visibilitychange', medir, { once: true }); return; }
+      const t = [];
+      const paso = (ahora) => {
+        t.push(ahora);
+        if (t.length < 21) { requestAnimationFrame(paso); return; }
+        const pasos = t.slice(1).map((x, i) => x - t[i]).sort((a, b) => a - b);
+        cuadros = pasos[10] > 26;
+        marcar();
+      };
+      requestAnimationFrame(paso);
+    };
+    const luego = () => setTimeout(medir, 1500);
+    if (d.readyState === 'complete') luego(); else addEventListener('load', luego, { once: true });
+    marcar();
+  }
+
   /* Envío al servidor. Solo existe cuando el sitio corre sobre WordPress: el plugin deja window.TA_API con la dirección
      de su servicio, que guarda la solicitud, le pone número y envía los correos. Sin eso (vista previa estática), la
      solicitud se sigue enviando por WhatsApp. El servicio pide un permiso con hora: se solicita al mostrar el resumen

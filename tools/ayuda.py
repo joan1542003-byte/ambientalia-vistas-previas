@@ -607,58 +607,61 @@ def accion(clave, texto, root, clase='btn btn-quiet btn-small'):
     return f'<button class="{clase}" type="button" data-dock-open="{clave}">{icon}<span>{esc(texto)}</span></button>'
 
 
-def _card(href, icono, tema, titulo, sub, attrs=''):
-    return (f'<a class="docs-card" href="{href}" data-tema="{tema}"{attrs}><span class="doc-icon">{ICO[icono]}</span>'
-            f'<span class="docs-card-t"><strong>{esc(titulo)}</strong><small>{esc(sub)}</small></span><span class="docs-card-go">{ICO["chev"]}</span></a>')
+# Temas del panel «Ayuda» (simplificado el 22-10-2026: se elige un tema y se despliega su ayuda): clave, nombre,
+# bajada, ícono, color y guías del tema (cada una con su checklist). «Normativa» despliega la biblioteca.
+TEMAS = [
+    ('clasificar', 'Clasificar el residuo', '¿Es peligroso o no?', 'peligroso', 'peligrosos', ['residuo-peligroso-o-no-peligroso']),
+    ('permisos', 'Autorizaciones y Ley REP', 'Qué exige la norma según el residuo', 'autorizacion', 'transporte', ['autorizacion-sanitaria-transporte', 'ley-rep-quien-transporta']),
+    ('proveedor', 'Elegir quién retira', 'Transportista, gestor y destino', 'contratar', 'registro', ['checklist-contratar-transportista', 'antes-de-entregar-residuos-a-un-gestor']),
+    ('preparar', 'Preparar el retiro', 'Residuos, documentos y vehículo', 'preparar', 'almacenamiento', ['preparar-residuos-antes-del-retiro', 'documentos-retiro-residuos-peligrosos', 'requisitos-vehiculo-transporte-residuos', 'errores-comunes-retiro-residuos']),
+    ('despues', 'Después del retiro', 'Destino, respaldos y trazabilidad', 'despues', 'registro', ['que-pasa-despues-del-retiro']),
+    ('normativa', 'Normativa', 'El texto oficial de cada norma', 'normativa', 'marco', []),
+]
 
 
-def _etapas(items, fila):
-    """Columnas por etapa del retiro (antes, al preparar, después); en el teléfono, una debajo de otra."""
-    html = []
-    for k, (clave, nombre) in enumerate(ETAPAS, 1):
-        grupo = [x for x in items if x['etapa'] == clave]
-        if grupo:
-            html.append(f'<div class="docs-etapa" data-etapa="{clave}"><p class="docs-etapa-t"><span aria-hidden="true">{k}</span>{esc(nombre)}</p>'
-                        f'<ul class="docs-cards">{"".join(f"<li>{fila(x)}</li>" for x in grupo)}</ul></div>')
-    return '<div class="docs-etapas">' + ''.join(html) + '</div>'
+def _xls(c, root):
+    return (f'<a class="docs-xls" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)" '
+            f'aria-label="Descargar en Excel: {esc(c["titulo"])}">{ICO["excel"]}<span>Excel</span></a>')
 
 
-CATS = [('guias', 'Guías rápidas', 'hoja'), ('checklists', 'Checklists', 'lista'), ('normativa', 'Normativa', 'normativa')]
+def _fila_guia(g, root):
+    c = checklist_de(g)
+    return (f'<li class="ayu-guia" data-tema="{g["tema"]}"><span class="doc-icon">{ICO[g["icono"]]}</span><div class="ayu-guia-t">'
+            f'<a class="ayu-guia-titulo" href="{root}ayuda/{g["slug"]}.html" data-guia="{g["slug"]}">{esc(g["titulo"])}</a>'
+            f'<p>{esc(g["resumen"])}</p><div class="ayu-acciones">'
+            f'<a class="ayu-btn is-guia" href="{root}ayuda/{g["slug"]}.html">Leer la guía{ICO["flecha"]}</a>'
+            f'<a class="ayu-btn" href="{root}ayuda/{c["slug"]}.html" data-lista="{c["slug"]}">{ICO["lista"]}<span>Checklist · {c["total"]} puntos</span></a>'
+            f'{_xls(c, root)}</div></div></li>')
 
 
 def menu_html(root=''):
-    """Panel que se abre dentro de la cabecera al elegir «Ayuda» (rediseño del 22-10-2026). Arriba, tres pestañas con lo
-    que hay —Guías rápidas, Checklists y Normativa—, cada una con su cantidad; debajo, su contenido: guías y checklists
-    ordenados por etapa del retiro, y la normativa con su buscador. Todo el contenido viene en el HTML (buscadores)."""
-    gs, cks, ns = guias_en_orden(), checklists(), normas()
-    guias = _etapas(gs, lambda g: _card(f'{root}ayuda/{g["slug"]}.html', g['icono'], g['tema'], g['menu'], g['menu_sub'], f' data-guia="{g["slug"]}"'))
-
-    def fila_ck(c):
-        sub = f'{c["total"]} puntos' + (' · todo el caso' if c.get('completo') else '')
-        return (_card(f'{root}ayuda/{c["slug"]}.html', 'lista', c['tema'], c['menu'], sub, f' data-lista="{c["slug"]}"')
-                + f'<a class="docs-xls" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)" '
-                  f'aria-label="Descargar en Excel: {esc(c["titulo"])}">{ICO["excel"]}<span>Excel</span></a>')
-    cuenta = {'guias': len(gs), 'checklists': len(cks), 'normativa': len(ns)}
-    lead = {
-        'guias': 'Orientación breve para cada etapa del retiro, con la norma que la respalda.',
-        'checklists': 'Úsalos en línea, marcando cada punto también en el teléfono, o descárgalos en Excel.',
-        'normativa': NORMATIVA_MENU['resumen'],
-    }
-    cuerpo = {'guias': guias, 'checklists': _etapas(cks, fila_ck), 'normativa': biblioteca(root)}
-    tabs = ''.join(
-        f'<button class="docs-cat" type="button" role="tab" id="docs-c-{k}" aria-controls="docs-p-{k}" aria-selected="{"true" if i == 0 else "false"}"'
-        f' tabindex="{0 if i == 0 else -1}" data-docs-cat="{k}"><span class="docs-cat-icon">{ICO[ic]}</span><span class="docs-cat-l">{esc(nombre)}</span>'
-        f'<small class="docs-cat-n">{cuenta[k]}</small></button>'
-        for i, (k, nombre, ic) in enumerate(CATS))
-    panes = ''.join(
-        f'<section class="docs-pane{" is-fill" if k == "normativa" else ""}" id="docs-p-{k}" role="tabpanel" aria-labelledby="docs-c-{k}" data-docs-pane="{k}"{"" if i == 0 else " hidden"}>'
-        f'<p class="docs-lead">{esc(lead[k])}</p>{cuerpo[k]}</section>'
-        for i, (k, _, _) in enumerate(CATS))
+    """Panel que se abre dentro de la cabecera al elegir «Ayuda» (simplificado el 22-10-2026): primero los temas; al
+    elegir uno se despliega su ayuda, debajo de su fila (en el teléfono, debajo del tema): sus guías, cada una con su
+    checklist en línea y en Excel, o la normativa con su buscador. Todo el contenido viene en el HTML (buscadores)."""
+    guia = {g['slug']: g for g in GUIAS}
+    completo = next(c for c in checklists() if c.get('completo'))
+    partes = []
+    for k, nombre, bajada, icono, tema, slugs in TEMAS:
+        if k == 'normativa':
+            cuerpo = f'<p class="docs-lead">{esc(NORMATIVA_MENU["resumen"])}</p>{biblioteca(root)}'
+        else:
+            filas = ''.join(_fila_guia(guia[x], root) for x in slugs)
+            if k == 'permisos':  # el checklist de 50 puntos revisa todo el caso de autorización
+                filas += (f'<li class="ayu-guia" data-tema="rep"><span class="doc-icon">{ICO["hoja"]}</span><div class="ayu-guia-t">'
+                          f'<a class="ayu-guia-titulo" href="{root}ayuda/{completo["slug"]}.html" data-lista="{completo["slug"]}">{esc(completo["menu"])}</a>'
+                          f'<p>{completo["total"]} puntos para revisar todo un caso antes del retiro, en nueve bloques.</p><div class="ayu-acciones">'
+                          f'<a class="ayu-btn is-guia" href="{root}ayuda/{completo["slug"]}.html">Usar en línea{ICO["flecha"]}</a>{_xls(completo, root)}</div></div></li>')
+            cuerpo = f'<ul class="ayu-guias">{filas}</ul>'
+        partes.append(
+            f'<button class="ayu-tema" type="button" id="ayu-t-{k}" aria-expanded="false" aria-controls="ayu-{k}" data-ayu-tema="{k}" data-tema="{tema}">'
+            f'<span class="doc-icon">{ICO[icono]}</span><span class="ayu-tema-t"><strong>{esc(nombre)}</strong><small>{esc(bajada)}</small></span>'
+            f'<span class="ayu-tema-chev">{ICO["abajo"]}</span></button>'
+            f'<div class="ayu-detalle{" is-normativa" if k == "normativa" else ""}" id="ayu-{k}" role="region" aria-labelledby="ayu-t-{k}" data-ayu-detalle="{k}" inert>'
+            f'<div class="ayu-detalle-in">{cuerpo}</div></div>')
     pie = (f'<div class="docs-pie"><p>¿No encuentras lo que buscas?</p>'
            f'<button class="docs-pie-btn" type="button" data-dock-open="especialista">{ICO["especialista"]}<span>Hablar con un especialista</span></button></div>')
     return (f'<div class="docs-panel" id="docs-panel" data-docs-panel inert><div class="docs-inner"><div class="docs-scroll"><div class="docs-wrap">'
-            f'<div class="docs-cats" role="tablist" aria-label="Tipo de ayuda"><span class="docs-cats-glide" aria-hidden="true"></span>{tabs}</div>'
-            f'{panes}{pie}</div></div></div></div>')
+            f'<p class="ayu-titulo">Elige un tema</p><div class="ayu-temas">{"".join(partes)}</div>{pie}</div></div></div></div>')
 
 
 def boton_ayuda(root='', actual=False):

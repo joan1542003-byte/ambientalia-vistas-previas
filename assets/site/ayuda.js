@@ -1,9 +1,9 @@
-/* Transporte Autorizado: «Ayuda» en la cabecera (rediseño del 22-10-2026). Al elegirlo, la misma píldora de la cabecera
-   se expande y muestra arriba tres pestañas con lo que hay —Guías rápidas, Checklists y Normativa—, cada una con su
-   cantidad. Guías y checklists se ordenan por etapa del retiro (antes, al preparar, después); la normativa trae su
-   buscador. Al cambiar de pestaña el panel ajusta su alto con una animación corta y el contenido entra con un fundido.
-   El contenido viene en el HTML (tools/ayuda.py), así también lo leen los buscadores. Cualquier enlace con
-   [data-docs-open] abre el panel; con valor, en esa pestaña (data-docs-open="normativa" o "checklists").
+/* Transporte Autorizado: «Ayuda» en la cabecera (simplificada el 22-10-2026). Al elegirla, la misma píldora de la
+   cabecera se expande y muestra los temas (clasificar el residuo, autorizaciones y Ley REP, elegir quién retira,
+   preparar el retiro, después del retiro y normativa). Al elegir uno se despliega su ayuda debajo de su fila —en el
+   teléfono, debajo del tema—: sus guías, cada una con su checklist en línea y en Excel, o la normativa con su buscador.
+   Un tema a la vez; se cierra al elegirlo de nuevo. El contenido viene en el HTML (tools/ayuda.py), así también lo leen
+   los buscadores. Cualquier enlace con [data-docs-open] abre el panel; con valor, en ese tema (data-docs-open="normativa").
    También da la confirmación de las descargas ([data-download], [data-doc-pdf]). */
 (() => {
   const d = document;
@@ -24,62 +24,44 @@
   const panel = header?.querySelector('[data-docs-panel]');
   const triggers = [...d.querySelectorAll('[data-docs-open]')];
   if (!header || !panel || !triggers.length) return;
-  const tabs = [...panel.querySelectorAll('[data-docs-cat]')];
-  const panes = [...panel.querySelectorAll('[data-docs-pane]')];
-  const glide = panel.querySelector('.docs-cats-glide');
-  const inner = panel.querySelector('.docs-inner');
+  const temas = [...panel.querySelectorAll('[data-ayu-tema]')];
+  const detalleDe = (b) => panel.querySelector(`#${b.getAttribute('aria-controls')}`);
+  const temaDe = (k) => temas.find((b) => b.dataset.ayuTema === k) || null;
   const scroller = panel.querySelector('.docs-scroll');
   const toggle = header.querySelector('.menu-toggle');
-  const paneOf = (cat) => panes.find((p) => p.dataset.docsPane === cat);
-  const tabOf = (cat) => tabs.find((t) => t.dataset.docsCat === cat);
-  const ALIAS = { checklist: 'checklists', guia: 'guias', ayuda: null, documentos: null };
-  const catOf = (v) => (v in ALIAS ? ALIAS[v] : tabOf(v) ? v : null);
+  const ALIAS = { checklist: null, checklists: null, guias: null, ayuda: null, documentos: null };
+  const temaPedido = (v) => (v in ALIAS ? ALIAS[v] : temaDe(v) ? v : null);
   let open = false;
-  let current = 'guias';
+  let actual = null;
   let opener = null;
 
-  /* La página en que se está queda señalada, y el panel abre en su pestaña (checklist, guía o norma) */
+  /* La página en que se está queda señalada, y el panel abre en su tema (guía, checklist o norma) */
   const aqui = location.pathname.split('/').pop();
-  const propia = [...panel.querySelectorAll('.docs-card')].find((a) => a.getAttribute('href').split('/').pop() === aqui);
-  if (propia) propia.setAttribute('aria-current', 'page');
-  const inicial = propia?.closest('[data-docs-pane]')?.dataset.docsPane || (location.pathname.includes('/normativa/') ? 'normativa' : 'guias');
+  const propia = [...panel.querySelectorAll('.ayu-guia a[href]')].find((a) => a.getAttribute('href').split('/').pop() === aqui);
+  if (propia) propia.closest('.ayu-guia').setAttribute('aria-current', 'page');
+  const inicial = propia?.closest('[data-ayu-detalle]')?.dataset.ayuDetalle || (location.pathname.includes('/normativa/') ? 'normativa' : null);
 
-  /* Pestañas: la elegida lleva un fondo que se desliza bajo ella */
-  const placeGlide = (instant) => {
-    const t = tabOf(current);
-    if (!t || !glide) return;
-    glide.classList.toggle('is-instant', Boolean(instant) || !motion.matches);
-    glide.style.width = `${t.offsetWidth}px`;
-    glide.style.transform = `translateX(${t.offsetLeft}px)`;
-  };
-  let sizing = null;
-  const select = (cat, { instant = false, focus = false } = {}) => {
-    if (!tabOf(cat)) cat = 'guias';
-    const from = inner.offsetHeight;
-    const changed = cat !== current;
-    current = cat;
-    tabs.forEach((t) => {
-      const on = t.dataset.docsCat === cat;
-      t.setAttribute('aria-selected', String(on));
-      t.tabIndex = on ? 0 : -1;
+  /* Un tema a la vez: el elegido se despliega (alto animado en CSS) y, si no se ve entero, el panel lo acerca */
+  const elegir = (k, { acercar = true } = {}) => {
+    actual = k;
+    temas.forEach((b) => {
+      const on = b.dataset.ayuTema === k;
+      b.setAttribute('aria-expanded', String(on));
+      const det = detalleDe(b);
+      det.classList.toggle('is-on', on);
+      det.inert = !on;
     });
-    panes.forEach((p) => { p.hidden = p.dataset.docsPane !== cat; });
-    placeGlide(instant);
-    if (focus) tabOf(cat).focus({ preventScroll: true });
-    if (!changed || instant || !open || !motion.matches || !inner.animate) return;
-    if (scroller) scroller.scrollTop = 0;
-    /* Alto animado y entrada del contenido nuevo (el mismo lenguaje del hero) */
-    const to = inner.offsetHeight;
-    sizing?.cancel();
-    if (Math.abs(to - from) > 1) sizing = inner.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 440, easing: 'cubic-bezier(.32, .72, 0, 1)' });
-    const pane = paneOf(cat);
-    pane.classList.remove('is-entering');
-    void pane.offsetWidth;
-    pane.classList.add('is-entering');
+    if (!k || !acercar || !scroller) return;
+    const b = temaDe(k);
+    setTimeout(() => {
+      const caja = scroller.getBoundingClientRect();
+      const r = b.getBoundingClientRect();
+      if (r.top < caja.top || r.top > caja.top + caja.height * .45) scroller.scrollBy({ top: r.top - caja.top - 8, behavior: motion.matches ? 'smooth' : 'auto' });
+    }, motion.matches ? 120 : 0);
   };
 
-  const setOpen = (next, { focus = false, cat = null } = {}) => {
-    if (next === open) { if (open && cat) select(cat); return; }
+  const setOpen = (next, { focus = false, tema } = {}) => {
+    if (next === open) { if (open && tema !== undefined) elegir(tema); return; }
     open = next;
     header.classList.toggle('docs-open', open);
     d.documentElement.classList.toggle('docs-is-open', open);  // la burbuja «?» se aparta mientras el panel está abierto
@@ -87,38 +69,37 @@
     triggers.forEach((t) => t.setAttribute('aria-expanded', String(open)));
     if (toggle) toggle.setAttribute('aria-label', open ? 'Cerrar ayuda' : 'Abrir menú');
     if (open) {
-      sizing?.cancel();
-      select(cat || inicial, { instant: true, focus });
-      requestAnimationFrame(() => placeGlide(true));
+      if (scroller) scroller.scrollTop = 0;
+      elegir(tema !== undefined ? tema : inicial, { acercar: false });
+      if (focus) (temaDe(actual) || temas[0]).focus({ preventScroll: true });
     } else if (focus) (opener && opener.isConnected ? opener : triggers[0]).focus({ preventScroll: true });
   };
 
   triggers.forEach((t) => t.addEventListener('click', (e) => {
     e.preventDefault();
     opener = t.getClientRects().length ? t : toggle;
-    const cat = catOf(t.dataset.docsOpen || '');
-    /* Repetir el mismo enlace cierra el panel; pedir otra pestaña la cambia sin cerrarlo. Con teclado, el foco va a la pestaña */
-    setOpen(!(open && (!cat || cat === current)), { focus: e.detail === 0, cat });
+    const tema = temaPedido(t.dataset.docsOpen || '');
+    /* Repetir el mismo enlace cierra el panel; pedir otro tema lo cambia sin cerrarlo. Con teclado, el foco va al tema */
+    if (open && tema && tema !== actual) { elegir(tema); return; }
+    setOpen(!open, { focus: e.detail === 0, tema: tema || undefined });
   }));
-  /* Enlaces que llegan desde otra página: …#ayuda abre el panel, …#normativa o …#checklists en esa pestaña */
-  const HASH = { '#ayuda': null, '#documentos': null, '#guias': 'guias', '#normativa': 'normativa', '#checklist': 'checklists', '#checklists': 'checklists' };
+  /* Enlaces que llegan desde otra página: …#ayuda abre el panel; …#normativa, en la normativa */
+  const HASH = { '#ayuda': undefined, '#documentos': undefined, '#guias': undefined, '#checklist': undefined, '#checklists': undefined, '#normativa': 'normativa' };
   const fromHash = () => {
     if (!(location.hash in HASH)) return;
-    setOpen(true, { cat: HASH[location.hash] });
+    setOpen(true, { tema: HASH[location.hash] });
     history.replaceState(history.state, '', location.pathname + location.search);
   };
   fromHash();
   addEventListener('hashchange', fromHash);
 
-  tabs.forEach((t) => t.addEventListener('click', () => select(t.dataset.docsCat)));
-  /* Teclado en las pestañas: ← → (y Inicio/Fin) cambian de pestaña, como en cualquier lista de pestañas */
-  panel.querySelector('[role="tablist"]')?.addEventListener('keydown', (e) => {
-    const k = tabs.indexOf(d.activeElement);
-    if (k < 0) return;
-    const next = { ArrowRight: k + 1, ArrowLeft: k - 1, Home: 0, End: tabs.length - 1 }[e.key];
-    if (next === undefined) return;
+  temas.forEach((b) => b.addEventListener('click', () => elegir(b.getAttribute('aria-expanded') === 'true' ? null : b.dataset.ayuTema)));
+  /* Teclado: ↑ ↓ recorren los temas */
+  panel.querySelector('.ayu-temas')?.addEventListener('keydown', (e) => {
+    const k = temas.indexOf(d.activeElement);
+    if (k < 0 || !['ArrowDown', 'ArrowUp'].includes(e.key)) return;
     e.preventDefault();
-    select(tabs[(next + tabs.length) % tabs.length].dataset.docsCat, { focus: true });
+    temas[(k + (e.key === 'ArrowDown' ? 1 : -1) + temas.length) % temas.length].focus();
   });
 
   /* Cierre: Escape, tocar fuera, elegir un enlace o una acción, o pasar a leer (barra de lectura de las normas) */
@@ -140,6 +121,4 @@
     setOpen(false, { focus: false });
     toggle.focus({ preventScroll: true });
   }, true);
-  addEventListener('resize', () => { if (open) placeGlide(true); });
-  if ('ResizeObserver' in window) new ResizeObserver(() => { if (open) placeGlide(true); }).observe(panel.querySelector('[role="tablist"]'));
 })();

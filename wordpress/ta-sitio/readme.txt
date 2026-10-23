@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,12 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.2 =
+* Chat en el teléfono: ventana opaca de alto fijo (no cambia de tamaño al escribir) y el fondo desenfocado; con ahorro de batería, solo oscurecido. Tocar fuera lo cierra.
+* Ayuda por temas: se elige uno y se despliegan sus guías, con su checklist y su Excel, o la normativa.
+* El tipo de retiro elegido se enciende con una animación; el ícono de «Necesito gestionar mis residuos», sin brillo.
+* En el teléfono la página ya no se ensancha (el pie de cinco columnas era solo para escritorio).
 
 = 1.4.1 =
 * Imágenes del sitio en los ajustes: portada del inicio (escritorio y teléfono), foto de cada opción del hero y de cada servicio, desde la biblioteca de medios.

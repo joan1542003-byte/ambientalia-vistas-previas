@@ -192,20 +192,19 @@
     /* «Ayuda» de la cabecera: los checklists (cada uno en línea y en Excel); las guías se leen completas de sus páginas
        y la normativa, de su índice */
     intento(() => {
-      const pane = doc.querySelector('[data-docs-pane="checklists"]');
-      const filas = [...pane.querySelectorAll('.docs-cards li')];
+      const listas = [...doc.querySelectorAll('[data-docs-panel] a[data-lista]')];
       pasaje({
-        tipo: 'ayuda', grupo: 'checklist', titulo: 'Checklists', sub: 'Ayuda', parrafos: [texto(pane.querySelector('.docs-lead'))],
-        listas: [{ orden: false, items: filas.map((li) => ({ texto: `${texto(li.querySelector('strong'))} (${texto(li.querySelector('small'))})` })) }],
-        enlaces: filas.slice(0, 4).map((li) => ({ rotulo: texto(li.querySelector('strong')), href: li.querySelector('.docs-card').getAttribute('href') })),
+        tipo: 'ayuda', grupo: 'checklist', titulo: 'Checklists', sub: 'Ayuda', parrafos: ['Cada guía tiene su checklist: se usa en línea, marcando cada punto también en el teléfono, o se descarga en Excel.'],
+        listas: [{ orden: false, items: listas.map((a) => ({ texto: texto(a) })) }],
+        enlaces: listas.slice(0, 4).map((a) => ({ rotulo: texto(a), href: a.getAttribute('href') })),
         fuente: { pagina: PRINCIPAL, etiqueta: 'Ayuda › Checklists', hash: '#checklists', abre: true }, claves: 'checklist checklists planilla excel descargar lista de verificacion revisar caso pauta'
       });
     });
     fuentes.push({ fuerte: 'Página principal', texto: `${pasajes.length - antes} pasajes: inicio, servicios, planes, proceso, preguntas frecuentes, servicios relacionados y contacto.` });
     return {
-      guias: [...new Set([...doc.querySelectorAll('[data-docs-pane] [data-guia]')].map((x) => `ayuda/${x.dataset.guia}.html`))],
+      guias: [...new Set([...doc.querySelectorAll('[data-docs-panel] [data-guia]')].map((x) => `ayuda/${x.dataset.guia}.html`))],
       normas: doc.querySelector('[data-lib][data-src]')?.dataset.src,
-      biblioteca: doc.querySelector('[data-docs-pane="normativa"]')
+      biblioteca: doc.querySelector('[data-ayu-detalle="normativa"]')
     };
   };
 
@@ -722,11 +721,24 @@
   /* ---------- Burbuja y ventana ---------- */
   const abierto = () => !panel.hidden;
   let saliendo = 0;
+  /* Teléfono: lo de atrás se desenfoca (con ahorro de batería, solo se oscurece), la página no se desplaza debajo y
+     tocar fuera cierra el chat (pedido del 22-10-2026). En escritorio el fondo no se muestra (agente.css) */
+  const fondo = Object.assign(d.createElement('div'), { className: 'agente-fondo', hidden: true });
+  panel.before(fondo);
+  fondo.addEventListener('click', () => cerrar());
+  let fondoFuera = 0;
+  const conFondo = (si) => {
+    clearTimeout(fondoFuera);
+    d.documentElement.classList.toggle('agente-abierto', si);
+    if (si) { fondo.hidden = false; void fondo.offsetWidth; fondo.classList.add('is-on'); }  // el reflujo deja que la opacidad se anime
+    else { fondo.classList.remove('is-on'); fondoFuera = setTimeout(() => { fondo.hidden = true; }, 350); }
+  };
   const abrir = () => {
     if (abierto() && !panel.classList.contains('is-saliendo')) return;
     clearTimeout(saliendo);
     panel.classList.remove('is-saliendo');
     panel.hidden = false;
+    conFondo(true);
     boton.setAttribute('aria-expanded', 'true');
     if (enDock) marcarDock(true);
     else {
@@ -741,6 +753,7 @@
     if (!abierto() || panel.classList.contains('is-saliendo')) return;
     const dentro = panel.contains(d.activeElement);
     const fin = () => { panel.classList.remove('is-saliendo'); panel.hidden = true; seguir(); };
+    conFondo(false);
     boton.setAttribute('aria-expanded', 'false');
     if (enDock) marcarDock(false);
     else {
