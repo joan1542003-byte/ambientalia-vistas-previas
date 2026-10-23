@@ -1836,13 +1836,13 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
    (el ícono, sin brillo ni sombra: pedido del 22-10-2026) */
 .routes-tabs .route:first-of-type { position: relative; isolation: isolate; }
 .routes-tabs .route:first-of-type::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; padding: 1px; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .6s var(--ease);
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: .7;
   background: conic-gradient(from var(--ia-giro), rgb(235 169 252 / .9), rgb(255 255 255 / .15) 30%, rgb(168 223 253 / .75) 55%, rgb(255 255 255 / .15) 78%, rgb(235 169 252 / .9));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+  /* La máscara es un solo contorno (SVG del tamaño de la fila, trazo de 1 px visible): Safari, dentro del panel con
+     desenfoque, a veces pintaba la de dos capas (mask-composite) sin recortar, con toda la fila iluminada (23-10-2026) */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' rx='15' ry='15' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' rx='15' ry='15' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
 }
-/* El borde se enciende con la página ya cargada (site.js, .ta-cargada); sin JavaScript, desde el principio */
-html.ta-cargada .routes-tabs .route:first-of-type::before, html:not(.js) .routes-tabs .route:first-of-type::before { opacity: .7; }
 .routes-tabs .route:first-of-type[aria-selected="false"] { background: linear-gradient(100deg, rgb(103 8 199 / .26), rgb(103 8 199 / .05) 70%); }
 /* Cotizar: el tipo de retiro elegido brilla como «Chat con IA» de la burbuja: un borde de luz que gira y un halo que
    respira, en su color (23-10-2026; sin el destello al elegirlo, que se veía raro) */
@@ -1850,10 +1850,10 @@ html.ta-cargada .routes-tabs .route:first-of-type::before, html:not(.js) .routes
 .seg [data-modalidad] { position: relative; isolation: isolate; transition: box-shadow .45s var(--ease); }
 .seg [data-modalidad][aria-checked="true"] { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -8px color-mix(in srgb, var(--tone) 80%, transparent); }
 .seg [data-modalidad][aria-checked="true"]::before {
-  content: ""; position: absolute; inset: 0; z-index: 1; padding: 1.5px; border-radius: inherit; pointer-events: none;
+  content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none;
   background: conic-gradient(from var(--ia-giro), rgb(255 255 255 / .95), color-mix(in srgb, var(--tone) 35%, #fff) 30%, rgb(255 255 255 / .15) 50%, color-mix(in srgb, var(--tone) 35%, #fff) 70%, rgb(255 255 255 / .95));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' rx='11' ry='11' fill='none' stroke='%23000' stroke-width='3'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' rx='11' ry='11' fill='none' stroke='%23000' stroke-width='3'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
 }
 @media (prefers-reduced-motion: no-preference) {
   @keyframes ta-giro-suave { to { --ia-giro: 360deg; } }
