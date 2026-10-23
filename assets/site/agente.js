@@ -853,8 +853,12 @@
     let cuadro = 0;
     const medir = () => {
       if (!movil.matches || panel.hidden || vv.scale > 1.01) return;  // con zoom de pellizco no se toca nada
-      panel.style.setProperty('--vv-alto', `${Math.round(vv.height)}px`);
-      panel.style.setProperty('--vv-arriba', `${Math.round(vv.offsetTop)}px`);
+      /* La ventana cubre siempre toda la pantalla (su fondo sigue detrás del teclado); lo que se corre es el contenido:
+         arriba, lo que el teléfono desplazó; abajo, lo que tapa el teclado, medido contra la propia ventana (23-10-2026:
+         en Safari quedaba un hueco sobre el teclado por donde se veía la página) */
+      const cajaArriba = panel.offsetTop, cajaAbajo = panel.offsetTop + panel.offsetHeight;  // su caja, sin la animación de entrada
+      panel.style.setProperty('--vv-arriba', `${Math.max(0, Math.round(vv.offsetTop - cajaArriba))}px`);
+      panel.style.setProperty('--vv-abajo', `${Math.max(0, Math.round(cajaAbajo - vv.offsetTop - vv.height))}px`);
       const antes = panel.classList.contains('is-teclado');
       const teclado = innerHeight - vv.height - vv.offsetTop > 80 && panel.contains(d.activeElement);
       panel.classList.toggle('is-teclado', teclado);

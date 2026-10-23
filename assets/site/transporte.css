@@ -369,10 +369,10 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .picker-count { margin-right: auto; color: var(--muted); font-size: var(--fs-caption); font-weight: 700; }
 @media (max-width: 640px) {
   /* Pantalla completa, sobre el teclado si está abierto; el fondo se vela sin desenfoque (más fluido en el teléfono) */
-  .picker { padding: var(--vv-top, 0px) 0 var(--vv-bottom, 0px); }
+  .picker { padding: 0; }  /* el teclado lo esquiva el contenido de la tarjeta, no la ventana: el blanco sigue detrás del teclado */
   .picker[open] { place-items: stretch; }
   .picker::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(22 18 42 / .5); }
-  .picker-card { width: 100%; height: 100%; max-height: none; border-radius: 0; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); will-change: transform; }
+  .picker-card { width: 100%; height: 100%; max-height: none; border-radius: 0; padding-top: calc(env(safe-area-inset-top, 0px) + var(--vv-top, 0px)); padding-bottom: max(env(safe-area-inset-bottom, 0px), var(--vv-bottom, 0px)); will-change: transform; }
   .picker-grab { display: block; width: 40px; height: 4px; margin: 8px auto 0; border-radius: 99px; background: var(--line-strong); }
   .picker-head { padding: 10px 12px 10px 18px; }
   .picker-search { margin-inline: 18px; }
@@ -869,12 +869,14 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
 .sheet-open .dock { opacity: 0; visibility: hidden; }
 @media (max-width: 860px) { .docs-is-open .dock { opacity: 0; visibility: hidden; } }  /* en el teléfono el panel de ayuda ocupa la pantalla */
 .hero-sheet {
-  position: fixed; inset: var(--vv-top, 0px) 0 var(--vv-bottom, 0px); width: 100%; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  position: fixed; inset: 0; width: 100%; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
   border-radius: 0; background: transparent; color: var(--ink); overflow: hidden; overflow: clip;
 }
 .hero-sheet[open] { display: flex; flex-direction: column; }
 /* El <dialog> queda quieto; lo que sube es el panel */
-.sheet-panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); background: #fff; overflow: hidden; overflow: clip; will-change: transform; }
+/* La hoja cubre toda la pantalla; con el teclado, el contenido se corre con --vv-top y --vv-bottom (site.js) y el fondo
+   blanco sigue detrás del teclado: no queda un hueco por donde se vea la página (23-10-2026, Safari) */
+.sheet-panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; padding-top: calc(env(safe-area-inset-top, 0px) + var(--vv-top, 0px)); padding-bottom: var(--vv-bottom, 0px); background: #fff; overflow: hidden; overflow: clip; will-change: transform; }
 /* Punto de inicio del foco al abrir una ventana u hoja: fijo e invisible, fuera de lo que se anima */
 .dialog-start { position: absolute; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden; outline: none; }
 .hero-sheet::backdrop { background: rgb(22 18 42 / .5); }
