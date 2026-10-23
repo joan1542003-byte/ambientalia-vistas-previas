@@ -159,8 +159,8 @@
 
   /* ---------- Enlace a cada artículo (en pantallas con puntero) ---------- */
   const toast = (t) => window.SITE?.toast?.(t);
-  const LINK = '<svg class="i-link" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>'
-    + '<svg class="i-done" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const LINK = '<svg class="i-link" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+    + '<svg class="i-done" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
   if (matchMedia('(hover: hover)').matches) {
     text.querySelectorAll('.norm-art-h').forEach((h) => {
       const a = h.querySelector('a');
@@ -213,7 +213,7 @@
       sheet.setAttribute('aria-labelledby', 'toc-sheet-t');
       sheet.tabIndex = -1;
       sheet.innerHTML = `<div class="toc-sheet-head"><p><strong id="toc-sheet-t">Índice</strong><small>${short}</small></p>`
-        + `<button class="reader-btn" type="button" data-close aria-label="Cerrar índice"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`
+        + `<button class="reader-btn" type="button" data-close aria-label="Cerrar índice"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`
         + `<ol class="toc-sheet-list">${tocNav.querySelector('ol').innerHTML}</ol>`;
       sheet.querySelector('.norm-toc-glide')?.remove();
       d.body.append(sheet);

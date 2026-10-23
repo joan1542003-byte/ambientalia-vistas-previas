@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,11 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.4 =
+* Íconos de Lucide (licencia ISC) en todo el sitio de Transporte.
+* Chat en el teléfono: más alto (deja a la vista el menú) y, con el teclado abierto, ocupa el área visible sin quedar cortado. En escritorio, una sombra que lo separa del sitio.
+* El PDF de los checklists es un formulario para leer y llenar a mano: datos del caso, casillas por punto, observaciones y firma.
 
 = 1.4.3 =
 * Checklists: «Descargar Excel» entrega la planilla con las marcas puestas y «Descargar PDF», un PDF real (antes, la ventana de impresión).

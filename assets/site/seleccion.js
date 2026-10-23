@@ -486,7 +486,7 @@
      y la pantalla no se mueve; «Listo» queda sobre el teclado. El foco se da en el mismo toque para que el teclado abra. */
   /* Ventana de texto. Con `suggest` (función async que recibe lo escrito y una señal para cancelar) muestra sugerencias
      bajo el campo mientras se escribe; al elegir una, queda escrita y se puede seguir completando (bodega, piso…). */
-  const PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
+  const PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
   /* Fila con el mapa de la dirección (mapa.js). `map` lo arma MAPA.paraTexto(): { value, onDone(punto), onPlace({ comuna }),
      key(texto), parts(texto), locate(texto, comuna), search(texto, comuna), reverse(punto), near(texto, punto, metros), warm() } */
   /* El mapa está siempre a la vista (pedido del cliente, 02-10-2026): no es una opción que haya que abrir */

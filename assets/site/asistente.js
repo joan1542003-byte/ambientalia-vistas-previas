@@ -124,12 +124,12 @@
   };
   const heading = (s) => `${chat()}<h3 class="guide-q" tabindex="-1">${esc(s.ask)}</h3>${s.help ? `<p class="guide-help">${esc(s.help)}</p>` : ''}`;
   const ICON = {
-    next: '<svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
-    check: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
-    copy: '<svg width="20" height="20" class="icon-idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
-    done: '<svg width="20" height="20" class="icon-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
-    send: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10.5 13.5"/><path d="M21 3l-6.5 18-4-7.5L3 9.5z"/></svg>',
-    skip: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>'
+    next: '<svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+    check: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+    copy: '<svg width="20" height="20" class="icon-idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+    done: '<svg width="20" height="20" class="icon-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+    send: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>',
+    skip: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
   };
   const nextButton = (label, disabled = false) => `<div class="guide-next"><button type="button" class="btn btn-primary btn-small" data-continue${disabled ? ' disabled' : ''}>${label === 'Continuar' ? `${esc(label)} ${ICON.next}` : `${ICON.check}${esc(label)}`}</button></div>`;
   const enable = (on) => { const b = body.querySelector('[data-continue]'); if (b) b.disabled = !on; };
@@ -204,7 +204,7 @@
       const geo = s.id === 'direccion' && window.GEO;
       if (geo) window.GEO.prepare();
       const mapa = s.id === 'direccion' && window.MAPA && window.GEO;
-      body.innerHTML = `<div class="guide-step">${heading(s)}${geo ? `<ul class="text-suggest" data-geo aria-label="Sugerencias" hidden></ul><p class="text-source" hidden>${esc(window.GEO.fuente)}</p>` : ''}${mapa ? `<div class="text-map" data-guide-map><button type="button" class="map-open" data-guide-map-open aria-haspopup="dialog"><span class="map-open-icon" aria-hidden="true">${PIN}</span><span class="map-open-text"><strong></strong><small></small></span><span class="map-open-chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span></button></div>` : ''}</div>`;
+      body.innerHTML = `<div class="guide-step">${heading(s)}${geo ? `<ul class="text-suggest" data-geo aria-label="Sugerencias" hidden></ul><p class="text-source" hidden>${esc(window.GEO.fuente)}</p>` : ''}${mapa ? `<div class="text-map" data-guide-map><button type="button" class="map-open" data-guide-map-open aria-haspopup="dialog"><span class="map-open-icon" aria-hidden="true">${PIN}</span><span class="map-open-text"><strong></strong><small></small></span><span class="map-open-chev" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></button></div>` : ''}</div>`;
       input.value = value || '';
       paintMapRow();
       return;
@@ -417,7 +417,7 @@
     geoDraw([]);
     go(() => interpret(v));
   });
-  const PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
+  const PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
   let geoItems = [];
   let geoCtrl = null;
   let geoTimer = 0;

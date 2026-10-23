@@ -63,7 +63,7 @@
   };
   const margen = (m) => (m >= 950 ? `${String(Math.round(m / 100) / 10).replace('.', ',')} km` : `${Math.max(5, Math.round(m / 5) * 5)} m`);
   const PIN = '<svg width="38" height="46" viewBox="0 0 38 46" fill="none" aria-hidden="true"><path class="map-pin-body" d="M19 44S4 30.5 4 18a15 15 0 1 1 30 0c0 12.5-15 26-15 26z"/><circle class="map-pin-dot" cx="19" cy="18" r="5.5"/></svg>';
-  const MIRA = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="6.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>';
+  const MIRA = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" x2="5" y1="12" y2="12"/><line x1="19" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="5"/><line x1="12" x2="12" y1="19" y2="22"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/></svg>';
 
   /* Leaflet se descarga una sola vez, al abrir el primer mapa */
   let lib = null;

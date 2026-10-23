@@ -98,22 +98,22 @@
   const ic = (d) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
   const bars = (n) => ic([0, 1, 2, 3].map((i) => `<path d="M${5 + i * 4.5} 19v-${4 + i * 3}"${i < n ? '' : ' opacity=".25"'}/>`).join(''));
   const ICONS = {
-    help: ic('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01"/>'),
-    grid: ic('<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>'),
-    edit: ic('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),
-    sun: ic('<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>'),
-    sunset: ic('<path d="M4 18h16M7 18a5 5 0 0 1 10 0M12 6v3M5.5 11.5l1.5 1M18.5 11.5l-1.5 1"/>'),
-    clock: ic('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
-    moon: ic('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>')
+    help: ic('<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>'),
+    grid: ic('<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>'),
+    edit: ic('<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>'),
+    sun: ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>'),
+    sunset: ic('<path d="M12 10V2"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M16 18a4 4 0 0 0-8 0"/>'),
+    clock: ic('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'),
+    moon: ic('<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>')
   };
   const AMOUNT_ICONS = [bars(1), bars(2), bars(3), bars(4), ICONS.help];
   const STORAGE = [
     ['Sacos', ic('<path d="M8.5 4h7l-1.6 3.2c2.8 1.4 4.3 4.3 3.8 7.8A4 4 0 0 1 13.8 18h-3.6a4 4 0 0 1-3.9-3c-.5-3.5 1-6.4 3.8-7.8z"/>')],
-    ['Tambores', ic('<ellipse cx="12" cy="5.5" rx="6" ry="2"/><path d="M6 5.5v13c0 1.1 2.7 2 6 2s6-.9 6-2v-13M6 10.5c0 1.1 2.7 2 6 2s6-.9 6-2M6 15c0 1.1 2.7 2 6 2s6-.9 6-2"/>')],
-    ['Bins', ic('<path d="M4 8h16M6 8l1.1 11a2 2 0 0 0 2 1.8h5.8a2 2 0 0 0 2-1.8L18 8M9 8l1-4h4l1 4"/>')],
-    ['Contenedor', ic('<rect x="3" y="7" width="18" height="11" rx="1.5"/><path d="M7.5 7v11M12 7v11M16.5 7v11"/>')],
-    ['A granel', ic('<path d="M3 19c1.8-4.6 3.8-7.5 6-7.5 1.7 0 2.8 1.6 3.8 3.4.9-1.3 1.9-1.9 2.9-1.9 2 0 3.6 2.4 5.3 6z"/>')],
-    ['Otro', ic('<circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>')]
+    ['Tambores', ic('<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/>')],
+    ['Bins', ic('<rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/>')],
+    ['Contenedor', ic('<path d="M22 7.7c0-.6-.4-1.2-.8-1.5l-6.3-3.9a1.72 1.72 0 0 0-1.7 0l-10.3 6c-.5.2-.9.8-.9 1.4v6.6c0 .5.4 1.2.8 1.5l6.3 3.9a1.72 1.72 0 0 0 1.7 0l10.3-6c.5-.3.9-1 .9-1.5Z"/><path d="M10 21.9V14L2.1 9.1"/><path d="m10 14 11.9-6.9"/><path d="M14 19.8v-8.1"/><path d="M18 17.5V9.4"/>')],
+    ['A granel', ic('<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>')],
+    ['Otro', ic('<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>')]
   ];
   const STATES = ['Sólido', 'Líquido', 'Lodo', 'Mixto'];
   /* Almacenamiento posible según el estado del residuo (cliente, 22-10-2026): al elegir el estado, el resto se oculta */

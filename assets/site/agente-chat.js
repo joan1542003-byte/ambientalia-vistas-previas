@@ -683,11 +683,16 @@
   /* Teclado del teléfono: mientras se escribe, la ventana se apoya sobre el teclado y cabe en el área visible */
   const vv = window.visualViewport;
   if (vv) {
+    /* Con el teclado abierto (teléfono), la ventana se apoya arriba del área visible y ocupa lo que queda sobre el teclado:
+       así nunca queda una parte fuera de la pantalla. Al abrirse el teclado, la conversación baja a lo último */
     const ajustar = () => {
-      const bajo = vv.scale > 1.01 ? 0 : Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop));
+      const quieto = vv.scale <= 1.01;
+      const teclado = quieto ? Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop)) : 0;
       panel.style.setProperty('--vv-alto', `${Math.round(vv.height)}px`);
-      panel.style.setProperty('--vv-abajo', `${bajo}px`);
-      panel.classList.toggle('is-teclado', bajo > 80 && panel.contains(d.activeElement));
+      panel.style.setProperty('--vv-arriba', `${quieto ? Math.round(vv.offsetTop) : 0}px`);
+      const antes = panel.classList.contains('is-teclado');
+      panel.classList.toggle('is-teclado', teclado > 80 && panel.contains(d.activeElement));
+      if (!antes && panel.classList.contains('is-teclado')) { const c = panel.querySelector('[data-agente-charla]'); if (c) c.scrollTop = c.scrollHeight; }
     };
     vv.addEventListener('resize', ajustar);
     vv.addEventListener('scroll', ajustar);

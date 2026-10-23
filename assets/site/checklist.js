@@ -72,15 +72,19 @@
   const nombre = () => `${location.pathname.split('/').pop().replace(/\.html$/, '')}-${hoy()}`;
   const documento = () => {
     const vals = puntos.map((li) => li.dataset.estado);
-    const revisados = vals.filter((v) => v !== 'pendiente').length;
+    const cuenta = (v) => vals.filter((x) => x === v).length;
+    const lead = d.querySelector('.norm-lead')?.textContent.trim() || '';
     return {
       titulo: d.querySelector('h1').textContent.trim(),
-      sub: `Transporte Autorizado · Checklist · ${hoy()}`,
-      resumen: `${revisados} de ${puntos.length} puntos revisados${detalle.textContent}`,
+      descripcion: lead.split(' Toca el círculo')[0].split(' Para revisar un caso antes')[0],  // solo el para qué, sin las instrucciones de la página
+      fecha: hoy(),
+      resumen: [['de ' + puntos.length + ' revisados', vals.filter((v) => v !== 'pendiente').length, 'total']]
+        .concat(ESTADOS.filter(([v]) => v !== 'pendiente').map(([v, n]) => [n.toLowerCase(), cuenta(v), v])),
+      opciones: ESTADOS.filter(([v]) => v !== 'pendiente'),
       bloques: [...root.querySelectorAll('[data-ck-bloque]')].map((sec) => ({
         nombre: sec.querySelector('.ck-nombre').textContent.trim(),
         puntos: [...sec.querySelectorAll('.ck-punto')].map((li) => ({
-          n: li.dataset.n, valor: li.dataset.estado, estado: NOMBRE[li.dataset.estado],
+          n: li.dataset.n, valor: li.dataset.estado,
           texto: li.querySelector('.ck-criterio').textContent.replace(/^\d+/, '').trim(),
           detalle: li.querySelector('.ck-evidencia')?.textContent.trim() || ''
         }))

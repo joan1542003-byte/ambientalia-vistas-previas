@@ -28,30 +28,30 @@ def _i(p, w=20, sw=1.8):
 
 ICO = {
     'peligroso': _i(N.TEMA_ICON['peligrosos']),
-    'autorizacion': _i('<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'),
-    'contratar': _i('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/>'),
-    'normativa': _i('<path d="M4 20h16M6 20V10M18 20V10M10 20v-6h4v6M3 10l9-6 9 6"/>'),
-    'check': _i('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 18, 2.2),
-    'x': _i('<path d="M7 7l10 10M17 7L7 17"/>', 18, 2.2),
-    'flecha': _i('<path d="M5 12h14M13 6l6 6-6 6"/>', 18, 2),
-    'chev': _i('<path d="M9 6l6 6-6 6"/>', 18, 2),
-    'abajo': _i('<path d="M6 9l6 6 6-6"/>', 16, 2.2),
-    'descarga': _i('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', 18, 2),
-    'hoja': _i('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 12h6M10 16h6"/>'),
-    'especialista': _i('<path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/>', 18, 2),
-    'buscar': _i('<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>', 18, 2),
-    'volver': _i('<path d="M19 12H5M11 6l-6 6 6 6"/>', 20, 2),
-    'cotizar': _i('<path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/>', 18, 2),
-    'documentos': _i('<path d="M8 3h7l4 4v14H8z"/><path d="M15 3v4h4"/><path d="M5 6v15h11"/><path d="M11 12h5M11 15.5h5"/>'),
+    'autorizacion': _i('<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>'),
+    'contratar': _i('<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>'),
+    'normativa': _i('<line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/>'),
+    'check': _i('<path d="M20 6 9 17l-5-5"/>', 18, 2.2),
+    'x': _i('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', 18, 2.2),
+    'flecha': _i('<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>', 18, 2),
+    'chev': _i('<path d="m9 18 6-6-6-6"/>', 18, 2),
+    'abajo': _i('<path d="m6 9 6 6 6-6"/>', 16, 2.2),
+    'descarga': _i('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>', 18, 2),
+    'hoja': _i('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>'),
+    'especialista': _i('<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>', 18, 2),
+    'buscar': _i('<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>', 18, 2),
+    'volver': _i('<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>', 20, 2),
+    'cotizar': _i('<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/>', 18, 2),
+    'documentos': _i('<path d="M20 7h-3a2 2 0 0 1-2-2V2"/><path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z"/><path d="M3 7.6v12.8A1.6 1.6 0 0 0 4.6 22h9.8"/>'),
     'rep': _i(N.TEMA_ICON['rep']),
     'vehiculo': _i(N.TEMA_ICON['transporte']),
-    'errores': _i('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5.5M12 16.5h.01"/>'),
-    'preparar': _i('<path d="M4 9l8-4.5L20 9v9.5L12 23 4 18.5z" transform="translate(0 -1.5)"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9.5"/>'),
-    'despues': _i('<circle cx="5.5" cy="18" r="2"/><circle cx="18.5" cy="6" r="2"/><path d="M7.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h7.5"/>'),
-    'gestor': _i('<path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9.5 21v-5h5v5"/>'),
-    'lista': _i('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/>'),
-    'excel': _i('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 12l4 5M14 12l-4 5"/>', 18, 1.9),
-    'pdf': _i('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5L12 17l2.5-2.5"/>', 18, 1.9),
+    'errores': _i('<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>'),
+    'preparar': _i('<path d="M12 22v-9"/><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/>'),
+    'despues': _i('<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>'),
+    'gestor': _i('<path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z"/><path d="M6 18h12"/><path d="M6 14h12"/><rect width="12" height="12" x="6" y="10"/>'),
+    'lista': _i('<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>'),
+    'excel': _i('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/>', 18, 1.9),
+    'pdf': _i('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/>', 18, 1.9),
 }
 
 CHECKLIST = {
@@ -513,8 +513,8 @@ def fila_norma(n, root, i=0):
             f'<a class="doc-pdf" href="{root}{n["pdf"]}" download data-doc-pdf aria-label="Descargar PDF de {esc(n["corto"])}">{ICO["descarga"]}<span>PDF</span></a></li>')
 
 
-BUSCAR = _i('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>', 20, 2)
-CERRAR = _i('<path d="M6 6l12 12M18 6L6 18"/>', 20, 2)
+BUSCAR = _i('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>', 20, 2)
+CERRAR = _i('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>', 20, 2)
 
 
 def biblioteca(root):
@@ -747,8 +747,8 @@ def envoltura(titulo, descripcion, url, ld, tema, cuerpo, version, tools, clase=
       <span class="logo-ta" aria-hidden="true"></span>
     </a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
-      <svg width="20" height="20" class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
-      <svg width="20" height="20" class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <svg width="20" height="20" class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" x2="19" y1="9" y2="9"/><line x1="5" x2="19" y1="15" y2="15"/></svg>
+      <svg width="20" height="20" class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </button>
     <nav class="nav" id="nav" aria-label="Principal">
       {boton_ayuda(root, actual=True)}
@@ -884,7 +884,7 @@ def pagina_checklist(version, tools):
                 {'@type': 'ListItem', 'position': 3, 'name': 'Checklist de autorización'}]},
         ],
     }
-    chev = _i('<path d="M6 9l6 6 6-6"/>', 14, 2.4)
+    chev = _i('<path d="m6 9 6 6 6-6"/>', 14, 2.4)
     bloques = []
     for i, b in enumerate(datos['bloques'], 1):
         puntos = []
@@ -974,7 +974,7 @@ def pagina_checklist_cliente(c, version, tools):
                 {'@type': 'ListItem', 'position': 3, 'name': c['menu']}]},
         ],
     }
-    chev = _i('<path d="M6 9l6 6 6-6"/>', 14, 2.4)
+    chev = _i('<path d="m6 9 6 6 6-6"/>', 14, 2.4)
     bloques = []
     for i, b in enumerate(datos['bloques'], 1):
         puntos = []
