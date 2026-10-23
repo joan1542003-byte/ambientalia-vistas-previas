@@ -2,8 +2,8 @@
    del cliente, cada uno con sus marcas guardadas aparte (data-clave).
    Cada punto se marca con un toque en su círculo (Cumple ↔ Pendiente); sus otros estados (Por confirmar, No cumple,
    No aplica) se eligen en la ventana de selección del sitio. Las marcas quedan en este dispositivo (localStorage):
-   si no se pueden guardar, el checklist funciona igual mientras la página esté abierta. «Guardar con mis marcas»
-   imprime la página (o la guarda en PDF) con el estado de cada punto. */
+   si no se pueden guardar, el checklist funciona igual mientras la página esté abierta. «Descargar Excel» entrega la
+   planilla del cliente con el estado de cada punto ya puesto y «Descargar PDF», un PDF con lo mismo (exportar.js). */
 (() => {
   const d = document;
   const root = d.querySelector('article[data-checklist]');
@@ -17,7 +17,8 @@
   const detalle = root.querySelector('[data-ck-detalle]');
   const progreso = root.querySelector('[data-ck-progreso]');
   const borrar = root.querySelector('[data-ck-borrar]');
-  const imprimir = root.querySelector('[data-ck-imprimir]');
+  const botonPdf = root.querySelector('[data-ck-pdf]');
+  const botonExcel = root.querySelector('[data-ck-excel]');
   const toast = (t) => window.SITE?.toast?.(t);
 
   let marcas = {};
@@ -63,8 +64,29 @@
     pinta(li);
   });
   barra.hidden = false;
-  imprimir.hidden = false;
+  if (window.EXPORTAR) botonPdf.hidden = false;
   resume();
+
+  /* Para exportar: el nombre del archivo y el contenido, tal como se ve en la página */
+  const hoy = () => new Date().toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+  const nombre = () => `${location.pathname.split('/').pop().replace(/\.html$/, '')}-${hoy()}`;
+  const documento = () => {
+    const vals = puntos.map((li) => li.dataset.estado);
+    const revisados = vals.filter((v) => v !== 'pendiente').length;
+    return {
+      titulo: d.querySelector('h1').textContent.trim(),
+      sub: `Transporte Autorizado · Checklist · ${hoy()}`,
+      resumen: `${revisados} de ${puntos.length} puntos revisados${detalle.textContent}`,
+      bloques: [...root.querySelectorAll('[data-ck-bloque]')].map((sec) => ({
+        nombre: sec.querySelector('.ck-nombre').textContent.trim(),
+        puntos: [...sec.querySelectorAll('.ck-punto')].map((li) => ({
+          n: li.dataset.n, valor: li.dataset.estado, estado: NOMBRE[li.dataset.estado],
+          texto: li.querySelector('.ck-criterio').textContent.replace(/^\d+/, '').trim(),
+          detalle: li.querySelector('.ck-evidencia')?.textContent.trim() || ''
+        }))
+      }))
+    };
+  };
 
   root.addEventListener('click', async (e) => {
     const li = e.target.closest('.ck-punto');
@@ -93,6 +115,23 @@
       toast('Marcas borradas');
       return;
     }
-    if (e.target.closest('[data-ck-imprimir]')) window.print();
+    if (e.target.closest('[data-ck-pdf]')) {
+      try { window.EXPORTAR.bajar(window.EXPORTAR.pdf(documento()), `${nombre()}.pdf`); } catch { toast('No se pudo armar el PDF. Inténtalo de nuevo.'); }
+      return;
+    }
+    /* Excel: la planilla con las marcas; si este navegador no puede armarla, se descarga la planilla tal cual (el enlace) */
+    const xls = e.target.closest('[data-ck-excel]');
+    if (xls && window.EXPORTAR && !xls.dataset.directo) {
+      e.preventDefault();
+      try {
+        const puntosMarcados = puntos.filter((li) => li.dataset.estado !== 'pendiente').map((li) => [li.dataset.n, li.dataset.estado, NOMBRE[li.dataset.estado]]);
+        const blob = await window.EXPORTAR.excel({ url: xls.getAttribute('href'), formato: root.dataset.formato || 'cliente', puntos: puntosMarcados });
+        window.EXPORTAR.bajar(blob, `${nombre()}.xlsx`);
+      } catch {
+        xls.dataset.directo = '1';
+        xls.click();
+        delete xls.dataset.directo;
+      }
+    }
   });
 })();

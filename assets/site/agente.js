@@ -192,7 +192,7 @@
     /* «Ayuda» de la cabecera: los checklists (cada uno en línea y en Excel); las guías se leen completas de sus páginas
        y la normativa, de su índice */
     intento(() => {
-      const listas = [...doc.querySelectorAll('[data-docs-panel] a[data-lista]')];
+      const listas = [...new Map([...doc.querySelectorAll('[data-docs-panel] a[data-lista]')].map((a) => [a.getAttribute('href'), a])).values()];  // cada uno una vez
       pasaje({
         tipo: 'ayuda', grupo: 'checklist', titulo: 'Checklists', sub: 'Ayuda', parrafos: ['Cada guía tiene su checklist: se usa en línea, marcando cada punto también en el teléfono, o se descarga en Excel.'],
         listas: [{ orden: false, items: listas.map((a) => ({ texto: texto(a) })) }],

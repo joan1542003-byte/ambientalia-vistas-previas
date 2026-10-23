@@ -51,6 +51,7 @@ ICO = {
     'gestor': _i('<path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9.5 21v-5h5v5"/>'),
     'lista': _i('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/>'),
     'excel': _i('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 12l4 5M14 12l-4 5"/>', 18, 1.9),
+    'pdf': _i('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5L12 17l2.5-2.5"/>', 18, 1.9),
 }
 
 CHECKLIST = {
@@ -615,8 +616,11 @@ TEMAS = [
     ('proveedor', 'Elegir quién retira', 'Transportista, gestor y destino', 'contratar', 'registro', ['checklist-contratar-transportista', 'antes-de-entregar-residuos-a-un-gestor']),
     ('preparar', 'Preparar el retiro', 'Residuos, documentos y vehículo', 'preparar', 'almacenamiento', ['preparar-residuos-antes-del-retiro', 'documentos-retiro-residuos-peligrosos', 'requisitos-vehiculo-transporte-residuos', 'errores-comunes-retiro-residuos']),
     ('despues', 'Después del retiro', 'Destino, respaldos y trazabilidad', 'despues', 'registro', ['que-pasa-despues-del-retiro']),
+    # Documentos (23-10-2026: «agrega la categoría checklist»): todos los checklists juntos, y la normativa
+    ('checklists', 'Checklists', 'Pautas para revisar tu caso, en línea o en Excel', 'lista', 'rep', []),
     ('normativa', 'Normativa', 'El texto oficial de cada norma', 'normativa', 'marco', []),
 ]
+GRUPOS = [('Guías por tema', ['clasificar', 'permisos', 'proveedor', 'preparar', 'despues']), ('Documentos', ['checklists', 'normativa'])]
 
 
 def _xls(c, root):
@@ -644,6 +648,13 @@ def menu_html(root=''):
     for k, nombre, bajada, icono, tema, slugs in TEMAS:
         if k == 'normativa':
             cuerpo = f'<p class="docs-lead">{esc(NORMATIVA_MENU["resumen"])}</p>{biblioteca(root)}'
+        elif k == 'checklists':
+            filas = ''.join(
+                f'<li class="ayu-ck" data-tema="{c["tema"]}"><a class="ayu-ck-titulo" href="{root}ayuda/{c["slug"]}.html" data-lista="{c["slug"]}">'
+                f'<span class="doc-icon">{ICO["lista"]}</span><span><strong>{esc(c["titulo"])}</strong><small>{c["total"]} puntos'
+                f'{" · todo el caso" if c.get("completo") else ""}</small></span></a>{_xls(c, root)}</li>' for c in checklists())
+            cuerpo = (f'<p class="docs-lead">Úsalos en línea, marcando cada punto también en el teléfono, y descárgalos con tus marcas en Excel o PDF.</p>'
+                      f'<ul class="ayu-cks">{filas}</ul>')
         else:
             filas = ''.join(_fila_guia(guia[x], root) for x in slugs)
             if k == 'permisos':  # el checklist de 50 puntos revisa todo el caso de autorización
@@ -652,16 +663,18 @@ def menu_html(root=''):
                           f'<p>{completo["total"]} puntos para revisar todo un caso antes del retiro, en nueve bloques.</p><div class="ayu-acciones">'
                           f'<a class="ayu-btn is-guia" href="{root}ayuda/{completo["slug"]}.html">Usar en línea{ICO["flecha"]}</a>{_xls(completo, root)}</div></div></li>')
             cuerpo = f'<ul class="ayu-guias">{filas}</ul>'
-        partes.append(
+        partes.append((k,
             f'<button class="ayu-tema" type="button" id="ayu-t-{k}" aria-expanded="false" aria-controls="ayu-{k}" data-ayu-tema="{k}" data-tema="{tema}">'
             f'<span class="doc-icon">{ICO[icono]}</span><span class="ayu-tema-t"><strong>{esc(nombre)}</strong><small>{esc(bajada)}</small></span>'
             f'<span class="ayu-tema-chev">{ICO["abajo"]}</span></button>'
             f'<div class="ayu-detalle{" is-normativa" if k == "normativa" else ""}" id="ayu-{k}" role="region" aria-labelledby="ayu-t-{k}" data-ayu-detalle="{k}" inert>'
-            f'<div class="ayu-detalle-in">{cuerpo}</div></div>')
+            f'<div class="ayu-detalle-in">{cuerpo}</div></div>'))
     pie = (f'<div class="docs-pie"><p>¿No encuentras lo que buscas?</p>'
            f'<button class="docs-pie-btn" type="button" data-dock-open="especialista">{ICO["especialista"]}<span>Hablar con un especialista</span></button></div>')
+    html = dict(partes)
+    grupos = ''.join(f'<p class="ayu-titulo">{esc(nombre)}</p><div class="ayu-temas">{"".join(html[k] for k in claves)}</div>' for nombre, claves in GRUPOS)
     return (f'<div class="docs-panel" id="docs-panel" data-docs-panel inert><div class="docs-inner"><div class="docs-scroll"><div class="docs-wrap">'
-            f'<p class="ayu-titulo">Elige un tema</p><div class="ayu-temas">{"".join(partes)}</div>{pie}</div></div></div></div>')
+            f'{grupos}{pie}</div></div></div></div>')
 
 
 def boton_ayuda(root='', actual=False):
@@ -890,15 +903,14 @@ def pagina_checklist(version, tools):
             f'<small class="ck-avance" data-ck-avance>{len(b["puntos"])} puntos</small></h2>'
             f'<ol class="ck-lista">{"".join(puntos)}</ol></section>')
     leyenda = ''.join(f'<li class="{k}"><i aria-hidden="true"></i>{esc(nombre)}</li>' for _, nombre, k in ESTADOS)
-    imprimir = _i('<path d="M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/>', 18, 2)
     cuerpo = f'''<main id="contenido">
-  <article class="container guia ck" data-checklist data-clave="ta-checklist-autorizacion" data-total="{total}" data-estados='{esc(json.dumps([[v, n] for v, n, _ in ESTADOS], ensure_ascii=False))}'>
+  <article class="container guia ck" data-checklist data-formato="casillas" data-clave="ta-checklist-autorizacion" data-total="{total}" data-estados='{esc(json.dumps([[v, n] for v, n, _ in ESTADOS], ensure_ascii=False))}'>
     <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#checklists" data-docs-open="checklists">Checklists</a><span aria-hidden="true">/</span><span aria-current="page">Revisión completa de autorización</span></nav>
     <header class="guia-head">
       <p class="norm-kind"><span class="doc-icon">{ICO["hoja"]}</span>Checklist · {total} puntos en {len(datos["bloques"])} bloques</p>
       <h1 class="norm-title">{esc(c["titulo"])}</h1>
       <p class="norm-lead">Para revisar un caso antes de coordinar el retiro. Toca el círculo de cada punto cuando lo hayas verificado; si queda pendiente de confirmar, no cumple o no aplica, cámbialo en su estado. Tus marcas quedan guardadas en este dispositivo.</p>
-      <div class="norm-actions guia-actions"><a class="btn btn-ink btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar en Excel</span></a><button class="btn btn-quiet btn-small" type="button" data-ck-imprimir hidden>{imprimir}<span>Guardar con mis marcas (PDF)</span></button></div>
+      <div class="norm-actions guia-actions"><a class="btn btn-ink btn-small" href="{root}{c["archivo"]}" download data-download data-ck-excel data-toast="Descargando el checklist con tus marcas (Excel)">{ICO["excel"]}<span>Descargar Excel</span></a><button class="btn btn-quiet btn-small" type="button" data-ck-pdf data-download data-toast="Descargando el checklist con tus marcas (PDF)" hidden>{ICO["pdf"]}<span>Descargar PDF</span></button></div>
     </header>
 
     <div class="ck-barra" data-ck-barra hidden>
@@ -919,7 +931,7 @@ def pagina_checklist(version, tools):
   </article>
 </main>'''
     return envoltura(c['titulo'], descripcion, url, ld, 'rep', cuerpo, version, tools, clase=' ck-page',
-                     scripts=f'\n<script src="../assets/site/checklist.js?v={version}" defer></script>')
+                     scripts=f'\n<script src="../assets/site/exportar.js?v={version}" defer></script>\n<script src="../assets/site/checklist.js?v={version}" defer></script>')
 
 
 ESTADOS_4 = [('pendiente', 'Pendiente', ''), ('cumple', 'Cumple', 'is-ok'), ('no-cumple', 'No cumple', 'is-no'), ('no-aplica', 'No aplica', 'is-na')]
@@ -982,15 +994,14 @@ def pagina_checklist_cliente(c, version, tools):
             f'<small class="ck-avance" data-ck-avance>{len(b["puntos"])} {"punto" if len(b["puntos"]) == 1 else "puntos"}</small></h2>'
             f'<ol class="ck-lista">{"".join(puntos)}</ol></section>')
     leyenda = ''.join(f'<li class="{k}"><i aria-hidden="true"></i>{esc(nombre)}</li>' for _, nombre, k in ESTADOS_4)
-    imprimir = _i('<path d="M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/>', 18, 2)
     cuerpo = f"""<main id="contenido">
-  <article class="container guia ck is-cliente" data-checklist data-clave="ta-{c["slug"]}" data-total="{total}" data-estados='{esc(json.dumps([[v, n] for v, n, _ in ESTADOS_4], ensure_ascii=False))}'>
+  <article class="container guia ck is-cliente" data-checklist data-formato="cliente" data-clave="ta-{c["slug"]}" data-total="{total}" data-estados='{esc(json.dumps([[v, n] for v, n, _ in ESTADOS_4], ensure_ascii=False))}'>
     <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#checklists" data-docs-open="checklists">Checklists</a><span aria-hidden="true">/</span><span aria-current="page">{esc(c["menu"])}</span></nav>
     <header class="guia-head">
       <p class="norm-kind"><span class="doc-icon">{ICO["lista"]}</span>Checklist · {total} puntos</p>
       <h1 class="norm-title">{esc(c["titulo"])}</h1>
       <p class="norm-lead">{esc(datos["finalidad"])} Toca el círculo de cada punto cuando lo hayas verificado; si no cumple o no aplica, cámbialo en su estado. Tus marcas quedan guardadas en este dispositivo.</p>
-      <div class="norm-actions guia-actions"><a class="btn btn-ink btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar en Excel</span></a><a class="btn btn-quiet btn-small" href="{g["slug"]}.html">{ICO[g["icono"]]}<span>Leer la guía</span></a><button class="btn btn-quiet btn-small" type="button" data-ck-imprimir hidden>{imprimir}<span>Guardar con mis marcas (PDF)</span></button></div>
+      <div class="norm-actions guia-actions"><a class="btn btn-ink btn-small" href="{root}{c["archivo"]}" download data-download data-ck-excel data-toast="Descargando el checklist con tus marcas (Excel)">{ICO["excel"]}<span>Descargar Excel</span></a><a class="btn btn-quiet btn-small" href="{g["slug"]}.html">{ICO[g["icono"]]}<span>Leer la guía</span></a><button class="btn btn-quiet btn-small" type="button" data-ck-pdf data-download data-toast="Descargando el checklist con tus marcas (PDF)" hidden>{ICO["pdf"]}<span>Descargar PDF</span></button></div>
     </header>
 
     <div class="ck-barra" data-ck-barra hidden>
@@ -1014,7 +1025,7 @@ def pagina_checklist_cliente(c, version, tools):
   </article>
 </main>"""
     return envoltura(c['titulo'], descripcion, url, ld, g['tema'], cuerpo, version, tools, clase=' ck-page',
-                     scripts=f'\n<script src="../assets/site/checklist.js?v={version}" defer></script>')
+                     scripts=f'\n<script src="../assets/site/exportar.js?v={version}" defer></script>\n<script src="../assets/site/checklist.js?v={version}" defer></script>')
 
 
 def validar_checklists():

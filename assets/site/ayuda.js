@@ -1,6 +1,6 @@
 /* Transporte Autorizado: «Ayuda» en la cabecera (simplificada el 22-10-2026). Al elegirla, la misma píldora de la
    cabecera se expande y muestra los temas (clasificar el residuo, autorizaciones y Ley REP, elegir quién retira,
-   preparar el retiro, después del retiro y normativa). Al elegir uno se despliega su ayuda debajo de su fila —en el
+   preparar el retiro y después del retiro) y los documentos (checklists y normativa). Al elegir uno se despliega su ayuda debajo de su fila —en el
    teléfono, debajo del tema—: sus guías, cada una con su checklist en línea y en Excel, o la normativa con su buscador.
    Un tema a la vez; se cierra al elegirlo de nuevo. El contenido viene en el HTML (tools/ayuda.py), así también lo leen
    los buscadores. Cualquier enlace con [data-docs-open] abre el panel; con valor, en ese tema (data-docs-open="normativa").
@@ -29,7 +29,7 @@
   const temaDe = (k) => temas.find((b) => b.dataset.ayuTema === k) || null;
   const scroller = panel.querySelector('.docs-scroll');
   const toggle = header.querySelector('.menu-toggle');
-  const ALIAS = { checklist: null, checklists: null, guias: null, ayuda: null, documentos: null };
+  const ALIAS = { checklist: 'checklists', guias: null, ayuda: null, documentos: null };
   const temaPedido = (v) => (v in ALIAS ? ALIAS[v] : temaDe(v) ? v : null);
   let open = false;
   let actual = null;
@@ -37,8 +37,10 @@
 
   /* La página en que se está queda señalada, y el panel abre en su tema (guía, checklist o norma) */
   const aqui = location.pathname.split('/').pop();
-  const propia = [...panel.querySelectorAll('.ayu-guia a[href]')].find((a) => a.getAttribute('href').split('/').pop() === aqui);
-  if (propia) propia.closest('.ayu-guia').setAttribute('aria-current', 'page');
+  const es = (a) => a.getAttribute('href').split('/').pop() === aqui;
+  /* Un checklist se señala en «Checklists»; una guía, en su tema */
+  const propia = [...panel.querySelectorAll('.ayu-ck a[href]')].find(es) || [...panel.querySelectorAll('.ayu-guia a[href]')].find(es);
+  if (propia) propia.closest('.ayu-ck, .ayu-guia').setAttribute('aria-current', 'page');
   const inicial = propia?.closest('[data-ayu-detalle]')?.dataset.ayuDetalle || (location.pathname.includes('/normativa/') ? 'normativa' : null);
 
   /* Un tema a la vez: el elegido se despliega (alto animado en CSS) y, si no se ve entero, el panel lo acerca */
@@ -84,7 +86,7 @@
     setOpen(!open, { focus: e.detail === 0, tema: tema || undefined });
   }));
   /* Enlaces que llegan desde otra página: …#ayuda abre el panel; …#normativa, en la normativa */
-  const HASH = { '#ayuda': undefined, '#documentos': undefined, '#guias': undefined, '#checklist': undefined, '#checklists': undefined, '#normativa': 'normativa' };
+  const HASH = { '#ayuda': undefined, '#documentos': undefined, '#guias': undefined, '#checklist': 'checklists', '#checklists': 'checklists', '#normativa': 'normativa' };
   const fromHash = () => {
     if (!(location.hash in HASH)) return;
     setOpen(true, { tema: HASH[location.hash] });
@@ -95,7 +97,7 @@
 
   temas.forEach((b) => b.addEventListener('click', () => elegir(b.getAttribute('aria-expanded') === 'true' ? null : b.dataset.ayuTema)));
   /* Teclado: ↑ ↓ recorren los temas */
-  panel.querySelector('.ayu-temas')?.addEventListener('keydown', (e) => {
+  panel.addEventListener('keydown', (e) => {
     const k = temas.indexOf(d.activeElement);
     if (k < 0 || !['ArrowDown', 'ArrowUp'].includes(e.key)) return;
     e.preventDefault();
