@@ -11,8 +11,8 @@ Este programa separa el original por color, sin redibujar nada, y escribe:
   assets/transporte/logo/claro.svg      lo que va en el color claro   ┐ máscaras: el sitio las pinta con CSS (va abajo lo
   assets/transporte/logo/oscuro.svg     lo que va en el color oscuro  ┘ claro y encima lo oscuro, como en el original), así
                                                                           el logo cambia de colores mientras se le pasa el puntero
-  assets/transporte/favicon.svg         ícono de la pestaña: una placa chica con la «T» y la «A» del logotipo
-  assets/transporte/apple-touch-icon.png   lo mismo, para la pantalla de inicio del teléfono (180 × 180)
+  (El ícono de la pestaña ya no sale de aquí: es el camión que entregó el cliente el 22-10-2026, favicon-48.png,
+  favicon-192.png y apple-touch-icon.png en assets/transporte/, hechos desde favicon-426.png.)
   assets/transporte/logo/logotipo-correo.png   el logotipo en PNG para el encabezado de los correos (muchos
                                          programas de correo no muestran SVG)
 
@@ -93,11 +93,10 @@ def main():
              f'<path fill="{OSCURO}"{tr} transform="{poner(tx0, ty0, tx1, ty1, (MARCO + medio) / 2)}" d="{td}"/>'
              f'<path fill="{CLARO}"{ar} transform="{poner(ax0, ay0, ax1, ay1, (medio + LADO - MARCO) / 2)}" d="{ad}"/>'
              '</svg>\n')
-    FAVICON.write_text(icono, encoding='utf-8')
-    subprocess.run(['sips', '-s', 'format', 'png', '-z', '180', '180', str(FAVICON), '--out', str(TOQUE)], check=True, capture_output=True)
+    _ = icono  # el ícono de la pestaña es el camión del cliente (22-10-2026): no se reemplaza
     correo = DESTINO / 'logotipo-correo.png'
     subprocess.run(['sips', '-s', 'format', 'png', '-z', str(round(600 * h / w)), '600', str(DESTINO / 'logotipo.svg'), '--out', str(correo)], check=True, capture_output=True)
-    for f in (DESTINO / 'logotipo.svg', DESTINO / 'claro.svg', DESTINO / 'oscuro.svg', FAVICON, TOQUE, correo):
+    for f in (DESTINO / 'logotipo.svg', DESTINO / 'claro.svg', DESTINO / 'oscuro.svg', correo):
         print(f'{f.relative_to(ROOT)}  {f.stat().st_size / 1024:.1f} KB')
     print(f'Proporción del logotipo: {w:.0f} / {h:.0f} (va en .logo-ta, assets/site/transporte.css)')
 

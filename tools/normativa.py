@@ -494,7 +494,8 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 <meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" href="../assets/transporte/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/transporte/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="../assets/transporte/favicon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

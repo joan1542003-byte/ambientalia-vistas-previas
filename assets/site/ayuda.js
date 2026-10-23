@@ -44,8 +44,13 @@
   const inicial = propia?.closest('[data-ayu-detalle]')?.dataset.ayuDetalle || (location.pathname.includes('/normativa/') ? 'normativa' : null);
 
   /* Un tema a la vez: el elegido se despliega (alto animado en CSS) y, si no se ve entero, el panel lo acerca */
+  const wrap = panel.querySelector('.docs-wrap');
+  const volverTemas = panel.querySelector('[data-ayu-volver]');
+  /* Al elegir un tema, los demás se van y queda solo el elegido, con «Todos los temas» para volver (23-10-2026) */
   const elegir = (k, { acercar = true } = {}) => {
     actual = k;
+    wrap?.classList.toggle('is-tema', Boolean(k));
+    if (volverTemas) volverTemas.hidden = !k;
     temas.forEach((b) => {
       const on = b.dataset.ayuTema === k;
       b.setAttribute('aria-expanded', String(on));
@@ -53,13 +58,8 @@
       det.classList.toggle('is-on', on);
       det.inert = !on;
     });
-    if (!k || !acercar || !scroller) return;
-    const b = temaDe(k);
-    setTimeout(() => {
-      const caja = scroller.getBoundingClientRect();
-      const r = b.getBoundingClientRect();
-      if (r.top < caja.top || r.top > caja.top + caja.height * .45) scroller.scrollBy({ top: r.top - caja.top - 8, behavior: motion.matches ? 'smooth' : 'auto' });
-    }, motion.matches ? 120 : 0);
+    if (scroller) scroller.scrollTop = 0;
+    void acercar;
   };
 
   const setOpen = (next, { focus = false, tema } = {}) => {
@@ -96,6 +96,11 @@
   addEventListener('hashchange', fromHash);
 
   temas.forEach((b) => b.addEventListener('click', () => elegir(b.getAttribute('aria-expanded') === 'true' ? null : b.dataset.ayuTema)));
+  volverTemas?.addEventListener('click', () => {
+    const antes = actual;
+    elegir(null);
+    temaDe(antes)?.focus({ preventScroll: true });
+  });
   /* Teclado: ↑ ↓ recorren los temas */
   panel.addEventListener('keydown', (e) => {
     const k = temas.indexOf(d.activeElement);

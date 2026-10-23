@@ -674,6 +674,7 @@ def menu_html(root=''):
     html = dict(partes)
     grupos = ''.join(f'<p class="ayu-titulo">{esc(nombre)}</p><div class="ayu-temas">{"".join(html[k] for k in claves)}</div>' for nombre, claves in GRUPOS)
     return (f'<div class="docs-panel" id="docs-panel" data-docs-panel inert><div class="docs-inner"><div class="docs-scroll"><div class="docs-wrap">'
+            f'<button class="ayu-volver" type="button" data-ayu-volver hidden>{ICO["volver"]}<span>Todos los temas</span></button>'
             f'{grupos}{pie}</div></div></div></div>')
 
 
@@ -727,7 +728,8 @@ def envoltura(titulo, descripcion, url, ld, tema, cuerpo, version, tools, clase=
 <meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" href="../assets/transporte/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/transporte/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="../assets/transporte/favicon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
