@@ -8,8 +8,8 @@
      dice que el asistente no está disponible y no llama a nada. `?agente=maqueta` fuerza la maqueta en local. La
      misma condición está en agente.js.
    - Antes de conversar se piden nombre, correo y teléfono, y la aceptación de las condiciones y el aviso de privacidad:
-     así lo exige el servicio, que entrega a cambio una sesión. En la pestaña se guarda solo el token, su vencimiento y
-     cuántas fotos se subieron; la conversación se recupera del servicio al volver (GET /history).
+     así lo exige el servicio, que entrega a cambio una sesión. La pestaña conserva el token, su vencimiento, el contador
+     de fotos y el envío sin respuesta confirmada; el historial se recupera del servicio al volver (GET /history).
    - Cada mensaje lleva su identificador (client_message_id) y lo conserva en cada reintento: si el servicio ya lo
      procesó, devuelve la misma respuesta sin ejecutarlo otra vez. Si la espera se agota (`data-agente-espera`, en
      segundos; 90 por omisión; o un 504 del proxy) o el servicio responde «ocupado» (409 busy), se reintenta solo dos
@@ -360,6 +360,12 @@
   /* El mensaje que todavía no tiene respuesta confirmada. Conserva su identificador hasta que el servicio responde o la
      persona escribe otra cosa: así un reintento nunca se procesa dos veces */
   let pendiente = null;  // { id, cuerpo, visible, auto, manuales, nota }
+  const guardarPendiente = () => {
+    if (!sesion) return;
+    if (pendiente) sesion.pendiente = { id: pendiente.id, cuerpo: pendiente.cuerpo, visible: pendiente.visible };
+    else delete sesion.pendiente;
+    guardar(sesion);
+  };
   const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '') && JSON.stringify(a.form_values || null) === JSON.stringify(b.form_values || null);
   /* «visible» es lo que se ve como mensaje propio; sin él (reiniciar) el turno no se muestra */
   const enviar = (cuerpo, visible) => {
@@ -367,6 +373,7 @@
     if (pendiente && mismo(pendiente.cuerpo, cuerpo)) { reintentar(); return; }  // lo mismo otra vez: el mismo mensaje
     pendiente?.nota?.remove();
     pendiente = { id: idMensaje(), cuerpo, visible, auto: 0, manuales: 0, nota: null };
+    guardarPendiente();
     if (visible) decirYo(visible);
     turno();
   };
@@ -399,16 +406,18 @@
     ocupado = false;
     if (pendiente !== p) return;
     const { estado, json } = r;
-    if (estado === 200 && json.reply && typeof json.reply === 'object') { pendiente = null; respuesta(json.reply, json.usage); return; }
-    if (estado === 200 && json.duplicate) { pendiente = null; uso(json.usage); aviso('Ese mensaje ya lo había recibido. Sigue cuando quieras.'); return; }
+    if (estado === 200 && json.reply && typeof json.reply === 'object') { pendiente = null; guardarPendiente(); respuesta(json.reply, json.usage); return; }
+    if (estado === 200 && json.duplicate) { pendiente = null; guardarPendiente(); uso(json.usage); aviso('Ese mensaje ya lo había recibido. Sigue cuando quieras.'); return; }
     if (estado === 401) { pendiente = null; vencida(p.cuerpo.text && p.visible); return; }
     if (estado === 409 && json.error === 'idempotency_conflict') {
       pendiente = null;
+      guardarPendiente();
       aviso(typeof json.message === 'string' && json.message ? json.message : 'Ese envío ya se registró con otros datos. Empieza de nuevo si quieres cambiarlos.');
       return;
     }
     if (estado === 403 || estado === 422) {
       pendiente = null;
+      guardarPendiente();
       /* 422: texto vacío o demasiado largo; la validación del turno no tiene textos propios en el asistente */
       aviso(estado === 403 ? 'El asistente no está disponible desde esta página.' : 'No pude enviar ese mensaje. Revisa lo que escribiste y vuelve a intentarlo.');
       if (estado === 422 && p.cuerpo.text && !campo.value) campo.value = p.cuerpo.text;
@@ -422,6 +431,7 @@
       : (json.error === 'unavailable' && typeof json.message === 'string' && json.message) || 'No pude responder en este momento. Vuelve a intentarlo en un rato.';
     if (p.manuales >= REINTENTOS) {
       pendiente = null;
+      guardarPendiente();
       aviso('No pude responder este mensaje. Escríbelo de nuevo más tarde o, si prefieres, usa el formulario o WhatsApp.');
       return;
     }
@@ -446,11 +456,20 @@
     uso(json.usage);
     if (Number.isInteger(json.photos) && json.photos >= 0) { sesion.fotos = json.photos; guardar(sesion); }
     const mensajes = json.messages.filter((m) => m && typeof m.text === 'string');
-    if (!mensajes.length) { reiniciar(); return; }
+    const guardado = sesion.pendiente;
+    const recuperable = guardado && /^[A-Za-z0-9_-]{1,64}$/.test(guardado.id) && guardado.cuerpo && typeof guardado.cuerpo === 'object';
+    const respondido = recuperable && mensajes.some((m) => m.role === 'assistant' && m.client_message_id === guardado.id);
+    if (respondido) { delete sesion.pendiente; guardar(sesion); }
+    if (!mensajes.length && !recuperable) { reiniciar(); return; }
     const ultimo = mensajes[mensajes.length - 1];
-    form.hidden = Boolean(ultimo.form);
+    form.hidden = Boolean(ultimo?.form);
     mensajes.forEach((m) => (m.role === 'user' ? decirYo(m.text) : decir(m, { opciones: m === ultimo })));
-    if (ultimo.role === 'user') {
+    if (recuperable && !respondido) {
+      pendiente = { ...guardado, auto: 0, manuales: 0, nota: null };
+      if (pendiente.visible && !mensajes.some((m) => m.role === 'user' && m.client_message_id === pendiente.id)) decirYo(pendiente.visible);
+      form.hidden = false;
+      pendiente.nota = avisoCon('Quedó un envío sin respuesta confirmada. Puedes reintentarlo sin duplicarlo.', [['Reintentar', reintentar]]);
+    } else if (ultimo?.role === 'user') {
       /* Un turno sin respuesta (en curso o fallido): se puede volver a leer, sin enviarlo otra vez */
       avisoCon('Tu último mensaje todavía no tiene respuesta.', [['Actualizar', () => { if (ocupado) return; charla.textContent = ''; retomar(); }]]);
     }
@@ -677,6 +696,7 @@
   panel.querySelector('[data-agente-nuevo]').addEventListener('click', () => {
     if (ocupado || !API) return;
     pendiente = null;
+    guardarPendiente();
     confirmacion = null;
     charla.textContent = '';
     if (!sesion) { puerta(); return; }

@@ -62,7 +62,9 @@ def limpio(fragmento):
 # Correcciones del cliente que el asistente aún no publica (se aplican sobre su texto): se quitan cuando ya las traiga
 CORRECCIONES = {
     'politica-de-privacidad': [('Servidores donde funciona el asistente y se guardan las conversaciones y las solicitudes.</td><td>Por confirmar</td>',
-                                'Servidores donde funciona el asistente y se guardan las conversaciones y las solicitudes.</td><td>Chile</td>')],  # 22-10-2026
+                                'Servidores donde funciona el asistente y se guardan las conversaciones y las solicitudes.</td><td>Chile</td>'),
+                               ('el sitio desde el que entraste y las fechas de uso.</li></ul>',
+                                'el sitio desde el que entraste y las fechas de uso.</li><li><strong>En tu dispositivo:</strong> la pestaña guarda el código de tu sesión y, mientras un envío no tenga respuesta confirmada, su contenido e identificador para que puedas reintentarlo después de recargar sin duplicarlo. El envío temporal se elimina al recibir la respuesta o descartar el envío; estos datos se pierden al cerrar la pestaña o borrar la conversación.</li></ul>')],
 }
 
 

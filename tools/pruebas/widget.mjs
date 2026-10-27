@@ -581,6 +581,27 @@ try {
     ok(de('/history', 'GET').length === 2 && de('/messages', 'POST').length === 0, 'último mensaje sin respuesta: «Actualizar» vuelve a leer el historial, sin reenviar el mensaje');
 
     reiniciarAsistente();
+    const original = { id: 'recarga-b28', cuerpo: { text: 'Retomar exactamente este mensaje' }, visible: 'Retomar exactamente este mensaje' };
+    await evaluar((p) => { const s = JSON.parse(sessionStorage.getItem('agente-chat')); s.pendiente = p; sessionStorage.setItem('agente-chat', JSON.stringify(s)); return true; }, original);
+    S.historial = [{ role: 'user', text: original.visible, client_message_id: original.id }];
+    await navegar(local(), { limpiar: false });
+    await abrir();
+    await hasta(() => /Quedó un envío/.test(document.querySelector('[data-agente-charla]').textContent), 'envío recuperado');
+    ok(de('/messages', 'POST').length === 0, 'recargar no reenvía automáticamente el turno pendiente');
+    await tocar('Reintentar');
+    await hasta(() => /Respuesta a/.test(document.querySelector('[data-agente-charla]').textContent), 'respuesta recuperada');
+    ok(ids()[0] === original.id && de('/messages', 'POST')[0].cuerpo.text === original.cuerpo.text, 'reintentar tras recargar conserva el identificador y el cuerpo original');
+    ok(!JSON.parse(await guardado()).pendiente, 'la respuesta confirmada borra el envío temporal');
+
+    reiniciarAsistente();
+    await evaluar((p) => { const s = JSON.parse(sessionStorage.getItem('agente-chat')); s.pendiente = p; sessionStorage.setItem('agente-chat', JSON.stringify(s)); return true; }, original);
+    S.historial = [{ role: 'user', text: original.visible, client_message_id: original.id }, { role: 'assistant', text: 'Respuesta ya guardada', client_message_id: original.id, options: [], sources: [] }];
+    await navegar(local(), { limpiar: false });
+    await abrir();
+    await hasta(() => /Respuesta ya guardada/.test(document.querySelector('[data-agente-charla]').textContent), 'respuesta ya guardada');
+    ok(!JSON.parse(await guardado()).pendiente && de('/messages', 'POST').length === 0, 'si el historial ya contiene la respuesta del envío, se descarta el pendiente sin reenviarlo');
+
+    reiniciarAsistente();
     S.historial = [];
     await navegar(local(), { limpiar: false });
     await abrir();
