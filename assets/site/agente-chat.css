@@ -39,3 +39,14 @@
 
 .agente-salir { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .agente-salir:hover { color: var(--ink); }
+
+/* Correcciones del borrador antes de confirmar el envío. */
+.agente-edicion { width: 100%; }
+.agente-edicion fieldset { display: grid; gap: 12px; min-width: 0; margin: 0; padding: 14px; border: 1px solid #767b88; border-radius: 14px; background: #fff; }
+.agente-edicion legend { padding: 0 6px; color: var(--ink); font: 800 var(--fs-small)/1.4 var(--font); }
+.agente-edicion input, .agente-edicion textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid #767b88; border-radius: 10px; color: var(--ink); background: #fff; font: 600 1rem/1.4 var(--font); }
+.agente-edicion textarea { min-height: 100px; resize: vertical; }
+.agente-edicion input:focus-visible, .agente-edicion textarea:focus-visible, .agente-edicion button:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 2px; }
+.agente-edicion [aria-invalid="true"] { border-color: #b42318; }
+.agente-edicion .btn { justify-self: start; min-height: 44px; }
+.agente-edicion fieldset:disabled { opacity: .65; }

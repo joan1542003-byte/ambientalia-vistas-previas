@@ -381,6 +381,77 @@ try {
     ok(o.cuerpo.option_id === 'otra' && o.cuerpo.text === undefined && (await textos()).includes('> Otra consulta'), 'una opción envía su option_id y se ve su rótulo como mensaje propio');
   }
 
+  seccion('Edición de datos antes de confirmar la solicitud');
+  {
+    const editor = {
+      text: 'Revisa y corrige tus datos. Guardar cambios no envía la solicitud.', intent: 'lead_qualification', sources: [],
+      form: { action: 'guardar_datos', submit_label: 'Guardar cambios', fields: [
+        { name: 'name', label: 'Nombre', type: 'text', value: 'Persona Chat', required: true, max_length: 150 },
+        { name: 'company_name', label: 'Empresa', type: 'text', value: 'Empresa de prueba', required: true, max_length: 150 },
+        { name: 'phone_number', label: 'Teléfono', type: 'tel', value: '+56 9 8765 4321', required: true, max_length: 30 },
+        { name: 'email', label: 'Correo', type: 'email', value: 'chat@ejemplo.cl', required: true, max_length: 150 },
+        { name: 'handoff_reason', label: 'Motivo', type: 'textarea', value: 'Retirar cartón <img src=x onerror="window.__xss=1">', required: true, max_length: 2000 }
+      ] }, options: [{ id: 'contacto:name', label: 'Nombre' }, { id: 'cancelar', label: 'Cancelar' }]
+    };
+    const mostrarEditor = async () => {
+      S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: editor, usage: USO } });
+      await escribir('Quiero corregir mis datos');
+      await hasta(() => !!document.querySelector('[data-edicion] fieldset:not(:disabled)'), 'campos de edición');
+    };
+    await mostrarEditor();
+    ok(await evaluar(() => {
+      const f = document.querySelector('[data-edicion]');
+      return f.elements.name.value === 'Persona Chat' && f.elements.email.value === 'chat@ejemplo.cl'
+        && f.elements.handoff_reason.tagName === 'TEXTAREA' && f.querySelectorAll('label').length === 5
+        && !f.querySelector('img') && !window.__xss && document.querySelector('[data-agente-form]').hidden;
+    }), 'los cinco campos se precargan con etiquetas y los valores se muestran como texto seguro');
+    ok((await botones()).join('|') === 'Cancelar', 'con inputs no se repiten los botones para corregir campo por campo');
+    const antes = de('/messages', 'POST').length;
+    await evaluar(() => {
+      const f = document.querySelector('[data-edicion]');
+      f.elements.email.value = 'correo incorrecto'; f.requestSubmit(); return true;
+    });
+    await sleep(150);
+    ok(de('/messages', 'POST').length === antes, 'un correo inválido impide guardar desde el navegador');
+    await evaluar(() => {
+      const f = document.querySelector('[data-edicion]');
+      f.elements.email.value = 'popito@example.test'; f.elements.name.value = 'Popito Zalas';
+      f.elements.handoff_reason.value = 'Retirar madera'; return true;
+    });
+    for (const [width, height] of [[1280, 900], [390, 844]]) {
+      await cdp('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });
+      ok(await evaluar(() => {
+        const f = document.querySelector('[data-edicion]');
+        return [...f.querySelectorAll('input, textarea')].every((el) => {
+          const b = el.getBoundingClientRect(); const p = f.getBoundingClientRect();
+          return b.width > 0 && b.left >= p.left && b.right <= p.right + 1 && parseFloat(getComputedStyle(el).fontSize) >= 16;
+        });
+      }), `los inputs caben y conservan 16 px a ${width} px`);
+    }
+    await cdp('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: { text: 'Datos revisados: Popito Zalas. Motivo: Retirar madera. Confirma para enviar.', options: [{ id: 'confirmar', label: 'Sí, enviar' }], sources: [] }, usage: USO } });
+    await evaluar(() => { const f = document.querySelector('[data-edicion]'); f.requestSubmit(); f.requestSubmit(); return true; });
+    await hasta(() => /Datos revisados/.test(document.querySelector('[data-agente-charla]').textContent), 'resumen actualizado');
+    const enviados = de('/messages', 'POST').slice(antes);
+    ok(enviados.length === 1 && enviados[0].cuerpo.option_id === 'guardar_datos'
+      && enviados[0].cuerpo.form_values.name === 'Popito Zalas' && enviados[0].cuerpo.form_values.handoff_reason === 'Retirar madera',
+      'nombre y motivo se guardan juntos, estructurados y una sola vez, sin confirmar el envío');
+    ok(await evaluar(() => document.querySelector('[data-edicion] fieldset').disabled && !document.querySelector('[data-agente-form]').hidden), 'el editor anterior queda inactivo tras guardar');
+    ok(!(await guardado()).includes('Popito') && !(await guardado()).includes('Retirar madera'), 'los cambios no se guardan en sessionStorage');
+
+    S.historial = [{ role: 'assistant', ...editor }];
+    await navegar(local(), { limpiar: false }); await abrir();
+    await hasta(() => !!document.querySelector('[data-edicion]'), 'editor restaurado del historial');
+    ok(await evaluar(() => !document.querySelector('[data-edicion] fieldset').disabled), 'al recargar se restaura el editor pendiente');
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: { ...editor, form: { ...editor.form, fields: editor.form.fields.map((f) => f.name === 'phone_number' ? { ...f, value: '123', error: 'Revisa el teléfono.' } : f) } }, usage: USO } });
+    await evaluar(() => { const f = document.querySelector('[data-edicion]'); f.elements.phone_number.value = '123'; f.requestSubmit(); return true; });
+    await hasta(() => !!document.querySelector('[aria-invalid="true"]'), 'error del servidor');
+    ok(await evaluar(() => {
+      const el = document.querySelector('[data-edicion]:last-of-type [aria-invalid="true"]') || document.querySelector('[aria-invalid="true"]');
+      return el.value === '123' && !!document.getElementById(el.getAttribute('aria-describedby')) && document.activeElement === el;
+    }), 'el error del servidor conserva el dato y enfoca el campo con su explicación accesible');
+  }
+
   seccion('5-10. Reintentos con el mismo identificador');
   {
     /* 503 del modelo: «Reintentar» usa el mismo identificador */
@@ -701,7 +772,8 @@ try {
     await escribir('Desde WordPress');
     await hasta(() => /Respuesta a «Desde WordPress»/.test(document.querySelector('[data-agente-charla]').textContent), 'respuesta bajo CSP');
     const csp = await evaluar(() => ({ meta: document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content || '', violaciones: window.__csp, api: window.TA_API?.asistente }));
-    ok(csp.meta.includes(`connect-src 'self' ${API}`) && csp.api === API, 'la página del plugin trae window.TA_API.asistente y su CSP permite conectar con el asistente (connect-src)');
+    const conexiones = csp.meta.split(';').find((directive) => directive.trim().startsWith('connect-src '))?.trim().split(/\s+/).slice(1) || [];
+    ok(conexiones.includes("'self'") && conexiones.includes(API) && csp.api === API, 'la página del plugin trae window.TA_API.asistente y su CSP permite conectar con el asistente (connect-src)');
     ok(!csp.violaciones.length, `el chat funciona bajo la CSP del plugin sin violaciones${csp.violaciones.length ? `: ${csp.violaciones.join('; ')}` : ''}`);
     ok(!pedidos.some((u) => /wordpress\.ejemplo/.test(u)) && de('/sessions', 'POST')[0]?.origen === SITIO, 'el navegador llama directo al asistente; nada pasa por WordPress (sin proxy)');
 

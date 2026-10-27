@@ -88,6 +88,7 @@
   const svg = (path) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
   const I = {
     doc: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
+    guardar: svg('<path d="m5 12 4 4L19 6"/>'),
     foto: svg('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 17l4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/>')
   };
 
@@ -185,7 +186,7 @@
   const desde = (m) => charla.scrollTo({ top: (m.previousElementSibling || m).offsetTop - 12, behavior: suave() });  // desde la pregunta que la originó
   const decirYo = (texto) => { charla.append(h('div', { class: 'msg is-user' }, h('p', { text: texto }))); abajo(); };
   /* Las opciones de una respuesta anterior ya no corresponden al estado de la conversación: se desactivan */
-  const vencerOpciones = () => charla.querySelectorAll('[data-opcion]').forEach((b) => { b.disabled = true; });
+  const vencerOpciones = () => charla.querySelectorAll('[data-opcion], [data-edicion] fieldset').forEach((b) => { b.disabled = true; });
   const decir = (r, { opciones = true } = {}) => {
     const m = h('div', { class: 'msg is-bot' });
     if (typeof r.text === 'string' && r.text) m.append(h('p', { class: 'msg-texto' }, conFormato(r.text)));
@@ -198,7 +199,34 @@
           return h('li', {}, h('span', { icono: I.doc }), u ? enlace(u, s.label) : h('span', { text: s.label }));
         }))));
     }
-    const lista = opciones && Array.isArray(r.options) ? r.options.filter((o) => o && typeof o.id === 'string' && typeof o.label === 'string' && o.label) : [];
+    if (opciones && r.form?.action === 'guardar_datos' && Array.isArray(r.form.fields)) {
+      const edicion = h('form', { class: 'agente-edicion', 'data-edicion': true });
+      const campos = h('fieldset', {}, h('legend', { text: 'Revisa tus datos' }));
+      const permitidos = ['name', 'company_name', 'phone_number', 'email', 'handoff_reason'];
+      r.form.fields.filter((f) => permitidos.includes(f.name)).forEach((f) => {
+        const errorId = `edicion-${idMensaje()}`;
+        const tipo = ['email', 'tel', 'textarea'].includes(f.type) ? f.type : 'text';
+        const input = h(tipo === 'textarea' ? 'textarea' : 'input', {
+          name: f.name, type: tipo === 'textarea' ? null : tipo, required: f.required === true,
+          maxlength: Math.min(2000, Number(f.max_length) || 150),
+          autocomplete: ({ name: 'name', email: 'email', phone_number: 'tel', company_name: 'organization' })[f.name] || 'off',
+          'aria-invalid': f.error ? 'true' : null, 'aria-describedby': f.error ? errorId : null
+        });
+        input.value = typeof f.value === 'string' ? f.value : '';
+        input.addEventListener('focus', () => input.scrollIntoView({ block: 'nearest', behavior: suave() }));
+        campos.append(h('label', { class: 'agente-campo' }, h('span', { text: f.label }), input,
+          f.error ? h('span', { id: errorId, class: 'agente-error', text: f.error }) : null));
+      });
+      campos.append(h('button', { class: 'btn', type: 'submit', icono: I.guardar }, h('span', { text: r.form.submit_label || 'Guardar cambios' })));
+      edicion.append(campos);
+      edicion.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (ocupado || campos.disabled || !edicion.reportValidity()) return;
+        enviar({ option_id: r.form.action, form_values: Object.fromEntries(new FormData(edicion)) }, 'Guardar cambios');
+      });
+      m.append(edicion);
+    }
+    const lista = opciones && Array.isArray(r.options) ? r.options.filter((o) => !(r.form && (o?.id?.startsWith('contacto:') || o?.id === 'cotiz:editar:contacto')) && o && typeof o.id === 'string' && typeof o.label === 'string' && o.label) : [];
     if (lista.length) {
       m.append(h('div', { class: 'msg-chips' }, lista.map((o) => h('button', {
         class: 'chip', type: 'button', 'data-opcion': true, text: o.label, title: typeof o.description === 'string' ? o.description : null,
@@ -206,6 +234,10 @@
       }))));
     }
     charla.append(m);
+    if (opciones) {
+      const foco = m.querySelector('[aria-invalid="true"]') || (!tactil.matches && m.querySelector('[data-edicion] input'));
+      if (foco) foco.focus({ preventScroll: true });
+    }
     return m;
   };
   const aviso = (texto) => { const m = decir({ text: texto }); abajo(); return m; };
@@ -221,6 +253,7 @@
     vencerOpciones();
     desde(decir(reply && typeof reply === 'object' ? reply : {}));
     uso(usage);
+    form.hidden = Boolean(reply?.form);
   };
   const espera = () => {
     const e = h('div', { class: 'msg is-bot is-espera', 'aria-hidden': 'true' }, h('span', {}), h('span', {}), h('span', {}));
@@ -326,7 +359,7 @@
   /* El mensaje que todavía no tiene respuesta confirmada. Conserva su identificador hasta que el servicio responde o la
      persona escribe otra cosa: así un reintento nunca se procesa dos veces */
   let pendiente = null;  // { id, cuerpo, visible, auto, manuales, nota }
-  const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '');
+  const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '') && JSON.stringify(a.form_values || null) === JSON.stringify(b.form_values || null);
   /* «visible» es lo que se ve como mensaje propio; sin él (reiniciar) el turno no se muestra */
   const enviar = (cuerpo, visible) => {
     if (ocupado || !sesion) return;
@@ -346,6 +379,8 @@
   const turno = async () => {
     const p = pendiente;
     ocupado = true;
+    const ediciones = [...charla.querySelectorAll('[data-edicion] fieldset:not(:disabled)')];
+    ediciones.forEach((el) => { el.disabled = true; el.closest('form').setAttribute('aria-busy', 'true'); });
     const e = espera();
     let r;
     for (;;) {
@@ -359,6 +394,7 @@
       await pausa(3000 * p.auto);
     }
     e.remove();
+    ediciones.forEach((el) => { el.disabled = false; el.closest('form').removeAttribute('aria-busy'); });
     ocupado = false;
     if (pendiente !== p) return;
     const { estado, json } = r;
@@ -411,6 +447,7 @@
     const mensajes = json.messages.filter((m) => m && typeof m.text === 'string');
     if (!mensajes.length) { reiniciar(); return; }
     const ultimo = mensajes[mensajes.length - 1];
+    form.hidden = Boolean(ultimo.form);
     mensajes.forEach((m) => (m.role === 'user' ? decirYo(m.text) : decir(m, { opciones: m === ultimo })));
     if (ultimo.role === 'user') {
       /* Un turno sin respuesta (en curso o fallido): se puede volver a leer, sin enviarlo otra vez */
@@ -523,6 +560,7 @@
     if (!archivos.length) return;
     if (!sesion) { aviso('Para adjuntar una foto, primero escribe tus datos y toca «Comenzar».'); return; }
     if (ocupado) { aviso('Espera a que termine la respuesta para adjuntar la foto.'); return; }
+    if (charla.querySelector('[data-edicion] fieldset:not(:disabled)')) { aviso('Guarda los cambios o cancela la edición antes de adjuntar una foto.'); return; }
     ocupado = true;
     try {
       for (const archivo of archivos) if (!sesion || !(await subirUna(archivo))) break;
