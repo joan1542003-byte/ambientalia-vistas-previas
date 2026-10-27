@@ -343,9 +343,10 @@
     if (!tactil.matches) f.querySelector('input:not([value])')?.focus({ preventScroll: true });
   };
   const salir = h('button', { class: 'agente-salir', type: 'button', text: 'Borrar esta conversación' });
+  const fotosPendientes = new Map();
   const subidas = new Set();  // las fotos que el servicio confirmó en esta página (para no subir dos veces la misma)
   /* Sin sesión: lo local se olvida (el token, sus fotos y el mensaje pendiente) */
-  const olvidar = () => { sesion = null; guardar(null); pendiente = null; subidas.clear(); if (sub && API) { sub.textContent = ''; sub.hidden = true; } salir.hidden = true; };
+  const olvidar = () => { sesion = null; guardar(null); pendiente = null; subidas.clear(); fotosPendientes.clear(); if (sub && API) { sub.textContent = ''; sub.hidden = true; } salir.hidden = true; };
   /* La sesión ya no sirve (401 session_expired): vuelta a la puerta; lo que se estaba escribiendo vuelve al campo */
   const vencida = (texto) => {
     olvidar();
@@ -428,9 +429,7 @@
   };
   const reiniciar = () => enviar({ text: 'inicio' });  // comando del asistente: vuelve al menú (no gasta consultas)
 
-  /* Al volver a abrir con una sesión viva: la conversación tal como quedó, con sus fuentes; las opciones, solo las de
-     la última respuesta (las anteriores ya no corresponden). El servicio no devuelve el consumo de consultas ni las
-     fotos: el consumo aparece con la próxima respuesta */
+  /* Al volver, el servicio restaura el historial, el cupo y el número de fotos. */
   const retomar = async () => {
     form.hidden = true;
     ocupado = true;
@@ -444,6 +443,8 @@
       return;
     }
     form.hidden = false;
+    uso(json.usage);
+    if (Number.isInteger(json.photos) && json.photos >= 0) { sesion.fotos = json.photos; guardar(sesion); }
     const mensajes = json.messages.filter((m) => m && typeof m.text === 'string');
     if (!mensajes.length) { reiniciar(); return; }
     const ultimo = mensajes[mensajes.length - 1];
@@ -534,23 +535,32 @@
     if (!valida(archivo)) { aviso('Solo puedo recibir fotos JPG, PNG o WebP.'); return true; }
     if (archivo.size > FOTO_ENTRADA) { aviso('Esa foto es demasiado pesada. Prueba con otra o con una captura de pantalla.'); return true; }
     const e = espera();
-    const foto = await reducir(archivo, (sesion.fotos || 0) + 1);
+    const anterior = fotosPendientes.get(huella(archivo));
+    const foto = anterior?.foto || await reducir(archivo, (sesion.fotos || 0) + 1);
     if (!foto) { e.remove(); aviso('No pude preparar esa foto. Prueba con otra imagen JPG, PNG o WebP.'); return true; }
+    const id = anterior?.id || idMensaje();
+    fotosPendientes.set(huella(archivo), { foto, id });
     const cuerpo = new FormData();
     cuerpo.append('image', foto);
+    cuerpo.append('client_upload_id', id);
     const { estado, json, falla } = await llamar('/attachments', { method: 'POST', body: cuerpo, espera: 60000 });
     e.remove();
     if (estado === 201) {
       subidas.add(huella(archivo));
-      sesion.fotos = (sesion.fotos || 0) + 1;
+      fotosPendientes.delete(huella(archivo));
+      sesion.fotos = Number.isInteger(json.photos) ? json.photos : (sesion.fotos || 0) + 1;
       guardar(sesion);
       respuesta(json.reply || { text: 'Recibí la foto.' }, json.usage);
       return true;
     }
     if (estado === 401) { vencida(); return false; }
     if (estado === 422 && json.error === 'attachment_limit') { sesion.fotos = FOTOS_MAX; guardar(sesion); }
-    /* La subida no tiene identificador propio: si no hubo respuesta, no se reintenta sola */
-    aviso(falla || estado >= 500 ? 'No pude confirmar si la foto llegó. Puedes volver a adjuntarla; si la primera sí llegó, quedará dos veces.'
+    if (falla || estado >= 500 || (estado === 409 && json.error === 'busy')) {
+      const nota = avisoCon('No pude confirmar si la foto llegó. Puedes reintentar sin duplicarla.', [['Reintentar', () => { if (ocupado) return; nota.remove(); subir([archivo]); }]]);
+      return false;
+    }
+    if (estado === 409) fotosPendientes.delete(huella(archivo));
+    aviso(estado === 409 ? 'No pude reconocer este intento de subida. Elige nuevamente la foto.'
       : estado === 403 ? 'El asistente no está disponible desde esta página.'
       : estado === 429 ? 'Enviaste muchas cosas seguidas. Espera un momento y vuelve a intentarlo.'
       : (estado === 422 && ((typeof json.message === 'string' && json.message) || errores(json))) || 'No pude subir la foto. Vuelve a intentarlo.');

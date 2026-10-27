@@ -76,7 +76,7 @@ const sitio = createServer((req, res) => {
 /* El asistente: registra cada llamada y responde como Laravel. `guion` fuerza la respuesta de la próxima llamada a
    una ruta ({ ruta, metodo?, status, json?, html?, retardo?, cortar?, procesar? }); `retardos`, cuánto tarda el modelo */
 const llamadas = [];
-const S = { tokens: new Set(), n: 0, procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0 };
+const S = { tokens: new Set(), n: 0, procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], subidas: new Map(), fotos: 0, cortarHasta: 0 };
 const USO = { max: 10, used: 1, remaining: 9, resets_at: null };
 const MENU = { text: 'Hola, soy el asistente. ¿En qué te ayudo?', options: [{ id: 'residuos', label: 'Retiro de residuos' }, { id: 'normativa', label: 'Normativa' }], sources: [], intent: 'main_menu', lead_status: null };
 const XSS = {
@@ -140,6 +140,15 @@ const asistente = createServer(async (req, res) => {
     S.enCurso.delete(id);
     return { status: 200, json: { reply, usage: USO } };
   };
+  const foto = () => {
+    const key = `${token}:${mp?.campos.client_upload_id}`;
+    if (S.subidas.has(key)) return { status: 201, json: S.subidas.get(key) };
+    if (S.fotos >= 2) return { status: 422, json: { error: 'attachment_limit', message: 'Ya adjuntaste el máximo de imágenes para esta conversación.' } };
+    S.fotos += 1;
+    const result = { attachment: { id: S.fotos, name: mp?.archivos[0]?.nombre }, photos: S.fotos, reply: { text: 'Recibí la imagen.', options: [], sources: [] }, usage: USO };
+    S.subidas.set(key, result);
+    return { status: 201, json: result };
+  };
   const i = S.guion.findIndex((g) => g.ruta === url.pathname && (!g.metodo || g.metodo === req.method));
   const g = i >= 0 ? S.guion.splice(i, 1)[0] : null;
   /* Conexión caída: la respuesta se pierde (el servidor pudo haber procesado el mensaje igual). Se corta todo lo que
@@ -152,6 +161,7 @@ const asistente = createServer(async (req, res) => {
     return;
   }
   if (g) {
+    if (g.procesarFoto) foto();
     await sleep(g.retardo || 0);
     if (g.html !== undefined) { res.writeHead(g.status, { ...cors, 'Content-Type': 'text/html' }); res.end(g.html); return; }
     json(g.status, g.json || {});
@@ -165,7 +175,7 @@ const asistente = createServer(async (req, res) => {
   }
   if (!S.tokens.has(token)) { json(401, { error: 'session_expired' }); return; }
   if (url.pathname === '/api/chat/messages' && req.method === 'POST') { const r = await turno(); json(r.status, r.json); return; }
-  if (url.pathname === '/api/chat/history' && req.method === 'GET') { json(200, { messages: S.historial }); return; }
+  if (url.pathname === '/api/chat/history' && req.method === 'GET') { json(200, { messages: S.historial, usage: USO, photos: S.fotos }); return; }
   if (url.pathname === '/api/chat/session' && req.method === 'DELETE') {
     if (cuerpo.confirm !== true) { json(422, { error: 'confirmation_required' }); return; }
     S.tokens.delete(token);
@@ -173,9 +183,8 @@ const asistente = createServer(async (req, res) => {
     return;
   }
   if (url.pathname === '/api/chat/attachments' && req.method === 'POST') {
-    if (S.fotos >= 2) { json(422, { error: 'attachment_limit', message: 'Ya adjuntaste el máximo de imágenes para esta conversación.' }); return; }
-    S.fotos += 1;
-    json(201, { attachment: { id: S.fotos, name: mp?.archivos[0]?.nombre }, reply: { text: 'Recibí la imagen. Quedará adjunta a tu solicitud cuando pidas que un especialista te contacte.', options: [], sources: [] }, usage: USO });
+    const r = foto();
+    json(r.status, r.json);
     return;
   }
   res.writeHead(404, cors);
@@ -188,7 +197,7 @@ const API = `http://127.0.0.1:${asistente.address().port}`;
 const de = (ruta, metodo) => llamadas.filter((l) => l.ruta === `/api/chat${ruta}` && (!metodo || l.metodo === metodo));
 const reiniciarAsistente = () => {
   llamadas.length = 0;
-  Object.assign(S, { procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0 });
+  Object.assign(S, { subidas: new Map(), procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0 });
 };
 
 /* ======================= Navegador ======================= */
@@ -652,6 +661,35 @@ try {
     await tocar('Reintentar el borrado');
     await hasta(() => /La sesión ya está cerrada/.test(document.querySelector('[data-agente-charla]').textContent), 'repetido con 401');
     ok(!/borramos/i.test(await evaluar(() => document.querySelector('[data-agente-charla]').textContent)), 'repetido tras perder la respuesta (401): no afirma que se borró, explica cómo seguir');
+    await entrar();
+  }
+
+  seccion('Fotos: respuesta perdida y recuperación al recargar');
+  {
+    reiniciarAsistente();
+    S.subidas.clear();
+    await navegar(local());
+    await abrir();
+    await entrar();
+    S.guion.push({ ruta: '/api/chat/attachments', status: 500, procesarFoto: true });
+    await elegirFotos('png');
+    await hasta(() => /Puedes reintentar sin duplicarla/.test(document.querySelector('[data-agente-charla]').textContent), 'foto sin acuse');
+    await tocar('Reintentar');
+    await hastaAca(async () => de('/attachments', 'POST').length === 2 && await sinEspera(), 'foto reintentada');
+    const intentos = de('/attachments', 'POST');
+    ok(intentos[0].mp.campos.client_upload_id && intentos[0].mp.campos.client_upload_id === intentos[1].mp.campos.client_upload_id
+      && intentos[0].mp.archivos[0].contenido.equals(intentos[1].mp.archivos[0].contenido)
+      && S.fotos === 1 && JSON.parse(await guardado()).fotos === 1, 'respuesta perdida: reintenta el mismo identificador y los mismos bytes, con una sola foto y un solo cupo');
+    await evaluar(() => { const s = JSON.parse(sessionStorage.getItem('agente-chat')); s.fotos = 0; sessionStorage.setItem('agente-chat', JSON.stringify(s)); return true; });
+    S.historial = [{ role: 'assistant', ...MENU }];
+    await navegar(local(), { limpiar: false });
+    await abrir();
+    await hasta(() => /¿En qué te ayudo/.test(document.querySelector('[data-agente-charla]').textContent), 'historial con fotos');
+    ok(JSON.parse(await guardado()).fotos === 1, 'al recargar restaura las fotos desde el servidor aunque el contador local esté desactualizado');
+    reiniciarAsistente();
+    S.subidas.clear();
+    await navegar(local());
+    await abrir();
     await entrar();
   }
 
