@@ -10,6 +10,10 @@
    - Antes de conversar se piden nombre, correo y teléfono, y la aceptación de las condiciones y el aviso de privacidad:
      así lo exige el servicio, que entrega a cambio una sesión. La pestaña conserva el token, su vencimiento, el contador
      de fotos y el envío sin respuesta confirmada; el historial se recupera del servicio al volver (GET /history).
+   - «Recordar mis datos en este dispositivo» (casilla opcional y sin marcar): guarda en localStorage solo el nombre, el
+     correo y el teléfono, durante 30 días desde el último uso, para precargar la puerta. Nunca el token, las casillas
+     de aceptación ni nada de la conversación: cada sesión pide su propia aceptación. «Olvidar mis datos en este
+     dispositivo» y «Borrar esta conversación» los quitan.
    - Cada mensaje lleva su identificador (client_message_id) y lo conserva en cada reintento: si el servicio ya lo
      procesó, devuelve la misma respuesta sin ejecutarlo otra vez. Si la espera se agota (`data-agente-espera`, en
      segundos; 90 por omisión; o un 504 del proxy) o el servicio responde «ocupado» (409 busy), se reintenta solo dos
@@ -60,6 +64,8 @@
   const OFICIAL = 'https://transporteautorizado.cl';
   const BASE = new URL(window.SITE_ROOT || '.', location.href).href;
   const CLAVE = 'agente-chat';
+  const CLAVE_DATOS = 'agente-chat-datos';  // lo que la persona pidió recordar (localStorage), aparte de la sesión
+  const RECUERDO_DIAS = 30;                 // desde la última vez que abrió el chat con la casilla marcada
   const ESPERA = Math.max(5, Number(panel.dataset.agenteEspera) || 90) * 1000;  // una respuesta del modelo
   const AUTO = 2;        // reintentos solos de un mensaje: tras una espera agotada o «ocupado»
   const REINTENTOS = 3;  // reintentos que puede pedir la persona con «Reintentar»
@@ -111,6 +117,27 @@
   /* Vencida, sin token o con datos que no son de esta versión: se descarta sin preguntar al servicio */
   if (sesion && (typeof sesion.token !== 'string' || !sesion.token || !(Date.parse(sesion.vence) > Date.now()))) { sesion = null; guardar(null); }
   let datos = {};  // lo escrito en la puerta, para no volver a pedirlo en esta página (solo en memoria)
+  let recuerdo = null;  // la casilla «Recordar» tal como la dejó la persona en esta página; null, según lo ya guardado
+
+  /* ---------- Datos recordados en este dispositivo (solo si la persona lo pidió) ---------- */
+  /* Nombre, correo y teléfono, nada más. Vencidos, ilegibles o con otra forma: se descartan. Sin almacenamiento
+     (navegación privada, bloqueado): no se recuerda nada y la puerta funciona igual */
+  const recordar = (v) => {
+    try {
+      if (v) localStorage.setItem(CLAVE_DATOS, JSON.stringify({ name: v.name, email: v.email, phone: v.phone, vence: Date.now() + RECUERDO_DIAS * 86400000 }));
+      else localStorage.removeItem(CLAVE_DATOS);
+    } catch { /* sin almacenamiento */ }
+  };
+  const recordados = () => {
+    try {
+      const r = JSON.parse(localStorage.getItem(CLAVE_DATOS));
+      const texto = (k, max) => (typeof r?.[k] === 'string' && r[k].trim() ? r[k].slice(0, max) : '');
+      const v = { name: texto('name', 150), email: texto('email', 150), phone: texto('phone', 20) };
+      if (v.name && v.email && v.phone && Number.isFinite(r.vence) && r.vence > Date.now()) return v;
+    } catch { /* ilegible o sin almacenamiento */ }
+    recordar(null);
+    return null;
+  };
 
   const idMensaje = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
   /* Una llamada al servicio. No lanza: devuelve el estado HTTP y el JSON, o estado 0 con `falla` ('red' o 'espera')
@@ -280,7 +307,20 @@
     form.hidden = true;
     const error = h('p', { class: 'agente-error', role: 'alert' });
     const humano = TURNSTILE ? h('div', { class: 'agente-humano' }) : null;
-    const fila = (name, rotulo, extra) => h('label', { class: 'agente-campo' }, h('span', { text: rotulo }), h('input', { name, required: true, value: datos[name] || null, ...extra }));
+    const guardados = recordados();
+    const fila = (name, rotulo, extra) => h('label', { class: 'agente-campo' }, h('span', { text: rotulo }), h('input', { name, required: true, value: datos[name] || guardados?.[name] || null, ...extra }));
+    /* Solo si hay algo guardado: quita los datos de este dispositivo y vacía los campos, sin tocar la sesión */
+    const olvidarDatos = h('button', {
+      class: 'agente-olvidar', type: 'button', text: 'Olvidar mis datos en este dispositivo',
+      onclick: () => {
+        recordar(null);
+        datos = {};
+        recuerdo = false;
+        ['name', 'email', 'phone'].forEach((n) => { f.elements[n].value = ''; });
+        f.elements.remember.checked = false;
+        olvidarDatos.replaceWith(h('p', { class: 'agente-nota', role: 'status', text: 'Listo: ya no recordamos tus datos en este dispositivo.' }));
+      }
+    });
     const f = h('form', { class: 'msg is-bot agente-puerta', novalidate: true },
       h('p', { class: 'msg-texto', text: 'Hola. Para empezar, escribe tu nombre, tu correo y tu teléfono.' }),
       fila('name', 'Nombre', { type: 'text', autocomplete: 'name', maxlength: 150 }),
@@ -293,6 +333,12 @@
       h('label', { class: 'agente-acepto' },
         h('input', { type: 'checkbox', name: 'marketing_accepted', checked: datos.marketing_accepted || null }),
         h('span', { text: 'Acepto que Transporte Autorizado me contacte por correo, teléfono o llamada para hacer seguimiento de mi consulta o cotización y ofrecerme sus servicios (opcional).' })),
+      /* Opcional y sin marcar (marcada solo si ya había datos guardados): es una comodidad de este navegador, no un
+         consentimiento, y no se envía al asistente */
+      h('label', { class: 'agente-acepto' },
+        h('input', { type: 'checkbox', name: 'remember', checked: (recuerdo ?? !!guardados) || null }),
+        h('span', { text: `Recordar mi nombre, correo y teléfono en este dispositivo por ${RECUERDO_DIAS} días (opcional). No lo uses en un equipo compartido.` })),
+      guardados ? olvidarDatos : null,
       h('div', { class: 'agente-trampa', 'aria-hidden': 'true' }, h('label', {}, 'No completes este campo ', h('input', { name: 'website', tabindex: '-1', autocomplete: 'off' }))),
       humano,
       error,
@@ -312,6 +358,7 @@
       e.preventDefault();
       if (f.classList.contains('is-enviando')) return;
       datos = { name: f.elements.name.value.trim(), email: f.elements.email.value.trim(), phone: f.elements.phone.value.trim(), privacy_accepted: f.elements.privacy_accepted.checked, marketing_accepted: f.elements.marketing_accepted.checked };
+      recuerdo = f.elements.remember.checked;
       error.textContent = '';
       if (humano && !token) { error.textContent = 'Estamos comprobando que eres una persona. Espera un momento y vuelve a intentarlo.'; return; }
       f.classList.add('is-enviando');
@@ -321,6 +368,8 @@
         if (widget !== null) window.turnstile?.remove(widget);
         sesion = { token: json.token, vence: json.expires_at, fotos: 0 };
         guardar(sesion);
+        /* Solo con datos que el servicio ya aceptó, y la casilla manda: sin marcar, se quita lo que hubiera */
+        recordar(recuerdo ? { name: datos.name, email: datos.email, phone: datos.phone } : null);
         salir.hidden = false;
         f.remove();
         form.hidden = false;
@@ -339,7 +388,7 @@
       if (widget !== null && f.isConnected) { token = ''; window.turnstile?.reset(widget); }
     });
     charla.append(f);
-    abajo();
+    desde(f);  // el comienzo de la puerta, no su final: es más alta que la ventana, y así se ve primero el saludo y el primer campo
     if (!tactil.matches) f.querySelector('input:not([value])')?.focus({ preventScroll: true });
   };
   const salir = h('button', { class: 'agente-salir', type: 'button', text: 'Borrar esta conversación' });
@@ -350,6 +399,7 @@
   /* La sesión ya no sirve (401 session_expired): vuelta a la puerta; lo que se estaba escribiendo vuelve al campo */
   const vencida = (texto) => {
     olvidar();
+    datos = { name: datos.name, email: datos.email, phone: datos.phone };
     aviso('Tu sesión terminó. Vuelve a escribir tus datos para seguir.');
     puerta();
     if (texto) campo.value = texto;
@@ -493,7 +543,8 @@
     const { estado, json, falla } = await llamar('/session', { method: 'DELETE', body: { confirm: true } });
     e.remove();
     ocupado = false;
-    const fin = (texto) => { nota.remove(); confirmacion = null; olvidar(); charla.textContent = ''; aviso(texto); puerta(); };
+    /* Quien pide borrar no encuentra sus datos precargados en la puerta: tampoco los de este dispositivo */
+    const fin = (texto) => { nota.remove(); confirmacion = null; olvidar(); recordar(null); datos = {}; recuerdo = null; charla.textContent = ''; aviso(texto); puerta(); };
     if (estado === 200 && json.deleted === true) { fin('Listo: borramos esta conversación y los datos que dejaste en el chat.'); return; }
     /* Se aceptó y la sesión ya no sirve, pero el borrado no terminó: lo completa el propio servicio */
     if (estado === 500 && json.error === 'erasure_pending') { fin('Recibimos tu solicitud y cerramos la sesión. El borrado quedó en curso y el asistente lo completa en breve.'); return; }

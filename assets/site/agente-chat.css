@@ -24,6 +24,10 @@
 .agente-campo input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
 .agente-acepto { display: flex; align-items: flex-start; gap: 8px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; }
 .agente-acepto input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); }
+/* «Olvidar mis datos en este dispositivo» (solo si hay datos recordados) y su confirmación */
+.agente-olvidar { justify-self: start; padding: 0; border: 0; background: none; color: var(--ink-2); font: 600 var(--fs-small)/1.45 var(--font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.agente-olvidar:hover { color: var(--ink); }
+.agente-nota { margin: 0; color: var(--ink-2); font-size: var(--fs-small); font-weight: 600; }
 /* Contra bots: el campo trampa, fuera de la vista, y el widget de Turnstile, que solo aparece si pide una interacción */
 .agente-trampa { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .agente-humano:empty { display: none; }

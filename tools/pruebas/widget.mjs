@@ -253,7 +253,7 @@ const conWordPress = async (config) => {
 };
 const pestanas = async () => (await (await fetch(`http://127.0.0.1:${puerto}/json/list`)).json()).filter((t) => t.type === 'page' && t.id !== objetivos[0].id);
 const navegar = async (url, { limpiar = true } = {}) => {
-  if (limpiar) await evaluar(() => { try { sessionStorage.clear(); } catch { /* about:blank */ } return true; });
+  if (limpiar) await evaluar(() => { try { sessionStorage.clear(); localStorage.removeItem('agente-chat-datos'); } catch { /* about:blank */ } return true; });
   const cargada = new Promise((r) => { const f = (m) => { if (m.method === 'Page.loadEventFired') { oyentes.delete(f); r(); } }; oyentes.add(f); });
   await cdp('Page.navigate', { url });
   await cargada;
@@ -552,6 +552,19 @@ try {
 
   seccion('11-12. Historial y sesión vencida');
   {
+    reiniciarAsistente();
+    await navegar(local()); await abrir();
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'puerta');
+    await evaluar(() => { document.querySelector('.agente-puerta').elements.marketing_accepted.checked = true; return true; });
+    await entrar();
+    S.guion.push({ ruta: '/api/chat/messages', status: 401, json: { error: 'session_expired' } });
+    await escribir('Consulta antes de vencer');
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'puerta tras vencimiento');
+    ok(await evaluar(() => {
+      const f = document.querySelector('.agente-puerta');
+      return !f.elements.privacy_accepted.checked && !f.elements.marketing_accepted.checked && f.elements.email.value === 'chat@ejemplo.cl';
+    }), 'tras vencer la sesión se conservan los datos de contacto, pero ambas aceptaciones vuelven sin marcar');
+    await entrar();
     reiniciarAsistente();
     const token = JSON.parse(await guardado()).token;
     S.historial = [
@@ -881,6 +894,133 @@ try {
     await hastaAca(async () => de('/messages', 'POST').length >= 4 && await sinEspera(), 'una de las dos opciones');
     await sleep(400);
     ok(de('/messages', 'POST').length === 4 && de('/messages', 'POST')[3].cuerpo.option_id === 'residuos', 'dos opciones distintas tocadas seguidas: sale solo la primera (no hay dos turnos a la vez)');
+    ok(!errores.length, `sin errores de JavaScript en la página${errores.length ? `: ${errores.slice(0, 3).join(' | ')}` : ''}`);
+  }
+
+  seccion('24. Recordar mis datos en este dispositivo (localStorage, 30 días)');
+  {
+    const CLAVE_DATOS = 'agente-chat-datos';
+    const DIA = 86400000;
+    const recuerdo = () => evaluar((k) => localStorage.getItem(k), CLAVE_DATOS);
+    /* Una pestaña nueva: sin sesión, pero con el mismo localStorage */
+    const pestanaNueva = async () => { await evaluar(() => { sessionStorage.clear(); return true; }); await navegar(local(), { limpiar: false }); await abrir(); await hasta(() => !!document.querySelector('.agente-puerta'), 'puerta'); };
+    const puertaAhora = () => evaluar(() => {
+      const f = document.querySelector('.agente-puerta');
+      return {
+        name: f.elements.name.value, email: f.elements.email.value, phone: f.elements.phone.value,
+        remember: f.elements.remember.checked, privacy: f.elements.privacy_accepted.checked, marketing: f.elements.marketing_accepted.checked,
+        olvidar: !!f.querySelector('.agente-olvidar')
+      };
+    });
+    const entrarCon = async ({ recordar, datos }) => {
+      await evaluar((r, d) => {
+        const f = document.querySelector('.agente-puerta');
+        if (d) { f.elements.name.value = d.name; f.elements.email.value = d.email; f.elements.phone.value = d.phone; }
+        f.elements.privacy_accepted.checked = true;
+        f.elements.remember.checked = r;
+        f.requestSubmit();
+        return true;
+      }, recordar, datos || null);
+      await hasta(() => !document.querySelector('.agente-puerta') && !document.querySelector('[data-agente-form]').hidden, 'sesión abierta');
+    };
+
+    /* Sin marcar: no se guarda nada */
+    reiniciarAsistente();
+    await navegar(local());
+    await abrir();
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'puerta');
+    let p = await puertaAhora();
+    ok(p.remember === false && p.olvidar === false && p.name === '' && !(await recuerdo()), 'la puerta ofrece «Recordar mis datos» sin marcar y sin «Olvidar» cuando no hay nada guardado');
+    ok(/30 días/.test(await evaluar(() => document.querySelector('.agente-puerta input[name="remember"]').closest('label').textContent)) && /equipo compartido/.test(await evaluar(() => document.querySelector('.agente-puerta input[name="remember"]').closest('label').textContent)), 'la casilla dice cuánto dura y advierte sobre los equipos compartidos');
+    await entrarCon({ recordar: false, datos: { name: 'Persona Chat', email: 'chat@ejemplo.cl', phone: '+56 9 8765 4321' } });
+    ok(!(await recuerdo()), 'con la casilla sin marcar no queda nada en localStorage');
+    await pestanaNueva();
+    p = await puertaAhora();
+    ok(p.name === '' && p.email === '' && p.phone === '' && !p.remember, 'en una pestaña nueva la puerta sigue vacía');
+
+    /* Marcada: quedan nombre, correo, teléfono y el vencimiento, y nada más */
+    reiniciarAsistente();
+    const antes = Date.now();
+    await entrarCon({ recordar: true, datos: { name: 'Persona Chat', email: 'chat@ejemplo.cl', phone: '+56 9 8765 4321' } });
+    const g = JSON.parse(await recuerdo());
+    ok(Object.keys(g).sort().join(',') === 'email,name,phone,vence' && g.name === 'Persona Chat' && g.email === 'chat@ejemplo.cl' && g.phone === '+56 9 8765 4321', 'con la casilla marcada se guarda solo nombre, correo y teléfono (más el vencimiento)');
+    ok(g.vence >= antes + 30 * DIA - 60000 && g.vence <= Date.now() + 30 * DIA, 'el vencimiento es de 30 días');
+    const token = JSON.parse(await guardado()).token;
+    ok(!(await evaluar((k, t) => localStorage.getItem(k).includes(t), CLAVE_DATOS, token)) && /privacy|marketing|accepted/i.test(await recuerdo()) === false, 'el token y las casillas de aceptación no van a localStorage: el token queda solo en la pestaña');
+    ok(de('/sessions', 'POST')[0].cuerpo.remember === undefined, 'la casilla «Recordar» no se envía al asistente');
+
+    /* Pestaña nueva con datos guardados: puerta precargada, aceptaciones sin marcar */
+    reiniciarAsistente();
+    await pestanaNueva();
+    p = await puertaAhora();
+    ok(p.name === 'Persona Chat' && p.email === 'chat@ejemplo.cl' && p.phone === '+56 9 8765 4321' && p.remember && p.olvidar, 'pestaña nueva: la puerta trae los datos guardados, la casilla marcada y «Olvidar mis datos»');
+    ok(!p.privacy && !p.marketing && llamadas.length === 0, 'las casillas de condiciones y de contacto comercial siguen sin marcar y no se llama al asistente hasta que la persona toque «Comenzar»');
+    const v1 = JSON.parse(await recuerdo()).vence;
+    await sleep(20);
+    await entrarCon({ recordar: true });
+    const s2 = de('/sessions', 'POST');
+    ok(s2.length === 1 && s2[0].cuerpo.name === 'Persona Chat' && s2[0].cuerpo.email === 'chat@ejemplo.cl' && s2[0].cuerpo.privacy_accepted === true && s2[0].cuerpo.marketing_accepted === false, 'abrir con los datos precargados envía lo mismo que escribirlos, con su propia aceptación');
+    ok(JSON.parse(await recuerdo()).vence > v1, 'cada uso renueva los 30 días');
+
+    /* Reabrir y cerrar varias veces: sigue precargada */
+    for (let i = 0; i < 3; i++) await pestanaNueva();
+    p = await puertaAhora();
+    ok(p.name === 'Persona Chat' && p.remember, 'abrir y cerrar la pestaña varias veces no pierde los datos');
+
+    /* Vencidos o con otra forma: se descartan y se borran */
+    await evaluar((k) => { localStorage.setItem(k, JSON.stringify({ name: 'Persona Chat', email: 'chat@ejemplo.cl', phone: '+56 9 8765 4321', vence: Date.now() - 1000 })); return true; }, CLAVE_DATOS);
+    await pestanaNueva();
+    p = await puertaAhora();
+    ok(p.name === '' && !p.remember && !p.olvidar && !(await recuerdo()), 'datos vencidos: la puerta vuelve vacía y se borran');
+    for (const raro of ['no es json', JSON.stringify({ name: 'Solo nombre', vence: Date.now() + 86400000 }), JSON.stringify({ name: 'A', email: 'a@ejemplo.cl', phone: '+56 9 1', vence: 'mañana' }), JSON.stringify([1, 2]), 'null']) {
+      await evaluar((k, v) => { localStorage.setItem(k, v); return true; }, CLAVE_DATOS, raro);
+      await pestanaNueva();
+      p = await puertaAhora();
+      ok(p.name === '' && p.email === '' && !p.olvidar && !(await recuerdo()), `datos ilegibles o incompletos (${raro.slice(0, 24)}): se ignoran y se borran`);
+    }
+    const largo = 'x'.repeat(400);
+    await evaluar((k, l) => { localStorage.setItem(k, JSON.stringify({ name: l, email: `${l}@ejemplo.cl`, phone: l, vence: Date.now() + 86400000 })); return true; }, CLAVE_DATOS, largo);
+    await pestanaNueva();
+    p = await puertaAhora();
+    ok(p.name.length === 150 && p.phone.length === 20, 'lo guardado se acota al largo de los campos');
+    await evaluar((k) => { localStorage.setItem(k, JSON.stringify({ name: '"><img src=x onerror="window.__xss=10">', email: 'a@ejemplo.cl', phone: '+56 9 1111 2222', vence: Date.now() + 86400000 })); return true; }, CLAVE_DATOS);
+    await pestanaNueva();
+    ok((await evaluar(() => !window.__xss && !document.querySelector('.agente-puerta img'))) && (await puertaAhora()).name.startsWith('"><img'), 'lo guardado entra a los campos como texto, nunca como HTML');
+
+    /* «Olvidar mis datos en este dispositivo» */
+    await evaluar((k) => { localStorage.setItem(k, JSON.stringify({ name: 'Persona Chat', email: 'chat@ejemplo.cl', phone: '+56 9 8765 4321', vence: Date.now() + 86400000 })); return true; }, CLAVE_DATOS);
+    await pestanaNueva();
+    await evaluar(() => { document.querySelector('.agente-olvidar').click(); return true; });
+    p = await puertaAhora();
+    ok(!(await recuerdo()) && p.name === '' && p.email === '' && p.phone === '' && !p.remember && !p.olvidar && /ya no recordamos/.test(await evaluar(() => document.querySelector('.agente-nota')?.textContent || '')), '«Olvidar mis datos»: borra lo guardado, vacía los campos, desmarca la casilla y lo confirma');
+    await entrarCon({ recordar: false, datos: { name: 'Otra Persona', email: 'otra@ejemplo.cl', phone: '+56 9 5555 6666' } });
+    ok(!(await recuerdo()), 'tras olvidar y entrar sin marcar la casilla, no vuelve a guardarse nada');
+
+    /* Entrar sin marcar la casilla quita lo que hubiera */
+    await evaluar((k) => { localStorage.setItem(k, JSON.stringify({ name: 'Persona Chat', email: 'chat@ejemplo.cl', phone: '+56 9 8765 4321', vence: Date.now() + 86400000 })); return true; }, CLAVE_DATOS);
+    await pestanaNueva();
+    await entrarCon({ recordar: false });
+    ok(!(await recuerdo()), 'si la persona desmarca «Recordar» al entrar, se borra lo guardado');
+
+    /* Una puerta rechazada no guarda nada */
+    reiniciarAsistente();
+    await pestanaNueva();
+    S.guion.push({ ruta: '/api/chat/sessions', status: 422, json: { errors: { email: ['Escribe un correo válido.'] } } });
+    await evaluar(() => { const f = document.querySelector('.agente-puerta'); f.elements.name.value = 'Persona'; f.elements.email.value = 'malo'; f.elements.phone.value = '+56 9 1111 2222'; f.elements.privacy_accepted.checked = true; f.elements.remember.checked = true; f.requestSubmit(); return true; });
+    await hasta(() => /correo válido/.test(document.querySelector('.agente-error').textContent), 'error de la puerta');
+    ok(!(await recuerdo()), 'si el asistente rechaza los datos (422), no se guardan');
+
+    /* Borrar la conversación quita también lo recordado */
+    reiniciarAsistente();
+    await pestanaNueva();
+    await entrarCon({ recordar: true, datos: { name: 'Persona Chat', email: 'chat@ejemplo.cl', phone: '+56 9 8765 4321' } });
+    ok(!!(await recuerdo()), 'antes de borrar hay datos recordados');
+    await evaluar(() => { document.querySelector('.agente-salir').click(); return true; });
+    await tocar('Sí, borrar');
+    await hasta(() => /Listo: borramos esta conversación/.test(document.querySelector('[data-agente-charla]').textContent) && !!document.querySelector('.agente-puerta'), 'borrado');
+    p = await puertaAhora();
+    ok(!(await recuerdo()) && p.name === '' && p.email === '' && !p.remember && !p.olvidar, '«Borrar esta conversación» borra también los datos de este dispositivo y la puerta vuelve vacía');
+
     ok(!errores.length, `sin errores de JavaScript en la página${errores.length ? `: ${errores.slice(0, 3).join(' | ')}` : ''}`);
   }
 } catch (e) {

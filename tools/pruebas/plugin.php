@@ -15,6 +15,7 @@ function wp_parse_url( $url, $componente = -1 ) {
 
 require __DIR__ . '/../../wordpress/ta-sitio/inc/ajustes.php';
 require __DIR__ . '/../../wordpress/ta-sitio/inc/sitio.php';
+require __DIR__ . '/../../wordpress/ta-sitio/inc/imagenes.php';  // sitio.php la llama al entregar la página (plugin 1.4.1)
 
 $fallas = 0;
 function comprobar( $ok, $que ) {
@@ -52,13 +53,13 @@ foreach ( $casos as $entrada => $esperado ) {
 echo "Política de contenido\n";
 $sellos = array( "'sha256-abc'" );
 $base   = ta_sitio_politica( $sellos, array( 'asistente' => '', 'turnstile' => '' ) );
-comprobar( "connect-src 'self'" === regla( $base, 'connect-src' ), 'sin asistente: connect-src solo el propio sitio' );
+comprobar( "connect-src 'self' https://joan1542003-byte.github.io" === regla( $base, 'connect-src' ), 'sin asistente: connect-src solo el propio sitio' );
 comprobar( null === regla( $base, 'frame-src' ), 'sin Turnstile: sin frame-src (rige default-src)' );
 comprobar( "script-src 'self' 'sha256-abc'" === regla( $base, 'script-src' ), 'sin Turnstile: script-src igual que antes' );
 comprobar( 10 === count( $base ), 'sin configuración: las mismas diez reglas de la 1.2.0' );
 
 $con = ta_sitio_politica( $sellos, array( 'asistente' => 'https://asistente.ejemplo.cl:8443/base', 'turnstile' => '0x4AAAAAAAprueba' ) );
-comprobar( "connect-src 'self' https://asistente.ejemplo.cl:8443" === regla( $con, 'connect-src' ), 'con asistente: connect-src suma su origen (sin la ruta)' );
+comprobar( "connect-src 'self' https://joan1542003-byte.github.io https://asistente.ejemplo.cl:8443" === regla( $con, 'connect-src' ), 'con asistente: connect-src suma su origen (sin la ruta)' );
 comprobar( "script-src 'self' 'sha256-abc' https://challenges.cloudflare.com" === regla( $con, 'script-src' ), 'con Turnstile: script-src suma challenges.cloudflare.com' );
 comprobar( "frame-src 'self' https://challenges.cloudflare.com" === regla( $con, 'frame-src' ), 'con Turnstile: frame-src para su marco' );
 comprobar( "frame-ancestors 'self'" === regla( $con, 'frame-ancestors' ) && "object-src 'none'" === regla( $con, 'object-src' ), 'el resto de la política no cambia' );
