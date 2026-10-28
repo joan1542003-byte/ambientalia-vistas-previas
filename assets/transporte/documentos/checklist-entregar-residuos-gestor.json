@@ -1,0 +1,245 @@
+{
+ "titulo": "Antes de entregar residuos a un gestor",
+ "finalidad": "Verificar quién transporta, quién recibe, alcance de autorizaciones/registros, condiciones de recepción y evidencias de cierre antes de entregar residuos.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Actores",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Identificar gestor",
+     "revisar": "Registrar la persona natural o jurídica que realizará la operación de manejo.",
+     "evidencia": "Datos legales y contractuales.",
+     "aplica": "Siempre",
+     "referencia": "Ley 20.920 / Guía base"
+    },
+    {
+     "n": 2,
+     "item": "Identificar transportista",
+     "revisar": "Registrar quién realizará físicamente el transporte.",
+     "evidencia": "Orden de servicio y datos del proveedor.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 3,
+     "item": "Identificar destinatario",
+     "revisar": "Registrar la instalación que recibirá el residuo.",
+     "evidencia": "Datos del destino.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 4,
+     "item": "Distinguir funciones",
+     "revisar": "Confirmar si gestor, transportista y destinatario son actores distintos o coinciden.",
+     "evidencia": "Mapa de actores/contrato.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Identidad",
+   "puntos": [
+    {
+     "n": 5,
+     "item": "Verificar razón social del prestador",
+     "revisar": "Confirmar que los documentos correspondan a la razón social que efectivamente presta cada servicio.",
+     "evidencia": "RUT, contrato y resoluciones.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Evitar documentos de terceros no relacionados",
+     "revisar": "No aceptar sin aclaración documentos emitidos a nombre de una entidad distinta del prestador efectivo.",
+     "evidencia": "Revisión documental.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Autorización / registro",
+   "puntos": [
+    {
+     "n": 7,
+     "item": "Solicitar autorización/registro",
+     "revisar": "Pedir el antecedente aplicable al gestor/transportista/destino.",
+     "evidencia": "Resolución, registro u otro respaldo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 8,
+     "item": "Revisar alcance",
+     "revisar": "Verificar que la autorización se revise por su alcance y no solo por su existencia.",
+     "evidencia": "Resolución/registro.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 9,
+     "item": "Cruzar residuo con alcance",
+     "revisar": "Confirmar que el residuo figure o sea compatible con el alcance autorizado.",
+     "evidencia": "Resolución y ficha del residuo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Transportista",
+   "puntos": [
+    {
+     "n": 10,
+     "item": "Confirmar etapa separada",
+     "revisar": "Recordar que transporte puede ser una etapa distinta del tratamiento, valorización o eliminación y verificar al actor correspondiente.",
+     "evidencia": "Contrato/orden de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Destino",
+   "puntos": [
+    {
+     "n": 11,
+     "item": "Identificar instalación receptora",
+     "revisar": "Registrar nombre y ubicación del destino acordado.",
+     "evidencia": "Datos del destinatario.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 12,
+     "item": "Confirmar capacidad de recepción",
+     "revisar": "Verificar que el destino pueda recibir el residuo en las condiciones y cantidades acordadas.",
+     "evidencia": "Confirmación del destinatario.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 13,
+     "item": "Revisar alcance del destino",
+     "revisar": "Confirmar que la instalación pueda recibir el tipo específico de residuo.",
+     "evidencia": "Autorización/alcance.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 14,
+     "item": "Confirmar condiciones de recepción",
+     "revisar": "Acordar horarios, presentación del residuo y demás condiciones del destino.",
+     "evidencia": "Correo/orden de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Residuos peligrosos",
+   "puntos": [
+    {
+     "n": 15,
+     "item": "Revisar transportista autorizado",
+     "revisar": "Para el escenario indicado en la guía, verificar uso de transportista autorizado.",
+     "evidencia": "Resolución sanitaria.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148 / Guía base"
+    },
+    {
+     "n": 16,
+     "item": "Revisar instalación autorizada",
+     "revisar": "Para el escenario indicado en la guía, verificar instalación autorizada que comprenda esos residuos.",
+     "evidencia": "Resolución del destino.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148 / Guía base"
+    },
+    {
+     "n": 17,
+     "item": "Revisar condición de generador afecto a plan de manejo",
+     "revisar": "Cuando el caso corresponda, dejar documentado si aplica el supuesto señalado por la guía.",
+     "evidencia": "Antecedentes del generador.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148 / Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Trazabilidad",
+   "puntos": [
+    {
+     "n": 18,
+     "item": "Acordar respaldo posterior",
+     "revisar": "Definir antes del retiro qué evidencia acreditará la recepción.",
+     "evidencia": "Correo/contrato/orden de servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 19,
+     "item": "Definir evidencia de destino",
+     "revisar": "Acordar certificado, acta o documento de recepción según corresponda.",
+     "evidencia": "Compromiso documental.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 20,
+     "item": "Archivar verificación previa",
+     "revisar": "Guardar autorización/registro, alcance y confirmación del destino junto al retiro.",
+     "evidencia": "Expediente.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 21,
+     "item": "Relacionar evidencia con retiro",
+     "revisar": "Asegurar que el respaldo posterior identifique el servicio/residuo correspondiente.",
+     "evidencia": "Documento con fecha/identificador.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Control de errores",
+   "puntos": [
+    {
+     "n": 22,
+     "item": "No asumir que 'gestor' realiza todas las etapas",
+     "revisar": "Verificar por separado transporte, recepción y tratamiento.",
+     "evidencia": "Registro de roles.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 23,
+     "item": "No entregar sin revisar alcance",
+     "revisar": "Detener la entrega si no puede verificarse compatibilidad entre residuo y autorización/alcance.",
+     "evidencia": "Registro de observación.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 24,
+     "item": "No cerrar sin evidencia acordada",
+     "revisar": "Mantener pendiente el cierre hasta recibir el respaldo definido.",
+     "evidencia": "Estado del servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "10_Checklist_Antes_Entregar_Residuos_Gestor.xlsx (cliente, 22-10-2026)"
+}

@@ -1302,109 +1302,86 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 .docs-open .docs-panel { grid-template-rows: 1fr; }
 .docs-inner { min-height: 0; overflow: hidden; }
 .docs-scroll { max-height: calc(100dvh - 120px); overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }
-.docs-grid { position: relative; display: grid; grid-template-columns: 300px minmax(0, 1fr); grid-template-rows: repeat(var(--n, 7), auto) 1fr; column-gap: 44px; align-items: start; margin-right: 10px; padding: 16px 0 20px; border-top: 1px solid var(--line-strong); }
-/* Lista de temas con una línea vertical fina; la línea de tinta se desliza hasta el tema elegido */
-.docs-grid::before { content: ""; position: absolute; left: 0; top: 16px; bottom: 20px; width: 1px; background: var(--line-strong); }
-.docs-item { display: contents; }
-/* Rótulo de cada grupo de la lista: «Guías rápidas» y «Documentos» */
-.docs-group { grid-column: 1; margin: 0; padding: 4px 8px 6px 18px; color: var(--ink-2); font-size: var(--fs-small); font-weight: 800; }
-.docs-item + .docs-group { padding-top: 16px; }
-.docs-tab {
-  grid-column: 1; position: relative; display: grid; grid-template-columns: 22px minmax(0, 1fr) 16px; align-items: center; gap: 14px; width: 100%; padding: 12px 8px 12px 18px;
-  border: 0; background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer;
-}
-.docs-tab .doc-icon { width: 22px; height: 22px; }
-.docs-tab-text strong { display: block; color: var(--ink); font-size: var(--fs-body-sm); font-weight: 800; line-height: 1.3; }
-.docs-tab-text small { display: block; margin-top: 2px; color: var(--ink-2); font-size: var(--fs-small); font-weight: 600; line-height: 1.35; transition: color .25s var(--ease); }
-.docs-chev { display: grid; place-items: center; color: var(--ink); opacity: .55; transition: opacity .3s var(--ease), rotate .35s var(--ease); }
-.docs-item.is-on .docs-chev, .docs-tab:hover .docs-chev { opacity: 1; }
-.docs-tab:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; border-radius: 8px; }
-.docs-glide { position: absolute; left: 0; top: 0; z-index: 1; width: 2px; border-radius: 2px; background: var(--ink); opacity: 0; pointer-events: none; transition: transform .4s var(--ease), height .4s var(--ease), opacity .25s var(--ease); }
-.docs-glide.is-on { opacity: 1; }
-.docs-glide.is-instant { transition: opacity .25s var(--ease); }
-/* Explicación: todas ocupan el mismo lugar y se cruzan con un fundido (sin saltos) */
-.docs-detail { grid-column: 2; grid-row: 1 / -1; align-self: start; opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .25s var(--ease), transform .35s var(--ease), visibility 0s linear .25s; }
-.docs-item.is-on .docs-detail { opacity: 1; visibility: visible; transform: none; transition: opacity .35s var(--ease) .06s, transform .45s var(--ease) .06s, visibility 0s; }
-.docs-detail-in { padding: 6px 4px 2px 0; }
-.docs-kicker { color: var(--tc); font-size: var(--fs-small); font-weight: 800; }
-.docs-detail h3 { margin-top: 2px; color: var(--ink); font-size: var(--fs-subtitle); line-height: 1.25; letter-spacing: -.012em; }
-.docs-lead { max-width: 62ch; margin-top: 8px; color: var(--ink-2); font-size: var(--fs-body-sm); line-height: 1.55; }
-.docs-points { list-style: none; display: grid; gap: 9px; max-width: 64ch; margin-top: 14px; }
-.docs-points li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; color: var(--ink); font-size: var(--fs-body-sm); line-height: 1.5; }
-.docs-points svg { margin-top: 2px; color: var(--tc); }
-.docs-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-.docs-actions .btn { max-width: 100%; white-space: normal; text-align: left; }
-.docs-actions .btn svg { width: 18px; height: 18px; flex: none; }
-/* Botones secundarios del panel: contorno oscuro y definido sobre el blanco */
-.docs-actions .btn-quiet { border-color: var(--ink); color: var(--ink); background: transparent; }
-.docs-actions .btn-quiet:hover { background: var(--ink); color: #fff; }
-/* Qué trae el checklist: sus nueve bloques, numerados */
-.docs-blocks { list-style: none; counter-reset: bloque; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 28px; max-width: 760px; margin-top: 14px; border-top: 1px solid var(--line-strong); }
-.docs-blocks li { counter-increment: bloque; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--line); color: var(--ink); font-size: var(--fs-small); font-weight: 700; line-height: 1.35; }
-.docs-blocks li::before { content: counter(bloque); color: var(--ink-2); font-weight: 800; font-variant-numeric: tabular-nums; }
-/* Normativa dentro del panel: buscador, temas y la lista en dos columnas */
-.docs-detail .lib { margin-top: 14px; gap: 12px; }
-.docs-detail .lib-search { min-height: 48px; padding: 0 8px 0 14px; border-radius: 12px; }
-.docs-detail .lib-search input { height: 46px; font-size: 1rem; }
-.docs-detail .lib-topic { height: 40px; font-size: var(--fs-small); }
+/* Rediseño del 22-10-2026: arriba, tres pestañas («pilas») con lo que hay y su cantidad; debajo, su contenido. Guías y
+   checklists en tres columnas, una por etapa del retiro; la normativa con su buscador. */
+.docs-wrap { margin-right: 10px; padding: 14px 0 14px; border-top: 1px solid var(--line-strong); }
+.docs-cats { position: relative; isolation: isolate; display: inline-flex; gap: 2px; padding: 4px; border-radius: 16px; background: rgb(21 26 45 / .055); }
+.docs-cats-glide { position: absolute; left: 0; top: 4px; bottom: 4px; z-index: -1; width: 0; border-radius: 12px; background: #fff; box-shadow: 0 1px 2px rgb(21 26 45 / .08), 0 8px 18px -12px rgb(21 26 45 / .45); transition: transform .45s cubic-bezier(.32, .72, 0, 1), width .45s cubic-bezier(.32, .72, 0, 1); }
+.docs-cats-glide.is-instant { transition: none; }
+.docs-cat { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px 0 12px; border: 0; border-radius: 12px; background: none; color: var(--ink-2); font: inherit; font-size: var(--fs-body-sm); font-weight: 800; white-space: nowrap; cursor: pointer; transition: color .25s var(--ease); }
+.docs-cat:hover, .docs-cat[aria-selected="true"] { color: var(--ink); }
+.docs-cat-icon { display: grid; place-items: center; transition: color .25s var(--ease); }
+.docs-cat-icon svg { width: 18px; height: 18px; }
+.docs-cat[aria-selected="true"] .docs-cat-icon { color: var(--accent); }
+.docs-cat-n { min-width: 22px; height: 20px; padding: 0 6px; border-radius: 99px; background: rgb(21 26 45 / .07); color: var(--ink-2); font-size: 12px; font-weight: 800; line-height: 20px; text-align: center; font-variant-numeric: tabular-nums; transition: background-color .25s var(--ease), color .25s var(--ease); }
+.docs-cat[aria-selected="true"] .docs-cat-n { background: var(--accent-soft); color: var(--accent-strong); }
+.docs-cat:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.docs-pane { padding-top: 14px; }
+.docs-pane[hidden] { display: none; }
+.docs-lead { max-width: 70ch; color: var(--ink-2); font-size: var(--fs-small); font-weight: 600; line-height: 1.5; }
+.docs-etapas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 22px; margin-top: 14px; }
+.docs-etapa-t { display: flex; align-items: center; gap: 8px; margin: 0 0 6px 10px; color: var(--ink); font-size: var(--fs-small); font-weight: 800; }
+.docs-etapa-t span { display: grid; place-items: center; flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 11px; font-variant-numeric: tabular-nums; }
+.docs-cards { list-style: none; display: grid; gap: 2px; margin: 0; padding: 0; }
+.docs-cards li { display: flex; align-items: center; gap: 2px; }
+.docs-card { flex: 1; min-width: 0; display: grid; grid-template-columns: 22px minmax(0, 1fr) 16px; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; color: var(--ink); text-decoration: none; transition: background-color .2s var(--ease); }
+.docs-card:hover { background: rgb(21 26 45 / .05); }
+.docs-card[aria-current="page"] { background: var(--accent-soft); }
+.docs-card .doc-icon { width: 22px; height: 22px; }
+.docs-card-t strong { display: block; color: var(--ink); font-size: var(--fs-body-sm); font-weight: 800; line-height: 1.3; }
+.docs-card-t small { display: block; margin-top: 1px; color: var(--ink-2); font-size: var(--fs-small); font-weight: 600; line-height: 1.35; }
+.docs-card-go { display: grid; place-items: center; color: var(--ink); opacity: .35; transition: opacity .2s var(--ease); }
+.docs-card:hover .docs-card-go { opacity: 1; }
+.docs-card:focus-visible, .docs-xls:focus-visible, .docs-pie-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+/* Checklists: la fila abre la versión en línea; a su lado, la descarga en Excel */
+[data-docs-pane="checklists"] .docs-card { grid-template-columns: 22px minmax(0, 1fr); }
+[data-docs-pane="checklists"] .docs-card-go { display: none; }
+.docs-xls { position: relative; flex: none; display: inline-flex; align-items: center; gap: 5px; height: 34px; padding: 0 10px; border-radius: 99px; color: #1d6b40; font-size: 12px; font-weight: 800; text-decoration: none; transition: background-color .2s var(--ease); }
+.docs-xls:hover { background: rgb(29 107 64 / .09); }
+.docs-xls svg { width: 16px; height: 16px; }
+.docs-pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 16px; padding: 12px 0 0 10px; border-top: 1px solid var(--line); }
+.docs-pie p { color: var(--ink-2); font-size: var(--fs-small); font-weight: 700; }
+.docs-pie-btn { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border: 1px solid var(--ink); border-radius: 99px; background: none; color: var(--ink); font: inherit; font-size: var(--fs-small); font-weight: 800; cursor: pointer; transition: background-color .2s var(--ease), color .2s var(--ease); }
+.docs-pie-btn:hover { background: var(--ink); color: #fff; }
+.docs-pie-btn svg { width: 16px; height: 16px; }
+/* Normativa dentro del panel: buscador, temas y la lista en dos columnas, que se desplaza dentro */
+.docs-pane .lib { margin-top: 14px; gap: 12px; }
+.docs-pane .lib-search { min-height: 48px; padding: 0 8px 0 14px; border-radius: 12px; }
+.docs-pane .lib-search input { height: 46px; font-size: 1rem; }
+.docs-pane .lib-topic { height: 40px; font-size: var(--fs-small); }
 .docs-panel .doc-org { display: none; }
 @media (min-width: 861px) {
-  /* Alto estable: el panel no cambia de tamaño al pasar de un tema a otro ni al buscar; la lista de normas se desplaza dentro */
-  .docs-grid { min-height: min(600px, calc(100dvh - 150px)); }
-  .docs-item.is-fill .docs-detail { align-self: stretch; position: relative; }
-  .docs-item.is-fill .docs-detail-in { position: absolute; inset: 0; display: flex; flex-direction: column; }
-  .docs-detail .lib { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-  .docs-detail .lib > * { flex: none; }
-  .docs-detail .lib-scroll { flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding-right: 6px;
+  .docs-pane .lib-scroll { max-height: min(420px, calc(100dvh - 330px)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding-right: 6px;
     -webkit-mask-image: linear-gradient(#000 calc(100% - 28px), transparent); mask-image: linear-gradient(#000 calc(100% - 28px), transparent); }
-  .docs-detail .lib-list { padding-bottom: 26px; }
+  .docs-pane .lib-list { padding-bottom: 26px; }
 }
-/* Vista de opciones (así abre el panel, pedido del cliente del 02-10-2026): primero se ve qué hay —guías rápidas a la
-   izquierda, documentos a la derecha—, sin ninguna explicación abierta y con el panel compacto. Al elegir una opción pasa
-   a la lista con su detalle (ayuda.js anima el alto). Aquí pasar el puntero solo acompaña con un fondo suave. */
-@media (min-width: 861px) {
-  .docs-grid.is-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; grid-auto-flow: row dense; min-height: 0; padding-bottom: 14px; }
-  .docs-grid.is-menu::before { left: calc(50% - .5px); }  /* la línea fina separa las dos columnas */
-  .docs-grid.is-menu .docs-detail { display: none; }
-  .docs-grid.is-menu .docs-group { padding-left: 14px; }
-  .docs-grid.is-menu .docs-group ~ .docs-group { grid-column: 2; grid-row: 1; padding-top: 4px; }
-  .docs-grid.is-menu .docs-group ~ .docs-group ~ .docs-item .docs-tab { grid-column: 2; }
-  .docs-grid.is-menu .docs-tab { padding: 12px 12px 12px 14px; border-radius: 12px; }
-  .docs-grid.is-menu .docs-glide { z-index: 0; border-radius: 12px; background: rgb(21 26 45 / .055); }
-  .docs-grid.is-menu .docs-glide.is-instant { transition: opacity .2s var(--ease); }
-  .docs-grid.is-menu .docs-tab:hover .docs-chev { opacity: 1; }
-}
-@media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
-  @keyframes docs-in { from { opacity: 0; } }
-  .docs-grid.is-entering .docs-group, .docs-grid.is-entering .docs-tab { animation: docs-in .4s var(--ease) both; }
-  .docs-grid.is-entering .docs-item.is-on .docs-detail { animation: docs-in .45s var(--ease) .1s both; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes docs-in { from { opacity: 0; transform: translateY(6px); } }
+  .docs-pane.is-entering .docs-lead, .docs-pane.is-entering .docs-etapa, .docs-pane.is-entering .lib { animation: docs-in .42s cubic-bezier(.32, .72, 0, 1) both; }
+  .docs-pane.is-entering .docs-etapa:nth-child(2) { animation-delay: .04s; }
+  .docs-pane.is-entering .docs-etapa:nth-child(3) { animation-delay: .08s; }
 }
 /* La barra de lectura de las normas ocupa solo la fila de la píldora */
 .norm-bar .reader, .norm-bar .textfind { bottom: auto; height: 56px; }
+@media (max-width: 1040px) and (min-width: 861px) {
+  .docs-etapas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 860px) {
   .docs-scroll { max-height: calc(100dvh - 96px); }
-  .docs-grid { display: block; margin-right: 10px; padding: 2px 0 8px; }
-  .docs-group { padding: 14px 2px 4px; }
-  .docs-item + .docs-group { padding-top: 18px; border-top: 1px solid var(--line-strong); }
-  .docs-grid::before, .docs-glide { display: none; }
-  .docs-item { display: block; }
-  .docs-item + .docs-item { border-top: 1px solid var(--line-strong); }
-  .docs-tab { padding: 14px 2px; }
-  .docs-item.is-on .docs-chev { rotate: 90deg; }
-  /* Acordeón con alto animado: el tema se abre y se cierra suave, sin saltos */
-  .docs-detail { display: grid; grid-template-rows: 0fr; visibility: visible; transform: none; opacity: 0; transition: grid-template-rows .42s var(--ease), opacity .3s var(--ease); }
-  .docs-item.is-on .docs-detail { grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows .45s var(--ease), opacity .35s var(--ease) .05s; }
-  .docs-detail-in { min-height: 0; overflow: hidden; padding: 0 2px 0 36px; }
-  .docs-item.is-on .docs-detail-in { padding-bottom: 18px; }
-  /* El título del tema ya está en la fila que se despliega: no se repite */
-  .docs-kicker, .docs-detail h3 { display: none; }
-  .docs-lead { margin-top: 0; }
-  .docs-blocks { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  /* El botón del menú cierra los documentos mientras están abiertos */
+  .docs-wrap { padding: 10px 0 10px; }
+  /* Pestañas a todo el ancho, en tres partes iguales */
+  .docs-cats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+  .docs-cat { justify-content: center; gap: 6px; height: 42px; padding: 0 4px; font-size: var(--fs-small); }
+  .docs-cat-icon { display: none; }
+  .docs-etapas { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .docs-etapa-t { margin-left: 4px; }
+  .docs-card { padding: 10px 4px; }
+  .docs-pie { padding-left: 4px; }
+  /* El botón del menú cierra la ayuda mientras está abierta */
   .docs-open .menu-toggle .icon-open { display: none; }
   .docs-open .menu-toggle .icon-close { display: block; }
 }
-@media (max-width: 860px) and (prefers-reduced-motion: no-preference) { .docs-detail-in { transition: padding-bottom .42s var(--ease); } }
+@media (max-width: 400px) { .docs-cat-n { display: none; } }
 
 /* ---------- Descarga del checklist (páginas de guía): una fila con línea fina ---------- */
 .download-strip { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 16px; margin-top: 32px; padding: 16px 4px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -1758,6 +1735,10 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 .ck-n { display: inline-block; min-width: 1.9em; color: var(--muted); font-variant-numeric: tabular-nums; }
 .ck-evidencia { margin-top: 4px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.55; }
 .ck-texto .law-refs { margin-top: 4px; }
+/* Checklists del cliente: la evidencia sugerida y, si no aplica siempre, «Según corresponda» */
+.ck-prueba { display: flex; gap: 8px; margin-top: 4px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.5; }
+.ck-prueba span { flex: none; color: var(--ink); font-weight: 800; }
+.ck-aplica { display: inline-block; margin-top: 6px; padding: 1px 9px; border: 1px solid var(--line-strong); border-radius: 99px; color: var(--ink-2); font-size: 12px; font-weight: 800; }
 .ck-estado { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-top: 8px; padding: 0 10px 0 12px; border: 1px solid var(--line-strong); border-radius: 99px; background: #fff; color: var(--ink-2); font: inherit; font-size: var(--fs-caption); font-weight: 800; cursor: pointer; transition: border-color .2s, color .2s, background-color .2s; }
 .ck-estado:hover { border-color: var(--ink-2); color: var(--ink); }
 .ck-estado:disabled { display: none; }
@@ -1786,11 +1767,64 @@ body[data-site="campanas"] .stage-media img { object-position: 30% 62%; }
 /* Sello «Yo Reciclo» del pie (logo entregado por el cliente el 15-10-2026): pequeño, a modo de distintivo, con el texto
    del logo aún legible. No se presenta como certificación. */
 .site-footer .sello { margin-top: 18px; }
-/* Sello Yo Reciclo (22-10-2026): sus colores y, al pasar el mouse, los morados de la marca */
-.yo-reciclo { --yr-a: #1E1E1E; --yr-b: #02895E; --yr-c: #AFCA46; --yr-d: #1E1E1E; display: block; width: 64px; height: 64px; }
+/* Sello Yo Reciclo (logo del 22-10-2026, con su nombre): sus colores y, al pasar el mouse, los morados de la marca */
+.yo-reciclo { --yr-a: #1E1E1E; --yr-b: #00543A; --yr-c: #7FD500; --yr-d: #1E1E1E; --yr-t: #1E1E1E; display: block; width: 84px; height: auto; }
 .yo-reciclo path { transition: fill .45s ease; }
 .yo-reciclo .yr-a { fill: var(--yr-a); }
 .yo-reciclo .yr-b { fill: var(--yr-b); }
 .yo-reciclo .yr-c { fill: var(--yr-c); }
 .yo-reciclo .yr-d { fill: var(--yr-d); }
-@media (hover: hover) { .yo-reciclo:hover { --yr-a: #3D0577; --yr-b: var(--marca); --yr-c: var(--marca-2); --yr-d: #3D0577; } }
+.yo-reciclo .yr-t { fill: var(--yr-t); }
+@media (hover: hover) { .yo-reciclo:hover { --yr-a: #3D0577; --yr-b: var(--marca); --yr-c: var(--marca-2); --yr-d: #3D0577; --yr-t: #3D0577; } }
+
+/* ---------- Condiciones, privacidad y borrado de la conversación (legal/*.html, tools/legal.py) ---------- */
+.legal-vigencia { max-width: 64ch; margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--accent-soft); color: var(--ink); font-size: var(--fs-small); font-weight: 700; line-height: 1.5; }
+.legal-doc { max-width: 72ch; margin-top: 8px; color: var(--ink-2); font-size: var(--fs-body-sm); line-height: 1.65; }
+.legal-doc h2 { margin: 34px 0 8px; color: var(--ink); font-size: var(--fs-card); letter-spacing: -.01em; line-height: 1.3; }
+.legal-doc h3 { margin: 22px 0 6px; color: var(--ink); font-size: var(--fs-body); }
+.legal-doc p + p { margin-top: 10px; }
+.legal-doc ul + p, .legal-doc ol + p, .legal-doc table + p { margin-top: 12px; }  /* el párrafo que cierra una lista o una tabla no queda pegado a ella */
+.legal-doc ul, .legal-doc ol { display: grid; gap: 6px; margin: 8px 0 0; padding-left: 1.2em; }
+.legal-doc li::marker { color: var(--accent); }
+.legal-doc a { color: var(--accent-strong); font-weight: 700; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.legal-doc strong { color: var(--ink); }
+.legal-doc table { width: 100%; margin-top: 12px; border-collapse: collapse; font-size: var(--fs-small); }
+.legal-doc th, .legal-doc td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.legal-doc th { color: var(--ink); font-weight: 800; }
+.legal-otras { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 14px; padding: 0; }
+.legal-otras a { color: var(--ink); font-weight: 800; text-underline-offset: 3px; }
+.legal-credito { margin: 0; color: var(--muted); font-size: var(--fs-small); }  /* «Desarrollado con ♥ por GreenSoft», como en las páginas del asistente */
+.legal-credito a { color: var(--ink-2); font-weight: 700; text-underline-offset: 3px; }
+@media (max-width: 560px) {
+  .legal-doc table, .legal-doc tbody, .legal-doc tr, .legal-doc td, .legal-doc th { display: block; }
+  .legal-doc thead { display: none; }
+  .legal-doc tr { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .legal-doc td, .legal-doc th { padding: 2px 0; border: 0; }
+  .legal-doc td:first-child { color: var(--ink); font-weight: 800; }
+}
+
+/* ---------- Brillo leve (22-10-2026): el mismo lenguaje de «Chat con IA», más sutil ---------- */
+/* Hero: «Necesito gestionar mis residuos» lleva un borde de luz que recorre los colores de la marca, muy tenue */
+.routes-tabs .route:first-of-type { position: relative; isolation: isolate; }
+.routes-tabs .route:first-of-type::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; padding: 1px; border-radius: inherit; pointer-events: none; opacity: .7;
+  background: conic-gradient(from var(--ia-giro), rgb(235 169 252 / .9), rgb(255 255 255 / .15) 30%, rgb(168 223 253 / .75) 55%, rgb(255 255 255 / .15) 78%, rgb(235 169 252 / .9));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+}
+.routes-tabs .route:first-of-type .route-icon { box-shadow: 0 0 0 0 rgb(235 169 252 / 0); }
+.routes-tabs .route:first-of-type[aria-selected="false"] { background: linear-gradient(100deg, rgb(103 8 199 / .26), rgb(103 8 199 / .05) 70%); }
+/* Cotizar: el tipo de retiro elegido queda con un halo de su color */
+.seg [data-modalidad][aria-checked="true"] { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -6px color-mix(in srgb, var(--tone) 75%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ta-giro-suave { to { --ia-giro: 360deg; } }
+  @keyframes ta-halo-icono { 0%, 100% { box-shadow: 0 0 0 0 rgb(235 169 252 / 0); } 50% { box-shadow: 0 0 14px 1px rgb(235 169 252 / .45); } }
+  @keyframes ta-halo-plan {
+    0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent), 0 6px 16px -6px color-mix(in srgb, var(--tone) 75%, transparent); }
+    50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 45%, transparent), 0 8px 20px -6px color-mix(in srgb, var(--tone) 90%, transparent); }
+  }
+  .routes-tabs .route:first-of-type::before { animation: ta-giro-suave 7s linear infinite; }
+  .routes-tabs .route:first-of-type .route-icon { animation: ta-halo-icono 3.6s ease-in-out infinite; }
+  .seg [data-modalidad][aria-checked="true"] { animation: ta-halo-plan 3.2s ease-in-out infinite; }
+}
+

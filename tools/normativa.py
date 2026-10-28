@@ -734,6 +734,8 @@ def main():
     # Guías y panel «Ayuda» de la página principal: usan la misma lista de normas
     import ayuda
     ayuda.main()
+    import legal
+    legal.main()  # condiciones y privacidad del asistente, en legal/
 
 
 if __name__ == '__main__':

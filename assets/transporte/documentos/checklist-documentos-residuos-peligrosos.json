@@ -1,0 +1,257 @@
+{
+ "titulo": "Documentos para un retiro de residuos peligrosos",
+ "finalidad": "Revisar antes de la carga la autorización del transportista, identificación del residuo, documento de declaración, información de seguridad, vehículo, contenedores y destino.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Clasificación",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Confirmar que el residuo esté clasificado",
+     "revisar": "Verificar que la clasificación del residuo peligroso esté definida antes de cargar.",
+     "evidencia": "Ficha de clasificación, HDSR o antecedente técnico.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 148 / Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Identificación",
+   "puntos": [
+    {
+     "n": 2,
+     "item": "Identificar correctamente el residuo",
+     "revisar": "Asegurar que nombre, estado físico y características relevantes estén registrados.",
+     "evidencia": "Ficha del residuo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Transportista",
+   "puntos": [
+    {
+     "n": 3,
+     "item": "Solicitar autorización sanitaria",
+     "revisar": "Verificar autorización sanitaria del transportista cuando corresponda a la regla general indicada.",
+     "evidencia": "Resolución sanitaria.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 148"
+    },
+    {
+     "n": 4,
+     "item": "Revisar identidad del autorizado",
+     "revisar": "Confirmar que el transportista que ejecutará el retiro corresponda a la autorización presentada.",
+     "evidencia": "Resolución y datos del proveedor.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 5,
+     "item": "Revisar vigencia y alcance",
+     "revisar": "Verificar que la autorización presentada sea aplicable al servicio previsto.",
+     "evidencia": "Resolución sanitaria.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Declaración",
+   "puntos": [
+    {
+     "n": 6,
+     "item": "Determinar si corresponde Documento de Declaración",
+     "revisar": "Revisar la exigencia de documento dentro del sistema de declaración y seguimiento señalada en la guía.",
+     "evidencia": "Pauta interna y antecedentes del retiro.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 148 art. 39"
+    },
+    {
+     "n": 7,
+     "item": "Completar Documento de Declaración",
+     "revisar": "Cuando corresponda, preparar el documento antes de cargar el vehículo.",
+     "evidencia": "Documento de declaración.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148 art. 39"
+    },
+    {
+     "n": 8,
+     "item": "Revisar datos del residuo",
+     "revisar": "Confirmar que la declaración describa el residuo que efectivamente se retirará.",
+     "evidencia": "Documento de declaración y carga real.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 9,
+     "item": "Revisar cantidad",
+     "revisar": "Verificar que cantidad/unidad declarada sea consistente con la carga.",
+     "evidencia": "Documento y registro de cantidad.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 10,
+     "item": "Revisar generador",
+     "revisar": "Confirmar datos del generador en el documento de declaración.",
+     "evidencia": "Documento y datos del establecimiento.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 11,
+     "item": "Revisar transportista",
+     "revisar": "Confirmar datos del transportista en el documento de declaración.",
+     "evidencia": "Documento y resolución.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 12,
+     "item": "Revisar destinatario",
+     "revisar": "Confirmar que el destinatario indicado sea el acordado para la recepción.",
+     "evidencia": "Documento y antecedentes del destino.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Seguridad",
+   "puntos": [
+    {
+     "n": 13,
+     "item": "Entregar Hoja de Seguridad para el Transporte",
+     "revisar": "Asegurar que el transportista reciba la información de seguridad del residuo necesaria para conocer sus características.",
+     "evidencia": "Hoja de Seguridad para el Transporte / HDSR indicada por la guía.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 14,
+     "item": "No entregar solo HDS del producto original",
+     "revisar": "Confirmar que la información acompañante corresponda al residuo y no únicamente al producto antes de convertirse en residuo.",
+     "evidencia": "HDSR/Hoja de Seguridad del residuo y antecedentes de origen.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 15,
+     "item": "Registrar características para emergencias",
+     "revisar": "Asegurar que estén disponibles las características relevantes para transporte y respuesta ante emergencias.",
+     "evidencia": "Documento de seguridad del residuo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Contenedores",
+   "puntos": [
+    {
+     "n": 16,
+     "item": "Revisar contenedores",
+     "revisar": "Confirmar que el tipo y condición de los contenedores sean compatibles con el residuo.",
+     "evidencia": "Inspección y fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Vehículo",
+   "puntos": [
+    {
+     "n": 17,
+     "item": "Revisar compatibilidad del vehículo",
+     "revisar": "Confirmar que el vehículo previsto sea compatible con el residuo y forma de carga.",
+     "evidencia": "Ficha/inspección del vehículo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Destino",
+   "puntos": [
+    {
+     "n": 18,
+     "item": "Confirmar destinatario antes de la salida",
+     "revisar": "Verificar que la instalación receptora esté definida y disponible.",
+     "evidencia": "Confirmación del destinatario.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Seguimiento",
+   "puntos": [
+    {
+     "n": 19,
+     "item": "Conservar respaldos del sistema",
+     "revisar": "Archivar los documentos generados durante declaración y seguimiento.",
+     "evidencia": "Expediente digital/físico.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 20,
+     "item": "Cruzar declaración con carga real",
+     "revisar": "Antes de salida, comparar documento y material efectivamente cargado.",
+     "evidencia": "Checklist de cierre de carga.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Excepción art. 42",
+   "puntos": [
+    {
+     "n": 21,
+     "item": "Revisar todas las condiciones",
+     "revisar": "Si se invoca la excepción señalada en la guía, comprobar todas sus condiciones y no solo la cantidad.",
+     "evidencia": "Antecedentes completos del caso.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148 art. 42"
+    }
+   ]
+  },
+  {
+   "nombre": "Momento de revisión",
+   "puntos": [
+    {
+     "n": 22,
+     "item": "Preparar documentación antes de cargar",
+     "revisar": "No esperar a que el vehículo esté cargado para revisar o completar antecedentes.",
+     "evidencia": "Registro de revisión previa.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cierre",
+   "puntos": [
+    {
+     "n": 23,
+     "item": "Registrar aprobación documental",
+     "revisar": "Dejar constancia de que la revisión documental se completó antes de autorizar salida.",
+     "evidencia": "Firma/validación interna.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "04_Checklist_Documentos_Retiro_Residuos_Peligrosos.xlsx (cliente, 22-10-2026)"
+}

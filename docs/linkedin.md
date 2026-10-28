@@ -1,7 +1,14 @@
 # Publicaciones de LinkedIn en Transporte Autorizado
 
-La sección «Publicaciones recientes» muestra las últimas publicaciones de la página de LinkedIn de **Vínculo Verde**
-(`https://www.linkedin.com/company/vinculo-verde/`), cada una con la norma relacionada (ver o descargar).
+La sección «Publicaciones recientes» muestra las últimas publicaciones de la página oficial de LinkedIn de **Transporte
+Autorizado** (`https://www.linkedin.com/company/transporte-autorizado/`, desde el 22-10-2026; antes, la de Vínculo Verde),
+cada una con la norma relacionada (ver o descargar). **Mientras la página no tenga publicaciones, la sección no se muestra**
+(`data-posts-seccion hidden`); aparece sola con la primera. El pie lleva siempre el enlace a LinkedIn.
+
+En el sitio oficial (WordPress) la página lee esta misma lista desde la copia publicada en GitHub Pages
+(`window.TA_API.linkedin`, constante `TA_SITIO_LINKEDIN` del plugin), así lo nuevo aparece sin subir otro zip. La lee el
+navegador, no el servidor (el plugin no se conecta a nada: regla de `tools/pruebas/integracion.mjs`); la política de
+contenido permite `github.io` para la lista y las portadas. Si GitHub no responde, usa la lista que venía en el zip.
 
 ## Cómo se actualiza
 
@@ -19,7 +26,7 @@ No hay que tocar el código para cada publicación nueva: basta publicarla en Li
 
 | Vía | Requiere | Cuándo se usa |
 | --- | --- | --- |
-| **Página pública** (`https://cl.linkedin.com/company/vinculo-verde`, lo que ve un visitante sin cuenta) | Nada | Por defecto |
+| **Página pública** (`https://cl.linkedin.com/company/transporte-autorizado`, lo que ve un visitante sin cuenta) | Nada | Por defecto |
 | **API de LinkedIn** (oficial) | App aprobada y secretos (ver abajo) | Si los secretos están configurados; si falla, se usa la página pública |
 
 Resguardos del script: si LinkedIn no responde, pide iniciar sesión o cambia el formato de su página, **el archivo queda como

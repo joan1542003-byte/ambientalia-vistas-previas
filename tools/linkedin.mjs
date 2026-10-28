@@ -8,12 +8,12 @@
 //        LINKEDIN_CLIENT_ID, LINKEDIN_CLIENT_SECRET, LINKEDIN_REFRESH_TOKEN (el token de renovación dura 365 días)
 //        LINKEDIN_VERSION         opcional, versión de la API en formato AAAAMM (por defecto, la del mes anterior)
 //   2. Página pública de la empresa, sin clave ni inicio de sesión: lo que ve un visitante sin cuenta en
-//      https://cl.linkedin.com/company/vinculo-verde. Se usa si no hay secretos, si la API falla o con --publico.
+//      https://cl.linkedin.com/company/transporte-autorizado. Se usa si no hay secretos, si la API falla o con --publico.
 //
 // Resguardos: si LinkedIn no responde, pide iniciar sesión o cambia su página, el archivo queda como estaba (nunca se
 // publica una lista vacía); solo se escribe cuando algo cambió; lo compartido desde otras páginas no se incluye.
 // Opciones: --publico (omite la API) · --estricto (termina con error si no se pudo leer) · --archivo=pagina.html (prueba
-// con una página guardada) · LINKEDIN_PAGE (nombre de la página en la URL; por defecto, vinculo-verde).
+// con una página guardada) · LINKEDIN_PAGE (nombre de la página en la URL; por defecto, transporte-autorizado).
 // Cada publicación queda enlazada con su norma (assets/transporte/normativa.json, mismos criterios que la página).
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 
@@ -24,13 +24,14 @@ const env = process.env;
 const args = process.argv.slice(2);
 const flag = (n) => args.includes(`--${n}`);
 const opcion = (n) => args.find((a) => a.startsWith(`--${n}=`))?.slice(n.length + 3);
-const PAGINA = env.LINKEDIN_PAGE || 'vinculo-verde';
+const PAGINA = env.LINKEDIN_PAGE || 'transporte-autorizado';
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const aviso = (msg) => console.warn(env.GITHUB_ACTIONS ? `::warning title=Publicaciones de LinkedIn::${msg}` : `Aviso: ${msg}`);
 const pausa = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const prev = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : {};
-const previos = prev.posts || [];
+// Lo guardado de otra página (hasta el 22-10-2026 se leía la de Vínculo Verde) no se mezcla con esta
+const previos = new RegExp(`/company/${PAGINA}/?$`, 'i').test(prev.organizacion?.url || '') ? prev.posts || [] : [];
 const previo = (...ids) => previos.find((o) => ids.some((id) => id && (o.id === id || o.urn === id)));
 const fechaIso = (v) => new Date(v).toISOString().replace(/\.\d{3}Z$/, 'Z');
 
@@ -218,7 +219,7 @@ async function desdePagina() {
       normas: normasDe(texto, old)
     });
   }
-  if (!posts.length) throw new Error('la página pública no trae publicaciones propias (¿cambió su formato?)');
+  if (!posts.length) throw new Error(previos.length ? 'la página pública no trae publicaciones propias (¿cambió su formato?)' : 'la página de LinkedIn todavía no tiene publicaciones propias');
   // La página pública muestra solo las más recientes: las anteriores a esa ventana se conservan
   const vistos = new Set(posts.flatMap((p) => [p.id, p.urn]).filter(Boolean));
   const masAntigua = Math.min(...posts.map((p) => Date.parse(p.fecha)));

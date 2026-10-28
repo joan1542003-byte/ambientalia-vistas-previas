@@ -237,7 +237,7 @@
     d.addEventListener('keydown', (e) => {
       if (e.key !== '/' || e.target.closest('input, textarea, select, [contenteditable]') || d.querySelector('dialog[open]')) return;
       /* Solo con la biblioteca a la vista (panel «Ayuda» abierto en Normativa) */
-      if (lib.closest('[inert]') || !lib.closest('.docs-item')?.classList.contains('is-on')) return;
+      if (lib.closest('[inert]') || lib.closest('[data-docs-pane]')?.hidden) return;
       e.preventDefault();
       input.focus();
     });
@@ -312,10 +312,22 @@
         <a class="post-li" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Ver en LinkedIn ${ICON.out}<span class="sr-only"> (pestaña nueva)</span></a>
       </li>`;
 
-    Promise.all([fetch(postsRoot.dataset.src, { cache: 'no-cache' }).then((r) => r.json()).catch(() => null), normas()]).then(([feed, norms]) => {
-      const org = feed?.organizacion || { nombre: 'Vínculo Verde', url: company };
-      const items = (feed?.posts || []).slice(0, 10);
-      if (!items.length) { track.innerHTML = empty(org); return; }
+    /* Sobre WordPress la lista se lee de la copia publicada en GitHub (window.TA_API.linkedin, al día cada 6 horas); si no
+       responde, la que trae el sitio. Las portadas y el logo se resuelven desde donde vino la lista */
+    const leerFeed = (u) => fetch(u, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then((j) => ({ ...j, base: new URL(u.replace(/assets\/transporte\/linkedin\.json(\?.*)?$/, ''), location.href).href }));
+    const remoto = window.TA_API?.linkedin;
+    const feedP = (remoto ? leerFeed(remoto).catch(() => leerFeed(postsRoot.dataset.src)) : leerFeed(postsRoot.dataset.src)).catch(() => null);
+    Promise.all([feedP, normas()]).then(([feed, norms]) => {
+      const abs = (u) => (u ? new URL(u, feed.base).href : u);
+      const org = feed?.organizacion ? { ...feed.organizacion, logo: abs(feed.organizacion.logo) } : { nombre: 'Transporte Autorizado', url: company };
+      /* Solo las de la página de esta empresa (la lista de GitHub pudo quedar con la de otra página mientras se publica la nueva) */
+      const propia = /\/company\/transporte-autorizado\/?$/i.test(feed?.organizacion?.url || '');
+      const items = (propia ? feed.posts || [] : []).slice(0, 10).map((p) => (p.imagen ? { ...p, imagen: abs(p.imagen) } : p));
+      /* Sin publicaciones la sección no se muestra (la página de LinkedIn es nueva); aparece sola con la primera */
+      const seccion = postsRoot.closest('[data-posts-seccion]');
+      if (!items.length) { if (seccion) return; track.innerHTML = empty(org); return; }
+      if (seccion) seccion.hidden = false;
       const list = norms?.normas || [];
       track.innerHTML = items.map((p, i) => post(p, org, list.find((n) => n.slug === (p.normas || [])[0]) || related(p.texto, list), i)).join('');
       track.querySelectorAll('.post-cover img').forEach((img) => { const on = () => img.classList.add('is-loaded'); if (img.complete) on(); else { img.addEventListener('load', on, { once: true }); img.addEventListener('error', () => img.closest('.post-cover').remove(), { once: true }); } });

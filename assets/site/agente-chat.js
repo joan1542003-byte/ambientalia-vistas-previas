@@ -8,8 +8,12 @@
      dice que el asistente no está disponible y no llama a nada. `?agente=maqueta` fuerza la maqueta en local. La
      misma condición está en agente.js.
    - Antes de conversar se piden nombre, correo y teléfono, y la aceptación de las condiciones y el aviso de privacidad:
-     así lo exige el servicio, que entrega a cambio una sesión. En la pestaña se guarda solo el token, su vencimiento y
-     cuántas fotos se subieron; la conversación se recupera del servicio al volver (GET /history).
+     así lo exige el servicio, que entrega a cambio una sesión. La pestaña conserva el token, su vencimiento, el contador
+     de fotos y el envío sin respuesta confirmada; el historial se recupera del servicio al volver (GET /history).
+   - «Recordar mis datos en este dispositivo» (casilla opcional y sin marcar): guarda en localStorage solo el nombre, el
+     correo y el teléfono, durante 30 días desde el último uso, para precargar la puerta. Nunca el token, las casillas
+     de aceptación ni nada de la conversación: cada sesión pide su propia aceptación. «Olvidar mis datos en este
+     dispositivo» y «Borrar esta conversación» los quitan.
    - Cada mensaje lleva su identificador (client_message_id) y lo conserva en cada reintento: si el servicio ya lo
      procesó, devuelve la misma respuesta sin ejecutarlo otra vez. Si la espera se agota (`data-agente-espera`, en
      segundos; 90 por omisión; o un 504 del proxy) o el servicio responde «ocupado» (409 busy), se reintenta solo dos
@@ -21,7 +25,7 @@
      muestra sin enlace.
    - Un enlace a este sitio se muestra en el sitio, como en la maqueta: las vistas del hero se abren con HERO.show, la
      «Ayuda» con su ancla y las secciones se recorren hasta su lugar. En agente-virtual.html, en el sitio de atrás.
-   - Fotos (JPG, PNG o WebP; hasta 2 por conversación, como el asistente): se reducen en el navegador a 1600 px en JPEG
+   - Fotos: los topes y formatos se consultan en GET /config antes de subir. Se reducen en el navegador a 1600 px
      antes de subirlas, así pesan menos y no llevan la ubicación ni otros datos de la cámara; si no se pueden convertir,
      no se suben. También se pueden pegar o soltar en la ventana, y esas no llegan al formulario de cotización.
    - «Borrar esta conversación» pide confirmación y llama a DELETE /session: solo dice que se borró si el servicio lo
@@ -39,6 +43,8 @@
   if (!API && (maqueta || !window.TA_API)) return;  // responde la maqueta (agente.js)
   const marco = d.querySelector('[data-agente-sitio]');  // solo en agente-virtual.html: el sitio va detrás, en un <iframe>
   const boton = d.querySelector('[data-agente-abrir]');
+  /* Condiciones, privacidad y borrado: las copias del sitio (legal/, tools/legal.py), con el texto que publica el asistente */
+  const LEGAL = (slug) => `${window.SITE_ROOT || ''}legal/${slug}.html`;
   /* El chat se abre desde «Chat con IA», dentro de la «?» del sitio; en agente-virtual.html, desde su burbuja propia */
   const enDock = boton.closest('[data-dock]');
   const toggleDock = enDock?.querySelector('.dock-toggle');
@@ -58,13 +64,15 @@
   const OFICIAL = 'https://transporteautorizado.cl';
   const BASE = new URL(window.SITE_ROOT || '.', location.href).href;
   const CLAVE = 'agente-chat';
+  const CLAVE_DATOS = 'agente-chat-datos';  // lo que la persona pidió recordar (localStorage), aparte de la sesión
+  const RECUERDO_DIAS = 30;                 // desde la última vez que abrió el chat con la casilla marcada
   const ESPERA = Math.max(5, Number(panel.dataset.agenteEspera) || 90) * 1000;  // una respuesta del modelo
   const AUTO = 2;        // reintentos solos de un mensaje: tras una espera agotada o «ocupado»
   const REINTENTOS = 3;  // reintentos que puede pedir la persona con «Reintentar»
-  const FOTOS_MAX = 2;   // por conversación (CHAT_ATTACHMENTS_MAX del asistente, que es quien manda)
-  const FOTO_MAX = 5120 * 1024;       // lo que se sube (CHAT_ATTACHMENT_MAX_KB)
   const FOTO_ENTRADA = 25 * 1024 * 1024;  // la original, antes de reducirla
   const TIPOS = ['image/jpeg', 'image/png', 'image/webp'];
+  const FORMATOS = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+  let limitesFotos = null;
   /* Destinos de las fuentes que pasan a enlace (además de este sitio): las del corpus del asistente y el Estado */
   const FUENTES = ['transporteautorizado.cl', 'bcn.cl', 'leychile.cl'];
   const pausa = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -86,6 +94,7 @@
   const svg = (path) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
   const I = {
     doc: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
+    guardar: svg('<path d="m5 12 4 4L19 6"/>'),
     foto: svg('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 17l4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/>')
   };
 
@@ -108,6 +117,27 @@
   /* Vencida, sin token o con datos que no son de esta versión: se descarta sin preguntar al servicio */
   if (sesion && (typeof sesion.token !== 'string' || !sesion.token || !(Date.parse(sesion.vence) > Date.now()))) { sesion = null; guardar(null); }
   let datos = {};  // lo escrito en la puerta, para no volver a pedirlo en esta página (solo en memoria)
+  let recuerdo = null;  // la casilla «Recordar» tal como la dejó la persona en esta página; null, según lo ya guardado
+
+  /* ---------- Datos recordados en este dispositivo (solo si la persona lo pidió) ---------- */
+  /* Nombre, correo y teléfono, nada más. Vencidos, ilegibles o con otra forma: se descartan. Sin almacenamiento
+     (navegación privada, bloqueado): no se recuerda nada y la puerta funciona igual */
+  const recordar = (v) => {
+    try {
+      if (v) localStorage.setItem(CLAVE_DATOS, JSON.stringify({ name: v.name, email: v.email, phone: v.phone, vence: Date.now() + RECUERDO_DIAS * 86400000 }));
+      else localStorage.removeItem(CLAVE_DATOS);
+    } catch { /* sin almacenamiento */ }
+  };
+  const recordados = () => {
+    try {
+      const r = JSON.parse(localStorage.getItem(CLAVE_DATOS));
+      const texto = (k, max) => (typeof r?.[k] === 'string' && r[k].trim() ? r[k].slice(0, max) : '');
+      const v = { name: texto('name', 150), email: texto('email', 150), phone: texto('phone', 20) };
+      if (v.name && v.email && v.phone && Number.isFinite(r.vence) && r.vence > Date.now()) return v;
+    } catch { /* ilegible o sin almacenamiento */ }
+    recordar(null);
+    return null;
+  };
 
   const idMensaje = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
   /* Una llamada al servicio. No lanza: devuelve el estado HTTP y el JSON, o estado 0 con `falla` ('red' o 'espera')
@@ -183,7 +213,7 @@
   const desde = (m) => charla.scrollTo({ top: (m.previousElementSibling || m).offsetTop - 12, behavior: suave() });  // desde la pregunta que la originó
   const decirYo = (texto) => { charla.append(h('div', { class: 'msg is-user' }, h('p', { text: texto }))); abajo(); };
   /* Las opciones de una respuesta anterior ya no corresponden al estado de la conversación: se desactivan */
-  const vencerOpciones = () => charla.querySelectorAll('[data-opcion]').forEach((b) => { b.disabled = true; });
+  const vencerOpciones = () => charla.querySelectorAll('[data-opcion], [data-edicion] fieldset').forEach((b) => { b.disabled = true; });
   const decir = (r, { opciones = true } = {}) => {
     const m = h('div', { class: 'msg is-bot' });
     if (typeof r.text === 'string' && r.text) m.append(h('p', { class: 'msg-texto' }, conFormato(r.text)));
@@ -196,7 +226,34 @@
           return h('li', {}, h('span', { icono: I.doc }), u ? enlace(u, s.label) : h('span', { text: s.label }));
         }))));
     }
-    const lista = opciones && Array.isArray(r.options) ? r.options.filter((o) => o && typeof o.id === 'string' && typeof o.label === 'string' && o.label) : [];
+    if (opciones && r.form?.action === 'guardar_datos' && Array.isArray(r.form.fields)) {
+      const edicion = h('form', { class: 'agente-edicion', 'data-edicion': true });
+      const campos = h('fieldset', {}, h('legend', { text: 'Revisa tus datos' }));
+      const permitidos = ['name', 'company_name', 'phone_number', 'email', 'handoff_reason'];
+      r.form.fields.filter((f) => permitidos.includes(f.name)).forEach((f) => {
+        const errorId = `edicion-${idMensaje()}`;
+        const tipo = ['email', 'tel', 'textarea'].includes(f.type) ? f.type : 'text';
+        const input = h(tipo === 'textarea' ? 'textarea' : 'input', {
+          name: f.name, type: tipo === 'textarea' ? null : tipo, required: f.required === true,
+          maxlength: Math.min(2000, Number(f.max_length) || 150),
+          autocomplete: ({ name: 'name', email: 'email', phone_number: 'tel', company_name: 'organization' })[f.name] || 'off',
+          'aria-invalid': f.error ? 'true' : null, 'aria-describedby': f.error ? errorId : null
+        });
+        input.value = typeof f.value === 'string' ? f.value : '';
+        input.addEventListener('focus', () => input.scrollIntoView({ block: 'nearest', behavior: suave() }));
+        campos.append(h('label', { class: 'agente-campo' }, h('span', { text: f.label }), input,
+          f.error ? h('span', { id: errorId, class: 'agente-error', text: f.error }) : null));
+      });
+      campos.append(h('button', { class: 'btn', type: 'submit', icono: I.guardar }, h('span', { text: r.form.submit_label || 'Guardar cambios' })));
+      edicion.append(campos);
+      edicion.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (ocupado || campos.disabled || !edicion.reportValidity()) return;
+        enviar({ option_id: r.form.action, form_values: Object.fromEntries(new FormData(edicion)) }, 'Guardar cambios');
+      });
+      m.append(edicion);
+    }
+    const lista = opciones && Array.isArray(r.options) ? r.options.filter((o) => !(r.form && (o?.id?.startsWith('contacto:') || o?.id === 'cotiz:editar:contacto')) && o && typeof o.id === 'string' && typeof o.label === 'string' && o.label) : [];
     if (lista.length) {
       m.append(h('div', { class: 'msg-chips' }, lista.map((o) => h('button', {
         class: 'chip', type: 'button', 'data-opcion': true, text: o.label, title: typeof o.description === 'string' ? o.description : null,
@@ -204,6 +261,10 @@
       }))));
     }
     charla.append(m);
+    if (opciones) {
+      const foco = m.querySelector('[aria-invalid="true"]') || (!tactil.matches && m.querySelector('[data-edicion] input'));
+      if (foco) foco.focus({ preventScroll: true });
+    }
     return m;
   };
   const aviso = (texto) => { const m = decir({ text: texto }); abajo(); return m; };
@@ -219,6 +280,7 @@
     vencerOpciones();
     desde(decir(reply && typeof reply === 'object' ? reply : {}));
     uso(usage);
+    form.hidden = Boolean(reply?.form);
   };
   const espera = () => {
     const e = h('div', { class: 'msg is-bot is-espera', 'aria-hidden': 'true' }, h('span', {}), h('span', {}), h('span', {}));
@@ -245,7 +307,20 @@
     form.hidden = true;
     const error = h('p', { class: 'agente-error', role: 'alert' });
     const humano = TURNSTILE ? h('div', { class: 'agente-humano' }) : null;
-    const fila = (name, rotulo, extra) => h('label', { class: 'agente-campo' }, h('span', { text: rotulo }), h('input', { name, required: true, value: datos[name] || null, ...extra }));
+    const guardados = recordados();
+    const fila = (name, rotulo, extra) => h('label', { class: 'agente-campo' }, h('span', { text: rotulo }), h('input', { name, required: true, value: datos[name] || guardados?.[name] || null, ...extra }));
+    /* Solo si hay algo guardado: quita los datos de este dispositivo y vacía los campos, sin tocar la sesión */
+    const olvidarDatos = h('button', {
+      class: 'agente-olvidar', type: 'button', text: 'Olvidar mis datos en este dispositivo',
+      onclick: () => {
+        recordar(null);
+        datos = {};
+        recuerdo = false;
+        ['name', 'email', 'phone'].forEach((n) => { f.elements[n].value = ''; });
+        f.elements.remember.checked = false;
+        olvidarDatos.replaceWith(h('p', { class: 'agente-nota', role: 'status', text: 'Listo: ya no recordamos tus datos en este dispositivo.' }));
+      }
+    });
     const f = h('form', { class: 'msg is-bot agente-puerta', novalidate: true },
       h('p', { class: 'msg-texto', text: 'Hola. Para empezar, escribe tu nombre, tu correo y tu teléfono.' }),
       fila('name', 'Nombre', { type: 'text', autocomplete: 'name', maxlength: 150 }),
@@ -253,11 +328,17 @@
       fila('phone', 'Teléfono', { type: 'tel', autocomplete: 'tel', maxlength: 20, placeholder: '+56 9 1234 5678' }),
       h('label', { class: 'agente-acepto' },
         h('input', { type: 'checkbox', name: 'privacy_accepted', checked: datos.privacy_accepted || null }),
-        h('span', {}, 'Acepto las ', h('a', { href: `${API}/condiciones-del-servicio`, target: '_blank', rel: 'noopener noreferrer' }, 'condiciones del servicio'), ' y el ', h('a', { href: `${API}/politica-de-privacidad`, target: '_blank', rel: 'noopener noreferrer' }, 'aviso de privacidad'), '.')),
+        h('span', {}, 'Acepto las ', h('a', { href: LEGAL('condiciones-del-servicio'), target: '_blank', rel: 'noopener' }, 'condiciones del servicio'), ' y el ', h('a', { href: LEGAL('politica-de-privacidad'), target: '_blank', rel: 'noopener' }, 'aviso de privacidad'), '.')),
       /* Opcional y sin marcar: no condiciona el chat (el texto es el de chatbot.privacy.marketing.label del asistente) */
       h('label', { class: 'agente-acepto' },
         h('input', { type: 'checkbox', name: 'marketing_accepted', checked: datos.marketing_accepted || null }),
         h('span', { text: 'Acepto que Transporte Autorizado me contacte por correo, teléfono o llamada para hacer seguimiento de mi consulta o cotización y ofrecerme sus servicios (opcional).' })),
+      /* Opcional y sin marcar (marcada solo si ya había datos guardados): es una comodidad de este navegador, no un
+         consentimiento, y no se envía al asistente */
+      h('label', { class: 'agente-acepto' },
+        h('input', { type: 'checkbox', name: 'remember', checked: (recuerdo ?? !!guardados) || null }),
+        h('span', { text: `Recordar mi nombre, correo y teléfono en este dispositivo por ${RECUERDO_DIAS} días (opcional). No lo uses en un equipo compartido.` })),
+      guardados ? olvidarDatos : null,
       h('div', { class: 'agente-trampa', 'aria-hidden': 'true' }, h('label', {}, 'No completes este campo ', h('input', { name: 'website', tabindex: '-1', autocomplete: 'off' }))),
       humano,
       error,
@@ -277,6 +358,7 @@
       e.preventDefault();
       if (f.classList.contains('is-enviando')) return;
       datos = { name: f.elements.name.value.trim(), email: f.elements.email.value.trim(), phone: f.elements.phone.value.trim(), privacy_accepted: f.elements.privacy_accepted.checked, marketing_accepted: f.elements.marketing_accepted.checked };
+      recuerdo = f.elements.remember.checked;
       error.textContent = '';
       if (humano && !token) { error.textContent = 'Estamos comprobando que eres una persona. Espera un momento y vuelve a intentarlo.'; return; }
       f.classList.add('is-enviando');
@@ -286,6 +368,8 @@
         if (widget !== null) window.turnstile?.remove(widget);
         sesion = { token: json.token, vence: json.expires_at, fotos: 0 };
         guardar(sesion);
+        /* Solo con datos que el servicio ya aceptó, y la casilla manda: sin marcar, se quita lo que hubiera */
+        recordar(recuerdo ? { name: datos.name, email: datos.email, phone: datos.phone } : null);
         salir.hidden = false;
         f.remove();
         form.hidden = false;
@@ -304,16 +388,18 @@
       if (widget !== null && f.isConnected) { token = ''; window.turnstile?.reset(widget); }
     });
     charla.append(f);
-    abajo();
+    desde(f);  // el comienzo de la puerta, no su final: es más alta que la ventana, y así se ve primero el saludo y el primer campo
     if (!tactil.matches) f.querySelector('input:not([value])')?.focus({ preventScroll: true });
   };
   const salir = h('button', { class: 'agente-salir', type: 'button', text: 'Borrar esta conversación' });
+  const fotosPendientes = new Map();
   const subidas = new Set();  // las fotos que el servicio confirmó en esta página (para no subir dos veces la misma)
   /* Sin sesión: lo local se olvida (el token, sus fotos y el mensaje pendiente) */
-  const olvidar = () => { sesion = null; guardar(null); pendiente = null; subidas.clear(); if (sub && API) { sub.textContent = ''; sub.hidden = true; } salir.hidden = true; };
+  const olvidar = () => { sesion = null; guardar(null); pendiente = null; subidas.clear(); fotosPendientes.clear(); if (sub && API) { sub.textContent = ''; sub.hidden = true; } salir.hidden = true; };
   /* La sesión ya no sirve (401 session_expired): vuelta a la puerta; lo que se estaba escribiendo vuelve al campo */
   const vencida = (texto) => {
     olvidar();
+    datos = { name: datos.name, email: datos.email, phone: datos.phone };
     aviso('Tu sesión terminó. Vuelve a escribir tus datos para seguir.');
     puerta();
     if (texto) campo.value = texto;
@@ -324,13 +410,20 @@
   /* El mensaje que todavía no tiene respuesta confirmada. Conserva su identificador hasta que el servicio responde o la
      persona escribe otra cosa: así un reintento nunca se procesa dos veces */
   let pendiente = null;  // { id, cuerpo, visible, auto, manuales, nota }
-  const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '');
+  const guardarPendiente = () => {
+    if (!sesion) return;
+    if (pendiente) sesion.pendiente = { id: pendiente.id, cuerpo: pendiente.cuerpo, visible: pendiente.visible };
+    else delete sesion.pendiente;
+    guardar(sesion);
+  };
+  const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '') && JSON.stringify(a.form_values || null) === JSON.stringify(b.form_values || null);
   /* «visible» es lo que se ve como mensaje propio; sin él (reiniciar) el turno no se muestra */
   const enviar = (cuerpo, visible) => {
     if (ocupado || !sesion) return;
     if (pendiente && mismo(pendiente.cuerpo, cuerpo)) { reintentar(); return; }  // lo mismo otra vez: el mismo mensaje
     pendiente?.nota?.remove();
     pendiente = { id: idMensaje(), cuerpo, visible, auto: 0, manuales: 0, nota: null };
+    guardarPendiente();
     if (visible) decirYo(visible);
     turno();
   };
@@ -344,6 +437,8 @@
   const turno = async () => {
     const p = pendiente;
     ocupado = true;
+    const ediciones = [...charla.querySelectorAll('[data-edicion] fieldset:not(:disabled)')];
+    ediciones.forEach((el) => { el.disabled = true; el.closest('form').setAttribute('aria-busy', 'true'); });
     const e = espera();
     let r;
     for (;;) {
@@ -357,19 +452,22 @@
       await pausa(3000 * p.auto);
     }
     e.remove();
+    ediciones.forEach((el) => { el.disabled = false; el.closest('form').removeAttribute('aria-busy'); });
     ocupado = false;
     if (pendiente !== p) return;
     const { estado, json } = r;
-    if (estado === 200 && json.reply && typeof json.reply === 'object') { pendiente = null; respuesta(json.reply, json.usage); return; }
-    if (estado === 200 && json.duplicate) { pendiente = null; uso(json.usage); aviso('Ese mensaje ya lo había recibido. Sigue cuando quieras.'); return; }
+    if (estado === 200 && json.reply && typeof json.reply === 'object') { pendiente = null; guardarPendiente(); respuesta(json.reply, json.usage); return; }
+    if (estado === 200 && json.duplicate) { pendiente = null; guardarPendiente(); uso(json.usage); aviso('Ese mensaje ya lo había recibido. Sigue cuando quieras.'); return; }
     if (estado === 401) { pendiente = null; vencida(p.cuerpo.text && p.visible); return; }
     if (estado === 409 && json.error === 'idempotency_conflict') {
       pendiente = null;
+      guardarPendiente();
       aviso(typeof json.message === 'string' && json.message ? json.message : 'Ese envío ya se registró con otros datos. Empieza de nuevo si quieres cambiarlos.');
       return;
     }
     if (estado === 403 || estado === 422) {
       pendiente = null;
+      guardarPendiente();
       /* 422: texto vacío o demasiado largo; la validación del turno no tiene textos propios en el asistente */
       aviso(estado === 403 ? 'El asistente no está disponible desde esta página.' : 'No pude enviar ese mensaje. Revisa lo que escribiste y vuelve a intentarlo.');
       if (estado === 422 && p.cuerpo.text && !campo.value) campo.value = p.cuerpo.text;
@@ -383,6 +481,7 @@
       : (json.error === 'unavailable' && typeof json.message === 'string' && json.message) || 'No pude responder en este momento. Vuelve a intentarlo en un rato.';
     if (p.manuales >= REINTENTOS) {
       pendiente = null;
+      guardarPendiente();
       aviso('No pude responder este mensaje. Escríbelo de nuevo más tarde o, si prefieres, usa el formulario o WhatsApp.');
       return;
     }
@@ -390,9 +489,7 @@
   };
   const reiniciar = () => enviar({ text: 'inicio' });  // comando del asistente: vuelve al menú (no gasta consultas)
 
-  /* Al volver a abrir con una sesión viva: la conversación tal como quedó, con sus fuentes; las opciones, solo las de
-     la última respuesta (las anteriores ya no corresponden). El servicio no devuelve el consumo de consultas ni las
-     fotos: el consumo aparece con la próxima respuesta */
+  /* Al volver, el servicio restaura el historial, el cupo y el número de fotos. */
   const retomar = async () => {
     form.hidden = true;
     ocupado = true;
@@ -406,11 +503,23 @@
       return;
     }
     form.hidden = false;
+    uso(json.usage);
+    if (Number.isInteger(json.photos) && json.photos >= 0) { sesion.fotos = json.photos; guardar(sesion); }
     const mensajes = json.messages.filter((m) => m && typeof m.text === 'string');
-    if (!mensajes.length) { reiniciar(); return; }
+    const guardado = sesion.pendiente;
+    const recuperable = guardado && /^[A-Za-z0-9_-]{1,64}$/.test(guardado.id) && guardado.cuerpo && typeof guardado.cuerpo === 'object';
+    const respondido = recuperable && mensajes.some((m) => m.role === 'assistant' && m.client_message_id === guardado.id);
+    if (respondido) { delete sesion.pendiente; guardar(sesion); }
+    if (!mensajes.length && !recuperable) { reiniciar(); return; }
     const ultimo = mensajes[mensajes.length - 1];
+    form.hidden = Boolean(ultimo?.form);
     mensajes.forEach((m) => (m.role === 'user' ? decirYo(m.text) : decir(m, { opciones: m === ultimo })));
-    if (ultimo.role === 'user') {
+    if (recuperable && !respondido) {
+      pendiente = { ...guardado, auto: 0, manuales: 0, nota: null };
+      if (pendiente.visible && !mensajes.some((m) => m.role === 'user' && m.client_message_id === pendiente.id)) decirYo(pendiente.visible);
+      form.hidden = false;
+      pendiente.nota = avisoCon('Quedó un envío sin respuesta confirmada. Puedes reintentarlo sin duplicarlo.', [['Reintentar', reintentar]]);
+    } else if (ultimo?.role === 'user') {
       /* Un turno sin respuesta (en curso o fallido): se puede volver a leer, sin enviarlo otra vez */
       avisoCon('Tu último mensaje todavía no tiene respuesta.', [['Actualizar', () => { if (ocupado) return; charla.textContent = ''; retomar(); }]]);
     }
@@ -434,7 +543,8 @@
     const { estado, json, falla } = await llamar('/session', { method: 'DELETE', body: { confirm: true } });
     e.remove();
     ocupado = false;
-    const fin = (texto) => { nota.remove(); confirmacion = null; olvidar(); charla.textContent = ''; aviso(texto); puerta(); };
+    /* Quien pide borrar no encuentra sus datos precargados en la puerta: tampoco los de este dispositivo */
+    const fin = (texto) => { nota.remove(); confirmacion = null; olvidar(); recordar(null); datos = {}; recuerdo = null; charla.textContent = ''; aviso(texto); puerta(); };
     if (estado === 200 && json.deleted === true) { fin('Listo: borramos esta conversación y los datos que dejaste en el chat.'); return; }
     /* Se aceptó y la sesión ya no sirve, pero el borrado no terminó: lo completa el propio servicio */
     if (estado === 500 && json.error === 'erasure_pending') { fin('Recibimos tu solicitud y cerramos la sesión. El borrado quedó en curso y el asistente lo completa en breve.'); return; }
@@ -459,28 +569,42 @@
       ['Sí, borrar', () => borrar(confirmacion, false)],
       ['Cancelar', () => { confirmacion.remove(); confirmacion = null; }]
     ]);
-    confirmacion.querySelector('.msg-texto').append(' ', h('a', { href: `${API}/eliminacion-de-datos`, target: '_blank', rel: 'noopener noreferrer' }, 'Más información'));
+    confirmacion.querySelector('.msg-texto').append(' ', h('a', { href: LEGAL('eliminacion-de-datos'), target: '_blank', rel: 'noopener' }, 'Más información'));
     if (!tactil.matches) confirmacion.querySelector('button').focus({ preventScroll: true });
   });
 
   /* ---------- Fotos ---------- */
-  const valida = (f) => (f.type ? TIPOS.includes(f.type) : /\.(jpe?g|png|webp)$/i.test(f.name || ''));
+  const cargarLimitesFotos = async () => {
+    if (limitesFotos) return true;
+    const { estado, json } = await llamar('/config', { espera: 5000 });
+    const v = json.attachments;
+    if (estado !== 200 || !v || !['max_per_session', 'max_kilobytes', 'max_pixels'].every((k) => Number.isSafeInteger(v[k]) && v[k] > 0)
+      || v.max_kilobytes > Number.MAX_SAFE_INTEGER / 1024 || !Array.isArray(v.mimes)) return false;
+    const tipos = [...new Set(v.mimes.filter((m) => typeof m === 'string' && Object.hasOwn(FORMATOS, m)).map((m) => FORMATOS[m]))];
+    if (!tipos.length) return false;
+    limitesFotos = { ...v, tipos };
+    elegir.accept = tipos.join(',');
+    return true;
+  };
+  const valida = (f) => limitesFotos.tipos.includes(f.type || FORMATOS[(f.name || '').split('.').pop().toLowerCase()]);
   const huella = (f) => `${f.name}|${f.size}|${f.lastModified}`;
-  /* La foto, a 1600 px como máximo y en JPEG (sin los datos de la cámara). Si el navegador no la puede leer, null: no se
+  /* La foto, a 1600 px como máximo y en un formato permitido (sin los datos de la cámara). Si el navegador no la puede leer, null: no se
      sube la original */
   const reducir = async (archivo, numero) => {
     let img;
     try {
       try { img = await createImageBitmap(archivo, { imageOrientation: 'from-image' }); } catch { img = await createImageBitmap(archivo); }
-      const k = Math.min(1, 1600 / Math.max(img.width, img.height));
-      const lienzo = h('canvas', { width: Math.max(1, Math.round(img.width * k)), height: Math.max(1, Math.round(img.height * k)) });
+      const k = Math.min(1, Math.min(1600, limitesFotos.max_pixels) / Math.max(img.width, img.height), Math.sqrt(limitesFotos.max_pixels / (img.width * img.height)));
+      const lienzo = h('canvas', { width: Math.max(1, Math.floor(img.width * k)), height: Math.max(1, Math.floor(img.height * k)) });
       const c = lienzo.getContext('2d');
       c.fillStyle = '#fff';  // un PNG transparente queda sobre blanco, no sobre negro
       c.fillRect(0, 0, lienzo.width, lienzo.height);
       c.drawImage(img, 0, 0, lienzo.width, lienzo.height);
-      const blob = await new Promise((ok) => lienzo.toBlob(ok, 'image/jpeg', 0.85));
+      const tipo = limitesFotos.tipos.includes('image/jpeg') ? 'image/jpeg' : limitesFotos.tipos[0];
+      const extension = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }[tipo];
+      const blob = await new Promise((ok) => lienzo.toBlob(ok, tipo, 0.85));
       /* El nombre es neutro: el de la persona puede llevar datos personales */
-      return blob?.type === 'image/jpeg' && blob.size <= FOTO_MAX ? new File([blob], `foto-${numero}.jpg`, { type: 'image/jpeg' }) : null;
+      return blob?.type === tipo && blob.size <= limitesFotos.max_kilobytes * 1024 ? new File([blob], `foto-${numero}.${extension}`, { type: tipo }) : null;
     } catch {
       return null;
     } finally {
@@ -490,28 +614,37 @@
   /* Una foto: se valida, se reduce y se sube. Devuelve false si no tiene sentido seguir con las demás */
   const subirUna = async (archivo) => {
     decirYo(`Foto: ${archivo.name || 'imagen pegada'}`);
-    if ((sesion.fotos || 0) >= FOTOS_MAX) { aviso(`Ya adjuntaste ${FOTOS_MAX} fotos, el máximo por conversación.`); return false; }
+    if ((sesion.fotos || 0) >= limitesFotos.max_per_session) { aviso(`Ya adjuntaste ${limitesFotos.max_per_session} fotos, el máximo por conversación.`); return false; }
     if (subidas.has(huella(archivo))) { aviso('Esa foto ya está adjunta.'); return true; }
-    if (!valida(archivo)) { aviso('Solo puedo recibir fotos JPG, PNG o WebP.'); return true; }
+    if (!valida(archivo)) { aviso(`Los formatos permitidos son: ${limitesFotos.tipos.map((t) => t.slice(6).toUpperCase()).join(', ')}.`); return true; }
     if (archivo.size > FOTO_ENTRADA) { aviso('Esa foto es demasiado pesada. Prueba con otra o con una captura de pantalla.'); return true; }
     const e = espera();
-    const foto = await reducir(archivo, (sesion.fotos || 0) + 1);
+    const anterior = fotosPendientes.get(huella(archivo));
+    const foto = anterior?.foto || await reducir(archivo, (sesion.fotos || 0) + 1);
     if (!foto) { e.remove(); aviso('No pude preparar esa foto. Prueba con otra imagen JPG, PNG o WebP.'); return true; }
+    const id = anterior?.id || idMensaje();
+    fotosPendientes.set(huella(archivo), { foto, id });
     const cuerpo = new FormData();
     cuerpo.append('image', foto);
+    cuerpo.append('client_upload_id', id);
     const { estado, json, falla } = await llamar('/attachments', { method: 'POST', body: cuerpo, espera: 60000 });
     e.remove();
     if (estado === 201) {
       subidas.add(huella(archivo));
-      sesion.fotos = (sesion.fotos || 0) + 1;
+      fotosPendientes.delete(huella(archivo));
+      sesion.fotos = Number.isInteger(json.photos) ? json.photos : (sesion.fotos || 0) + 1;
       guardar(sesion);
       respuesta(json.reply || { text: 'Recibí la foto.' }, json.usage);
       return true;
     }
     if (estado === 401) { vencida(); return false; }
-    if (estado === 422 && json.error === 'attachment_limit') { sesion.fotos = FOTOS_MAX; guardar(sesion); }
-    /* La subida no tiene identificador propio: si no hubo respuesta, no se reintenta sola */
-    aviso(falla || estado >= 500 ? 'No pude confirmar si la foto llegó. Puedes volver a adjuntarla; si la primera sí llegó, quedará dos veces.'
+    if (estado === 422 && json.error === 'attachment_limit') { sesion.fotos = limitesFotos.max_per_session; guardar(sesion); }
+    if (falla || estado >= 500 || (estado === 409 && json.error === 'busy')) {
+      const nota = avisoCon('No pude confirmar si la foto llegó. Puedes reintentar sin duplicarla.', [['Reintentar', () => { if (ocupado) return; nota.remove(); subir([archivo]); }]]);
+      return false;
+    }
+    if (estado === 409) fotosPendientes.delete(huella(archivo));
+    aviso(estado === 409 ? 'No pude reconocer este intento de subida. Elige nuevamente la foto.'
       : estado === 403 ? 'El asistente no está disponible desde esta página.'
       : estado === 429 ? 'Enviaste muchas cosas seguidas. Espera un momento y vuelve a intentarlo.'
       : (estado === 422 && ((typeof json.message === 'string' && json.message) || errores(json))) || 'No pude subir la foto. Vuelve a intentarlo.');
@@ -521,10 +654,16 @@
     if (!archivos.length) return;
     if (!sesion) { aviso('Para adjuntar una foto, primero escribe tus datos y toca «Comenzar».'); return; }
     if (ocupado) { aviso('Espera a que termine la respuesta para adjuntar la foto.'); return; }
+    if (charla.querySelector('[data-edicion] fieldset:not(:disabled)')) { aviso('Guarda los cambios o cancela la edición antes de adjuntar una foto.'); return; }
     ocupado = true;
+    const consultando = limitesFotos ? null : espera();
     try {
+      const disponibles = await cargarLimitesFotos();
+      consultando?.remove();
+      if (!disponibles) { aviso('No pude comprobar los límites de fotos. Vuelve a intentarlo en un momento.'); return; }
       for (const archivo of archivos) if (!sesion || !(await subirUna(archivo))) break;
     } finally {
+      consultando?.remove();
       ocupado = false;
     }
   };
@@ -627,6 +766,7 @@
   panel.querySelector('[data-agente-nuevo]').addEventListener('click', () => {
     if (ocupado || !API) return;
     pendiente = null;
+    guardarPendiente();
     confirmacion = null;
     charla.textContent = '';
     if (!sesion) { puerta(); return; }

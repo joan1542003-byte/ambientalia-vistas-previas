@@ -43,3 +43,4 @@
 .ta-casillas th { padding: 4px 12px 4px 0; text-align: left; font-weight: 600; font-size: 12px; color: #646970; }
 .ta-casillas td { padding: 6px 12px 6px 0; vertical-align: middle; }
 .ta-quitar-casilla { color: #b32d2e; }
+.ta-imagen-sin { color: #646970; font-style: italic; }

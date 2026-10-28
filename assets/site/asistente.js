@@ -376,7 +376,7 @@
     if (!reply) {
       const parts = [];
       if (got.length) parts.push(`Anoté: ${got.join(' · ')}.`);
-      if (r.modalidad === 'express') parts.push('Lo tratamos como Retiro Express: priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna.');
+      if (r.modalidad === 'express') parts.push('Lo tratamos como Retiro Express: priorizamos tu retiro dentro de 24 horas hábiles, sujeto a disponibilidad, tipo de residuo y comuna.');
       else if (r.modalidad === 'programado') parts.push('Lo coordinamos como Retiro Programado.');
       else if (r.modalidad === 'flexible') parts.push('Lo coordinamos como Espera y ahorra, según nuestra disponibilidad.');
       if (r.fechaError && !r.fecha) parts.push(r.fechaError);

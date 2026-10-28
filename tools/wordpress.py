@@ -23,7 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ORIGEN = ROOT / 'wordpress' / 'ta-sitio'
 DOMINIO = 'https://transporteautorizado.cl/'
-SITIO = ['transporte-autorizado.html', 'assets/site/', 'assets/transporte/', 'normativa/', 'ayuda/', 'documentos/']
+SITIO = ['transporte-autorizado.html', 'assets/site/', 'assets/transporte/', 'normativa/', 'ayuda/', 'documentos/', 'legal/']
 FUERA = {'filas.js'}  # solo de HDS y Campañas
 AGENTE = {'agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.css'}  # no van con --sin-agente
 
@@ -51,10 +51,12 @@ def llms():
     html = (ROOT / 'transporte-autorizado.html').read_text(encoding='utf-8')
     bajada = re.search(r'<meta name="description" content="([^"]+)"', html).group(1)
     normas = json.loads((ROOT / 'assets/transporte/normativa.json').read_text(encoding='utf-8'))['normas']
-    guias = []
+    guias, listas = [], []
     for f in sorted((ROOT / 'ayuda').glob('*.html')):
-        titulo = re.search(r'<title>([^<|]+)', f.read_text(encoding='utf-8')).group(1).strip()
-        guias.append(f'- [{titulo}]({DOMINIO}ayuda/{f.name})')
+        html_f = f.read_text(encoding='utf-8')
+        titulo = re.search(r'<title>([^<|]+)', html_f).group(1).strip()
+        resumen = re.search(r'<meta name="description" content="([^"]+)"', html_f).group(1)
+        (listas if 'ck-page' in html_f else guias).append(f'- [{titulo}]({DOMINIO}ayuda/{f.name}): {resumen}')
     lineas = [
         '# Transporte Autorizado', '', f'> {bajada}', '',
         'Sitio de retiro y coordinación de residuos para empresas en Chile. No tramita autorizaciones sanitarias. Por ahora coordina retiros en Quilicura, Lampa y Pudahuel (Región Metropolitana).', '',
@@ -65,10 +67,13 @@ def llms():
         f'- [Hablar con un especialista]({DOMINIO}#especialista): por WhatsApp, +56 9 8606 7930.', '',
         '## Secciones',
         f'- [Servicios]({DOMINIO}#servicios): retiro de residuos no peligrosos, retiro de residuos peligrosos y arriendo de contenedores.',
-        f'- [Planes]({DOMINIO}#planes): Retiro Express (prioridad dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna), Retiro Programado (mensual) y Espera y ahorra (la empresa propone fechas).',
+        f'- [Planes]({DOMINIO}#planes): Retiro Express (prioridad dentro de 24 horas hábiles, sujeto a disponibilidad, tipo de residuo y comuna), Retiro Programado (mensual) y Espera y ahorra (la empresa propone fechas).',
         f'- [Cómo funciona]({DOMINIO}#proceso)',
         f'- [Preguntas frecuentes]({DOMINIO}#preguntas)', '',
-        '## Guías', *guias, '',
+        '## Guías rápidas (orientación para preparar un retiro, con citas al texto oficial)', *guias, '',
+        '## Checklists (para usar en línea o descargar en Excel)', *listas, '',
+        '## Otros sitios', '- [HDS](https://hds.cl): hojas de datos de seguridad y revisión documental de residuos.', '- [Campañas de reciclaje](https://campanasdereciclaje.cl): campañas de recolección para municipalidades y empresas.',
+        '- [LinkedIn de Transporte Autorizado](https://www.linkedin.com/company/transporte-autorizado/)', '',
         '## Normativa (texto oficial de Ley Chile, copia referencial)',
         *[f"- [{n['corto']}: {n['tema']}]({DOMINIO}normativa/{n['slug']}.html)" for n in normas], '',
     ]

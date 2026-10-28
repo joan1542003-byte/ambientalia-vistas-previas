@@ -1,0 +1,243 @@
+{
+ "titulo": "Requisitos básicos del vehículo que transporta residuos",
+ "finalidad": "Revisar el estado del vehículo, contenedores, cobertura, control de lluvia/escurrimientos, altura de carga, limpieza y medidas aplicables antes de la salida.",
+ "estados": [
+  "Pendiente",
+  "Cumple",
+  "No cumple",
+  "No aplica"
+ ],
+ "bloques": [
+  {
+   "nombre": "Vehículo",
+   "puntos": [
+    {
+     "n": 1,
+     "item": "Identificar vehículo",
+     "revisar": "Registrar patente y tipo de vehículo previsto para el servicio.",
+     "evidencia": "Ficha del vehículo o registro interno.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 2,
+     "item": "Revisar estado general",
+     "revisar": "Confirmar que el vehículo se encuentre en condiciones adecuadas para el retiro.",
+     "evidencia": "Inspección visual y fotografías.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Limpieza",
+   "puntos": [
+    {
+     "n": 3,
+     "item": "Verificar limpieza",
+     "revisar": "Confirmar que el vehículo esté limpio antes de la operación.",
+     "evidencia": "Fotografías/inspección.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 29 / Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Compatibilidad",
+   "puntos": [
+    {
+     "n": 4,
+     "item": "Confirmar tipo de vehículo adecuado",
+     "revisar": "Verificar que el vehículo sea apropiado para el material que transportará.",
+     "evidencia": "Ficha del residuo y del vehículo.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Carga",
+   "puntos": [
+    {
+     "n": 5,
+     "item": "Revisar altura máxima",
+     "revisar": "Confirmar que la carga no supere la altura máxima del vehículo ni del contenedor.",
+     "evidencia": "Inspección y fotografía.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 29 / Guía base"
+    },
+    {
+     "n": 6,
+     "item": "Revisar distribución de la carga",
+     "revisar": "Verificar que la carga quede contenida dentro del vehículo/contenedor y no favorezca dispersión.",
+     "evidencia": "Inspección visual.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Cobertura",
+   "puntos": [
+    {
+     "n": 7,
+     "item": "Verificar cubierta/tapa",
+     "revisar": "Confirmar que el vehículo y/o contenedores se encuentren cubiertos o tapados cuando sea necesario para evitar dispersión.",
+     "evidencia": "Fotografías.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 29 / Guía base"
+    },
+    {
+     "n": 8,
+     "item": "Revisar cobertura completa",
+     "revisar": "Evitar coberturas parciales en materiales susceptibles de dispersarse.",
+     "evidencia": "Fotografías y observación.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Lluvia",
+   "puntos": [
+    {
+     "n": 9,
+     "item": "Evitar ingreso de aguas lluvia",
+     "revisar": "Revisar que la forma de transporte impida ingreso de lluvia a la carga cuando corresponda.",
+     "evidencia": "Inspección de cubierta/cierre.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 29 / Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Líquidos",
+   "puntos": [
+    {
+     "n": 10,
+     "item": "Evitar escurrimientos",
+     "revisar": "Revisar puntos de filtración o escurrimiento antes de la salida.",
+     "evidencia": "Inspección y fotografías.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 29 / Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Contenedores",
+   "puntos": [
+    {
+     "n": 11,
+     "item": "Revisar integridad de contenedores",
+     "revisar": "Confirmar que no existan filtraciones ni daños visibles.",
+     "evidencia": "Inspección visual.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 12,
+     "item": "Revisar cierres",
+     "revisar": "Confirmar tapas, cierres o sistemas de contención aplicables.",
+     "evidencia": "Inspección visual.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Ruido",
+   "puntos": [
+    {
+     "n": 13,
+     "item": "Controlar ruido durante el transporte",
+     "revisar": "Revisar que la forma de carga no genere condiciones que razonablemente produzcan ruidos molestos.",
+     "evidencia": "Revisión de sujeción/condición de carga.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 29 / Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Olores",
+   "puntos": [
+    {
+     "n": 14,
+     "item": "Evitar olores molestos",
+     "revisar": "Revisar medidas de contención/cierre cuando el residuo pueda generar olores.",
+     "evidencia": "Inspección del sistema de contención.",
+     "aplica": "Siempre",
+     "referencia": "D.S. 29 / Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Seguridad",
+   "puntos": [
+    {
+     "n": 15,
+     "item": "Revisar medidas de seguridad aplicables",
+     "revisar": "Confirmar las medidas de seguridad definidas para el tipo de residuo y operación.",
+     "evidencia": "Pauta del servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Documentación",
+   "puntos": [
+    {
+     "n": 16,
+     "item": "Revisar documentación aplicable",
+     "revisar": "Confirmar que los documentos del vehículo/operación que correspondan estén disponibles.",
+     "evidencia": "Expediente del servicio.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Registro",
+   "puntos": [
+    {
+     "n": 17,
+     "item": "Tomar fotografías previas",
+     "revisar": "Registrar evidencia visual del vehículo y la carga antes de la salida.",
+     "evidencia": "Fotografías fechadas.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    },
+    {
+     "n": 18,
+     "item": "Completar checklist previo",
+     "revisar": "Dejar constancia de la revisión antes de autorizar la salida.",
+     "evidencia": "Checklist completado.",
+     "aplica": "Siempre",
+     "referencia": "Guía base"
+    }
+   ]
+  },
+  {
+   "nombre": "Residuo peligroso",
+   "puntos": [
+    {
+     "n": 19,
+     "item": "Activar revisión adicional",
+     "revisar": "Si el residuo es peligroso, aplicar además la revisión específica indicada por la guía.",
+     "evidencia": "Checklist adicional de residuos peligrosos.",
+     "aplica": "Según corresponda",
+     "referencia": "D.S. 148 / Guía base"
+    },
+    {
+     "n": 20,
+     "item": "No usar este checklist como sustituto",
+     "revisar": "No considerar esta pauta como reemplazo de los requisitos específicos de residuos peligrosos.",
+     "evidencia": "Constancia de checklist complementario.",
+     "aplica": "Según corresponda",
+     "referencia": "Guía base"
+    }
+   ]
+  }
+ ],
+ "fuente": "06_Checklist_Requisitos_Vehiculo_Transporte_Residuos.xlsx (cliente, 22-10-2026)"
+}

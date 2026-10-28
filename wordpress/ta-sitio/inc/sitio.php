@@ -4,7 +4,7 @@
  *
  * - Privado: solo en la dirección de vista previa (/nuevo/ por defecto), con sesión iniciada o con la clave del enlace
  *   para compartir. Para todos los demás esa dirección no existe (404 del tema). Nada se indexa.
- * - Publicado: la portada del dominio muestra el sitio, y también /normativa/, /ayuda/, /documentos/ y /assets/.
+ * - Publicado: la portada del dominio muestra el sitio, y también /normativa/, /ayuda/, /documentos/, /legal/ y /assets/.
  *
  * Las páginas pasan por aquí (se les agrega la conexión con los formularios y las cabeceras de seguridad). Los
  * archivos (CSS, JS, imágenes, datos) los entrega el servidor directamente gracias a una regla en .htaccess; si esa
@@ -12,6 +12,10 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+/** Publicaciones de LinkedIn: las actualiza una tarea de GitHub cada 6 horas en la copia publicada en GitHub Pages; la
+    página las lee de ahí desde el navegador (el servidor no se conecta a nada). Si no responde, usa las que trae el zip. */
+define( 'TA_SITIO_LINKEDIN', 'https://joan1542003-byte.github.io/ambientalia-vistas-previas/assets/transporte/linkedin.json' );
 
 /** Reglas externas (.htaccess): los archivos del sitio los sirve el servidor web, sin pasar por PHP. */
 function ta_sitio_reglas() {
@@ -149,7 +153,7 @@ function ta_sitio_despachar() {
 		wp_safe_redirect( home_url( '/' ), 301 );
 		exit;
 	}
-	if ( 'llms.txt' === $ruta || preg_match( '#^(normativa|ayuda|documentos|assets)/#', $ruta ) ) {
+	if ( 'llms.txt' === $ruta || preg_match( '#^(normativa|ayuda|documentos|legal|assets)/#', $ruta ) ) {
 		ta_sitio_entregar( $ruta, false );
 		return;
 	}
@@ -224,6 +228,7 @@ function ta_sitio_pagina( $archivo, $privado ) {
 		'url' => esc_url_raw( rest_url( 'ta/v1/' ) ),
 		'v'   => TA_SITIO_VERSION,
 		'comunas' => ta_sitio_comunas(),  // comunas que se atienden (assets/site/pickers.js las usa en el formulario y el asistente)
+		'linkedin' => TA_SITIO_LINKEDIN,  // publicaciones recientes, al día sin subir otro zip: las lee el navegador (docs/linkedin.md)
 	);
 	if ( '' !== $op['asistente'] ) {
 		$api['asistente'] = $op['asistente'];
@@ -231,6 +236,7 @@ function ta_sitio_pagina( $archivo, $privado ) {
 	if ( '' !== $op['turnstile'] ) {
 		$api['turnstile'] = $op['turnstile'];
 	}
+	$html   = ta_sitio_imagenes_aplicar( $html );  // portadas y fotos elegidas en los ajustes (inc/imagenes.php)
 	$config = '<script>window.TA_API=' . wp_json_encode( $api, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES ) . ';</script>';
 	$html   = preg_replace( '#</head>#i', $config . "\n</head>", $html, 1 );
 
@@ -301,8 +307,8 @@ function ta_sitio_politica( array $sellos, array $op ) {
 				"script-src 'self' " . implode( ' ', array_unique( $sellos ) ) . ( '' !== $turnstile ? ' ' . $turnstile : '' ),
 				"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 				"font-src 'self' https://fonts.gstatic.com",
-				"img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org",  // blob: miniaturas de las fotografías que se adjuntan
-				"connect-src 'self'" . ( '' !== $asistente ? ' ' . $asistente : '' ),
+				"img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://joan1542003-byte.github.io",  // blob: miniaturas de las fotografías que se adjuntan; github.io: portadas de LinkedIn
+				"connect-src 'self' https://joan1542003-byte.github.io" . ( '' !== $asistente ? ' ' . $asistente : '' ),  // github.io: publicaciones de LinkedIn
 				'' !== $turnstile ? "frame-src 'self' " . $turnstile : '',
 				"frame-ancestors 'self'",
 				"base-uri 'self'",
@@ -317,7 +323,7 @@ function ta_sitio_politica( array $sellos, array $op ) {
 function ta_sitio_paginas() {
 	$base    = TA_SITIO_DIR . 'sitio/';
 	$paginas = array( '' => (int) @filemtime( $base . 'transporte-autorizado.html' ) ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-	foreach ( array( 'ayuda', 'normativa' ) as $carpeta ) {
+	foreach ( array( 'ayuda', 'normativa', 'legal' ) as $carpeta ) {
 		foreach ( (array) glob( $base . $carpeta . '/*.html' ) as $archivo ) {
 			$paginas[ $carpeta . '/' . basename( $archivo ) ] = (int) filemtime( $archivo );
 		}

@@ -44,7 +44,7 @@ Con una ventana de incógnito en `https://transporteautorizado.cl/`:
 4. Adjuntar una foto y recargar la página: la conversación vuelve.
 5. **Borrar esta conversación** y confirmar: vuelve la puerta.
 6. La consola no muestra errores de política de contenido (CSP) ni de CORS.
-7. El pie muestra la columna «Legal», con los enlaces a las condiciones y la política del asistente.
+7. El pie muestra la columna «Legal», con las condiciones y la política del sitio (`/legal/`, copia del texto que publica el asistente; `tools/legal.py`).
 8. **Cotización de prueba** completa, con una foto: el resumen dice «Recibimos tu solicitud.» con un número `TA-…`, y la tarea aparece en Odoo. Avisar al equipo de Odoo que es una prueba.
 9. Repetir 2 y 8 desde un teléfono (iOS y Android).
 

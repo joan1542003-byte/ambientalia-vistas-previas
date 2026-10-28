@@ -103,14 +103,14 @@
   const resumenDe = (p) => pasajes.find((x) => x.grupo === p.grupo && x.resumen);
   let fuentes = [];  // lo que se leyó, para decirlo cuando preguntan de dónde salen las respuestas
 
-  /* Enlace de la página tal como está: a otro dominio o a otra página de este sitio */
+  /* Enlace de la página tal como está: a otro dominio (p. ej., hds.cl desde el 09-10-2026) o a otra página de este sitio */
   const enlaceDe = (a, rotulo) => {
     const href = a.getAttribute('href');
     return /^https?:/.test(href) ? { rotulo, href, externo: true } : { rotulo, href: href.replace(/^\.\//, ''), sitio: true };
   };
   const leerPrincipal = (doc) => {
     const menu = (hash) => texto(doc.querySelector(`#nav a[href="${hash}"]`));
-    const lugar = (id, el, extra) => ({ pagina: PRINCIPAL, etiqueta: `Página principal › ${menu(`#${id}`) || { proceso: 'Proceso', red: 'Gestores y transportistas' }[id] || sinPunto(texto(doc.querySelector(`#${id} h2`)))}`, sel: rutaDe(el), ...extra });
+    const lugar = (id, el, extra) => ({ pagina: PRINCIPAL, etiqueta: `Página principal › ${menu(`#${id}`) || { proceso: 'Proceso', relacionados: 'Servicios relacionados' }[id] || sinPunto(texto(doc.querySelector(`#${id} h2`)))}`, sel: rutaDe(el), ...extra });
     const antes = pasajes.length;
 
     intento(() => {
@@ -175,8 +175,10 @@
     })));
 
     intento(() => {
-      const red = doc.querySelector('#red .partner');
-      if (red) pasaje({ tipo: 'principal', grupo: 'red', titulo: texto(red.querySelector('h2, h3')), parrafos: [texto(red.querySelector('p'))], enlaces: [{ rotulo: texto(red.querySelector('a.btn')), href: red.querySelector('a.btn').href, externo: true }], fuente: lugar('red', red), claves: 'gestor transportista sumarme inscribir registrar red plataforma trabajar con ustedes' });
+      const s = doc.querySelector('#relacionados');
+      s.querySelectorAll('a.related').forEach((a) => pasaje({ tipo: 'principal', grupo: 'relacionados', titulo: texto(a.querySelector('strong')), parrafos: [texto(a.querySelector('small'))], enlaces: [enlaceDe(a, texto(a.querySelector('em')))], fuente: lugar('relacionados', a) }));
+      const red = s.querySelector('.partner');
+      if (red) pasaje({ tipo: 'principal', grupo: 'red', titulo: texto(red.querySelector('h3')), parrafos: [texto(red.querySelector('p'))], enlaces: [{ rotulo: texto(red.querySelector('a.btn')), href: red.querySelector('a.btn').href, externo: true }], fuente: lugar('relacionados', red), claves: 'gestor transportista sumarme inscribir registrar red plataforma trabajar con ustedes' });
     });
 
     intento(() => {
@@ -187,22 +189,23 @@
       if (wa) pasaje({ tipo: 'principal', grupo: 'contacto', titulo: texto(wa.closest('div')?.querySelector('h2')) || 'Contacto', parrafos: [texto(wa)], enlaces: [{ rotulo: 'Abrir WhatsApp', href: wa.href, externo: true }], fuente: { pagina: PRINCIPAL, etiqueta: 'Página principal › Pie de página', sel: rutaDe(wa.closest('div')) }, claves: 'contacto contactar telefono numero celular llamar escribir whatsapp' });
     });
 
-    /* «Ayuda» de la cabecera: el checklist descargable (las guías se leen completas de sus páginas; la normativa, de su índice) */
+    /* «Ayuda» de la cabecera: los checklists (cada uno en línea y en Excel); las guías se leen completas de sus páginas
+       y la normativa, de su índice */
     intento(() => {
-      const c = doc.querySelector('[data-docs-item="checklist"] .docs-detail-in');
-      const xls = c.querySelector('a[download]');
+      const pane = doc.querySelector('[data-docs-pane="checklists"]');
+      const filas = [...pane.querySelectorAll('.docs-cards li')];
       pasaje({
-        tipo: 'ayuda', grupo: 'checklist', titulo: texto(c.querySelector('h3')), sub: texto(c.querySelector('.docs-kicker')), parrafos: [texto(c.querySelector('.docs-lead'))],
-        listas: [{ orden: true, items: [...c.querySelectorAll('.docs-blocks li')].map((li) => ({ texto: texto(li) })) }],
-        enlaces: xls ? [{ rotulo: texto(xls), href: xls.getAttribute('href'), descarga: true }] : [],
-        fuente: { pagina: PRINCIPAL, etiqueta: 'Ayuda › Documentos › Checklist de autorización', hash: '#checklist', abre: true }, claves: 'checklist planilla excel descargar lista de verificacion revisar caso'
+        tipo: 'ayuda', grupo: 'checklist', titulo: 'Checklists', sub: 'Ayuda', parrafos: [texto(pane.querySelector('.docs-lead'))],
+        listas: [{ orden: false, items: filas.map((li) => ({ texto: `${texto(li.querySelector('strong'))} (${texto(li.querySelector('small'))})` })) }],
+        enlaces: filas.slice(0, 4).map((li) => ({ rotulo: texto(li.querySelector('strong')), href: li.querySelector('.docs-card').getAttribute('href') })),
+        fuente: { pagina: PRINCIPAL, etiqueta: 'Ayuda › Checklists', hash: '#checklists', abre: true }, claves: 'checklist checklists planilla excel descargar lista de verificacion revisar caso pauta'
       });
     });
-    fuentes.push({ fuerte: 'Página principal', texto: `${pasajes.length - antes} pasajes: inicio, servicios, planes, proceso, preguntas frecuentes, gestores y transportistas, y contacto.` });
+    fuentes.push({ fuerte: 'Página principal', texto: `${pasajes.length - antes} pasajes: inicio, servicios, planes, proceso, preguntas frecuentes, servicios relacionados y contacto.` });
     return {
-      guias: [...new Set([...doc.querySelectorAll('[data-docs-item]:not([data-docs-item="checklist"]):not([data-docs-item="normativa"])')].map((x) => `ayuda/${x.dataset.docsItem}.html`))],
+      guias: [...new Set([...doc.querySelectorAll('[data-docs-pane] [data-guia]')].map((x) => `ayuda/${x.dataset.guia}.html`))],
       normas: doc.querySelector('[data-lib][data-src]')?.dataset.src,
-      biblioteca: doc.querySelector('[data-docs-item="normativa"] .docs-detail-in')
+      biblioteca: doc.querySelector('[data-docs-pane="normativa"]')
     };
   };
 

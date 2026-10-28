@@ -41,6 +41,16 @@ ICO = {
     'especialista': _i('<path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/>', 18, 2),
     'buscar': _i('<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/>', 18, 2),
     'volver': _i('<path d="M19 12H5M11 6l-6 6 6 6"/>', 20, 2),
+    'cotizar': _i('<path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/>', 18, 2),
+    'documentos': _i('<path d="M8 3h7l4 4v14H8z"/><path d="M15 3v4h4"/><path d="M5 6v15h11"/><path d="M11 12h5M11 15.5h5"/>'),
+    'rep': _i(N.TEMA_ICON['rep']),
+    'vehiculo': _i(N.TEMA_ICON['transporte']),
+    'errores': _i('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5.5M12 16.5h.01"/>'),
+    'preparar': _i('<path d="M4 9l8-4.5L20 9v9.5L12 23 4 18.5z" transform="translate(0 -1.5)"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9.5"/>'),
+    'despues': _i('<circle cx="5.5" cy="18" r="2"/><circle cx="18.5" cy="6" r="2"/><path d="M7.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h7.5"/>'),
+    'gestor': _i('<path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9.5 21v-5h5v5"/>'),
+    'lista': _i('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/>'),
+    'excel': _i('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 12l4 5M14 12l-4 5"/>', 18, 1.9),
 }
 
 CHECKLIST = {
@@ -57,6 +67,9 @@ CHECKLIST = {
 }
 
 TEMA_NORMA = {'ds-148-2003-minsal': 'peligrosos', 'ds-29-2024-minsal': 'rep', 'ley-20920': 'rep', 'ds-298-1994-mtt': 'transporte', 'ds-57-2019-minsal': 'sustancias'}
+
+# Etapas en que se ordenan las guías y los checklists (en el panel «Ayuda» y en «Otras guías»)
+ETAPAS = [('antes', 'Antes de coordinar el retiro'), ('preparar', 'Al preparar el retiro'), ('despues', 'Después del retiro')]
 NORMA = {  # slug de la página de la norma → nombre corto
     'ds-148-2003-minsal': 'D.S. 148', 'ds-29-2024-minsal': 'D.S. 29', 'ds-298-1994-mtt': 'D.S. 298',
     'ley-20920': 'Ley 20.920', 'ds-57-2019-minsal': 'D.S. 57',
@@ -65,6 +78,287 @@ NORMA = {  # slug de la página de la norma → nombre corto
 
 def ref(slug, art=None, texto=None):
     return {'slug': slug, 'art': art, 'texto': texto or (f'{NORMA[slug]}, art. {art}' if art else NORMA[slug])}
+
+
+
+# Guías 4 a 10 («Documentos oficiales» del cliente, 22-10-2026; versión para la web corregida en ortografía). Las citas
+# se verificaron en el texto oficial (normativa/*.html) y enlazan al artículo exacto.
+GUIAS_NUEVAS = [
+    {
+        'slug': 'documentos-retiro-residuos-peligrosos', 'icono': 'documentos', 'tema': 'peligrosos',
+        'menu': 'Documentos del retiro peligroso', 'menu_sub': 'Qué revisar antes de cargar',
+        'corto': 'Documentos del retiro peligroso',
+        'titulo': '¿Qué documentos deben acompañar un retiro de residuos peligrosos?',
+        'kicker': 'Guía rápida',
+        'descripcion': 'Qué documentos revisar antes de cargar residuos peligrosos en Chile: autorización sanitaria del transportista, Documento de Declaración, hoja de seguridad para el transporte y la excepción del art. 42 del D.S. 148.',
+        'intro': 'En residuos peligrosos, la revisión documental debe ocurrir antes de cargar. El D.S. 148 establece requisitos de autorización y de documentación para el transporte. Además, el generador debe entregar la información necesaria para que el transportista conozca las características del residuo.',
+        'resumen': 'La revisión documental va antes de cargar: autorización del transportista, Documento de Declaración y hoja de seguridad del residuo.',
+        'claves': [
+            'El transportista debe estar autorizado por la Autoridad Sanitaria.',
+            'Sin el Documento de Declaración no se puede transportar un residuo peligroso.',
+            'La excepción del art. 42 exige cumplir todas sus condiciones, no solo la cantidad.',
+        ],
+        'saber': [
+            ('Autorización sanitaria del transportista: como regla, el D.S. 148 establece que solo pueden transportar residuos peligrosos por calles y caminos públicos las personas autorizadas por la Autoridad Sanitaria.', [ref('ds-148-2003-minsal', '36')]),
+            ('Documento de Declaración: no se puede transportar un residuo peligroso sin portar el Documento de Declaración del sistema de declaración y seguimiento y las Hojas de Seguridad de Transporte de Residuos Peligrosos.', [ref('ds-148-2003-minsal', '39'), ref('ds-148-2003-minsal', '81')]),
+            ('Información del residuo: su clasificación, estado físico, contenedor y las características relevantes para el transporte y para responder ante una emergencia.', []),
+            ('Excepción: el artículo 42 contiene un supuesto específico en que el Título V del reglamento no se aplica. No debe usarse sin verificar todas sus condiciones.', [ref('ds-148-2003-minsal', '42')]),
+        ],
+        'pasos': [
+            'Confirma que el residuo esté clasificado y correctamente identificado.',
+            'Revisa la autorización sanitaria del transportista.',
+            'Completa o revisa el Documento de Declaración cuando corresponda.',
+            'Entrega la Hoja de Seguridad para el Transporte del residuo peligroso.',
+            'Verifica el vehículo, los contenedores y su compatibilidad con el residuo.',
+            'Confirma el destinatario y conserva los respaldos del sistema de seguimiento.',
+        ],
+        'errores': [
+            'Preparar los documentos cuando el vehículo ya está cargado.',
+            'Entregar únicamente la HDS del producto original.',
+            'No cruzar el Documento de Declaración con la carga real.',
+            'Asumir que la excepción del artículo 42 depende solo de la cantidad.',
+        ],
+        'normas': [ref('ds-148-2003-minsal', None, 'D.S. 148 · Residuos peligrosos'), ref('ds-298-1994-mtt', None, 'D.S. 298 · Transporte de cargas peligrosas')],
+        'accion': ('especialista', 'Hablar con un especialista'),
+        'etapa': 'preparar', 'checklist': 'checklist-documentos-residuos-peligrosos',
+    },
+    {
+        'slug': 'ley-rep-quien-transporta', 'icono': 'rep', 'tema': 'rep',
+        'menu': 'Ley REP y quién transporta', 'menu_sub': 'Generador, transportista, gestor y destino',
+        'corto': 'Ley REP y quién transporta',
+        'titulo': 'Ley REP: por qué importa quién transporta tus residuos',
+        'kicker': 'Guía rápida',
+        'descripcion': 'Qué exige la Ley REP (Ley 20.920) y el D.S. 29 a quien transporta residuos: entrega a un gestor autorizado, registro de gestores, destino autorizado y trazabilidad.',
+        'intro': 'La salida física del residuo no reemplaza la revisión de quién lo recibe, cómo se transporta y a qué destino se conduce. La Ley 20.920 establece obligaciones para generadores y gestores, y el D.S. 29 agrega reglas específicas para los residuos de productos prioritarios.',
+        'resumen': 'Entregar el residuo al camión no cierra la revisión: importa quién lo transporta, con qué registro y a qué destino.',
+        'claves': [
+            'Todo generador debe entregar sus residuos a un gestor autorizado.',
+            'Producto prioritario no peligroso: quien recolecta o transporta debe estar registrado como gestor.',
+            'El destino debe poder recibir esos residuos.',
+        ],
+        'saber': [
+            ('La Ley 20.920 establece que todo generador debe entregar sus residuos a un gestor autorizado para su tratamiento, salvo que los maneje por sí mismo conforme a la normativa.', [ref('ley-20920', '5')]),
+            ('Los gestores deben manejar los residuos de manera ambientalmente racional y contar con las autorizaciones correspondientes.', [ref('ley-20920', '6')]),
+            ('Para los residuos no peligrosos de productos prioritarios, el D.S. 29 exige el registro como gestor a quien realiza la recolección o el transporte, aunque esa actividad no requiera autorización sanitaria según su artículo 29.', [ref('ds-29-2024-minsal', '29')]),
+            ('El D.S. 29 exige conducir estos residuos a instalaciones de recepción y almacenamiento que cumplan el reglamento, o a instalaciones de manejo cuya autorización sanitaria comprenda esos residuos.', [ref('ds-29-2024-minsal', '27')]),
+            ('La trazabilidad debe respaldarse con documentación y evidencia del origen, el transporte y el destino, según corresponda.', []),
+        ],
+        'pasos': [
+            'Identifica si el residuo corresponde a un producto prioritario.',
+            'Define el rol de cada actor: generador, transportista, gestor y destinatario.',
+            'Revisa el registro o la autorización según el residuo y la actividad.',
+            'Confirma el destino antes del retiro.',
+        ],
+        'errores': [
+            'Pensar que la entrega al camión termina la responsabilidad de revisar.',
+            'No distinguir al transportista del gestor o del destinatario.',
+            'No confirmar el destino antes de la salida.',
+            'Archivar solo la factura y no el respaldo técnico y documental del retiro.',
+        ],
+        'normas': [ref('ley-20920', None, 'Ley 20.920 · Ley REP'), ref('ds-29-2024-minsal', None, 'D.S. 29 · Residuos de productos prioritarios')],
+        'accion': ('buscar', 'Buscar transportista'),
+        'etapa': 'antes', 'checklist': 'checklist-ley-rep-quien-transporta',
+    },
+    {
+        'slug': 'requisitos-vehiculo-transporte-residuos', 'icono': 'vehiculo', 'tema': 'transporte',
+        'menu': 'Requisitos del vehículo', 'menu_sub': 'Carga, cubierta, lluvia, olores y limpieza',
+        'corto': 'Requisitos del vehículo',
+        'titulo': 'Requisitos básicos de un vehículo que transporta residuos',
+        'kicker': 'Guía rápida',
+        'descripcion': 'Requisitos del vehículo que transporta residuos de productos prioritarios según el D.S. 29 (altura de carga, cubierta, lluvia y escurrimientos, ruidos, olores y limpieza) y qué revisar además si el residuo es peligroso.',
+        'intro': 'Para los residuos de productos prioritarios alcanzados por el D.S. 29, el vehículo y la forma de cargar deben prevenir la dispersión, el ingreso de lluvia, el escurrimiento, los ruidos y los olores molestos. Además, el vehículo debe mantenerse limpio.',
+        'resumen': 'La carga no sobrepasa la altura, va cubierta, no deja entrar lluvia ni escurrir líquidos, y el vehículo se mantiene limpio.',
+        'claves': [
+            'La carga no supera la altura máxima del vehículo ni del contenedor.',
+            'Vehículo y contenedores cubiertos, sin lluvia ni escurrimientos.',
+            'Residuo peligroso: se revisan además el D.S. 148 y el D.S. 298.',
+        ],
+        'saber': [
+            ('La carga no debe superar la altura máxima del vehículo ni la del contenedor.', [ref('ds-29-2024-minsal', '30')]),
+            ('El vehículo y los contenedores deben cubrirse o taparse para evitar la dispersión de los residuos.', [ref('ds-29-2024-minsal', '30')]),
+            ('Debe impedirse el ingreso de aguas lluvia y el escurrimiento de líquidos desde el vehículo.', [ref('ds-29-2024-minsal', '30')]),
+            ('Durante el transporte deben controlarse los ruidos y evitarse los olores molestos.', [ref('ds-29-2024-minsal', '30')]),
+            ('El vehículo debe mantenerse limpio.', [ref('ds-29-2024-minsal', '30')]),
+            ('Si el residuo es peligroso, deben revisarse además los requisitos específicos del D.S. 148 y la normativa de transporte de sustancias peligrosas, cuando corresponda.', [ref('ds-148-2003-minsal'), ref('ds-298-1994-mtt')]),
+        ],
+        'pasos': [
+            'Verifica el estado general y la limpieza del vehículo.',
+            'Revisa los contenedores, sus tapas o cubiertas y la altura de la carga.',
+            'Busca puntos de escurrimiento o filtración.',
+            'Confirma que el tipo de vehículo sea apropiado para el material.',
+            'Revisa las medidas de seguridad y la documentación aplicable.',
+            'Registra fotografías o un checklist antes de la salida.',
+        ],
+        'errores': [
+            'Cargar por sobre la altura del contenedor.',
+            'Cubrir solo en parte los materiales que se pueden dispersar.',
+            'Aceptar contenedores con filtraciones.',
+            'Usar los requisitos del D.S. 29 en reemplazo de las exigencias especiales para residuos peligrosos.',
+        ],
+        'normas': [ref('ds-29-2024-minsal', None, 'D.S. 29 · Residuos de productos prioritarios'), ref('ds-148-2003-minsal', None, 'D.S. 148 · Residuos peligrosos'), ref('ds-298-1994-mtt', None, 'D.S. 298 · Transporte de cargas peligrosas')],
+        'accion': ('especialista', 'Hablar con un especialista'),
+        'etapa': 'preparar', 'checklist': 'checklist-vehiculo-transporte-residuos',
+    },
+    {
+        'slug': 'errores-comunes-retiro-residuos', 'icono': 'errores', 'tema': 'registro',
+        'menu': 'Errores comunes en un retiro', 'menu_sub': 'Los seis que más retrasan la coordinación',
+        'corto': 'Errores comunes',
+        'titulo': 'Errores comunes al gestionar un retiro de residuos',
+        'kicker': 'Guía rápida',
+        'descripcion': 'Los errores más comunes al coordinar un retiro de residuos (descripción genérica, cantidad sin unidad, contaminación no informada, acceso, documentación y destino) y cómo evitarlos.',
+        'intro': 'La mayoría de los retrasos iniciales se pueden reducir con un buen levantamiento de antecedentes. Los errores más comunes se concentran en la identificación, la cantidad, la condición, el embalaje, el acceso y el destino.',
+        'resumen': 'La mayoría de los retrasos se evitan con buenos antecedentes: qué residuo es, cuánto hay, cómo está y cómo se llega a él.',
+        'claves': [
+            'Describe el residuo de forma específica, no «varios residuos».',
+            'Indica la cantidad con su unidad.',
+            'Avisa el acceso, los horarios y los equipos de carga necesarios.',
+        ],
+        'saber': [
+            ('Error 1: describir el residuo de forma genérica o incorrecta.', []),
+            ('Error 2: informar la cantidad sin unidad o con una estimación poco clara.', []),
+            ('Error 3: omitir la contaminación, la mezcla o el deterioro del residuo.', []),
+            ('Error 4: no informar cómo está almacenado o si requiere trasvasije o equipos de carga.', []),
+            ('Error 5: no indicar las restricciones de acceso, los horarios o los espacios disponibles.', []),
+            ('Error 6: coordinar el retiro sin confirmar la documentación y el destino.', []),
+        ],
+        'pasos': [
+            'Levanta la información en una ficha estándar.',
+            'Pide fotografías del residuo y del punto de carga.',
+            'Revisa la clasificación antes de cotizar en forma definitiva.',
+            'Confirma la cantidad, su unidad y el embalaje.',
+            'Define los requisitos de acceso y de carga.',
+            'Verifica la documentación y el destino.',
+        ],
+        'errores': [
+            'Usar «varios residuos» como única descripción.',
+            'Informar un volumen sin distinguir líquidos, sólidos o unidades.',
+            'Cambiar la carga el día del retiro sin avisar.',
+            'No avisar que se necesita grúa, transpaleta o personal adicional.',
+        ],
+        'normas': [],
+        'accion': ('cotizar', 'Cotizar retiro'),
+        'etapa': 'preparar', 'checklist': 'checklist-errores-retiro-residuos',
+    },
+    {
+        'slug': 'preparar-residuos-antes-del-retiro', 'icono': 'preparar', 'tema': 'almacenamiento',
+        'menu': 'Preparar los residuos', 'menu_sub': 'Segregar, identificar, contener y ordenar',
+        'corto': 'Preparar los residuos',
+        'titulo': 'Cómo preparar correctamente los residuos antes del retiro',
+        'kicker': 'Guía rápida',
+        'descripcion': 'Cómo preparar los residuos antes del retiro: segregar materiales incompatibles, identificar contenedores, cerrarlos, ordenar el punto de carga y avisar si se necesitan equipos.',
+        'intro': 'La preparación del retiro comienza antes de la llegada del vehículo. Segregar, identificar, contener y disponer el material en un área accesible ayuda a que la operación sea más segura y predecible.',
+        'resumen': 'El retiro empieza antes de que llegue el vehículo: residuos separados, identificados, bien contenidos y en un lugar accesible.',
+        'claves': [
+            'Separa los residuos incompatibles o de distinta clasificación.',
+            'Identifica cada contenedor y no lo sobrellenes.',
+            'Deja el acceso de carga libre y seguro.',
+        ],
+        'saber': [
+            ('Mantén separados los residuos incompatibles o de distinta clasificación.', []),
+            ('Identifica cada contenedor o grupo de materiales para evitar confusiones durante la carga.', []),
+            ('Usa contenedores compatibles, cerrados y en buen estado, cuando corresponda.', []),
+            ('Evita sobrellenar los contenedores o dejar materiales sueltos que puedan dispersarse.', []),
+            ('Mantén libre y seguro el acceso de carga.', []),
+            ('Informa con anticipación si se necesita equipo especial, trasvasije, pallets u otra preparación.', []),
+        ],
+        'pasos': [
+            'Segrega los residuos por tipo y condición.',
+            'Verifica los contenedores y sus cierres.',
+            'Identifica los residuos.',
+            'Ordena el punto de retiro.',
+            'Confirma la cantidad final.',
+            'Prepara los documentos y define quién hará la entrega.',
+            'Haz una revisión previa el mismo día.',
+        ],
+        'errores': [
+            'Mezclar materiales después de cotizar.',
+            'Dejar contenedores abiertos o dañados.',
+            'Ubicar la carga en un punto al que el vehículo no puede acceder.',
+            'No tener disponible a la persona que conoce el residuo.',
+        ],
+        'normas': [],
+        'accion': ('cotizar', 'Cotizar retiro'),
+        'etapa': 'preparar', 'checklist': 'checklist-preparar-residuos',
+    },
+    {
+        'slug': 'que-pasa-despues-del-retiro', 'icono': 'despues', 'tema': 'registro',
+        'menu': 'Después del retiro', 'menu_sub': 'Destino, documentos y trazabilidad',
+        'corto': 'Después del retiro',
+        'titulo': '¿Qué pasa con mis residuos después de que los retiran?',
+        'kicker': 'Guía rápida',
+        'descripcion': 'Qué pasa con los residuos después del retiro: quién responde en cada etapa, el sistema de declaración y seguimiento de residuos peligrosos y qué respaldos conservar para cerrar la gestión.',
+        'intro': 'El retiro es solo una etapa. Para cerrar bien la gestión, la empresa debe conocer el destino acordado y conservar los documentos que acrediten la operación, según el tipo de residuo y el sistema aplicable.',
+        'resumen': 'El retiro es solo una etapa: conoce el destino acordado y conserva los documentos que acreditan la operación.',
+        'claves': [
+            'Generador, transportista y destinatario tienen funciones distintas.',
+            'Los residuos peligrosos se siguen desde que salen hasta que se reciben.',
+            'Cruza el respaldo de recepción con la cantidad retirada.',
+        ],
+        'saber': [
+            ('El generador prepara y entrega el residuo con la información necesaria.', []),
+            ('El transportista recibe la carga y debe llevarla al destino definido. En residuos peligrosos, responde de que toda la carga se entregue en el sitio de destino fijado en el sistema de declaración y seguimiento.', [ref('ds-148-2003-minsal', '38')]),
+            ('El destinatario recibe el residuo y lo procesa, valoriza o elimina dentro del alcance de su autorización.', []),
+            ('En residuos peligrosos existe un sistema formal de declaración y seguimiento, desde que salen del establecimiento de generación hasta su recepción en la instalación de eliminación.', [ref('ds-148-2003-minsal', '80')]),
+            ('En la Ley REP y en la gestión de residuos, la evidencia de cantidades, origen y destino facilita el cumplimiento, la auditoría y el reporte.', []),
+        ],
+        'pasos': [
+            'Registra la salida: fecha, residuo y cantidades.',
+            'Identifica al transportista y el vehículo.',
+            'Conserva el documento de transporte o de declaración, cuando corresponda.',
+            'Registra el destino acordado previamente.',
+            'Recibe y archiva el respaldo de recepción, valorización o eliminación.',
+            'Cruza ese respaldo con la factura u orden de servicio y con el registro interno.',
+        ],
+        'errores': [
+            'Cerrar la orden de servicio sin evidencia del destino.',
+            'Archivar documentos sin relacionarlos con el retiro específico.',
+            'No verificar que la cantidad recibida sea consistente con la retirada.',
+            'Confundir la valorización declarada con evidencia del tratamiento efectivamente realizado.',
+        ],
+        'normas': [ref('ds-148-2003-minsal', None, 'D.S. 148 · Residuos peligrosos'), ref('ley-20920', None, 'Ley 20.920 · Ley REP')],
+        'accion': ('especialista', 'Hablar con un especialista'),
+        'etapa': 'despues', 'checklist': 'checklist-trazabilidad-despues-del-retiro',
+    },
+    {
+        'slug': 'antes-de-entregar-residuos-a-un-gestor', 'icono': 'gestor', 'tema': 'registro',
+        'menu': 'Antes de entregar a un gestor', 'menu_sub': 'Quién transporta, quién recibe y con qué alcance',
+        'corto': 'Antes de entregar a un gestor',
+        'titulo': 'Qué revisar antes de entregar residuos a un gestor',
+        'kicker': 'Guía rápida',
+        'descripcion': 'Qué revisar antes de entregar residuos a un gestor: quién transporta y quién recibe, el alcance de su autorización o registro, las condiciones de recepción y el respaldo posterior.',
+        'intro': 'El gestor, el transportista y el destinatario pueden ser actores distintos. Antes de entregar un residuo conviene verificar quién asume cada función y si el destino está habilitado para recibir ese residuo específico.',
+        'resumen': 'Gestor, transportista y destinatario pueden ser distintos: verifica quién hace cada cosa y si el destino puede recibir tu residuo.',
+        'claves': [
+            'Un gestor está autorizado y registrado, pero no siempre hace todas las etapas.',
+            'Revisa el alcance de la autorización, no solo que exista.',
+            'Acuerda qué evidencia acreditará la recepción.',
+        ],
+        'saber': [
+            ('La Ley 20.920 define al gestor como la persona natural o jurídica, pública o privada, que realiza cualquiera de las operaciones de manejo de residuos y que está autorizada y registrada conforme a la normativa vigente.', [ref('ley-20920', '3')]),
+            ('El transporte puede ser una etapa separada del tratamiento, la valorización o la eliminación.', []),
+            ('Una autorización se revisa por su alcance, no solo por la existencia del documento.', []),
+            ('El destino debe poder recibir el residuo en las condiciones y cantidades acordadas.', []),
+            ('En residuos peligrosos, el generador afecto a un plan de manejo debe usar transportistas con autorización sanitaria y eliminar sus residuos en instalaciones cuya autorización comprenda esos residuos.', [ref('ds-148-2003-minsal', '27')]),
+        ],
+        'pasos': [
+            'Define quién es el transportista y quién el destinatario.',
+            'Solicita la autorización o el registro y los datos del destino.',
+            'Revisa que el residuo figure en el alcance autorizado o sea compatible con él.',
+            'Confirma las condiciones de recepción.',
+            'Acuerda el respaldo que se entregará después.',
+            'Archiva la verificación.',
+        ],
+        'errores': [
+            'Asumir que «gestor» significa que realiza todas las etapas.',
+            'Aceptar documentos de una razón social distinta de la que presta el servicio.',
+            'No revisar que el residuo esté dentro del alcance de la instalación.',
+            'No definir qué evidencia acreditará la recepción.',
+        ],
+        'normas': [ref('ley-20920', None, 'Ley 20.920 · Ley REP'), ref('ds-148-2003-minsal', None, 'D.S. 148 · Residuos peligrosos')],
+        'accion': ('buscar', 'Buscar transportista'),
+        'etapa': 'antes', 'checklist': 'checklist-entregar-residuos-gestor',
+    },
+]
 
 
 GUIAS = [
@@ -105,6 +399,7 @@ GUIAS = [
         ],
         'normas': [ref('ds-148-2003-minsal', None, 'D.S. 148 · Residuos peligrosos'), ref('ds-57-2019-minsal', None, 'D.S. 57 · Clasificación y etiquetado de sustancias')],
         'accion': ('especialista', 'Hablar con un especialista'),
+        'etapa': 'antes', 'checklist': 'checklist-residuo-peligroso',
     },
     {
         'slug': 'autorizacion-sanitaria-transporte', 'icono': 'autorizacion', 'tema': 'transporte',
@@ -149,8 +444,8 @@ GUIAS = [
             'Omitir el registro de gestor cuando aplica el D.S. 29.',
         ],
         'normas': [ref('ds-148-2003-minsal', None, 'D.S. 148 · Residuos peligrosos'), ref('ds-29-2024-minsal', None, 'D.S. 29 · Residuos de productos prioritarios'), ref('ds-298-1994-mtt', None, 'D.S. 298 · Transporte de cargas peligrosas'), ref('ley-20920', None, 'Ley 20.920 · Ley REP')],
-        'descarga': True,
         'accion': ('especialista', 'Hablar con un especialista'),
+        'etapa': 'antes', 'checklist': 'checklist-autorizacion-sanitaria',
     },
     {
         'slug': 'checklist-contratar-transportista', 'icono': 'contratar', 'tema': 'registro',
@@ -189,10 +484,10 @@ GUIAS = [
             'No acordar previamente certificados, declaraciones o evidencias de recepción.',
         ],
         'normas': [ref('ds-148-2003-minsal', None, 'D.S. 148 · Residuos peligrosos'), ref('ds-29-2024-minsal', None, 'D.S. 29 · Residuos de productos prioritarios'), ref('ds-298-1994-mtt', None, 'D.S. 298 · Transporte de cargas peligrosas')],
-        'descarga': True,
         'accion': ('buscar', 'Buscar transportista'),
+        'etapa': 'antes', 'checklist': 'checklist-contratar-transportista-residuos',
     },
-]
+] + GUIAS_NUEVAS
 
 NORMATIVA_MENU = {
     'menu': 'Normativa', 'menu_sub': 'D.S. 148, Ley de Tránsito, Código Sanitario y más, con su texto oficial',
@@ -258,51 +553,112 @@ def validar_anclas():
         raise SystemExit('Citas sin destino:\n' + '\n'.join(faltan))
 
 
+# ---------- Guías y checklists, en orden ----------
+# Orden de lectura dentro de cada etapa (ETAPAS): el mismo en el panel, en «Otras guías» y en el resumen para IA
+ORDEN = ['residuo-peligroso-o-no-peligroso', 'autorizacion-sanitaria-transporte', 'ley-rep-quien-transporta', 'checklist-contratar-transportista',
+         'antes-de-entregar-residuos-a-un-gestor', 'preparar-residuos-antes-del-retiro', 'documentos-retiro-residuos-peligrosos',
+         'requisitos-vehiculo-transporte-residuos', 'errores-comunes-retiro-residuos', 'que-pasa-despues-del-retiro']
+ANTERIORES = {'residuo-peligroso-o-no-peligroso', 'autorizacion-sanitaria-transporte', 'checklist-contratar-transportista'}  # publicadas antes en documentos/
+
+
+def guias_en_orden():
+    return sorted(GUIAS, key=lambda g: ORDEN.index(g['slug']))
+
+
+CK = 'assets/transporte/documentos'
+# Los diez checklists del cliente (22-10-2026; datos en CK/<slug>.json, tools/checklists.py): título de su página y
+# rótulo en el panel. Cada uno acompaña a su guía (GUIAS[…]['checklist']).
+CHECKLISTS_NUEVOS = {
+    'checklist-residuo-peligroso': ('Checklist: ¿residuo peligroso o no peligroso?', '¿Peligroso o no peligroso?'),
+    'checklist-autorizacion-sanitaria': ('Checklist: ¿necesitas autorización sanitaria para transportar residuos?', 'Autorización sanitaria'),
+    'checklist-ley-rep-quien-transporta': ('Checklist Ley REP: quién transporta tus residuos', 'Ley REP y quién transporta'),
+    'checklist-contratar-transportista-residuos': ('Checklist antes de contratar un transportista de residuos', 'Antes de contratar un transportista'),
+    'checklist-entregar-residuos-gestor': ('Checklist antes de entregar residuos a un gestor', 'Antes de entregar a un gestor'),
+    'checklist-preparar-residuos': ('Checklist para preparar los residuos antes del retiro', 'Preparar los residuos'),
+    'checklist-documentos-residuos-peligrosos': ('Checklist de documentos para un retiro de residuos peligrosos', 'Documentos del retiro peligroso'),
+    'checklist-vehiculo-transporte-residuos': ('Checklist del vehículo que transporta residuos', 'Requisitos del vehículo'),
+    'checklist-errores-retiro-residuos': ('Checklist para evitar errores en un retiro de residuos', 'Evitar errores en el retiro'),
+    'checklist-trazabilidad-despues-del-retiro': ('Checklist de trazabilidad después del retiro', 'Trazabilidad después del retiro'),
+}
+
+
+def checklists():
+    """Todos los checklists en el orden del panel: el de 50 puntos (revisión completa, 28-09-2026) y luego uno por guía."""
+    completo = json.loads((ROOT / CHECKLIST['datos']).read_text(encoding='utf-8'))
+    out = [{'slug': 'checklist-autorizacion-transporte', 'titulo': CHECKLIST['titulo'], 'menu': 'Revisión completa de autorización',
+            'etapa': 'antes', 'guia': None, 'completo': True, 'tema': 'rep', 'archivo': CHECKLIST['archivo'],
+            'total': sum(len(b['puntos']) for b in completo['bloques'])}]
+    for g in guias_en_orden():
+        slug = g['checklist']
+        datos = json.loads((ROOT / CK / f'{slug}.json').read_text(encoding='utf-8'))
+        titulo, menu = CHECKLISTS_NUEVOS[slug]
+        out.append({'slug': slug, 'titulo': titulo, 'menu': menu, 'etapa': g['etapa'], 'guia': g, 'datos': datos, 'tema': g['tema'],
+                    'archivo': f'{CK}/{slug}.xlsx', 'total': sum(len(b['puntos']) for b in datos['bloques'])})
+    return out
+
+
+def checklist_de(g):
+    return next(c for c in checklists() if c['slug'] == g['checklist'])
+
+
 # ---------- Panel «Ayuda» de la cabecera ----------
 def accion(clave, texto, root, clase='btn btn-quiet btn-small'):
-    if clave == 'descarga':
-        return f'<a class="{clase}" href="{root}{CHECKLIST["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar checklist</span></a>'
     icon = ICO.get(clave, '')
     return f'<button class="{clase}" type="button" data-dock-open="{clave}">{icon}<span>{esc(texto)}</span></button>'
 
 
-def _item(clave, tema, icono, titulo, sub, detalle, clase=''):
-    return (f'<div class="docs-item{clase}" data-docs-item="{clave}" data-tema="{tema}">'
-            f'<button class="docs-tab" type="button" id="docs-t-{clave}" aria-expanded="false" aria-controls="docs-d-{clave}" data-docs-tab>'
-            f'<span class="doc-icon">{icono}</span><span class="docs-tab-text"><strong>{esc(titulo)}</strong><small>{esc(sub)}</small></span>'
-            f'<span class="docs-chev">{ICO["chev"]}</span></button>'
-            f'<div class="docs-detail" id="docs-d-{clave}" role="region" aria-labelledby="docs-t-{clave}"><div class="docs-detail-in">{detalle}</div></div></div>')
+def _card(href, icono, tema, titulo, sub, attrs=''):
+    return (f'<a class="docs-card" href="{href}" data-tema="{tema}"{attrs}><span class="doc-icon">{ICO[icono]}</span>'
+            f'<span class="docs-card-t"><strong>{esc(titulo)}</strong><small>{esc(sub)}</small></span><span class="docs-card-go">{ICO["chev"]}</span></a>')
+
+
+def _etapas(items, fila):
+    """Columnas por etapa del retiro (antes, al preparar, después); en el teléfono, una debajo de otra."""
+    html = []
+    for k, (clave, nombre) in enumerate(ETAPAS, 1):
+        grupo = [x for x in items if x['etapa'] == clave]
+        if grupo:
+            html.append(f'<div class="docs-etapa" data-etapa="{clave}"><p class="docs-etapa-t"><span aria-hidden="true">{k}</span>{esc(nombre)}</p>'
+                        f'<ul class="docs-cards">{"".join(f"<li>{fila(x)}</li>" for x in grupo)}</ul></div>')
+    return '<div class="docs-etapas">' + ''.join(html) + '</div>'
+
+
+CATS = [('guias', 'Guías rápidas', 'hoja'), ('checklists', 'Checklists', 'lista'), ('normativa', 'Normativa', 'normativa')]
 
 
 def menu_html(root=''):
-    """Panel que se abre dentro de la cabecera al elegir «Ayuda»: guías rápidas y documentos (checklist y normativa).
-    Lista a la izquierda y explicación a la derecha (escritorio); en el teléfono, cada tema se despliega en su lugar."""
-    guias = []
-    for g in GUIAS:
-        k = g['slug']
-        extra = accion('descarga', '', root) if g.get('descarga') else accion(*g['accion'], root)
-        guias.append(_item(
-            k, g['tema'], ICO[g['icono']], g['menu'], g['menu_sub'],
-            f'<p class="docs-kicker">Guía rápida</p><h3>{esc(g["titulo"])}</h3><p class="docs-lead">{esc(g["resumen"])}</p>'
-            f'<ul class="docs-points">{"".join(f"<li>{ICO["check"]}<span>{esc(c)}</span></li>" for c in g["claves"])}</ul>'
-            f'<div class="docs-actions"><a class="btn btn-ink btn-small" href="{root}ayuda/{k}.html">Leer la guía{ICO["flecha"]}</a>{extra}</div>'))
-    c = CHECKLIST
-    checklist = _item(
-        'checklist', 'rep', ICO['hoja'], c['menu'], c['menu_sub'],
-        f'<p class="docs-kicker">Descargable</p><h3>{esc(c["titulo"])}</h3><p class="docs-lead">{esc(c["resumen"])}</p>'
-        f'<ol class="docs-blocks">{"".join(f"<li>{esc(b)}</li>" for b in c["bloques"])}</ol>'
-        f'<div class="docs-actions"><a class="btn btn-ink btn-small" href="{root}{c["pagina"]}">Usar en línea{ICO["flecha"]}</a>'
-        f'<a class="btn btn-quiet btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar en Excel</span></a></div>')
-    nm = NORMATIVA_MENU
-    normativa = _item(
-        'normativa', 'marco', ICO['normativa'], nm['menu'], nm['menu_sub'],
-        f'<p class="docs-kicker">Documentos</p><h3>Normativa chilena de residuos</h3><p class="docs-lead">{esc(nm["resumen"])}</p>{biblioteca(root)}',
-        clase=' is-fill')
-    filas = 2 + len(guias) + 2  # dos rótulos de grupo y los temas
-    return (f'<div class="docs-panel" id="docs-panel" data-docs-panel inert><div class="docs-inner"><div class="docs-scroll">'
-            f'<div class="docs-grid" style="--n:{filas}"><span class="docs-glide" aria-hidden="true"></span>'
-            f'<p class="docs-group">Guías rápidas</p>{"".join(guias)}<p class="docs-group">Documentos</p>{checklist}{normativa}</div>'
-            f'</div></div></div>')
+    """Panel que se abre dentro de la cabecera al elegir «Ayuda» (rediseño del 22-10-2026). Arriba, tres pestañas con lo
+    que hay —Guías rápidas, Checklists y Normativa—, cada una con su cantidad; debajo, su contenido: guías y checklists
+    ordenados por etapa del retiro, y la normativa con su buscador. Todo el contenido viene en el HTML (buscadores)."""
+    gs, cks, ns = guias_en_orden(), checklists(), normas()
+    guias = _etapas(gs, lambda g: _card(f'{root}ayuda/{g["slug"]}.html', g['icono'], g['tema'], g['menu'], g['menu_sub'], f' data-guia="{g["slug"]}"'))
+
+    def fila_ck(c):
+        sub = f'{c["total"]} puntos' + (' · todo el caso' if c.get('completo') else '')
+        return (_card(f'{root}ayuda/{c["slug"]}.html', 'lista', c['tema'], c['menu'], sub, f' data-lista="{c["slug"]}"')
+                + f'<a class="docs-xls" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)" '
+                  f'aria-label="Descargar en Excel: {esc(c["titulo"])}">{ICO["excel"]}<span>Excel</span></a>')
+    cuenta = {'guias': len(gs), 'checklists': len(cks), 'normativa': len(ns)}
+    lead = {
+        'guias': 'Orientación breve para cada etapa del retiro, con la norma que la respalda.',
+        'checklists': 'Úsalos en línea, marcando cada punto también en el teléfono, o descárgalos en Excel.',
+        'normativa': NORMATIVA_MENU['resumen'],
+    }
+    cuerpo = {'guias': guias, 'checklists': _etapas(cks, fila_ck), 'normativa': biblioteca(root)}
+    tabs = ''.join(
+        f'<button class="docs-cat" type="button" role="tab" id="docs-c-{k}" aria-controls="docs-p-{k}" aria-selected="{"true" if i == 0 else "false"}"'
+        f' tabindex="{0 if i == 0 else -1}" data-docs-cat="{k}"><span class="docs-cat-icon">{ICO[ic]}</span><span class="docs-cat-l">{esc(nombre)}</span>'
+        f'<small class="docs-cat-n">{cuenta[k]}</small></button>'
+        for i, (k, nombre, ic) in enumerate(CATS))
+    panes = ''.join(
+        f'<section class="docs-pane{" is-fill" if k == "normativa" else ""}" id="docs-p-{k}" role="tabpanel" aria-labelledby="docs-c-{k}" data-docs-pane="{k}"{"" if i == 0 else " hidden"}>'
+        f'<p class="docs-lead">{esc(lead[k])}</p>{cuerpo[k]}</section>'
+        for i, (k, _, _) in enumerate(CATS))
+    pie = (f'<div class="docs-pie"><p>¿No encuentras lo que buscas?</p>'
+           f'<button class="docs-pie-btn" type="button" data-dock-open="especialista">{ICO["especialista"]}<span>Hablar con un especialista</span></button></div>')
+    return (f'<div class="docs-panel" id="docs-panel" data-docs-panel inert><div class="docs-inner"><div class="docs-scroll"><div class="docs-wrap">'
+            f'<div class="docs-cats" role="tablist" aria-label="Tipo de ayuda"><span class="docs-cats-glide" aria-hidden="true"></span>{tabs}</div>'
+            f'{panes}{pie}</div></div></div></div>')
 
 
 def boton_ayuda(root='', actual=False):
@@ -311,11 +667,12 @@ def boton_ayuda(root='', actual=False):
             f'Ayuda<span class="nav-docs-chev">{ICO["abajo"]}</span></a>')
 
 
-def franja_descarga(root):
-    return (f'<div class="download-strip"><span class="download-icon">{ICO["hoja"]}</span>'
-            f'<p><strong>{esc(CHECKLIST["titulo"])}</strong><small>{esc(CHECKLIST["sub"])}</small></p>'
-            f'<span class="download-actions"><a class="btn btn-ink btn-small" href="{root}{CHECKLIST["pagina"]}">Usar en línea</a>'
-            f'<a class="btn btn-quiet btn-small" href="{root}{CHECKLIST["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Excel</span></a></span></div>')
+def franja_checklist(c, root):
+    """Fila con el checklist de una guía: usarlo en línea o descargarlo en Excel."""
+    return (f'<div class="download-strip"><span class="download-icon">{ICO["lista"]}</span>'
+            f'<p><strong>{esc(c["titulo"])}</strong><small>{c["total"]} puntos para revisar tu caso · úsalo en línea o en Excel</small></p>'
+            f'<span class="download-actions"><a class="btn btn-ink btn-small" href="{root}ayuda/{c["slug"]}.html">Usar en línea</a>'
+            f'<a class="btn btn-quiet btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Excel</span></a></span></div>')
 
 
 def reemplazar(s, marca, contenido):
@@ -412,7 +769,8 @@ def envoltura(titulo, descripcion, url, ld, tema, cuerpo, version, tools, clase=
 def pagina(g, version, tools):
     root = '../'
     url = f'{SITE}/ayuda/{g["slug"]}.html'
-    otras = [x for x in GUIAS if x is not g]
+    otras = [x for x in guias_en_orden() if x is not g]
+    c = checklist_de(g)
     ld = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -422,6 +780,8 @@ def pagina(g, version, tools):
                 'publisher': {'@type': 'Organization', 'name': 'Transporte Autorizado', 'url': f'{SITE}/'},
                 'about': [{'@type': 'Thing', 'name': 'Transporte de residuos'}, {'@type': 'Thing', 'name': 'Residuos peligrosos'}],
                 'citation': [{'@type': 'Legislation', 'name': r['texto'], 'url': f'{SITE}/normativa/{r["slug"]}.html'} for r in g['normas']],
+                'isPartOf': {'@type': 'CollectionPage', 'name': 'Ayuda de Transporte Autorizado', 'url': f'{SITE}/#ayuda'},
+                'hasPart': {'@type': 'HowTo', 'name': c['titulo'], 'url': f'{SITE}/ayuda/{c["slug"]}.html'},
             },
             {
                 '@type': 'HowTo', 'name': f'Cómo usar la guía: {g["titulo"]}', 'inLanguage': 'es-CL',
@@ -453,7 +813,7 @@ def pagina(g, version, tools):
     normas = ''.join(f'<li><a href="{root}normativa/{r["slug"]}.html" data-tema="{TEMA_NORMA.get(r["slug"], "marco")}"><span class="doc-icon">{N.icono_tema(TEMA_NORMA.get(r["slug"], "marco"))}</span><span><strong>{esc(r["texto"])}</strong></span>{ICO["chev"]}</a></li>' for r in g['normas'])
     mas = ''.join(f'<li><a href="{x["slug"]}.html" data-tema="{x["tema"]}"><span class="doc-icon">{ICO[x["icono"]]}</span><span><strong>{esc(x["titulo"])}</strong><small>{esc(x["resumen"])}</small></span>{ICO["chev"]}</a></li>' for x in otras)
     cta_principal = accion(*g['accion'], root, 'btn btn-ink btn-small')
-    cta_descarga = accion('descarga', '', root) if g.get('descarga') else ''
+    cta_descarga = f'<a class="btn btn-quiet btn-small" href="{root}ayuda/{c["slug"]}.html">{ICO["lista"]}<span>Usar el checklist</span></a>'
     cuerpo = f'''<main id="contenido">
   <article class="container guia">
     <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#ayuda" data-docs-open>Ayuda</a><span aria-hidden="true">/</span><span aria-current="page">{esc(g["corto"])}</span></nav>
@@ -468,8 +828,8 @@ def pagina(g, version, tools):
     {matriz}
     <section class="guia-sec" aria-labelledby="pasos"><h2 id="pasos">Cómo usar esta guía</h2><ol class="guia-steps">{pasos}</ol></section>
     <section class="guia-sec" aria-labelledby="errores"><h2 id="errores">Errores frecuentes</h2><ul class="guia-errors">{errores}</ul></section>
-    {f'<section class="guia-sec" aria-label="Material descargable">{franja_descarga(root)}</section>' if g.get('descarga') else ''}
-    <section class="guia-sec" aria-labelledby="normas"><h2 id="normas">Normativa relacionada</h2><ul class="guia-links">{normas}</ul></section>
+    <section class="guia-sec" aria-label="Checklist de esta guía">{franja_checklist(c, root)}</section>
+    {f'<section class="guia-sec" aria-labelledby="normas"><h2 id="normas">Normativa relacionada</h2><ul class="guia-links">{normas}</ul></section>' if g['normas'] else ''}
     <section class="guia-sec" aria-labelledby="otras"><h2 id="otras">Otras guías</h2><ul class="guia-links guia-more">{mas}</ul></section>
 
     <footer class="norm-source">
@@ -529,8 +889,8 @@ def pagina_checklist(version, tools):
     leyenda = ''.join(f'<li class="{k}"><i aria-hidden="true"></i>{esc(nombre)}</li>' for _, nombre, k in ESTADOS)
     imprimir = _i('<path d="M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/>', 18, 2)
     cuerpo = f'''<main id="contenido">
-  <article class="container guia ck" data-checklist data-total="{total}" data-estados='{esc(json.dumps([[v, n] for v, n, _ in ESTADOS], ensure_ascii=False))}'>
-    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#ayuda" data-docs-open>Ayuda</a><span aria-hidden="true">/</span><span aria-current="page">Checklist de autorización</span></nav>
+  <article class="container guia ck" data-checklist data-clave="ta-checklist-autorizacion" data-total="{total}" data-estados='{esc(json.dumps([[v, n] for v, n, _ in ESTADOS], ensure_ascii=False))}'>
+    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#checklists" data-docs-open="checklists">Checklists</a><span aria-hidden="true">/</span><span aria-current="page">Revisión completa de autorización</span></nav>
     <header class="guia-head">
       <p class="norm-kind"><span class="doc-icon">{ICO["hoja"]}</span>Checklist · {total} puntos en {len(datos["bloques"])} bloques</p>
       <h1 class="norm-title">{esc(c["titulo"])}</h1>
@@ -547,13 +907,11 @@ def pagina_checklist(version, tools):
 
     {"".join(bloques)}
 
-    <section class="guia-sec" aria-labelledby="otras"><h2 id="otras">Para revisar tu caso</h2><ul class="guia-links guia-more">
-      {"".join(f'<li><a href="{x["slug"]}.html" data-tema="{x["tema"]}"><span class="doc-icon">{ICO[x["icono"]]}</span><span><strong>{esc(x["titulo"])}</strong><small>{esc(x["resumen"])}</small></span>{ICO["chev"]}</a></li>' for x in GUIAS)}
-    </ul></section>
+    <section class="guia-sec" aria-labelledby="otros"><h2 id="otros">Checklists por tema</h2><ul class="guia-links guia-more">{lista_checklists('checklist-autorizacion-transporte', root)}</ul></section>
 
     <footer class="norm-source">
       <p>Pauta de revisión preparada por Transporte Autorizado. Orientación general: no reemplaza la revisión técnica ni legal de cada caso. Las citas enlazan al texto oficial publicado en Ley Chile (Biblioteca del Congreso Nacional).</p>
-      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#ayuda" data-docs-open>{ICO["volver"]}Ver más ayuda</a>
+      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#checklists" data-docs-open="checklists">{ICO["volver"]}Ver todos los checklists</a>
     </footer>
   </article>
 </main>'''
@@ -561,8 +919,138 @@ def pagina_checklist(version, tools):
                      scripts=f'\n<script src="../assets/site/checklist.js?v={version}" defer></script>')
 
 
+ESTADOS_4 = [('pendiente', 'Pendiente', ''), ('cumple', 'Cumple', 'is-ok'), ('no-cumple', 'No cumple', 'is-no'), ('no-aplica', 'No aplica', 'is-na')]
+NORMA_REF = {'D.S. 148': 'ds-148-2003-minsal', 'D.S. 29': 'ds-29-2024-minsal', 'Ley 20.920': 'ley-20920'}
+
+
+def refs_checklist(texto):
+    """«D.S. 148 art. 39 / Guía base» → citas a la norma (la guía base ya está enlazada arriba de la página)."""
+    out = []
+    for parte in texto.split('/'):
+        m = re.match(r'\s*(D\.S\. 148|D\.S\. 29|Ley 20\.920)(?:\s+art\.\s*(\d+))?\s*$', parte)
+        if m:
+            out.append(ref(NORMA_REF[m.group(1)], m.group(2)))
+    return out
+
+
+def lista_checklists(actual, root):
+    return ''.join(f'<li><a href="{x["slug"]}.html" data-tema="{x["tema"]}"><span class="doc-icon">{ICO["lista"]}</span><span><strong>{esc(x["titulo"])}</strong>'
+                   f'<small>{x["total"]} puntos</small></span>{ICO["chev"]}</a></li>' for x in checklists() if x['slug'] != actual)
+
+
+def pagina_checklist_cliente(c, version, tools):
+    """Checklist del cliente para usar en línea: los mismos puntos, secciones y estados de su Excel (Pendiente, Cumple,
+    No cumple, No aplica). Las marcas quedan en el dispositivo (assets/site/checklist.js)."""
+    root = '../'
+    datos, g = c['datos'], c['guia']
+    total = c['total']
+    url = f'{SITE}/ayuda/{c["slug"]}.html'
+    descripcion = f'{c["titulo"]}: {total} puntos para revisar antes del retiro. {datos["finalidad"]} Úsalo en línea o descárgalo en Excel.'
+    ld = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {'@type': 'HowTo', '@id': f'{url}#checklist', 'name': c['titulo'], 'description': descripcion, 'inLanguage': 'es-CL', 'url': url,
+             'tool': [{'@type': 'HowToTool', 'name': 'Planilla Excel del checklist'}],
+             'step': [{'@type': 'HowToSection', 'name': b['nombre'], 'itemListElement': [{'@type': 'HowToStep', 'position': q['n'], 'name': q['item'], 'text': q['revisar']} for q in b['puntos']]} for b in datos['bloques']],
+             'isBasedOn': {'@type': 'Article', 'name': g['titulo'], 'url': f'{SITE}/ayuda/{g["slug"]}.html'}},
+            {'@type': 'BreadcrumbList', 'itemListElement': [
+                {'@type': 'ListItem', 'position': 1, 'name': 'Transporte Autorizado', 'item': f'{SITE}/'},
+                {'@type': 'ListItem', 'position': 2, 'name': 'Ayuda', 'item': f'{SITE}/#ayuda'},
+                {'@type': 'ListItem', 'position': 3, 'name': c['menu']}]},
+        ],
+    }
+    chev = _i('<path d="M6 9l6 6 6-6"/>', 14, 2.4)
+    bloques = []
+    for i, b in enumerate(datos['bloques'], 1):
+        puntos = []
+        for q in b['puntos']:
+            n = q['n']
+            aplica = '' if q['aplica'] == 'Siempre' else f'<p class="ck-aplica">{esc(q["aplica"])}</p>'
+            puntos.append(
+                f'<li class="ck-punto" data-n="{n}" data-estado="pendiente">'
+                f'<button type="button" class="ck-marca" role="checkbox" aria-checked="false" aria-labelledby="ck-{n}" aria-describedby="ck-{n}-e" disabled>{ICO["check"]}</button>'
+                f'<div class="ck-texto"><p class="ck-criterio" id="ck-{n}"><span class="ck-n">{n}</span>{esc(q["item"])}</p>'
+                f'<p class="ck-evidencia" id="ck-{n}-e">{esc(q["revisar"])}</p>'
+                f'<p class="ck-prueba"><span>Evidencia</span>{esc(q["evidencia"])}</p>{aplica}{citas(refs_checklist(q["referencia"]), root)}'
+                f'<button type="button" class="ck-estado" data-ck-estado disabled><span class="ck-estado-t">Pendiente</span>{chev}</button></div></li>')
+        bloques.append(
+            f'<section class="ck-bloque" id="bloque-{i}" aria-labelledby="bloque-{i}-t" data-ck-bloque>'
+            f'<h2 id="bloque-{i}-t"><span class="ck-num">{i}</span><span class="ck-nombre">{esc(b["nombre"])}</span>'
+            f'<small class="ck-avance" data-ck-avance>{len(b["puntos"])} {"punto" if len(b["puntos"]) == 1 else "puntos"}</small></h2>'
+            f'<ol class="ck-lista">{"".join(puntos)}</ol></section>')
+    leyenda = ''.join(f'<li class="{k}"><i aria-hidden="true"></i>{esc(nombre)}</li>' for _, nombre, k in ESTADOS_4)
+    imprimir = _i('<path d="M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/>', 18, 2)
+    cuerpo = f"""<main id="contenido">
+  <article class="container guia ck is-cliente" data-checklist data-clave="ta-{c["slug"]}" data-total="{total}" data-estados='{esc(json.dumps([[v, n] for v, n, _ in ESTADOS_4], ensure_ascii=False))}'>
+    <nav class="norm-crumbs" aria-label="Ruta"><a href="../transporte-autorizado.html">Inicio</a><span aria-hidden="true">/</span><a href="../transporte-autorizado.html#checklists" data-docs-open="checklists">Checklists</a><span aria-hidden="true">/</span><span aria-current="page">{esc(c["menu"])}</span></nav>
+    <header class="guia-head">
+      <p class="norm-kind"><span class="doc-icon">{ICO["lista"]}</span>Checklist · {total} puntos</p>
+      <h1 class="norm-title">{esc(c["titulo"])}</h1>
+      <p class="norm-lead">{esc(datos["finalidad"])} Toca el círculo de cada punto cuando lo hayas verificado; si no cumple o no aplica, cámbialo en su estado. Tus marcas quedan guardadas en este dispositivo.</p>
+      <div class="norm-actions guia-actions"><a class="btn btn-ink btn-small" href="{root}{c["archivo"]}" download data-download data-toast="Descargando el checklist (Excel)">{ICO["descarga"]}<span>Descargar en Excel</span></a><a class="btn btn-quiet btn-small" href="{g["slug"]}.html">{ICO[g["icono"]]}<span>Leer la guía</span></a><button class="btn btn-quiet btn-small" type="button" data-ck-imprimir hidden>{imprimir}<span>Guardar con mis marcas (PDF)</span></button></div>
+    </header>
+
+    <div class="ck-barra" data-ck-barra hidden>
+      <p class="ck-cuenta" aria-live="polite"><strong data-ck-hechos>0</strong> de {total} revisados<span class="ck-detalle" data-ck-detalle></span></p>
+      <div class="ck-progreso" aria-hidden="true"><i data-ck-progreso></i></div>
+      <button class="ck-borrar" type="button" data-ck-borrar hidden>Borrar marcas</button>
+    </div>
+    <ul class="ck-leyenda" aria-label="Estados de cada punto">{leyenda}</ul>
+
+    {"".join(bloques)}
+
+    <section class="guia-sec" aria-labelledby="guia-base"><h2 id="guia-base">Guía de este checklist</h2><ul class="guia-links guia-more">
+      <li><a href="{g["slug"]}.html" data-tema="{g["tema"]}"><span class="doc-icon">{ICO[g["icono"]]}</span><span><strong>{esc(g["titulo"])}</strong><small>{esc(g["resumen"])}</small></span>{ICO["chev"]}</a></li>
+    </ul></section>
+    <section class="guia-sec" aria-labelledby="otros"><h2 id="otros">Otros checklists</h2><ul class="guia-links guia-more">{lista_checklists(c["slug"], root)}</ul></section>
+
+    <footer class="norm-source">
+      <p>Pauta de revisión preparada por Transporte Autorizado a partir de su guía «{esc(g["titulo"])}». Orientación general: no reemplaza la revisión técnica ni legal de cada caso; pueden existir requisitos adicionales según el residuo, la operación y la normativa aplicable. Las citas enlazan al texto oficial publicado en Ley Chile.</p>
+      <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html#checklists" data-docs-open="checklists">{ICO["volver"]}Ver todos los checklists</a>
+    </footer>
+  </article>
+</main>"""
+    return envoltura(c['titulo'], descripcion, url, ld, g['tema'], cuerpo, version, tools, clase=' ck-page',
+                     scripts=f'\n<script src="../assets/site/checklist.js?v={version}" defer></script>')
+
+
+def validar_checklists():
+    """Cada cita de los checklists debe llevar a un artículo que exista."""
+    faltan = []
+    for c in checklists():
+        for b in c.get('datos', {}).get('bloques', []):
+            for q in b['puntos']:
+                for r in refs_checklist(q['referencia']):
+                    page = ROOT / 'normativa' / f'{r["slug"]}.html'
+                    if not page.exists() or (r['art'] and f'id="art-{r["art"]}"' not in page.read_text(encoding='utf-8')):
+                        faltan.append(f'{c["slug"]} punto {q["n"]}: {r["texto"]}')
+    if faltan:
+        raise SystemExit('Citas sin destino:\n' + '\n'.join(faltan))
+
+
+def datos_portada(s):
+    """Datos estructurados de la portada: la ayuda (guías y checklists) como parte de la página y el LinkedIn oficial de
+    la organización. Se reescriben en cada pasada, así siguen a las guías sin editarlos a mano."""
+    a = s.index('<script type="application/ld+json">') + len('<script type="application/ld+json">')
+    b = s.index('</script>', a)
+    ld = json.loads(s[a:b])
+    grafo = [n for n in ld['@graph'] if n.get('@id') != f'{SITE}/#ayuda']
+    for n in grafo:
+        if n.get('@type') == 'Organization':
+            n['sameAs'] = ['https://www.linkedin.com/company/transporte-autorizado/']
+    grafo.append({
+        '@type': 'CollectionPage', '@id': f'{SITE}/#ayuda', 'name': 'Ayuda: guías rápidas, checklists y normativa', 'inLanguage': 'es-CL',
+        'url': f'{SITE}/#ayuda', 'isPartOf': {'@id': f'{SITE}/#website'},
+        'hasPart': [{'@type': 'Article', 'name': g['titulo'], 'url': f'{SITE}/ayuda/{g["slug"]}.html'} for g in guias_en_orden()]
+                   + [{'@type': 'HowTo', 'name': c['titulo'], 'url': f'{SITE}/ayuda/{c["slug"]}.html'} for c in checklists()],
+    })
+    ld['@graph'] = grafo
+    return s[:a] + '\n' + json.dumps(ld, ensure_ascii=False, indent=2) + '\n' + s[b:]
+
+
 def main():
     validar_anclas()
+    validar_checklists()
     version = N.version_actual()
     tools = N.herramientas()
     (ROOT / 'ayuda').mkdir(exist_ok=True)
@@ -570,7 +1058,9 @@ def main():
     for g in GUIAS:
         (ROOT / 'ayuda' / f'{g["slug"]}.html').write_text(pagina(g, version, tools), encoding='utf-8')
         print(f'ayuda/{g["slug"]}.html')
-        # Las guías estuvieron publicadas en documentos/: esa dirección lleva a la nueva
+        if g['slug'] not in ANTERIORES:
+            continue
+        # Las primeras guías estuvieron publicadas en documentos/: esa dirección lleva a la nueva
         destino = f'../ayuda/{g["slug"]}.html'
         (ROOT / 'documentos' / f'{g["slug"]}.html').write_text(
             f'<!doctype html>\n<html lang="es-CL">\n<head>\n<meta charset="utf-8">\n<title>{esc(g["titulo"])}</title>\n'
@@ -579,9 +1069,15 @@ def main():
             f'<body>\n<p>Esta guía ahora está en <a href="{destino}">Ayuda</a>.</p>\n</body>\n</html>\n', encoding='utf-8')
     (ROOT / CHECKLIST['pagina']).write_text(pagina_checklist(version, tools), encoding='utf-8')
     print(CHECKLIST['pagina'])
+    for c in checklists():
+        if c.get('completo'):
+            continue
+        (ROOT / 'ayuda' / f'{c["slug"]}.html').write_text(pagina_checklist_cliente(c, version, tools), encoding='utf-8')
+        print(f'ayuda/{c["slug"]}.html')
     p = ROOT / 'transporte-autorizado.html'
     s = p.read_text(encoding='utf-8')
     s = reemplazar(s, 'ayuda:menu', '    ' + menu_html('') + '\n')
+    s = datos_portada(s)
     p.write_text(s, encoding='utf-8')
     print('transporte-autorizado.html: panel de Ayuda')
 

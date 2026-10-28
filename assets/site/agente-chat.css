@@ -24,6 +24,10 @@
 .agente-campo input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
 .agente-acepto { display: flex; align-items: flex-start; gap: 8px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; }
 .agente-acepto input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); }
+/* «Olvidar mis datos en este dispositivo» (solo si hay datos recordados) y su confirmación */
+.agente-olvidar { justify-self: start; padding: 0; border: 0; background: none; color: var(--ink-2); font: 600 var(--fs-small)/1.45 var(--font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.agente-olvidar:hover { color: var(--ink); }
+.agente-nota { margin: 0; color: var(--ink-2); font-size: var(--fs-small); font-weight: 600; }
 /* Contra bots: el campo trampa, fuera de la vista, y el widget de Turnstile, que solo aparece si pide una interacción */
 .agente-trampa { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .agente-humano:empty { display: none; }
@@ -39,3 +43,14 @@
 
 .agente-salir { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .agente-salir:hover { color: var(--ink); }
+
+/* Correcciones del borrador antes de confirmar el envío. */
+.agente-edicion { width: 100%; }
+.agente-edicion fieldset { display: grid; gap: 12px; min-width: 0; margin: 0; padding: 14px; border: 1px solid #767b88; border-radius: 14px; background: #fff; }
+.agente-edicion legend { padding: 0 6px; color: var(--ink); font: 800 var(--fs-small)/1.4 var(--font); }
+.agente-edicion input, .agente-edicion textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid #767b88; border-radius: 10px; color: var(--ink); background: #fff; font: 600 1rem/1.4 var(--font); }
+.agente-edicion textarea { min-height: 100px; resize: vertical; }
+.agente-edicion input:focus-visible, .agente-edicion textarea:focus-visible, .agente-edicion button:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 2px; }
+.agente-edicion [aria-invalid="true"] { border-color: #b42318; }
+.agente-edicion .btn { justify-self: start; min-height: 44px; }
+.agente-edicion fieldset:disabled { opacity: .65; }

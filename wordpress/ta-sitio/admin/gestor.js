@@ -42,26 +42,30 @@
     if (!window.confirm('¿Enviar esta respuesta a la persona?')) e.preventDefault();
   });
 
-  /* Firma: elegir o subir la imagen (ajustes) */
-  var marcoFirma;
+  /* Firma e imágenes del sitio: elegir o subir la imagen (ajustes). Cada espacio tiene su título (data-ta-titulo) y,
+     al quitar la elegida, vuelve a mostrar la del sitio (data-ta-original) */
+  var marcos = {};
   $(document).on('click', '[data-ta-firma-elegir]', function (e) {
     e.preventDefault();
     var $caja = $(this).closest('[data-ta-firma]');
-    marcoFirma = marcoFirma || wp.media({ title: 'Imagen de la firma', button: { text: 'Usar esta imagen' }, library: { type: 'image' }, multiple: false });
-    marcoFirma.off('select').on('select', function () {
-      var d = marcoFirma.state().get('selection').first().toJSON();
+    var titulo = $caja.data('taTitulo') || 'Imagen de la firma';
+    var marco = marcos[titulo] = marcos[titulo] || wp.media({ title: titulo, button: { text: 'Usar esta imagen' }, library: { type: 'image' }, multiple: false });
+    marco.off('select').on('select', function () {
+      var d = marco.state().get('selection').first().toJSON();
       $caja.find('[data-ta-firma-id]').val(d.id);
       $caja.find('[data-ta-firma-vista]').html('<img src="' + (d.sizes && d.sizes.medium ? d.sizes.medium.url : d.url) + '" alt="">');
       $caja.find('[data-ta-firma-quitar]').prop('hidden', false);
       $caja.find('[data-ta-firma-elegir]').text('Cambiar imagen');
     });
-    marcoFirma.open();
+    marco.open();
   });
   $(document).on('click', '[data-ta-firma-quitar]', function (e) {
     e.preventDefault();
     var $caja = $(this).closest('[data-ta-firma]');
     $caja.find('[data-ta-firma-id]').val('0');
-    $caja.find('[data-ta-firma-vista]').empty();
+    var original = $caja.data('taOriginal');
+    var $vista = $caja.find('[data-ta-firma-vista]').empty();
+    if (original) $vista.append($('<img alt="">').attr('src', original));
     $(this).prop('hidden', true);
     $caja.find('[data-ta-firma-elegir]').text('Subir o elegir imagen');
   });

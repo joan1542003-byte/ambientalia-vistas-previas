@@ -79,7 +79,7 @@
     const textos = () => (field('servicio').value === 'contenedores' ? TEXTOS.arriendo : TEXTOS.retiro);
     const MODE_HINT = {
       '': 'Elige qué tan pronto lo necesitas.',
-      express: 'Priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna.',
+      express: 'Priorizamos tu retiro dentro de 24 horas hábiles, sujeto a disponibilidad, tipo de residuo y comuna.',
       programado: 'Eliges el día del primer retiro y lo organizamos mes a mes.',
       flexible: 'Tú propones hasta tres días y coordinamos según disponibilidad.'
     };
@@ -670,8 +670,9 @@
     campos.hidden = false;
     aviso.disabled = false;
     comercial.disabled = false;
-    campos.querySelector('[data-cotizar-aviso]').href = `${API}/politica-de-privacidad`;
-    campos.querySelector('[data-cotizar-condiciones]').href = `${API}/condiciones-del-servicio`;
+    /* Las copias del sitio (legal/, tools/legal.py), con el texto que publica el asistente */
+    campos.querySelector('[data-cotizar-aviso]').href = `${window.SITE_ROOT || ''}legal/politica-de-privacidad.html`;
+    campos.querySelector('[data-cotizar-condiciones]').href = `${window.SITE_ROOT || ''}legal/condiciones-del-servicio.html`;
     boton.hidden = false;
     boton.parentElement.classList.add('is-cotizar');
     sub.textContent = LISTA.sub;
