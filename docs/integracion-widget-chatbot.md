@@ -107,6 +107,15 @@ Todos van directo del navegador al asistente, sin pasar por WordPress:
 - La conversación no se guarda en el navegador: se pide al asistente.
 - Tampoco el texto pendiente ni nombres de archivo.
 
+**Datos recordados en el dispositivo** (opcional; `localStorage`, clave `agente-chat-datos`, 23-10-2026). La puerta ofrece «Recordar mi nombre, correo y teléfono en este dispositivo por 30 días (opcional)», **sin marcar** salvo que ya haya datos guardados.
+- Se guarda `{name, email, phone, vence}` y nada más: **nunca el token** (queda en la pestaña), ni las casillas de condiciones y de contacto comercial (cada sesión pide su propia aceptación), ni la conversación. La casilla no se envía al asistente.
+- Se guarda solo cuando el asistente abre la sesión (`201`), es decir, con datos que ya validó; si lo rechaza (`422`), no se guarda. Cada apertura renueva los 30 días (`RECUERDO_DIAS`) y, con la casilla desmarcada, borra lo guardado.
+- Al abrir la puerta, lo guardado precarga los campos. Vencido, ilegible, incompleto o de otra forma: se ignora y se borra. Se acota al largo de cada campo y entra como valor de un campo, nunca como HTML.
+- «Olvidar mis datos en este dispositivo» (visible solo si hay datos) los borra y vacía los campos. «Borrar esta conversación», al terminar, los borra también.
+- El tope de 10 consultas no cambia: va por el correo con que se entra, no por el navegador (`QueryLimiter`). Tampoco cambia ningún límite por IP ni el campo trampa ni Turnstile: la sesión se abre con `POST /sessions` como si los datos se hubieran escrito.
+- Safari puede borrar `localStorage` tras unos 7 días sin visitar el sitio; en navegación privada o con el almacenamiento bloqueado simplemente no se recuerda nada.
+- La política de privacidad del asistente lo dice en «Qué datos tratamos» («En tu dispositivo»); el plazo vive en dos lugares (`RECUERDO_DIAS` y esa política).
+
 | Caso | Comportamiento |
 |---|---|
 | Token vigente | Al abrir, `GET /history` con ese token y se repinta. |
@@ -329,3 +338,22 @@ El freno de concurrencia primero no se detectó (lo cubría la segunda guarda) y
   - sesión, turnos, opciones, historial tras recargar, foto desde un teléfono real (iOS y Android) y borrado;
   - la recepción de la solicitud del chat en Odoo de prueba.
 - **Generador oficial:** `python3 tools/normativa.py` con Python 3.12 o más nuevo, que debería dejar las 20 páginas igual.
+
+
+## Edición antes del envío (27-10-2026)
+
+En el contacto y en la cotización, «Corregir» muestra campos precargados dentro del chat. Se pueden cambiar varios datos de contacto juntos; en el contacto también se puede editar el motivo. El widget usa `reply.form` (`action`, `submit_label`, `fields`) y cada campo declara nombre, rótulo, tipo, valor, obligatoriedad, largo máximo y error.
+
+«Guardar cambios» envía `option_id: "guardar_datos"` y `form_values` por `POST /api/chat/messages`, con el token y `client_message_id` habituales. El backend valida todos los campos antes de actualizar el borrador. Devuelve los errores junto a los valores recibidos, o el resumen actualizado. Guardar no crea una solicitud ni entrega datos a Odoo: se requiere después «Sí, enviar». Cancelar descarta el borrador.
+
+Los campos de una respuesta anterior se desactivan. El historial y los reintentos restauran el formulario pendiente; un envío sin respuesta confirmada conserva temporalmente su contenido en la pestaña para reintentarlo con el mismo identificador. Se elimina al resolverse o descartarse. No se agrega al historial enviado al modelo. El widget conserva la validación del servidor como autoridad. Para habilitarlo hay que desplegar tanto el backend que entrega `reply.form` como este widget; las opciones anteriores quedan como compatibilidad para clientes sin inputs.
+
+## Límites dinámicos de fotos y verificación del 28-10-2026
+
+Antes del primer intento de subida de la página, el widget consulta `GET /api/chat/config` con espera máxima de 5 s. Lee solo topes numéricos válidos de cantidad, KB y píxeles, y formatos JPG/JPEG, PNG o WebP que puede convertir el navegador. Guarda una respuesta válida solo en memoria de página. El selector y la conversión usan esos formatos; el archivo reducido debe respetar peso y píxeles, con 1600 px de lado como máximo. No se sube el original.
+
+Si la consulta falla o es inválida, se muestra un aviso, no se sube la imagen y otro intento vuelve a consultar. El chat y la sesión permanecen disponibles. Desplegar junto al backend que expone la ruta; no se usa un límite copiado como alternativa silenciosa. El formulario de cotización del sitio sigue con sus topes propios y no se modifica en B-30.
+
+Se corrigió el retorno de una sesión vencida: conserva los datos de contacto en memoria, pero condiciones/privacidad y contacto comercial vuelven sin marcar. Los recursos compartidos llevan versión `20261028a`. Las expectativas de CSP incluyen la fuente de LinkedIn ya permitida por el plugin; no se amplió la política.
+
+Validación local final: 132 comprobaciones del widget, 118 de integración y 20 del plugin aprobadas. Incluye navegador, backend simulado, preparación del paquete, formatos alternativos, píxeles, peso y recuperación tras configuración inválida. Sin servicios reales, Odoo, despliegue ni prueba en dispositivos físicos.
