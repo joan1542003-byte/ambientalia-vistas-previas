@@ -25,7 +25,7 @@
      muestra sin enlace.
    - Un enlace a este sitio se muestra en el sitio, como en la maqueta: las vistas del hero se abren con HERO.show, la
      «Ayuda» con su ancla y las secciones se recorren hasta su lugar. En agente-virtual.html, en el sitio de atrás.
-   - Fotos (JPG, PNG o WebP; hasta 2 por conversación, como el asistente): se reducen en el navegador a 1600 px en JPEG
+   - Fotos: los topes y formatos se consultan en GET /config antes de subir. Se reducen en el navegador a 1600 px
      antes de subirlas, así pesan menos y no llevan la ubicación ni otros datos de la cámara; si no se pueden convertir,
      no se suben. También se pueden pegar o soltar en la ventana, y esas no llegan al formulario de cotización.
    - «Borrar esta conversación» pide confirmación y llama a DELETE /session: solo dice que se borró si el servicio lo
@@ -69,10 +69,10 @@
   const ESPERA = Math.max(5, Number(panel.dataset.agenteEspera) || 90) * 1000;  // una respuesta del modelo
   const AUTO = 2;        // reintentos solos de un mensaje: tras una espera agotada o «ocupado»
   const REINTENTOS = 3;  // reintentos que puede pedir la persona con «Reintentar»
-  const FOTOS_MAX = 2;   // por conversación (CHAT_ATTACHMENTS_MAX del asistente, que es quien manda)
-  const FOTO_MAX = 5120 * 1024;       // lo que se sube (CHAT_ATTACHMENT_MAX_KB)
   const FOTO_ENTRADA = 25 * 1024 * 1024;  // la original, antes de reducirla
   const TIPOS = ['image/jpeg', 'image/png', 'image/webp'];
+  const FORMATOS = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+  let limitesFotos = null;
   /* Destinos de las fuentes que pasan a enlace (además de este sitio): las del corpus del asistente y el Estado */
   const FUENTES = ['transporteautorizado.cl', 'bcn.cl', 'leychile.cl'];
   const pausa = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -574,23 +574,37 @@
   });
 
   /* ---------- Fotos ---------- */
-  const valida = (f) => (f.type ? TIPOS.includes(f.type) : /\.(jpe?g|png|webp)$/i.test(f.name || ''));
+  const cargarLimitesFotos = async () => {
+    if (limitesFotos) return true;
+    const { estado, json } = await llamar('/config', { espera: 5000 });
+    const v = json.attachments;
+    if (estado !== 200 || !v || !['max_per_session', 'max_kilobytes', 'max_pixels'].every((k) => Number.isSafeInteger(v[k]) && v[k] > 0)
+      || v.max_kilobytes > Number.MAX_SAFE_INTEGER / 1024 || !Array.isArray(v.mimes)) return false;
+    const tipos = [...new Set(v.mimes.filter((m) => typeof m === 'string' && Object.hasOwn(FORMATOS, m)).map((m) => FORMATOS[m]))];
+    if (!tipos.length) return false;
+    limitesFotos = { ...v, tipos };
+    elegir.accept = tipos.join(',');
+    return true;
+  };
+  const valida = (f) => limitesFotos.tipos.includes(f.type || FORMATOS[(f.name || '').split('.').pop().toLowerCase()]);
   const huella = (f) => `${f.name}|${f.size}|${f.lastModified}`;
-  /* La foto, a 1600 px como máximo y en JPEG (sin los datos de la cámara). Si el navegador no la puede leer, null: no se
+  /* La foto, a 1600 px como máximo y en un formato permitido (sin los datos de la cámara). Si el navegador no la puede leer, null: no se
      sube la original */
   const reducir = async (archivo, numero) => {
     let img;
     try {
       try { img = await createImageBitmap(archivo, { imageOrientation: 'from-image' }); } catch { img = await createImageBitmap(archivo); }
-      const k = Math.min(1, 1600 / Math.max(img.width, img.height));
-      const lienzo = h('canvas', { width: Math.max(1, Math.round(img.width * k)), height: Math.max(1, Math.round(img.height * k)) });
+      const k = Math.min(1, Math.min(1600, limitesFotos.max_pixels) / Math.max(img.width, img.height), Math.sqrt(limitesFotos.max_pixels / (img.width * img.height)));
+      const lienzo = h('canvas', { width: Math.max(1, Math.floor(img.width * k)), height: Math.max(1, Math.floor(img.height * k)) });
       const c = lienzo.getContext('2d');
       c.fillStyle = '#fff';  // un PNG transparente queda sobre blanco, no sobre negro
       c.fillRect(0, 0, lienzo.width, lienzo.height);
       c.drawImage(img, 0, 0, lienzo.width, lienzo.height);
-      const blob = await new Promise((ok) => lienzo.toBlob(ok, 'image/jpeg', 0.85));
+      const tipo = limitesFotos.tipos.includes('image/jpeg') ? 'image/jpeg' : limitesFotos.tipos[0];
+      const extension = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }[tipo];
+      const blob = await new Promise((ok) => lienzo.toBlob(ok, tipo, 0.85));
       /* El nombre es neutro: el de la persona puede llevar datos personales */
-      return blob?.type === 'image/jpeg' && blob.size <= FOTO_MAX ? new File([blob], `foto-${numero}.jpg`, { type: 'image/jpeg' }) : null;
+      return blob?.type === tipo && blob.size <= limitesFotos.max_kilobytes * 1024 ? new File([blob], `foto-${numero}.${extension}`, { type: tipo }) : null;
     } catch {
       return null;
     } finally {
@@ -600,9 +614,9 @@
   /* Una foto: se valida, se reduce y se sube. Devuelve false si no tiene sentido seguir con las demás */
   const subirUna = async (archivo) => {
     decirYo(`Foto: ${archivo.name || 'imagen pegada'}`);
-    if ((sesion.fotos || 0) >= FOTOS_MAX) { aviso(`Ya adjuntaste ${FOTOS_MAX} fotos, el máximo por conversación.`); return false; }
+    if ((sesion.fotos || 0) >= limitesFotos.max_per_session) { aviso(`Ya adjuntaste ${limitesFotos.max_per_session} fotos, el máximo por conversación.`); return false; }
     if (subidas.has(huella(archivo))) { aviso('Esa foto ya está adjunta.'); return true; }
-    if (!valida(archivo)) { aviso('Solo puedo recibir fotos JPG, PNG o WebP.'); return true; }
+    if (!valida(archivo)) { aviso(`Los formatos permitidos son: ${limitesFotos.tipos.map((t) => t.slice(6).toUpperCase()).join(', ')}.`); return true; }
     if (archivo.size > FOTO_ENTRADA) { aviso('Esa foto es demasiado pesada. Prueba con otra o con una captura de pantalla.'); return true; }
     const e = espera();
     const anterior = fotosPendientes.get(huella(archivo));
@@ -624,7 +638,7 @@
       return true;
     }
     if (estado === 401) { vencida(); return false; }
-    if (estado === 422 && json.error === 'attachment_limit') { sesion.fotos = FOTOS_MAX; guardar(sesion); }
+    if (estado === 422 && json.error === 'attachment_limit') { sesion.fotos = limitesFotos.max_per_session; guardar(sesion); }
     if (falla || estado >= 500 || (estado === 409 && json.error === 'busy')) {
       const nota = avisoCon('No pude confirmar si la foto llegó. Puedes reintentar sin duplicarla.', [['Reintentar', () => { if (ocupado) return; nota.remove(); subir([archivo]); }]]);
       return false;
@@ -642,9 +656,14 @@
     if (ocupado) { aviso('Espera a que termine la respuesta para adjuntar la foto.'); return; }
     if (charla.querySelector('[data-edicion] fieldset:not(:disabled)')) { aviso('Guarda los cambios o cancela la edición antes de adjuntar una foto.'); return; }
     ocupado = true;
+    const consultando = limitesFotos ? null : espera();
     try {
+      const disponibles = await cargarLimitesFotos();
+      consultando?.remove();
+      if (!disponibles) { aviso('No pude comprobar los límites de fotos. Vuelve a intentarlo en un momento.'); return; }
       for (const archivo of archivos) if (!sesion || !(await subirUna(archivo))) break;
     } finally {
+      consultando?.remove();
       ocupado = false;
     }
   };

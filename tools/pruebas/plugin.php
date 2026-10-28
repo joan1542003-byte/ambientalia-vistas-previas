@@ -53,7 +53,7 @@ foreach ( $casos as $entrada => $esperado ) {
 echo "Política de contenido\n";
 $sellos = array( "'sha256-abc'" );
 $base   = ta_sitio_politica( $sellos, array( 'asistente' => '', 'turnstile' => '' ) );
-comprobar( "connect-src 'self' https://joan1542003-byte.github.io" === regla( $base, 'connect-src' ), 'sin asistente: connect-src solo el propio sitio' );
+comprobar( "connect-src 'self' https://joan1542003-byte.github.io" === regla( $base, 'connect-src' ), 'sin asistente: connect-src permite el sitio y la fuente de LinkedIn' );
 comprobar( null === regla( $base, 'frame-src' ), 'sin Turnstile: sin frame-src (rige default-src)' );
 comprobar( "script-src 'self' 'sha256-abc'" === regla( $base, 'script-src' ), 'sin Turnstile: script-src igual que antes' );
 comprobar( 10 === count( $base ), 'sin configuración: las mismas diez reglas de la 1.2.0' );

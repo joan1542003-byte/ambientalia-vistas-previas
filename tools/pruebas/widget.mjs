@@ -78,6 +78,8 @@ const sitio = createServer((req, res) => {
 const llamadas = [];
 const S = { tokens: new Set(), n: 0, procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], subidas: new Map(), fotos: 0, cortarHasta: 0 };
 const USO = { max: 10, used: 1, remaining: 9, resets_at: null };
+const LIMITES_FOTOS = { max_per_session: 2, max_kilobytes: 5120, max_pixels: 50000000, mimes: ['jpg', 'jpeg', 'png', 'webp'] };
+S.limites = { ...LIMITES_FOTOS };
 const MENU = { text: 'Hola, soy el asistente. ¿En qué te ayudo?', options: [{ id: 'residuos', label: 'Retiro de residuos' }, { id: 'normativa', label: 'Normativa' }], sources: [], intent: 'main_menu', lead_status: null };
 const XSS = {
   text: 'Mira <img src=x onerror="window.__xss=1"> y <script>window.__xss=2</script> en https://evil.example/robar y javascript:window.__xss=3 & «comillas» "dobles" \'simples\' ñandú 10 < 20 > 5 **en negrita <b>no</b>**',
@@ -143,7 +145,7 @@ const asistente = createServer(async (req, res) => {
   const foto = () => {
     const key = `${token}:${mp?.campos.client_upload_id}`;
     if (S.subidas.has(key)) return { status: 201, json: S.subidas.get(key) };
-    if (S.fotos >= 2) return { status: 422, json: { error: 'attachment_limit', message: 'Ya adjuntaste el máximo de imágenes para esta conversación.' } };
+    if (S.fotos >= S.limites.max_per_session) return { status: 422, json: { error: 'attachment_limit', message: 'Ya adjuntaste el máximo de imágenes para esta conversación.' } };
     S.fotos += 1;
     const result = { attachment: { id: S.fotos, name: mp?.archivos[0]?.nombre }, photos: S.fotos, reply: { text: 'Recibí la imagen.', options: [], sources: [] }, usage: USO };
     S.subidas.set(key, result);
@@ -167,6 +169,7 @@ const asistente = createServer(async (req, res) => {
     json(g.status, g.json || {});
     return;
   }
+  if (url.pathname === '/api/chat/config' && req.method === 'GET') { json(200, { attachments: S.limites }); return; }
   if (url.pathname === '/api/chat/sessions' && req.method === 'POST') {
     const t = `tok-${++S.n}`;
     S.tokens.add(t);
@@ -197,7 +200,7 @@ const API = `http://127.0.0.1:${asistente.address().port}`;
 const de = (ruta, metodo) => llamadas.filter((l) => l.ruta === `/api/chat${ruta}` && (!metodo || l.metodo === metodo));
 const reiniciarAsistente = () => {
   llamadas.length = 0;
-  Object.assign(S, { subidas: new Map(), procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0 });
+  Object.assign(S, { subidas: new Map(), procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0, limites: { ...LIMITES_FOTOS } });
 };
 
 /* ======================= Navegador ======================= */
@@ -754,7 +757,7 @@ try {
     await abrir();
     await hasta(() => !document.querySelector('[data-agente-form]').hidden && !document.querySelector('.is-espera') && /¿En qué te ayudo\?/.test(document.querySelector('[data-agente-charla]').textContent), 'chat listo');
     await elegirFotos('gif');
-    await hasta(() => /Solo puedo recibir fotos JPG, PNG o WebP/.test(document.querySelector('[data-agente-charla]').textContent), 'gif');
+    await hasta(() => /Los formatos permitidos son/.test(document.querySelector('[data-agente-charla]').textContent), 'gif');
     await elegirFotos('rota');
     await hasta(() => /No pude preparar esa foto/.test(document.querySelector('[data-agente-charla]').textContent), 'rota');
     await elegirFotos('pesada');
@@ -1022,6 +1025,50 @@ try {
     ok(!(await recuerdo()) && p.name === '' && p.email === '' && !p.remember && !p.olvidar, '«Borrar esta conversación» borra también los datos de este dispositivo y la puerta vuelve vacía');
 
     ok(!errores.length, `sin errores de JavaScript en la página${errores.length ? `: ${errores.slice(0, 3).join(' | ')}` : ''}`);
+  }
+  seccion('25. Límites de fotos desde la configuración del asistente');
+  {
+    reiniciarAsistente();
+    S.limites = { max_per_session: 1, max_kilobytes: 8, max_pixels: 100, mimes: ['png'] };
+    await conWordPress(null);
+    await navegar(local()); await abrir(); await entrar();
+    await elegirFotos('png', 'exif');
+    await hastaAca(async () => de('/attachments', 'POST').length === 1 && await sinEspera(), 'foto con topes dinámicos');
+    const archivo = de('/attachments', 'POST')[0].mp.archivos[0];
+    ok(archivo.tipo === 'image/png' && archivo.nombre === 'foto-1.png' && archivo.bytes <= 8 * 1024, 'el formato y el peso de salida respetan los límites publicados, sin forzar JPEG');
+    const area = await evaluar(async (base64) => {
+      const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+      const img = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
+      const area = img.width * img.height;
+      img.close();
+      return area;
+    }, archivo.contenido.toString('base64'));
+    ok(area <= 100, 'la imagen se reduce también al máximo de píxeles configurado');
+    ok(de('/config', 'GET').length === 1 && (await evaluar(() => document.querySelector('[data-agente-form] input[type="file"]').accept)) === 'image/png', 'se consulta una vez y el selector refleja los formatos permitidos');
+    ok(de('/attachments', 'POST').length === 1 && JSON.parse(await guardado()).fotos === 1, 'el máximo dinámico de una foto impide subir la siguiente');
+
+    for (const config of [
+      { status: 503, json: {} },
+      { status: 200, json: { attachments: { ...LIMITES_FOTOS, max_pixels: 0 } } },
+      { status: 200, json: { attachments: { ...LIMITES_FOTOS, mimes: ['__proto__'] } } }
+    ]) {
+      reiniciarAsistente();
+      await navegar(local()); await abrir(); await entrar();
+      S.guion.push({ ruta: '/api/chat/config', ...config });
+      await elegirFotos('png');
+      await hasta(() => /No pude comprobar los límites/.test(document.querySelector('[data-agente-charla]').textContent), 'configuración no disponible');
+      ok(de('/attachments', 'POST').length === 0 && !!(await guardado()), 'sin límites válidos no se envía la imagen ni se pierde la sesión');
+      await elegirFotos('png');
+      await hastaAca(async () => de('/attachments', 'POST').length === 1 && await sinEspera(), 'recuperación de configuración');
+      ok(de('/config', 'GET').length === 2, 'la consulta fallida se puede repetir y la foto se sube al recuperarse');
+    }
+    reiniciarAsistente();
+    S.limites = { ...LIMITES_FOTOS, max_kilobytes: 1 };
+    await navegar(local()); await abrir(); await entrar();
+    await elegirFotos('png');
+    await hasta(() => /No pude preparar esa foto/.test(document.querySelector('[data-agente-charla]').textContent), 'peso de salida excedido');
+    ok(de('/attachments', 'POST').length === 0, 'si la imagen reducida supera el peso publicado, no se envía');
+    ok(!errores.length, 'los límites dinámicos no producen errores de JavaScript');
   }
 } catch (e) {
   ok(false, `las pruebas se interrumpieron: ${e.stack || e}`);
