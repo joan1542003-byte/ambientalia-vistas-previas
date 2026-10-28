@@ -96,7 +96,7 @@ Selecciona el tipo de residuo, cantidad y comuna de retiro. Con esa información
 ### ¿Cuándo necesitas retirar tus residuos?
 
 #### Retiro Express
-**Priorizamos tu retiro dentro de las próximas 24 horas.**
+**Priorizamos tu retiro dentro de 24 horas hábiles.**
 
 Una respuesta rápida ante urgencias y emergencias.
 
@@ -145,7 +145,7 @@ Completa algunos antecedentes y revisaremos la factibilidad, condiciones y valor
 | ¿Hay alguna condición especial de acceso? | Ej.: horario de carga, acceso para camión, altura máxima, grúa requerida… |
 
 **Fecha: ¿Cuándo necesitas el retiro?**
-- Retiro Express: prioridad dentro de las próximas 24 horas.
+- Retiro Express: prioridad dentro de 24 horas hábiles.
 - Retiro Programado: quiero elegir una fecha.
 
 **Datos de contacto:** Empresa · RUT de la empresa · Nombre de contacto · Teléfono · Correo electrónico
