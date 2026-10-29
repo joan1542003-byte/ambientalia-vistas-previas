@@ -68,7 +68,7 @@ def llms():
         f'- [Hablar con un especialista]({DOMINIO}#especialista): por WhatsApp, +56 9 8606 7930.', '',
         '## Secciones',
         f'- [Servicios]({DOMINIO}#servicios): retiro de residuos no peligrosos, retiro de residuos peligrosos y arriendo de contenedores.',
-        f'- [Planes]({DOMINIO}#planes): Retiro Express (prioridad dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna), Retiro Programado (mensual) y Espera y ahorra (la empresa propone fechas).',
+        f'- [Planes]({DOMINIO}#planes): Retiro Express (prioridad dentro de 24 horas hábiles, sujeto a disponibilidad, tipo de residuo y comuna), Retiro Programado (mensual) y Espera y ahorra (la empresa propone fechas).',
         f'- [Cómo funciona]({DOMINIO}#proceso)',
         f'- [Preguntas frecuentes]({DOMINIO}#preguntas)', '',
         '## Guías rápidas (orientación para preparar un retiro, con citas al texto oficial)', *guias, '',

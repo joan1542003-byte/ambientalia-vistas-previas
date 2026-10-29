@@ -79,7 +79,7 @@
     const textos = () => (field('servicio').value === 'contenedores' ? TEXTOS.arriendo : TEXTOS.retiro);
     const MODE_HINT = {
       '': 'Elige qué tan pronto lo necesitas.',
-      express: 'Priorizamos tu retiro dentro de las próximas 24 horas, sujeto a disponibilidad, tipo de residuo y comuna.',
+      express: 'Priorizamos tu retiro dentro de 24 horas hábiles, sujeto a disponibilidad, tipo de residuo y comuna.',
       programado: 'Eliges el día del primer retiro y lo organizamos mes a mes.',
       flexible: 'Tú propones hasta tres días y coordinamos según disponibilidad.'
     };

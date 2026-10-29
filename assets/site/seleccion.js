@@ -477,7 +477,7 @@
   /* Modalidad, día(s) y horario del retiro */
   /* Modalidades de retiro (las usa el asistente) */
   const MODES = [
-    { value: 'express', label: 'Retiro Express', hint: 'Prioridad dentro de las próximas 24 horas.' },
+    { value: 'express', label: 'Retiro Express', hint: 'Prioridad dentro de 24 horas hábiles.' },
     { value: 'programado', label: 'Retiro Programado', hint: 'Eliges el día del retiro.' },
     { value: 'flexible', label: 'Espera y ahorra', hint: 'Propones hasta tres días.' }
   ];

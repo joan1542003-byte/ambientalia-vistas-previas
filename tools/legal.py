@@ -22,6 +22,7 @@ PAGINAS = [  # (página del asistente, rótulo corto)
     ('politica-de-privacidad', 'Política de privacidad'),
     ('eliminacion-de-datos', 'Borrar tu conversación'),
 ]
+DESARROLLADOR = ('GreenSoft', 'https://greensoft.cl/')  # el crédito del pie: lo mismo que chatbot.privacy.developer (name y url) del asistente; no es el responsable ni un proveedor
 PERMITIDAS = {'h2', 'h3', 'p', 'ul', 'ol', 'li', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'a', 'strong', 'em', 'br'}
 
 
@@ -62,7 +63,15 @@ def limpio(fragmento):
 # Correcciones del cliente que el asistente aún no publica (se aplican sobre su texto): se quitan cuando ya las traiga
 CORRECCIONES = {
     'politica-de-privacidad': [('Servidores donde funciona el asistente y se guardan las conversaciones y las solicitudes.</td><td>Por confirmar</td>',
-                                'Servidores donde funciona el asistente y se guardan las conversaciones y las solicitudes.</td><td>Chile</td>')],  # 22-10-2026
+                                'Servidores donde funciona el asistente y se guardan las conversaciones y las solicitudes.</td><td>Chile</td>'),  # 22-10-2026
+                               # 23-10-2026: el chat ofrece «Recordar mis datos» (localStorage, 30 días: RECUERDO_DIAS en agente-chat.js). El asistente lo
+                               # publica en su política (privacy.blade.php) cuando se despliegue con versión nueva; entonces `antes` ya no coincide y esto no hace nada
+                               ('el sitio desde el que entraste y las fechas de uso.</li></ul>',
+                                'el sitio desde el que entraste y las fechas de uso.</li>'
+                                '<li><strong>En tu dispositivo:</strong> la pestaña guarda el código de tu sesión y, mientras un envío no tenga respuesta confirmada, su contenido e identificador para que puedas reintentarlo después de recargar sin duplicarlo. El envío temporal se elimina al recibir la respuesta o descartar el envío; estos datos se pierden al cerrar la pestaña o borrar la conversación. Si marcas «Recordar mis datos», '
+                                'tu nombre, correo y teléfono quedan además en tu navegador durante 30 días desde la última vez que abres el chat, solo para precargar el '
+                                'acceso: no se envían a nuestros servidores hasta que tocas «Comenzar» y no los usamos para otra cosa. Los quitas con «Olvidar mis datos en '
+                                'este dispositivo» o al borrar tu conversación. No lo uses en un equipo compartido.</li></ul>')],
 }
 
 
@@ -86,6 +95,19 @@ def leer(slug):
         'vigencia': texto(r'<aside class="hero-panel"[^>]*>.*?<p>(.*?)</p>'),
         'cuerpo': corregir(slug, limpio(doc.group(1)).replace('versión aprobado', 'versión aprobada')),
     }
+
+
+def credito():
+    """«Desarrollado con ♥ por …», el crédito que el asistente pone al pie de sus páginas legales (enlace solo si es https)."""
+    nombre, url = DESARROLLADOR
+    autor = f'<a href="{H.escape(url)}" target="_blank" rel="noopener noreferrer">{H.escape(nombre)}</a>' if url.startswith('https://') else H.escape(nombre)
+    return f'<p class="legal-credito">Desarrollado con <span role="img" aria-label="amor">♥</span> por {autor}</p>'
+
+
+def con_autor(html):
+    """Suma <meta name="author"> al <head>, como las páginas del asistente."""
+    robots = '<meta name="robots" content="noindex,nofollow">'
+    return html.replace(robots, f'{robots}\n<meta name="author" content="{H.escape(DESARROLLADOR[0])}">', 1)
 
 
 def pagina(slug, rotulo, d, version, tools):
@@ -114,10 +136,11 @@ def pagina(slug, rotulo, d, version, tools):
     <footer class="norm-source">
       <ul class="legal-otras">{otras}</ul>
       <a class="btn btn-quiet btn-small" href="../transporte-autorizado.html">{A.ICO["volver"]}Volver al inicio</a>
+      {credito()}
     </footer>
   </article>
 </main>'''
-    return A.envoltura(d['titulo'], d['bajada'], url, ld, 'marco', cuerpo, version, tools, clase=' legal-page', og='website')
+    return con_autor(A.envoltura(d['titulo'], d['bajada'], url, ld, 'marco', cuerpo, version, tools, clase=' legal-page', og='website'))
 
 
 def main():
@@ -135,6 +158,7 @@ def main():
                 raise
             print(f'legal/{slug}.html: sin conexión con el asistente ({e}); se usa la copia guardada')
             d = json.loads(guardado.read_text(encoding='utf-8'))
+            d['cuerpo'] = corregir(slug, d['cuerpo'])  # sin red también: las correcciones no dependen de la lectura
         (ROOT / 'legal' / f'{slug}.html').write_text(pagina(slug, rotulo, d, version, tools), encoding='utf-8')
         print(f'legal/{slug}.html')
 

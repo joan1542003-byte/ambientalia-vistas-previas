@@ -43,6 +43,7 @@ function wp_json_encode( $valor, $opciones = 0 ) {
 define( 'TA_SITIO_VERSION', preg_replace( '/^.*TA_SITIO_VERSION\', \'([\d.]+)\'.*$/s', '$1', (string) file_get_contents( __DIR__ . '/../../wordpress/ta-sitio/ta-sitio.php' ) ) );
 require __DIR__ . '/../../wordpress/ta-sitio/inc/ajustes.php';
 require __DIR__ . '/../../wordpress/ta-sitio/inc/sitio.php';
+require __DIR__ . '/../../wordpress/ta-sitio/inc/imagenes.php';  // sitio.php la llama al entregar la página (plugin 1.4.1)
 
 $opciones = array(
 	'modo'      => 'publicado',

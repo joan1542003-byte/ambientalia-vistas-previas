@@ -8,8 +8,12 @@
      dice que el asistente no está disponible y no llama a nada. `?agente=maqueta` fuerza la maqueta en local. La
      misma condición está en agente.js.
    - Antes de conversar se piden nombre, correo y teléfono, y la aceptación de las condiciones y el aviso de privacidad:
-     así lo exige el servicio, que entrega a cambio una sesión. En la pestaña se guarda solo el token, su vencimiento y
-     cuántas fotos se subieron; la conversación se recupera del servicio al volver (GET /history).
+     así lo exige el servicio, que entrega a cambio una sesión. La pestaña conserva el token, su vencimiento, el contador
+     de fotos y el envío sin respuesta confirmada; el historial se recupera del servicio al volver (GET /history).
+   - «Recordar mis datos en este dispositivo» (casilla opcional y sin marcar): guarda en localStorage solo el nombre, el
+     correo y el teléfono, durante 30 días desde el último uso, para precargar la puerta. Nunca el token, las casillas
+     de aceptación ni nada de la conversación: cada sesión pide su propia aceptación. «Olvidar mis datos en este
+     dispositivo» y «Borrar esta conversación» los quitan.
    - Cada mensaje lleva su identificador (client_message_id) y lo conserva en cada reintento: si el servicio ya lo
      procesó, devuelve la misma respuesta sin ejecutarlo otra vez. Si la espera se agota (`data-agente-espera`, en
      segundos; 90 por omisión; o un 504 del proxy) o el servicio responde «ocupado» (409 busy), se reintenta solo dos
@@ -21,7 +25,7 @@
      muestra sin enlace.
    - Un enlace a este sitio se muestra en el sitio, como en la maqueta: las vistas del hero se abren con HERO.show, la
      «Ayuda» con su ancla y las secciones se recorren hasta su lugar. En agente-virtual.html, en el sitio de atrás.
-   - Fotos (JPG, PNG o WebP; hasta 2 por conversación, como el asistente): se reducen en el navegador a 1600 px en JPEG
+   - Fotos: los topes y formatos se consultan en GET /config antes de subir. Se reducen en el navegador a 1600 px
      antes de subirlas, así pesan menos y no llevan la ubicación ni otros datos de la cámara; si no se pueden convertir,
      no se suben. También se pueden pegar o soltar en la ventana, y esas no llegan al formulario de cotización.
    - «Borrar esta conversación» pide confirmación y llama a DELETE /session: solo dice que se borró si el servicio lo
@@ -60,13 +64,15 @@
   const OFICIAL = 'https://transporteautorizado.cl';
   const BASE = new URL(window.SITE_ROOT || '.', location.href).href;
   const CLAVE = 'agente-chat';
+  const CLAVE_DATOS = 'agente-chat-datos';  // lo que la persona pidió recordar (localStorage), aparte de la sesión
+  const RECUERDO_DIAS = 30;                 // desde la última vez que abrió el chat con la casilla marcada
   const ESPERA = Math.max(5, Number(panel.dataset.agenteEspera) || 90) * 1000;  // una respuesta del modelo
   const AUTO = 2;        // reintentos solos de un mensaje: tras una espera agotada o «ocupado»
   const REINTENTOS = 3;  // reintentos que puede pedir la persona con «Reintentar»
-  const FOTOS_MAX = 2;   // por conversación (CHAT_ATTACHMENTS_MAX del asistente, que es quien manda)
-  const FOTO_MAX = 5120 * 1024;       // lo que se sube (CHAT_ATTACHMENT_MAX_KB)
   const FOTO_ENTRADA = 25 * 1024 * 1024;  // la original, antes de reducirla
   const TIPOS = ['image/jpeg', 'image/png', 'image/webp'];
+  const FORMATOS = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+  let limitesFotos = null;
   /* Destinos de las fuentes que pasan a enlace (además de este sitio): las del corpus del asistente y el Estado */
   const FUENTES = ['transporteautorizado.cl', 'bcn.cl', 'leychile.cl'];
   const pausa = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -87,37 +93,9 @@
   };
   const svg = (path) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
   const I = {
-    doc: svg('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>'),
-    foto: svg('<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>')
-  };
-  /* Íconos (Lucide) de las opciones del chat según lo que dicen (23-10-2026: «ícono a todas las pilas»). Las opciones
-     las decide el asistente en cada respuesta; aquí solo se elige su ícono */
-  const ICONOS_OPCION = [
-    [/no peligros/, svg('<path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/><path d="m14 16-3 3 3 3"/><path d="M8.293 13.596 7.196 9.5 3.1 10.598"/><path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/><path d="m13.378 9.633 4.096 1.098 1.097-4.096"/>')],
-    [/peligros/, svg('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>')],
-    [/cotiz|presupuest|precio|valor|costo/, svg('<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/>')],
-    [/plan/, svg('<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>')],
-    [/retir|recolec|transport/, svg('<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>')],
-    [/normativ|\bley\b|decreto|reglamento|norma/, svg('<line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/>')],
-    [/document|hds|hoja|declaraci/, svg('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>')],
-    [/autoriz|permiso|registro/, svg('<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>')],
-    [/contact|persona|especialista|ejecutiv|asesor|humano|llam/, svg('<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>')],
-    [/foto|imagen/, svg('<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>')],
-    [/comuna|direcci|zona|cobertura/, svg('<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>')],
-    [/contenedor|arriendo/, svg('<path d="M22 7.7c0-.6-.4-1.2-.8-1.5l-6.3-3.9a1.72 1.72 0 0 0-1.7 0l-10.3 6c-.5.2-.9.8-.9 1.4v6.6c0 .5.4 1.2.8 1.5l6.3 3.9a1.72 1.72 0 0 0 1.7 0l10.3-6c.5-.3.9-1 .9-1.5Z"/><path d="M10 21.9V14L2.1 9.1"/><path d="m10 14 11.9-6.9"/><path d="M14 19.8v-8.1"/><path d="M18 17.5V9.4"/>')],
-    [/volver|inicio|menu/, svg('<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>')],
-    [/otra|otro/, svg('<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>')]
-  ];
-  const ICONO_OTRA = svg('<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>');
-  /* El ícono va como máscara en ::before (variable --chip-icono): el botón no lleva elementos dentro, solo su texto */
-  const conIcono = (el, icono) => {
-    el.classList.add('chip-con-icono');
-    el.style.setProperty('--chip-icono', `url("data:image/svg+xml,${encodeURIComponent(icono.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace('currentColor', '#000'))}")`);
-    return el;
-  };
-  const iconoOpcion = (texto) => {
-    const t = String(texto).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    return (ICONOS_OPCION.find(([re]) => re.test(t)) || [null, ICONO_OTRA])[1];
+    doc: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
+    guardar: svg('<path d="m5 12 4 4L19 6"/>'),
+    foto: svg('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 17l4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5"/>')
   };
 
   /* Cabecera limpia: «Asistente»; debajo solo se dice algo si no está disponible (y «Prueba local» en este computador) */
@@ -138,12 +116,28 @@
   let sesion = API ? leer() : null;
   /* Vencida, sin token o con datos que no son de esta versión: se descarta sin preguntar al servicio */
   if (sesion && (typeof sesion.token !== 'string' || !sesion.token || !(Date.parse(sesion.vence) > Date.now()))) { sesion = null; guardar(null); }
-  /* Nombre, correo y teléfono quedan en este navegador (localStorage) desde que la sesión empieza, para no pedirlos cada
-     vez; los consentimientos no: se marcan en cada conversación. «Usar otros datos» y «Borrar mis datos» los olvidan. */
-  const CONTACTO = 'ta-chat-contacto';
-  const recordado = () => { try { const c = JSON.parse(localStorage.getItem(CONTACTO)); return c && typeof c.email === 'string' ? { name: String(c.name || ''), email: c.email, phone: String(c.phone || '') } : {}; } catch { return {}; } };
-  const recordar = (c) => { try { if (c) localStorage.setItem(CONTACTO, JSON.stringify({ name: c.name, email: c.email, phone: c.phone })); else localStorage.removeItem(CONTACTO); } catch {} };
-  let datos = recordado();  // lo escrito en la puerta, para no volver a pedirlo
+  let datos = {};  // lo escrito en la puerta, para no volver a pedirlo en esta página (solo en memoria)
+  let recuerdo = null;  // la casilla «Recordar» tal como la dejó la persona en esta página; null, según lo ya guardado
+
+  /* ---------- Datos recordados en este dispositivo (solo si la persona lo pidió) ---------- */
+  /* Nombre, correo y teléfono, nada más. Vencidos, ilegibles o con otra forma: se descartan. Sin almacenamiento
+     (navegación privada, bloqueado): no se recuerda nada y la puerta funciona igual */
+  const recordar = (v) => {
+    try {
+      if (v) localStorage.setItem(CLAVE_DATOS, JSON.stringify({ name: v.name, email: v.email, phone: v.phone, vence: Date.now() + RECUERDO_DIAS * 86400000 }));
+      else localStorage.removeItem(CLAVE_DATOS);
+    } catch { /* sin almacenamiento */ }
+  };
+  const recordados = () => {
+    try {
+      const r = JSON.parse(localStorage.getItem(CLAVE_DATOS));
+      const texto = (k, max) => (typeof r?.[k] === 'string' && r[k].trim() ? r[k].slice(0, max) : '');
+      const v = { name: texto('name', 150), email: texto('email', 150), phone: texto('phone', 20) };
+      if (v.name && v.email && v.phone && Number.isFinite(r.vence) && r.vence > Date.now()) return v;
+    } catch { /* ilegible o sin almacenamiento */ }
+    recordar(null);
+    return null;
+  };
 
   const idMensaje = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
   /* Una llamada al servicio. No lanza: devuelve el estado HTTP y el JSON, o estado 0 con `falla` ('red' o 'espera')
@@ -219,7 +213,7 @@
   const desde = (m) => charla.scrollTo({ top: (m.previousElementSibling || m).offsetTop - 12, behavior: suave() });  // desde la pregunta que la originó
   const decirYo = (texto) => { charla.append(h('div', { class: 'msg is-user' }, h('p', { text: texto }))); abajo(); };
   /* Las opciones de una respuesta anterior ya no corresponden al estado de la conversación: se desactivan */
-  const vencerOpciones = () => charla.querySelectorAll('[data-opcion]').forEach((b) => { b.disabled = true; });
+  const vencerOpciones = () => charla.querySelectorAll('[data-opcion], [data-edicion] fieldset').forEach((b) => { b.disabled = true; });
   const decir = (r, { opciones = true } = {}) => {
     const m = h('div', { class: 'msg is-bot' });
     if (typeof r.text === 'string' && r.text) m.append(h('p', { class: 'msg-texto' }, conFormato(r.text)));
@@ -232,14 +226,45 @@
           return h('li', {}, h('span', { icono: I.doc }), u ? enlace(u, s.label) : h('span', { text: s.label }));
         }))));
     }
-    const lista = opciones && Array.isArray(r.options) ? r.options.filter((o) => o && typeof o.id === 'string' && typeof o.label === 'string' && o.label) : [];
+    if (opciones && r.form?.action === 'guardar_datos' && Array.isArray(r.form.fields)) {
+      const edicion = h('form', { class: 'agente-edicion', 'data-edicion': true });
+      const campos = h('fieldset', {}, h('legend', { text: 'Revisa tus datos' }));
+      const permitidos = ['name', 'company_name', 'phone_number', 'email', 'handoff_reason'];
+      r.form.fields.filter((f) => permitidos.includes(f.name)).forEach((f) => {
+        const errorId = `edicion-${idMensaje()}`;
+        const tipo = ['email', 'tel', 'textarea'].includes(f.type) ? f.type : 'text';
+        const input = h(tipo === 'textarea' ? 'textarea' : 'input', {
+          name: f.name, type: tipo === 'textarea' ? null : tipo, required: f.required === true,
+          maxlength: Math.min(2000, Number(f.max_length) || 150),
+          autocomplete: ({ name: 'name', email: 'email', phone_number: 'tel', company_name: 'organization' })[f.name] || 'off',
+          'aria-invalid': f.error ? 'true' : null, 'aria-describedby': f.error ? errorId : null
+        });
+        input.value = typeof f.value === 'string' ? f.value : '';
+        input.addEventListener('focus', () => input.scrollIntoView({ block: 'nearest', behavior: suave() }));
+        campos.append(h('label', { class: 'agente-campo' }, h('span', { text: f.label }), input,
+          f.error ? h('span', { id: errorId, class: 'agente-error', text: f.error }) : null));
+      });
+      campos.append(h('button', { class: 'btn', type: 'submit', icono: I.guardar }, h('span', { text: r.form.submit_label || 'Guardar cambios' })));
+      edicion.append(campos);
+      edicion.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (ocupado || campos.disabled || !edicion.reportValidity()) return;
+        enviar({ option_id: r.form.action, form_values: Object.fromEntries(new FormData(edicion)) }, 'Guardar cambios');
+      });
+      m.append(edicion);
+    }
+    const lista = opciones && Array.isArray(r.options) ? r.options.filter((o) => !(r.form && (o?.id?.startsWith('contacto:') || o?.id === 'cotiz:editar:contacto')) && o && typeof o.id === 'string' && typeof o.label === 'string' && o.label) : [];
     if (lista.length) {
-      m.append(h('div', { class: 'msg-chips' }, lista.map((o) => conIcono(h('button', {
-        class: 'chip', type: 'button', 'data-opcion': true, title: typeof o.description === 'string' ? o.description : null,
-        text: o.label, onclick: () => enviar({ option_id: o.id }, o.label)
-      }), iconoOpcion(`${o.label} ${o.id}`)))));
+      m.append(h('div', { class: 'msg-chips' }, lista.map((o) => h('button', {
+        class: 'chip', type: 'button', 'data-opcion': true, text: o.label, title: typeof o.description === 'string' ? o.description : null,
+        onclick: () => enviar({ option_id: o.id }, o.label)
+      }))));
     }
     charla.append(m);
+    if (opciones) {
+      const foco = m.querySelector('[aria-invalid="true"]') || (!tactil.matches && m.querySelector('[data-edicion] input'));
+      if (foco) foco.focus({ preventScroll: true });
+    }
     return m;
   };
   const aviso = (texto) => { const m = decir({ text: texto }); abajo(); return m; };
@@ -255,6 +280,7 @@
     vencerOpciones();
     desde(decir(reply && typeof reply === 'object' ? reply : {}));
     uso(usage);
+    form.hidden = Boolean(reply?.form);
   };
   const espera = () => {
     const e = h('div', { class: 'msg is-bot is-espera', 'aria-hidden': 'true' }, h('span', {}), h('span', {}), h('span', {}));
@@ -281,10 +307,22 @@
     form.hidden = true;
     const error = h('p', { class: 'agente-error', role: 'alert' });
     const humano = TURNSTILE ? h('div', { class: 'agente-humano' }) : null;
-    const fila = (name, rotulo, extra) => h('label', { class: 'agente-campo' }, h('span', { text: rotulo }), h('input', { name, required: true, value: datos[name] || null, ...extra }));
+    const guardados = recordados();
+    const fila = (name, rotulo, extra) => h('label', { class: 'agente-campo' }, h('span', { text: rotulo }), h('input', { name, required: true, value: datos[name] || guardados?.[name] || null, ...extra }));
+    /* Solo si hay algo guardado: quita los datos de este dispositivo y vacía los campos, sin tocar la sesión */
+    const olvidarDatos = h('button', {
+      class: 'agente-olvidar', type: 'button', text: 'Olvidar mis datos en este dispositivo',
+      onclick: () => {
+        recordar(null);
+        datos = {};
+        recuerdo = false;
+        ['name', 'email', 'phone'].forEach((n) => { f.elements[n].value = ''; });
+        f.elements.remember.checked = false;
+        olvidarDatos.replaceWith(h('p', { class: 'agente-nota', role: 'status', text: 'Listo: ya no recordamos tus datos en este dispositivo.' }));
+      }
+    });
     const f = h('form', { class: 'msg is-bot agente-puerta', novalidate: true },
-      h('p', { class: 'msg-texto', text: datos.email ? `Hola${datos.name ? ' de nuevo, ' + datos.name.split(' ')[0] : ''}. Tus datos quedaron guardados en este dispositivo: revisa que sigan bien, acepta las condiciones y toca «Comenzar».` : 'Hola. Para empezar, escribe tu nombre, tu correo y tu teléfono.' }),
-      datos.email ? h('button', { class: 'agente-otros', type: 'button', text: 'Usar otros datos', onclick: () => { recordar(null); datos = {}; if (widget !== null) window.turnstile?.remove(widget); f.remove(); puerta(); } }) : null,
+      h('p', { class: 'msg-texto', text: 'Hola. Para empezar, escribe tu nombre, tu correo y tu teléfono.' }),
       fila('name', 'Nombre', { type: 'text', autocomplete: 'name', maxlength: 150 }),
       fila('email', 'Correo', { type: 'email', autocomplete: 'email', maxlength: 150, spellcheck: 'false', placeholder: 'nombre@empresa.cl' }),
       fila('phone', 'Teléfono', { type: 'tel', autocomplete: 'tel', maxlength: 20, placeholder: '+56 9 1234 5678' }),
@@ -295,6 +333,12 @@
       h('label', { class: 'agente-acepto' },
         h('input', { type: 'checkbox', name: 'marketing_accepted', checked: datos.marketing_accepted || null }),
         h('span', { text: 'Acepto que Transporte Autorizado me contacte por correo, teléfono o llamada para hacer seguimiento de mi consulta o cotización y ofrecerme sus servicios (opcional).' })),
+      /* Opcional y sin marcar (marcada solo si ya había datos guardados): es una comodidad de este navegador, no un
+         consentimiento, y no se envía al asistente */
+      h('label', { class: 'agente-acepto' },
+        h('input', { type: 'checkbox', name: 'remember', checked: (recuerdo ?? !!guardados) || null }),
+        h('span', { text: `Recordar mi nombre, correo y teléfono en este dispositivo por ${RECUERDO_DIAS} días (opcional). No lo uses en un equipo compartido.` })),
+      guardados ? olvidarDatos : null,
       h('div', { class: 'agente-trampa', 'aria-hidden': 'true' }, h('label', {}, 'No completes este campo ', h('input', { name: 'website', tabindex: '-1', autocomplete: 'off' }))),
       humano,
       error,
@@ -314,6 +358,7 @@
       e.preventDefault();
       if (f.classList.contains('is-enviando')) return;
       datos = { name: f.elements.name.value.trim(), email: f.elements.email.value.trim(), phone: f.elements.phone.value.trim(), privacy_accepted: f.elements.privacy_accepted.checked, marketing_accepted: f.elements.marketing_accepted.checked };
+      recuerdo = f.elements.remember.checked;
       error.textContent = '';
       if (humano && !token) { error.textContent = 'Estamos comprobando que eres una persona. Espera un momento y vuelve a intentarlo.'; return; }
       f.classList.add('is-enviando');
@@ -323,7 +368,8 @@
         if (widget !== null) window.turnstile?.remove(widget);
         sesion = { token: json.token, vence: json.expires_at, fotos: 0 };
         guardar(sesion);
-        recordar(datos);
+        /* Solo con datos que el servicio ya aceptó, y la casilla manda: sin marcar, se quita lo que hubiera */
+        recordar(recuerdo ? { name: datos.name, email: datos.email, phone: datos.phone } : null);
         salir.hidden = false;
         f.remove();
         form.hidden = false;
@@ -342,16 +388,18 @@
       if (widget !== null && f.isConnected) { token = ''; window.turnstile?.reset(widget); }
     });
     charla.append(f);
-    abajo();
+    desde(f);  // el comienzo de la puerta, no su final: es más alta que la ventana, y así se ve primero el saludo y el primer campo
     if (!tactil.matches) f.querySelector('input:not([value])')?.focus({ preventScroll: true });
   };
   const salir = h('button', { class: 'agente-salir', type: 'button', text: 'Borrar esta conversación' });
+  const fotosPendientes = new Map();
   const subidas = new Set();  // las fotos que el servicio confirmó en esta página (para no subir dos veces la misma)
   /* Sin sesión: lo local se olvida (el token, sus fotos y el mensaje pendiente) */
-  const olvidar = () => { sesion = null; guardar(null); pendiente = null; subidas.clear(); if (sub && API) { sub.textContent = ''; sub.hidden = true; } salir.hidden = true; };
+  const olvidar = () => { sesion = null; guardar(null); pendiente = null; subidas.clear(); fotosPendientes.clear(); if (sub && API) { sub.textContent = ''; sub.hidden = true; } salir.hidden = true; };
   /* La sesión ya no sirve (401 session_expired): vuelta a la puerta; lo que se estaba escribiendo vuelve al campo */
   const vencida = (texto) => {
     olvidar();
+    datos = { name: datos.name, email: datos.email, phone: datos.phone };
     aviso('Tu sesión terminó. Vuelve a escribir tus datos para seguir.');
     puerta();
     if (texto) campo.value = texto;
@@ -362,13 +410,20 @@
   /* El mensaje que todavía no tiene respuesta confirmada. Conserva su identificador hasta que el servicio responde o la
      persona escribe otra cosa: así un reintento nunca se procesa dos veces */
   let pendiente = null;  // { id, cuerpo, visible, auto, manuales, nota }
-  const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '');
+  const guardarPendiente = () => {
+    if (!sesion) return;
+    if (pendiente) sesion.pendiente = { id: pendiente.id, cuerpo: pendiente.cuerpo, visible: pendiente.visible };
+    else delete sesion.pendiente;
+    guardar(sesion);
+  };
+  const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '') && JSON.stringify(a.form_values || null) === JSON.stringify(b.form_values || null);
   /* «visible» es lo que se ve como mensaje propio; sin él (reiniciar) el turno no se muestra */
   const enviar = (cuerpo, visible) => {
     if (ocupado || !sesion) return;
     if (pendiente && mismo(pendiente.cuerpo, cuerpo)) { reintentar(); return; }  // lo mismo otra vez: el mismo mensaje
     pendiente?.nota?.remove();
     pendiente = { id: idMensaje(), cuerpo, visible, auto: 0, manuales: 0, nota: null };
+    guardarPendiente();
     if (visible) decirYo(visible);
     turno();
   };
@@ -382,6 +437,8 @@
   const turno = async () => {
     const p = pendiente;
     ocupado = true;
+    const ediciones = [...charla.querySelectorAll('[data-edicion] fieldset:not(:disabled)')];
+    ediciones.forEach((el) => { el.disabled = true; el.closest('form').setAttribute('aria-busy', 'true'); });
     const e = espera();
     let r;
     for (;;) {
@@ -395,19 +452,22 @@
       await pausa(3000 * p.auto);
     }
     e.remove();
+    ediciones.forEach((el) => { el.disabled = false; el.closest('form').removeAttribute('aria-busy'); });
     ocupado = false;
     if (pendiente !== p) return;
     const { estado, json } = r;
-    if (estado === 200 && json.reply && typeof json.reply === 'object') { pendiente = null; respuesta(json.reply, json.usage); return; }
-    if (estado === 200 && json.duplicate) { pendiente = null; uso(json.usage); aviso('Ese mensaje ya lo había recibido. Sigue cuando quieras.'); return; }
+    if (estado === 200 && json.reply && typeof json.reply === 'object') { pendiente = null; guardarPendiente(); respuesta(json.reply, json.usage); return; }
+    if (estado === 200 && json.duplicate) { pendiente = null; guardarPendiente(); uso(json.usage); aviso('Ese mensaje ya lo había recibido. Sigue cuando quieras.'); return; }
     if (estado === 401) { pendiente = null; vencida(p.cuerpo.text && p.visible); return; }
     if (estado === 409 && json.error === 'idempotency_conflict') {
       pendiente = null;
+      guardarPendiente();
       aviso(typeof json.message === 'string' && json.message ? json.message : 'Ese envío ya se registró con otros datos. Empieza de nuevo si quieres cambiarlos.');
       return;
     }
     if (estado === 403 || estado === 422) {
       pendiente = null;
+      guardarPendiente();
       /* 422: texto vacío o demasiado largo; la validación del turno no tiene textos propios en el asistente */
       aviso(estado === 403 ? 'El asistente no está disponible desde esta página.' : 'No pude enviar ese mensaje. Revisa lo que escribiste y vuelve a intentarlo.');
       if (estado === 422 && p.cuerpo.text && !campo.value) campo.value = p.cuerpo.text;
@@ -421,6 +481,7 @@
       : (json.error === 'unavailable' && typeof json.message === 'string' && json.message) || 'No pude responder en este momento. Vuelve a intentarlo en un rato.';
     if (p.manuales >= REINTENTOS) {
       pendiente = null;
+      guardarPendiente();
       aviso('No pude responder este mensaje. Escríbelo de nuevo más tarde o, si prefieres, usa el formulario o WhatsApp.');
       return;
     }
@@ -428,12 +489,8 @@
   };
   const reiniciar = () => enviar({ text: 'inicio' });  // comando del asistente: vuelve al menú (no gasta consultas)
 
-  /* Al volver a abrir con una sesión viva (al recargar o al volver a la página): la persona sigue conectada, pero no se
-     repinta la conversación: un saludo con las opciones del menú del asistente (las de su primera respuesta) y «Ver la
-     conversación anterior» (23-10-2026: «que se vea un mensaje predeterminado, no mi último mensaje»). Con completa, la
-     conversación tal como quedó, con sus fuentes; las opciones, solo las de la última respuesta (las anteriores ya no
-     corresponden). El servicio no devuelve el consumo de consultas ni las fotos: el consumo aparece con la próxima respuesta */
-  const retomar = async (completa = false) => {
+  /* Al volver, el servicio restaura el historial, el cupo y el número de fotos. */
+  const retomar = async () => {
     form.hidden = true;
     ocupado = true;
     const e = espera();
@@ -442,27 +499,29 @@
     ocupado = false;
     if (estado === 401) { vencida(); return; }
     if (estado !== 200 || !Array.isArray(json.messages)) {
-      const m = avisoCon(falla ? SIN_CONEXION : 'No pude recuperar la conversación en este momento.', [['Reintentar', () => { m.remove(); retomar(completa); }]]);
+      const m = avisoCon(falla ? SIN_CONEXION : 'No pude recuperar la conversación en este momento.', [['Reintentar', () => { m.remove(); retomar(); }]]);
       return;
     }
     form.hidden = false;
+    uso(json.usage);
+    if (Number.isInteger(json.photos) && json.photos >= 0) { sesion.fotos = json.photos; guardar(sesion); }
     const mensajes = json.messages.filter((m) => m && typeof m.text === 'string');
-    if (!mensajes.length) { reiniciar(); return; }
-    if (!completa) {
-      const menu = mensajes.find((m) => m.role !== 'user' && Array.isArray(m.options) && m.options.length);
-      const nombre = (datos.name || '').trim().split(/\s+/)[0];
-      const m = decir({ text: `Hola de nuevo${nombre ? `, ${nombre}` : ''}. Sigues conectado: escribe tu consulta o elige una opción.`, options: menu?.options || [] });
-      if (mensajes.some((x) => x.role === 'user')) {
-        m.append(h('p', { class: 'msg-anterior' }, h('button', { type: 'button', text: 'Ver la conversación anterior', onclick: () => { if (ocupado) return; charla.textContent = ''; retomar(true); } })));
-      }
-      abajo();
-      return;
-    }
+    const guardado = sesion.pendiente;
+    const recuperable = guardado && /^[A-Za-z0-9_-]{1,64}$/.test(guardado.id) && guardado.cuerpo && typeof guardado.cuerpo === 'object';
+    const respondido = recuperable && mensajes.some((m) => m.role === 'assistant' && m.client_message_id === guardado.id);
+    if (respondido) { delete sesion.pendiente; guardar(sesion); }
+    if (!mensajes.length && !recuperable) { reiniciar(); return; }
     const ultimo = mensajes[mensajes.length - 1];
+    form.hidden = Boolean(ultimo?.form);
     mensajes.forEach((m) => (m.role === 'user' ? decirYo(m.text) : decir(m, { opciones: m === ultimo })));
-    if (ultimo.role === 'user') {
+    if (recuperable && !respondido) {
+      pendiente = { ...guardado, auto: 0, manuales: 0, nota: null };
+      if (pendiente.visible && !mensajes.some((m) => m.role === 'user' && m.client_message_id === pendiente.id)) decirYo(pendiente.visible);
+      form.hidden = false;
+      pendiente.nota = avisoCon('Quedó un envío sin respuesta confirmada. Puedes reintentarlo sin duplicarlo.', [['Reintentar', reintentar]]);
+    } else if (ultimo?.role === 'user') {
       /* Un turno sin respuesta (en curso o fallido): se puede volver a leer, sin enviarlo otra vez */
-      avisoCon('Tu último mensaje todavía no tiene respuesta.', [['Actualizar', () => { if (ocupado) return; charla.textContent = ''; retomar(true); }]]);
+      avisoCon('Tu último mensaje todavía no tiene respuesta.', [['Actualizar', () => { if (ocupado) return; charla.textContent = ''; retomar(); }]]);
     }
     abajo();
   };
@@ -484,8 +543,9 @@
     const { estado, json, falla } = await llamar('/session', { method: 'DELETE', body: { confirm: true } });
     e.remove();
     ocupado = false;
-    const fin = (texto) => { nota.remove(); confirmacion = null; olvidar(); charla.textContent = ''; aviso(texto); puerta(); };
-    if (estado === 200 && json.deleted === true) { recordar(null); datos = {}; fin('Listo: borramos esta conversación y los datos que dejaste en el chat.'); return; }
+    /* Quien pide borrar no encuentra sus datos precargados en la puerta: tampoco los de este dispositivo */
+    const fin = (texto) => { nota.remove(); confirmacion = null; olvidar(); recordar(null); datos = {}; recuerdo = null; charla.textContent = ''; aviso(texto); puerta(); };
+    if (estado === 200 && json.deleted === true) { fin('Listo: borramos esta conversación y los datos que dejaste en el chat.'); return; }
     /* Se aceptó y la sesión ya no sirve, pero el borrado no terminó: lo completa el propio servicio */
     if (estado === 500 && json.error === 'erasure_pending') { fin('Recibimos tu solicitud y cerramos la sesión. El borrado quedó en curso y el asistente lo completa en breve.'); return; }
     if (estado === 401) {
@@ -514,23 +574,37 @@
   });
 
   /* ---------- Fotos ---------- */
-  const valida = (f) => (f.type ? TIPOS.includes(f.type) : /\.(jpe?g|png|webp)$/i.test(f.name || ''));
+  const cargarLimitesFotos = async () => {
+    if (limitesFotos) return true;
+    const { estado, json } = await llamar('/config', { espera: 5000 });
+    const v = json.attachments;
+    if (estado !== 200 || !v || !['max_per_session', 'max_kilobytes', 'max_pixels'].every((k) => Number.isSafeInteger(v[k]) && v[k] > 0)
+      || v.max_kilobytes > Number.MAX_SAFE_INTEGER / 1024 || !Array.isArray(v.mimes)) return false;
+    const tipos = [...new Set(v.mimes.filter((m) => typeof m === 'string' && Object.hasOwn(FORMATOS, m)).map((m) => FORMATOS[m]))];
+    if (!tipos.length) return false;
+    limitesFotos = { ...v, tipos };
+    elegir.accept = tipos.join(',');
+    return true;
+  };
+  const valida = (f) => limitesFotos.tipos.includes(f.type || FORMATOS[(f.name || '').split('.').pop().toLowerCase()]);
   const huella = (f) => `${f.name}|${f.size}|${f.lastModified}`;
-  /* La foto, a 1600 px como máximo y en JPEG (sin los datos de la cámara). Si el navegador no la puede leer, null: no se
+  /* La foto, a 1600 px como máximo y en un formato permitido (sin los datos de la cámara). Si el navegador no la puede leer, null: no se
      sube la original */
   const reducir = async (archivo, numero) => {
     let img;
     try {
       try { img = await createImageBitmap(archivo, { imageOrientation: 'from-image' }); } catch { img = await createImageBitmap(archivo); }
-      const k = Math.min(1, 1600 / Math.max(img.width, img.height));
-      const lienzo = h('canvas', { width: Math.max(1, Math.round(img.width * k)), height: Math.max(1, Math.round(img.height * k)) });
+      const k = Math.min(1, Math.min(1600, limitesFotos.max_pixels) / Math.max(img.width, img.height), Math.sqrt(limitesFotos.max_pixels / (img.width * img.height)));
+      const lienzo = h('canvas', { width: Math.max(1, Math.floor(img.width * k)), height: Math.max(1, Math.floor(img.height * k)) });
       const c = lienzo.getContext('2d');
       c.fillStyle = '#fff';  // un PNG transparente queda sobre blanco, no sobre negro
       c.fillRect(0, 0, lienzo.width, lienzo.height);
       c.drawImage(img, 0, 0, lienzo.width, lienzo.height);
-      const blob = await new Promise((ok) => lienzo.toBlob(ok, 'image/jpeg', 0.85));
+      const tipo = limitesFotos.tipos.includes('image/jpeg') ? 'image/jpeg' : limitesFotos.tipos[0];
+      const extension = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }[tipo];
+      const blob = await new Promise((ok) => lienzo.toBlob(ok, tipo, 0.85));
       /* El nombre es neutro: el de la persona puede llevar datos personales */
-      return blob?.type === 'image/jpeg' && blob.size <= FOTO_MAX ? new File([blob], `foto-${numero}.jpg`, { type: 'image/jpeg' }) : null;
+      return blob?.type === tipo && blob.size <= limitesFotos.max_kilobytes * 1024 ? new File([blob], `foto-${numero}.${extension}`, { type: tipo }) : null;
     } catch {
       return null;
     } finally {
@@ -540,28 +614,37 @@
   /* Una foto: se valida, se reduce y se sube. Devuelve false si no tiene sentido seguir con las demás */
   const subirUna = async (archivo) => {
     decirYo(`Foto: ${archivo.name || 'imagen pegada'}`);
-    if ((sesion.fotos || 0) >= FOTOS_MAX) { aviso(`Ya adjuntaste ${FOTOS_MAX} fotos, el máximo por conversación.`); return false; }
+    if ((sesion.fotos || 0) >= limitesFotos.max_per_session) { aviso(`Ya adjuntaste ${limitesFotos.max_per_session} fotos, el máximo por conversación.`); return false; }
     if (subidas.has(huella(archivo))) { aviso('Esa foto ya está adjunta.'); return true; }
-    if (!valida(archivo)) { aviso('Solo puedo recibir fotos JPG, PNG o WebP.'); return true; }
+    if (!valida(archivo)) { aviso(`Los formatos permitidos son: ${limitesFotos.tipos.map((t) => t.slice(6).toUpperCase()).join(', ')}.`); return true; }
     if (archivo.size > FOTO_ENTRADA) { aviso('Esa foto es demasiado pesada. Prueba con otra o con una captura de pantalla.'); return true; }
     const e = espera();
-    const foto = await reducir(archivo, (sesion.fotos || 0) + 1);
+    const anterior = fotosPendientes.get(huella(archivo));
+    const foto = anterior?.foto || await reducir(archivo, (sesion.fotos || 0) + 1);
     if (!foto) { e.remove(); aviso('No pude preparar esa foto. Prueba con otra imagen JPG, PNG o WebP.'); return true; }
+    const id = anterior?.id || idMensaje();
+    fotosPendientes.set(huella(archivo), { foto, id });
     const cuerpo = new FormData();
     cuerpo.append('image', foto);
+    cuerpo.append('client_upload_id', id);
     const { estado, json, falla } = await llamar('/attachments', { method: 'POST', body: cuerpo, espera: 60000 });
     e.remove();
     if (estado === 201) {
       subidas.add(huella(archivo));
-      sesion.fotos = (sesion.fotos || 0) + 1;
+      fotosPendientes.delete(huella(archivo));
+      sesion.fotos = Number.isInteger(json.photos) ? json.photos : (sesion.fotos || 0) + 1;
       guardar(sesion);
       respuesta(json.reply || { text: 'Recibí la foto.' }, json.usage);
       return true;
     }
     if (estado === 401) { vencida(); return false; }
-    if (estado === 422 && json.error === 'attachment_limit') { sesion.fotos = FOTOS_MAX; guardar(sesion); }
-    /* La subida no tiene identificador propio: si no hubo respuesta, no se reintenta sola */
-    aviso(falla || estado >= 500 ? 'No pude confirmar si la foto llegó. Puedes volver a adjuntarla; si la primera sí llegó, quedará dos veces.'
+    if (estado === 422 && json.error === 'attachment_limit') { sesion.fotos = limitesFotos.max_per_session; guardar(sesion); }
+    if (falla || estado >= 500 || (estado === 409 && json.error === 'busy')) {
+      const nota = avisoCon('No pude confirmar si la foto llegó. Puedes reintentar sin duplicarla.', [['Reintentar', () => { if (ocupado) return; nota.remove(); subir([archivo]); }]]);
+      return false;
+    }
+    if (estado === 409) fotosPendientes.delete(huella(archivo));
+    aviso(estado === 409 ? 'No pude reconocer este intento de subida. Elige nuevamente la foto.'
       : estado === 403 ? 'El asistente no está disponible desde esta página.'
       : estado === 429 ? 'Enviaste muchas cosas seguidas. Espera un momento y vuelve a intentarlo.'
       : (estado === 422 && ((typeof json.message === 'string' && json.message) || errores(json))) || 'No pude subir la foto. Vuelve a intentarlo.');
@@ -571,10 +654,16 @@
     if (!archivos.length) return;
     if (!sesion) { aviso('Para adjuntar una foto, primero escribe tus datos y toca «Comenzar».'); return; }
     if (ocupado) { aviso('Espera a que termine la respuesta para adjuntar la foto.'); return; }
+    if (charla.querySelector('[data-edicion] fieldset:not(:disabled)')) { aviso('Guarda los cambios o cancela la edición antes de adjuntar una foto.'); return; }
     ocupado = true;
+    const consultando = limitesFotos ? null : espera();
     try {
+      const disponibles = await cargarLimitesFotos();
+      consultando?.remove();
+      if (!disponibles) { aviso('No pude comprobar los límites de fotos. Vuelve a intentarlo en un momento.'); return; }
       for (const archivo of archivos) if (!sesion || !(await subirUna(archivo))) break;
     } finally {
+      consultando?.remove();
       ocupado = false;
     }
   };
@@ -633,40 +722,11 @@
   /* ---------- Burbuja y ventana ---------- */
   const abierto = () => !panel.hidden;
   let saliendo = 0;
-  /* Teléfono: lo de atrás se desenfoca (con ahorro de batería, solo se oscurece), la página no se desplaza debajo y
-     tocar fuera cierra el chat (pedido del 22-10-2026). En escritorio el fondo no se muestra (agente.css) */
-  const fondo = Object.assign(d.createElement('div'), { className: 'agente-fondo', hidden: true });
-  panel.before(fondo);
-  fondo.addEventListener('click', () => cerrar());
-  let fondoFuera = 0;
-  /* Teléfono: la página de atrás no se desplaza mientras el chat está abierto (en iOS no basta con overflow: se fija
-     el cuerpo donde estaba y al cerrar se vuelve al mismo lugar) */
-  let alturaPagina = 0;
-  const fijarPagina = (si) => {
-    if (!matchMedia('(max-width: 860px)').matches && si) return;
-    const b = d.body.style;
-    if (si && b.position !== 'fixed') {
-      alturaPagina = scrollY;
-      Object.assign(b, { position: 'fixed', top: `-${alturaPagina}px`, left: '0', right: '0', width: '100%' });
-    } else if (!si && b.position === 'fixed') {
-      Object.assign(b, { position: '', top: '', left: '', right: '', width: '' });
-      scrollTo({ top: alturaPagina, behavior: 'instant' });
-    }
-  };
-  const conFondo = (si) => {
-    clearTimeout(fondoFuera);
-    d.documentElement.classList.toggle('agente-abierto', si);
-    fijarPagina(si);
-    if (si) window.dispatchEvent(new Event('agente:abierto'));  // mide el área visible antes de mostrarse
-    if (si) { fondo.hidden = false; void fondo.offsetWidth; fondo.classList.add('is-on'); }  // el reflujo deja que la opacidad se anime
-    else { fondo.classList.remove('is-on'); fondoFuera = setTimeout(() => { fondo.hidden = true; }, 350); }
-  };
   const abrir = () => {
     if (abierto() && !panel.classList.contains('is-saliendo')) return;
     clearTimeout(saliendo);
     panel.classList.remove('is-saliendo');
     panel.hidden = false;
-    conFondo(true);
     boton.setAttribute('aria-expanded', 'true');
     if (enDock) marcarDock(true);
     else {
@@ -681,7 +741,6 @@
     if (!abierto() || panel.classList.contains('is-saliendo')) return;
     const dentro = panel.contains(d.activeElement);
     const fin = () => { panel.classList.remove('is-saliendo'); panel.hidden = true; seguir(); };
-    conFondo(false);
     boton.setAttribute('aria-expanded', 'false');
     if (enDock) marcarDock(false);
     else {
@@ -707,6 +766,7 @@
   panel.querySelector('[data-agente-nuevo]').addEventListener('click', () => {
     if (ocupado || !API) return;
     pendiente = null;
+    guardarPendiente();
     confirmacion = null;
     charla.textContent = '';
     if (!sesion) { puerta(); return; }
@@ -747,35 +807,17 @@
   /* Teclado del teléfono: mientras se escribe, la ventana se apoya sobre el teclado y cabe en el área visible */
   const vv = window.visualViewport;
   if (vv) {
-    /* Teléfono: la ventana ocupa justo el área visible (sigue al teclado, a las barras de Safari y a cualquier
-       desplazamiento del teléfono). Se mide en el cuadro siguiente para no hacerlo varias veces por evento. Con el
-       teclado abierto, el campo que se está llenando queda a la vista y, al abrirse, la conversación baja a lo último */
-    const movil = matchMedia('(max-width: 860px)');
-    let cuadro = 0;
-    const medir = () => {
-      if (!movil.matches || panel.hidden || vv.scale > 1.01) return;  // con zoom de pellizco no se toca nada
-      /* La ventana cubre siempre toda la pantalla (su fondo sigue detrás del teclado); lo que se corre es el contenido:
-         arriba, lo que el teléfono desplazó; abajo, lo que tapa el teclado, medido contra la propia ventana (23-10-2026:
-         en Safari quedaba un hueco sobre el teclado por donde se veía la página) */
-      const cajaArriba = panel.offsetTop, cajaAbajo = panel.offsetTop + panel.offsetHeight;  // su caja, sin la animación de entrada
-      panel.style.setProperty('--vv-arriba', `${Math.max(0, Math.round(vv.offsetTop - cajaArriba))}px`);
-      panel.style.setProperty('--vv-abajo', `${Math.max(0, Math.round(cajaAbajo - vv.offsetTop - vv.height))}px`);
-      const antes = panel.classList.contains('is-teclado');
-      const teclado = innerHeight - vv.height - vv.offsetTop > 80 && panel.contains(d.activeElement);
-      panel.classList.toggle('is-teclado', teclado);
-      const charla = panel.querySelector('[data-agente-charla]');
-      const foco = d.activeElement;
-      if (teclado && charla?.contains(foco)) (foco.closest('label, .agente-campo') || foco).scrollIntoView({ block: 'nearest' });
-      else if (teclado && !antes && charla) charla.scrollTop = charla.scrollHeight;
+    const ajustar = () => {
+      const bajo = vv.scale > 1.01 ? 0 : Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop));
+      panel.style.setProperty('--vv-alto', `${Math.round(vv.height)}px`);
+      panel.style.setProperty('--vv-abajo', `${bajo}px`);
+      panel.classList.toggle('is-teclado', bajo > 80 && panel.contains(d.activeElement));
     };
-    const ajustar = () => { cancelAnimationFrame(cuadro); cuadro = requestAnimationFrame(medir); };
     vv.addEventListener('resize', ajustar);
     vv.addEventListener('scroll', ajustar);
-    panel.addEventListener('focusin', () => { ajustar(); setTimeout(ajustar, 300); });  // el teclado termina de abrirse después
-    panel.addEventListener('focusout', () => setTimeout(ajustar, 50));
-    movil.addEventListener?.('change', ajustar);
-    window.addEventListener('agente:abierto', medir);
-    medir();
+    panel.addEventListener('focusin', ajustar);
+    panel.addEventListener('focusout', () => setTimeout(ajustar, 0));
+    ajustar();
   }
 
   window.AGENTE = { abrir, cerrar, enviar: (texto) => enviar({ text: texto }, texto), get sesion() { return !!sesion; } };
