@@ -121,7 +121,8 @@
   const STORAGE_BY_STATE = { 'Sólido': ['Sacos', 'Contenedor', 'A granel', 'Otro'], 'Líquido': ['Tambores', 'Bins', 'Otro'], 'Lodo': ['Tambores', 'Bins', 'Otro'], 'Mixto': ['Tambores', 'Bins', 'Otro'] };
   const DOCS = ['HDS/FDS del producto original', 'HDSR u hoja del residuo', 'Análisis o caracterización', 'Sin documentos por ahora'];
   /* Condiciones de acceso: la lista del encargado (30-10-2026), que se suma a las cinco anteriores; cuatro eran las mismas
-     y quedaron con su redacción. Mismo orden y mismos rótulos que la cotización del chat (QuoteFormParityTest del asistente).
+     y quedaron con su redacción, y «Registro de patente y datos del conductor» se juntó con el registro obligatorio (encargado,
+     03-11-2026: son lo mismo). Mismo orden y mismos rótulos que la cotización del chat (QuoteFormParityTest del asistente).
      Varias llevan coma: el campo se lee con pickedFrom(), no partiéndolo por «, ». */
   const ACCESS = [
     'Acceso restringido para camiones', 'Altura máxima de ingreso', 'Ancho máximo de portón o acceso',
@@ -131,7 +132,7 @@
     'No hay acceso directo del camión al punto de carga',
     'Grúa requerida', 'Grúa horquilla requerida', 'Camión pluma requerido', 'Transpaleta requerida', 'Rampa de carga requerida',
     'Carga o descarga manual', 'Se requiere personal adicional para cargar', 'Se requiere coordinar el uso de equipos del cliente',
-    'Registro obligatorio del vehículo, conductor o personal', 'Registro de patente y datos del conductor',
+    'Registro obligatorio del vehículo, conductor o personal',
     'Ingreso acompañado por guardia o encargado', 'Inducción de seguridad obligatoria',
     'Guía de despacho o documento de traslado requerido', 'Se requiere informar cantidades retiradas al finalizar el servicio',
     'Horario de carga definido', 'Tiempo máximo de permanencia del camión en el recinto', 'Residuos deben estar secos, limpios o acondicionados',
