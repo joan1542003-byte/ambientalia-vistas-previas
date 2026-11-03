@@ -34,15 +34,6 @@
     children.flat().forEach((c) => c != null && node.append(c));
     return node;
   };
-  const arrowUpRight = () => {
-    const ns = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(ns, 'svg');
-    svg.setAttribute('viewBox', '0 0 16 16'); svg.setAttribute('width', '16'); svg.setAttribute('height', '16'); svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor');
-    svg.setAttribute('stroke-width', '2'); svg.setAttribute('stroke-linecap', 'round'); svg.setAttribute('stroke-linejoin', 'round');
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(ns, 'path'); path.setAttribute('d', 'M5 11l6-6M6 5h5v5'); svg.append(path);
-    return svg;
-  };
 
   /* Etiquetas de los dos campos y opciones de cada ventana */
   const labels = new Map();
@@ -100,10 +91,30 @@
       'Quiero cotizar el retiro de este residuo. Adjuntaré la cantidad aproximada y fotografías.'
     ].join('\n');
   }
+  /* «Solicitar cotización» (encargado, 03-11-2026): la cotización la hace Transporte Autorizado, que se contacta con el
+     transportista. Abre la cotización del asistente con el transportista y el residuo ya puestos (window.AGENTE.cotizar, de
+     agente-chat.js); sin asistente conectado (la maqueta, o sin dirección), abre WhatsApp como antes. WhatsApp y el correo
+     quedan como alternativa, con el mismo mensaje */
+  const KIND_QUOTE = { safe: 'no-peligroso', hazard: 'peligroso' };
+  function quote(g) {
+    const r = g.first;
+    const ctx = { carrier: r.company, place: g.placeLabel, resolution: r.resolution || '', waste_kind: KIND_QUOTE[r.kind], waste: state.type === '*' ? r.type : state.type };
+    if (window.AGENTE?.cotizar) {
+      /* En el teléfono (y abierto desde la «?») el buscador va en una hoja modal, que dejaría el chat detrás: se cierra antes */
+      if (root.closest('dialog[open]')) window.HERO?.show('inicio');
+      if (window.AGENTE.cotizar(ctx)) return;
+    }
+    open(window.SITE.whatsapp(message(g)), '_blank', 'noopener');
+  }
   function row(g, i, fresh) {
     const r = g.first;
-    const link = el('a', { className: 'btn btn-secondary btn-small', href: window.SITE.whatsapp(message(g)), target: '_blank', rel: 'noopener noreferrer' },
-      'Solicitar cotización', arrowUpRight(), el('span', { className: 'sr-only', textContent: ` del retiro con ${r.company} (abre WhatsApp)` }));
+    const alt = (href, text, label) => { const a = el('a', { href, target: '_blank', rel: 'noopener noreferrer', textContent: text }); a.setAttribute('aria-label', label); return a; };
+    const link = el('div', { className: 'result-actions' },
+      el('button', { type: 'button', className: 'btn btn-secondary btn-small', onclick: () => quote(g) },
+        'Solicitar cotización', el('span', { className: 'sr-only', textContent: ` del retiro con ${r.company}` })),
+      el('p', { className: 'result-alt' }, 'o por ',
+        alt(window.SITE.whatsapp(message(g)), 'WhatsApp', `Solicitar cotización del retiro con ${r.company} por WhatsApp`), ' · ',
+        alt(window.SITE.mailto(window.SITE.correo, message(g)), 'correo', `Solicitar cotización del retiro con ${r.company} por correo`)));
     const li = el('li', { className: fresh ? 'result is-new' : 'result' },
       el('div', {},
         el('h3', { textContent: r.company }),

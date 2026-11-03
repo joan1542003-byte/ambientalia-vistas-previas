@@ -512,7 +512,10 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .result-meta .pill::before { content: ""; width: 6px; height: 6px; border-radius: 99px; background: var(--safe); }
 .result-meta .pill.is-hazard::before { background: var(--hazard); }
 .result-waste { grid-column: 1; color: var(--ink-2); font-size: var(--fs-caption); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.result .btn { grid-column: 2; grid-row: 1 / span 2; justify-self: end; }
+.result > .result-actions { grid-column: 2; grid-row: 1 / span 2; display: grid; justify-items: end; gap: 4px; }
+.result-alt { color: var(--muted); font-size: var(--fs-caption); white-space: nowrap; }
+.result-alt a { color: var(--ink-2); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.result-alt a:hover { color: var(--accent-strong); }
 @media (prefers-reduced-motion: no-preference) {
   @keyframes result-in { from { opacity: 0; transform: translateY(4px); } }
   .result.is-new { animation: result-in .5s var(--ease) both; animation-delay: calc(var(--i, 0) * 45ms); }
@@ -552,7 +555,7 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
   .hcard-foot { padding-inline: 14px; }
   .picks-row { grid-template-columns: minmax(0, 1fr); }
   .result { grid-template-columns: minmax(0, 1fr); }
-  .result .btn { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 4px; }
+  .result > .result-actions { grid-column: 1; grid-row: auto; justify-items: start; margin-top: 4px; }
   .result.is-skeleton { grid-template-columns: 1fr; }
   .result.is-skeleton i:last-child { grid-column: auto; width: 110px; }
 }
@@ -934,7 +937,7 @@ number-flow { font-variant-numeric: tabular-nums; --number-flow-mask-height: .15
   .hero-sheet.is-float .hcard-title .hcard-close { grid-column: 2; grid-row: 1; }
   .hero-sheet.is-float .picks-row { grid-template-columns: minmax(0, 1fr); }
   .hero-sheet.is-float .result { grid-template-columns: minmax(0, 1fr); }
-  .hero-sheet.is-float .result .btn { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 4px; }
+  .hero-sheet.is-float .result > .result-actions { grid-column: 1; grid-row: auto; justify-items: start; margin-top: 4px; }
   @media (prefers-reduced-motion: no-preference) {
     @keyframes float-in { from { clip-path: inset(calc(100% - 56px) 0 0 calc(100% - 56px) round 28px); } to { clip-path: inset(0 round 26px); } }
     @keyframes float-out { to { clip-path: inset(calc(100% - 56px) 0 0 calc(100% - 56px) round 28px); opacity: 0; } }

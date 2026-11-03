@@ -412,6 +412,7 @@
         form.hidden = false;
         respuesta(json.reply, json.usage);
         if (!tactil.matches) campo.focus({ preventScroll: true });
+        atender();
         return;
       }
       /* Con «error», el mensaje es del asistente (p. ej., el tope de todo el servicio); el 429 genérico es por IP. Fuera
@@ -453,7 +454,8 @@
     else delete sesion.pendiente;
     guardar(sesion);
   };
-  const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '') && JSON.stringify(a.form_values || null) === JSON.stringify(b.form_values || null);
+  const mismo = (a, b) => (a.text ?? '') === (b.text ?? '') && (a.option_id ?? '') === (b.option_id ?? '') && JSON.stringify(a.form_values || null) === JSON.stringify(b.form_values || null)
+    && JSON.stringify(a.quote_context || null) === JSON.stringify(b.quote_context || null);
   /* «visible» es lo que se ve como mensaje propio; sin él (reiniciar) el turno no se muestra */
   const enviar = (cuerpo, visible) => {
     if (ocupado || !sesion) return;
@@ -525,6 +527,27 @@
     p.nota = avisoCon(texto, [['Reintentar', reintentar]]);
   };
   const reiniciar = () => enviar({ text: 'inicio' });  // comando del asistente: vuelve al menú (no gasta consultas)
+  /* «Solicitar cotización» del buscador de transportistas (transporte.js): abre la cotización del asistente con el
+     transportista y el residuo ya puestos. Si falta la puerta o se está recuperando la conversación, espera a que la
+     ventana quede libre */
+  let encargo = null;
+  const atender = () => {
+    if (!encargo || !sesion || ocupado || !empezado) return;
+    const cuerpo = encargo;
+    encargo = null;
+    enviar(cuerpo, `Solicitar cotización a ${cuerpo.quote_context.carrier}`);
+  };
+  const cotizar = (ctx) => {
+    if (!API || !ctx || typeof ctx.carrier !== 'string' || !ctx.carrier) return false;
+    const texto = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+    encargo = { option_id: 'cotizar_retiro', quote_context: {
+      carrier: texto(ctx.carrier, 150), place: texto(ctx.place, 80), resolution: texto(ctx.resolution, 300),
+      waste_kind: texto(ctx.waste_kind, 40), waste: texto(ctx.waste, 80)
+    } };
+    abrir();
+    atender();
+    return true;
+  };
 
   /* Al volver, el servicio restaura el historial, el cupo y el número de fotos. */
   const retomar = async () => {
@@ -547,7 +570,7 @@
     const recuperable = guardado && /^[A-Za-z0-9_-]{1,64}$/.test(guardado.id) && guardado.cuerpo && typeof guardado.cuerpo === 'object';
     const respondido = recuperable && mensajes.some((m) => m.role === 'assistant' && m.client_message_id === guardado.id);
     if (respondido) { delete sesion.pendiente; guardar(sesion); }
-    if (!mensajes.length && !recuperable) { reiniciar(); return; }
+    if (!mensajes.length && !recuperable) { if (encargo) atender(); else reiniciar(); return; }
     const ultimo = mensajes[mensajes.length - 1];
     form.hidden = Boolean(ultimo?.form);
     mensajes.forEach((m) => (m.role === 'user' ? decirYo(m.text) : decir(m, { opciones: m === ultimo })));
@@ -561,6 +584,7 @@
       avisoCon('Tu último mensaje todavía no tiene respuesta.', [['Actualizar', () => { if (ocupado) return; charla.textContent = ''; retomar(); }]]);
     }
     abajo();
+    atender();
   };
   let empezado = false;
   const empezar = () => {
@@ -857,5 +881,5 @@
     ajustar();
   }
 
-  window.AGENTE = { abrir, cerrar, enviar: (texto) => enviar({ text: texto }, texto), get sesion() { return !!sesion; } };
+  window.AGENTE = { abrir, cerrar, cotizar, enviar: (texto) => enviar({ text: texto }, texto), get sesion() { return !!sesion; } };
 })();

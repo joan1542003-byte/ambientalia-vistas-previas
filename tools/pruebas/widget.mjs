@@ -393,6 +393,28 @@ try {
     ok(o.cuerpo.option_id === 'otra' && o.cuerpo.text === undefined && (await textos()).includes('> Otra consulta'), 'una opción envía su option_id y se ve su rótulo como mensaje propio');
   }
 
+  seccion('2-4b. «Solicitar cotización» del buscador de transportistas');
+  {
+    reiniciarAsistente();
+    await navegar(local());
+    const CTX = { carrier: 'Transportes Ejemplo SpA', place: 'Lampa', resolution: 'Res. 1/2020', waste_kind: 'peligroso', waste: 'Asbesto' };
+    const aceptado = await evaluar((c) => window.AGENTE.cotizar(c), CTX);
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'la puerta, sin sesión');
+    ok(aceptado === true && de('/messages', 'POST').length === 0, 'sin sesión, el pedido espera la puerta: no se envía nada antes de los datos');
+    await entrar();
+    await hasta(() => /Respuesta a «cotizar_retiro»/.test(document.querySelector('[data-agente-charla]').textContent), 'cotización abierta');
+    const c = de('/messages', 'POST');
+    ok(c.length === 1 && c[0].cuerpo.option_id === 'cotizar_retiro' && JSON.stringify(c[0].cuerpo.quote_context) === JSON.stringify(CTX),
+      'al abrir la sesión se abre la cotización (option_id cotizar_retiro) con el transportista y el residuo del buscador');
+    ok((await textos()).includes('> Solicitar cotización a Transportes Ejemplo SpA'), 'el mensaje propio nombra al transportista');
+    await evaluar(() => window.AGENTE.cotizar({ carrier: 'Otro Transportista', waste_kind: 'no-peligroso', waste: 'Vidrio' }));
+    await hasta(() => /Solicitar cotización a Otro Transportista/.test(document.querySelector('[data-agente-charla]').textContent) && !document.querySelector('.is-espera'), 'segundo pedido');
+    for (let n = 0; n < 40 && de('/messages', 'POST').length < 2; n++) await sleep(50);
+    const d2 = de('/messages', 'POST')[1];
+    ok(d2.cuerpo.quote_context.carrier === 'Otro Transportista' && d2.cuerpo.client_message_id !== c[0].cuerpo.client_message_id, 'con sesión se envía al tiro, como otro mensaje (otro identificador)');
+    ok((await evaluar(() => window.AGENTE.cotizar({}))) === false, 'sin transportista no hace nada (el buscador abre WhatsApp)');
+  }
+
   seccion('Edición de datos antes de confirmar la solicitud');
   {
     const editor = {
