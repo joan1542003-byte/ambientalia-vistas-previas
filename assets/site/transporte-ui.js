@@ -298,14 +298,16 @@
         if (v) set('documentos', sorted(v, PICK.DOCS).join(', '));
         return v;
       },
-      /* «Otra condición» y «Otro» despliegan un campo para escribir cuál; queda guardado como «Otro: …» */
+      /* «Otra condición» y «Otro» despliegan un campo para escribir cuál; queda guardado como «Otro: …».
+         Las condiciones de acceso son muchas (28) y de rótulo largo: van en filas, repartidas en secciones plegables
+         (PICK.ACCESS_GROUPS), para que el estado y el almacenamiento sigan a la vista en el teléfono */
       detalles: async () => {
-        const acc = list(field('acceso').value).map(PICK.splitOther);
+        const acc = PICK.pickedFrom(field('acceso').value, PICK.ACCESS).map(PICK.splitOther);
         const [alm, almOtro] = PICK.splitOther(field('almacenamiento').value);
         const v = await Picker.chooseEach({
           title: 'Detalles del retiro', sub: 'Todo es opcional, pero ayuda a evitar retiros fallidos.',
           groups: [
-            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, otherLabel: '¿Qué otra condición?', options: PICK.ACCESS.map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x) })) },
+            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, layout: 'list', otherLabel: '¿Cuál es la otra condición?', options: PICK.ACCESS.map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x), section: PICK.accessGroup(x) })) },
             { key: 'estado', label: 'Estado del residuo', options: PICK.STATES.map((x) => ({ value: x, label: x, icon: PICK.STATE_ICONS[x] })) },
             { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', otherLabel: '¿Cómo está almacenado?', allowed: (p) => PICK.STORAGE_BY_STATE[p.estado] || null, options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) }
           ],

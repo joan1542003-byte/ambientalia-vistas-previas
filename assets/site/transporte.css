@@ -449,6 +449,26 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .opt[data-tone="express"]::before { background: var(--grad-express); }
 .opt[data-tone="flexible"]::before { background: var(--grad-flexible); }
 .opt-empty { padding: 18px 2px; color: var(--muted); font-size: .9375rem; }
+/* Secciones plegables de una lista larga (chooseEach, opciones con `section`): p. ej., las condiciones de acceso */
+.opt-section { border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.opt-section + .opt-section, .opt-section + .opts { margin-top: 6px; }
+.opt-section > summary {
+  display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 10px 14px; border-radius: 13px;
+  color: var(--ink); font-size: .9375rem; font-weight: 700; line-height: 1.3; list-style: none; cursor: pointer;
+}
+.opt-section > summary::-webkit-details-marker { display: none; }
+.opt-section > summary::after {
+  content: ""; flex: none; width: 16px; height: 16px; background: var(--muted); rotate: 90deg; transition: rotate .2s var(--ease);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5L10.5 8 6 12.5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5L10.5 8 6 12.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.opt-section[open] > summary::after { rotate: -90deg; }
+.opt-section > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (hover: hover) { .opt-section > summary:hover { background: var(--bg-alt); } }
+.opt-section-name { flex: 1; min-width: 0; }
+.opt-section-count { flex: none; color: var(--accent-strong); font-size: var(--fs-caption); font-weight: 800; }
+.opt-section > .opts { padding: 2px 8px 8px; }
+.opt-section .opt { min-height: 46px; padding: 9px 12px; }
 @media (max-width: 560px) { .opts.is-modes { grid-template-columns: minmax(0, 1fr); } .opts.is-tiles { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); } }
 
 /* Fecha y horario */

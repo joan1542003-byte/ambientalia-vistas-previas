@@ -120,12 +120,38 @@
   /* Almacenamiento posible según el estado del residuo (cliente, 22-10-2026): al elegir el estado, el resto se oculta */
   const STORAGE_BY_STATE = { 'Sólido': ['Sacos', 'Contenedor', 'A granel', 'Otro'], 'Líquido': ['Tambores', 'Bins', 'Otro'], 'Lodo': ['Tambores', 'Bins', 'Otro'], 'Mixto': ['Tambores', 'Bins', 'Otro'] };
   const DOCS = ['HDS/FDS del producto original', 'HDSR u hoja del residuo', 'Análisis o caracterización', 'Sin documentos por ahora'];
-  const ACCESS = ['Acceso restringido para camión', 'Bodega subterránea', 'Altura máxima', 'Grúa requerida', 'Horario de carga definido', 'Otra condición'];
-  /* Íconos (Lucide) de las opciones de acceso, estado y documentos (23-10-2026: «ícono a todas las pilas») */
+  /* Condiciones de acceso: la lista del encargado (30-10-2026), que se suma a las cinco anteriores; cuatro eran las mismas
+     y quedaron con su redacción. Mismo orden y mismos rótulos que la cotización del chat (QuoteFormParityTest del asistente).
+     Varias llevan coma: el campo se lee con pickedFrom(), no partiéndolo por «, ». */
+  const ACCESS = [
+    'Acceso restringido para camiones', 'Altura máxima de ingreso', 'Ancho máximo de portón o acceso',
+    'Pasillos estrechos o radios de giro reducidos', 'Restricción para camiones con acoplado, rampla o carro',
+    'Acceso por camino de tierra, pendiente o superficie irregular', 'Residuos ubicados en bodega subterránea',
+    'Carga en patio, exterior o zona descubierta', 'Distancia extensa entre el punto de acopio y el camión',
+    'No hay acceso directo del camión al punto de carga',
+    'Grúa requerida', 'Grúa horquilla requerida', 'Camión pluma requerido', 'Transpaleta requerida', 'Rampa de carga requerida',
+    'Carga o descarga manual', 'Se requiere personal adicional para cargar', 'Se requiere coordinar el uso de equipos del cliente',
+    'Registro obligatorio del vehículo, conductor o personal', 'Registro de patente y datos del conductor',
+    'Ingreso acompañado por guardia o encargado', 'Inducción de seguridad obligatoria',
+    'Guía de despacho o documento de traslado requerido', 'Se requiere informar cantidades retiradas al finalizar el servicio',
+    'Horario de carga definido', 'Tiempo máximo de permanencia del camión en el recinto', 'Residuos deben estar secos, limpios o acondicionados',
+    'Otra condición'
+  ];
+  /* Grupos de la ventana «Detalles del retiro», los mismos del chat. Son solo presentación: lo guardado sigue siendo el
+     rótulo, en el orden de ACCESS. Cada grupo empieza en la condición indicada; «Otra condición» queda fuera, siempre a la vista */
+  const ACCESS_GROUPS = [
+    ['Acceso y ubicación', 'Acceso restringido para camiones'],
+    ['Equipos y carga', 'Grúa requerida'],
+    ['Ingreso y documentos', 'Registro obligatorio del vehículo, conductor o personal'],
+    ['Horario y estado del residuo', 'Horario de carga definido']
+  ];
+  const accessGroup = (label) => (isOther(label) ? '' : ACCESS_GROUPS.reduce((g, [name, from]) => (ACCESS.indexOf(label) >= ACCESS.indexOf(from) ? name : g), ''));
+  /* Íconos (Lucide) de las opciones de acceso, estado y documentos (23-10-2026: «ícono a todas las pilas»). De las condiciones de
+     acceso solo tienen ícono las cinco anteriores y «Otra condición»; las del encargado (30-10-2026) van sin ícono por ahora */
   const ACCESS_ICONS = {
-    'Acceso restringido para camión': ic('<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>'),
-    'Bodega subterránea': ic('<path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/>'),
-    'Altura máxima': ic('<path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/>'),
+    'Acceso restringido para camiones': ic('<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>'),
+    'Residuos ubicados en bodega subterránea': ic('<path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/>'),
+    'Altura máxima de ingreso': ic('<path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/>'),
     'Grúa requerida': ic('<rect x="2" y="6" width="20" height="8" rx="1"/><path d="M17 14v7"/><path d="M7 14v7"/><path d="M17 3v3"/><path d="M7 3v3"/><path d="M10 14 2.3 6.3"/><path d="m14 6 7.7 7.7"/><path d="m8 6 8 8"/>'),
     'Horario de carga definido': ic('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'),
     'Otra condición': ic('<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>'),
@@ -144,6 +170,20 @@
   };
   /* Las opciones «Otro», «Otra…» despliegan un campo para escribir cuál (seleccion.js) */
   const isOther = (label) => /^Otr[oa]s?\b/.test(label);
+  /* Valor de una fila de varias («A, B, Otra condición: texto») → ['A', 'B', 'Otra condición: texto'], reconociendo las
+     opciones de `all` aunque lleven coma. Lo que sigue a «Otra…: » es el texto escrito, con sus comas (va siempre al final) */
+  const pickedFrom = (v, all) => {
+    const out = [];
+    let rest = String(v || '');
+    while (rest) {
+      if (all.some((x) => isOther(x) && rest.startsWith(`${x}: `))) { out.push(rest); break; }
+      const hit = all.filter((x) => rest === x || rest.startsWith(`${x}, `)).sort((a, b) => b.length - a.length)[0];
+      const len = hit ? hit.length : rest.includes(', ') ? rest.indexOf(', ') : rest.length;
+      out.push(rest.slice(0, len));
+      rest = rest.slice(len + 2);
+    }
+    return out;
+  };
   /* «Otro: jaulas» → ['Otro', 'jaulas'] */
   const splitOther = (v) => { const at = String(v || '').indexOf(': '); return at < 0 ? [v || '', ''] : [v.slice(0, at), v.slice(at + 2)]; };
   const joinOther = (base, text) => (base && text ? `${base}: ${text}` : base || '');
@@ -185,5 +225,5 @@
   const enCobertura = (c) => COBERTURA.includes(c);
   const coberturaTexto = COBERTURA.length > 1 ? `${COBERTURA.slice(0, -1).join(', ')} y ${COBERTURA[COBERTURA.length - 1]}` : COBERTURA[0] || '';
 
-  window.PICK = { COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS_ICONS, STATE_ICONS, DOC_ICONS, ACCESS, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
+  window.PICK = { COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS_ICONS, STATE_ICONS, DOC_ICONS, ACCESS, ACCESS_GROUPS, accessGroup, pickedFrom, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
 })();

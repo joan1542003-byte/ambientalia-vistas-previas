@@ -208,7 +208,7 @@
     };
     scroller.addEventListener('scroll', update, { passive: true });
     if ('ResizeObserver' in window) new ResizeObserver(update).observe(scroller);
-    new MutationObserver(() => requestAnimationFrame(update)).observe(scroller, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
+    new MutationObserver(() => requestAnimationFrame(update)).observe(scroller, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'open'] });
     update();
     return update;
   };
@@ -357,7 +357,7 @@
     place(on);
     if (coarse.matches) return;  // en pantallas táctiles el foco queda en la ventana; con teclado, en la opción
     requestAnimationFrame(() => {
-      const target = on || (!el.searchWrap.hidden && !coarse.matches ? el.search : el.body.querySelector('button:not([disabled]), input, select'));
+      const target = on || (!el.searchWrap.hidden && !coarse.matches ? el.search : el.body.querySelector('summary, button:not([disabled]), input, select'));
       target?.focus({ preventScroll: true });
     });
   };
@@ -421,7 +421,23 @@
     const on = (g, v) => (g.multi ? picked[g.key].includes(v) : picked[g.key] === v);
     /* Un grupo con una opción «Otro» (other: true) despliega su campo al elegirla; lo escrito vuelve en `${key}Otro` */
     const otherOf = (g) => g.options.find((o) => o.other);
-    el.body.innerHTML = groups.map((g) => `<section class="opt-group" data-group="${esc(g.key)}"><h3>${esc(g.label)}</h3><div class="opts is-${g.layout || layout}">${g.options.map((o) => optionHTML(o, on(g, o.value))).join('')}</div>${otherOf(g) ? otherHTML(otherOf(g).value, value[`${g.key}Otro`] || '', g.otherLabel) : ''}</section>`).join('');
+    /* Una lista larga se reparte en secciones plegables: las opciones seguidas con el mismo `section` van bajo ese título,
+       que dice cuántas hay elegidas. Abre desplegada la sección que ya tiene algo elegido; las opciones sin `section`
+       quedan siempre a la vista. Es solo presentación: el grupo y su valor son los mismos */
+    const runs = (g) => g.options.reduce((acc, o) => {
+      const last = acc[acc.length - 1];
+      if (last && last.section === (o.section || '')) last.options.push(o); else acc.push({ section: o.section || '', options: [o] });
+      return acc;
+    }, []);
+    const optsHTML = (g, list) => `<div class="opts is-${g.layout || layout}">${list.map((o) => optionHTML(o, on(g, o.value))).join('')}</div>`;
+    const runHTML = (g, r) => (r.section
+      ? `<details class="opt-section"${r.options.some((o) => on(g, o.value)) ? ' open' : ''}><summary><span class="opt-section-name">${esc(r.section)}</span><span class="opt-section-count" aria-live="polite"></span></summary>${optsHTML(g, r.options)}</details>`
+      : optsHTML(g, r.options));
+    el.body.innerHTML = groups.map((g) => `<section class="opt-group" data-group="${esc(g.key)}"><h3>${esc(g.label)}</h3>${runs(g).map((r) => runHTML(g, r)).join('')}${otherOf(g) ? otherHTML(otherOf(g).value, value[`${g.key}Otro`] || '', g.otherLabel) : ''}</section>`).join('');
+    const paintSections = () => el.body.querySelectorAll('.opt-section').forEach((s) => {
+      const n = s.querySelectorAll('.opt[aria-pressed="true"]').length;
+      s.querySelector('.opt-section-count').textContent = counter(n, 'elegida', 'elegidas');
+    });
     const syncOther = (focus) => el.body.querySelectorAll('[data-other]').forEach((f) => {
       const g = groups.find((x) => x.key === f.closest('[data-group]').dataset.group);
       const shown = on(g, f.dataset.other);
@@ -442,6 +458,7 @@
       });
     });
     filtrar();
+    paintSections();
     syncOther();
     el.body.onclick = (e) => {
       const b = e.target.closest('.opt[data-value]');
@@ -450,8 +467,9 @@
       const v = b.dataset.value;
       if (g.multi) picked[g.key] = on(g, v) ? picked[g.key].filter((x) => x !== v) : [...picked[g.key], v];
       else picked[g.key] = picked[g.key] === v ? '' : v;
-      b.closest('.opts').querySelectorAll('.opt').forEach((x) => x.setAttribute('aria-pressed', String(on(g, x.dataset.value))));
+      b.closest('[data-group]').querySelectorAll('.opt[data-value]').forEach((x) => x.setAttribute('aria-pressed', String(on(g, x.dataset.value))));
       filtrar();
+      paintSections();
       syncOther(otherOf(g)?.value === v ? b.closest('[data-group]').querySelector('[data-other]') : null);
     };
     hooks.done = () => {
