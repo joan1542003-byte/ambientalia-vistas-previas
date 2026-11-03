@@ -4,6 +4,13 @@
 
 .agente .msg-texto { white-space: pre-line; overflow-wrap: anywhere; }
 .agente .msg-texto strong { color: var(--ink); font-weight: 800; }
+.agente .msg-texto.is-bloques { display: grid; gap: 8px; }
+.agente .msg-texto.is-bloques > p { margin: 0; }
+.agente .msg-texto ul, .agente .msg-texto ol { display: grid; gap: 4px; margin: 0; padding-left: 1.25em; }
+.agente .msg-texto ul { list-style: disc; }
+.agente .msg-texto ol { list-style: decimal; }
+.agente .msg-texto li { padding-left: 2px; }
+.agente .msg-texto li::marker { color: var(--accent-strong); font-weight: 700; }
 .agente .msg-texto a, .msg-fuentes a, .agente-acepto a { color: var(--accent-strong); font-weight: 700; text-underline-offset: 3px; }
 
 /* Fuentes: una por documento, con su enlace */

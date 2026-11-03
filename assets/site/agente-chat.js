@@ -20,7 +20,8 @@
      veces; lo demás espera a que la persona toque «Reintentar» (hasta tres veces). Un 409 idempotency_conflict no se
      reintenta.
    - La respuesta llega como texto plano y se muestra como texto, nunca como HTML: las direcciones del texto no pasan a
-     enlaces y lo marcado con **…** se ve en negrita. Los enlaces salen solo de las fuentes (reply.sources), con https
+     enlaces, lo marcado con **…** se ve en negrita, una línea en blanco separa párrafos y las líneas con «- » o «1. »
+     son listas (conBloques). Los enlaces salen solo de las fuentes (reply.sources), con https
      y un destino conocido (este sitio, Ley Chile y BCN, y los dominios del Estado, .gob.cl); si no, la fuente se
      muestra sin enlace.
    - Un enlace a este sitio se muestra en el sitio, como en la maqueta: las vistas del hero se abren con HERO.show, la
@@ -207,6 +208,42 @@
     partes.push(texto.slice(desde));
     return partes.filter((x) => x !== '');
   };
+  /* Bloques: una línea en blanco separa párrafos; las líneas que empiezan con «- » o «• » son una lista, y con «1. »
+     una lista numerada. Todo se arma con elementos y su texto (conFormato), nunca como HTML. Un texto sin bloques ni
+     listas queda como siempre: un solo párrafo */
+  const RE_VINETA = /^\s*[-•*]\s+(.+)$/;
+  const RE_NUMERO = /^\s*(\d{1,2})[.)]\s+(.+)$/;
+  const conBloques = (texto) => {
+    const lineas = texto.split('\n');
+    if (!/\n\s*\n/.test(texto) && !lineas.some((l) => RE_VINETA.test(l) || RE_NUMERO.test(l))) return h('p', { class: 'msg-texto' }, conFormato(texto));
+    const caja = h('div', { class: 'msg-texto is-bloques' });
+    let parrafo = [];
+    let lista = null;
+    const cerrar = () => {
+      if (parrafo.length) caja.append(h('p', {}, conFormato(parrafo.join('\n'))));
+      parrafo = [];
+      lista = null;
+    };
+    lineas.forEach((linea) => {
+      const vineta = linea.match(RE_VINETA);
+      const numero = vineta ? null : linea.match(RE_NUMERO);
+      if (!vineta && !numero) {
+        if (!linea.trim()) { cerrar(); return; }
+        if (lista) cerrar();
+        parrafo.push(linea);
+        return;
+      }
+      const tipo = vineta ? 'ul' : 'ol';
+      if (parrafo.length || (lista && lista.tagName.toLowerCase() !== tipo)) cerrar();
+      if (!lista) {
+        lista = h(tipo, { start: numero && numero[1] !== '1' ? numero[1] : null });
+        caja.append(lista);
+      }
+      lista.append(h('li', {}, conFormato(vineta ? vineta[1] : numero[2])));
+    });
+    cerrar();
+    return caja;
+  };
 
   /* ---------- Cómo se muestra ---------- */
   const abajo = () => charla.scrollTo({ top: charla.scrollHeight, behavior: suave() });
@@ -216,7 +253,7 @@
   const vencerOpciones = () => charla.querySelectorAll('[data-opcion], [data-edicion] fieldset').forEach((b) => { b.disabled = true; });
   const decir = (r, { opciones = true } = {}) => {
     const m = h('div', { class: 'msg is-bot' });
-    if (typeof r.text === 'string' && r.text) m.append(h('p', { class: 'msg-texto' }, conFormato(r.text)));
+    if (typeof r.text === 'string' && r.text) m.append(conBloques(r.text));
     const fuentes = (Array.isArray(r.sources) ? r.sources : []).filter((s) => s && typeof s.label === 'string' && s.label);
     if (fuentes.length) {
       m.append(h('div', { class: 'msg-fuentes' },

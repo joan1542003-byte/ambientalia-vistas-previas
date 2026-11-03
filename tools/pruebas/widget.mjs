@@ -587,6 +587,26 @@ try {
     ok(de('/messages', 'POST').length === 0, 'repintar el historial no envía mensajes');
 
     reiniciarAsistente();
+    S.historial = [{ role: 'assistant', text: 'Sí, retiramos **ambos tipos**.\n\nPara cotizar necesitamos:\n- qué residuo es;\n- la comuna <img src=x onerror="window.__xss=1">;\n- si es peligroso, la **HDS/FDS**.\n\n1. Toca «Cotizar retiro».\n2. Responde las preguntas.\n\nSe hace con un transportista autorizado (D.S. 148/2003, art. 36).', options: [], sources: [{ label: 'D.S. 148/2003', url: 'https://www.bcn.cl/leychile/navegar?idNorma=226458' }], intent: 'modelo', lead_status: null }];
+    await navegar(local(), { limpiar: false });
+    await abrir();
+    await hasta(() => /Responde las preguntas/.test(document.querySelector('[data-agente-charla]').textContent), 'bloques');
+    const b = await evaluar(() => {
+      const t = document.querySelector('[data-agente-charla] .msg-texto.is-bloques');
+      return {
+        parrafos: t ? t.querySelectorAll(':scope > p').length : 0,
+        vinetas: [...(t?.querySelectorAll('ul > li') || [])].map((li) => li.textContent),
+        pasos: [...(t?.querySelectorAll('ol > li') || [])].map((li) => li.textContent),
+        negritas: [...(t?.querySelectorAll('strong') || [])].map((x) => x.textContent),
+        etiquetas: t ? t.querySelectorAll('img, script').length : -1, xss: window.__xss || 0,
+        fuentes: document.querySelectorAll('[data-agente-charla] .msg-fuentes li').length
+      };
+    });
+    ok(b.parrafos === 3 && b.vinetas.length === 3 && b.pasos.join('|') === 'Toca «Cotizar retiro».|Responde las preguntas.', 'una respuesta con bloques muestra párrafos, una lista con viñetas y una numerada');
+    ok(b.negritas.join('|') === 'ambos tipos|HDS/FDS' && b.etiquetas === 0 && b.xss === 0 && /<img/.test(b.vinetas[1]), 'en los bloques las negritas siguen y el HTML del texto queda como texto');
+    ok(b.fuentes === 1, 'la respuesta con bloques sigue mostrando sus fuentes');
+
+    reiniciarAsistente();
     S.historial = [{ role: 'user', text: 'Pregunta sin respuesta', options: [], sources: [] }];
     await navegar(local(), { limpiar: false });
     await abrir();
