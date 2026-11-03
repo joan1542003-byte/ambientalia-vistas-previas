@@ -8,6 +8,7 @@
  */
 
 define( 'ABSPATH', __DIR__ . '/' );
+define( 'TA_SITIO_DIR', dirname( __DIR__, 2 ) . '/wordpress/ta-sitio/' );
 define( 'YEAR_IN_SECONDS', 31536000 );
 define( 'DAY_IN_SECONDS', 86400 );
 function add_action() {}
