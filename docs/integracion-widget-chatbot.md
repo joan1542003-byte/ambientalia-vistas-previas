@@ -156,7 +156,7 @@ Cada mensaje nace con un `client_message_id` (UUID) y lo conserva **hasta que el
 
 - **Se repinta:**
   - los mensajes de la persona y del asistente;
-  - las negritas;
+  - las negritas, los párrafos y las listas;
   - las fuentes, con las mismas reglas de enlaces;
   - las opciones, solo las de la última respuesta, porque las anteriores ya no corresponden.
 - **Si el último mensaje es de la persona** (turno en curso o fallido): aparece «Tu último mensaje todavía no tiene respuesta» con «Actualizar», que vuelve a leer el historial **sin reenviar** nada.
@@ -192,7 +192,7 @@ La subida no tiene identificador propio en el contrato. Por eso, si no hubo resp
   - los mensajes de error.
 - `innerHTML` solo se usa para los íconos escritos en el propio archivo.
 - Ningún atributo de evento se arma con datos del modelo, y el `id` de una opción solo viaja en el JSON.
-- **Formato:** solo `**negrita**`, que se arma con `<strong>` y su texto.
+- **Formato** (03-11-2026): `**negrita**`, párrafos separados por una línea en blanco y listas (líneas que empiezan con «- », «• » o «1. »). Se arman con `<strong>`, `<p>`, `<ul>`/`<ol>` y su texto (`conBloques`); sin bloques ni listas, la respuesta es un solo `p.msg-texto`.
 - **Enlaces dentro de `reply.text`:** **no se convierten** (se eliminó `conEnlaces`). Una dirección escrita por el modelo se ve como texto.
 - **Fuentes:** el enlace sale solo de `reply.sources[].url`, y solo si:
   - es `http(s)`, sin usuario ni clave;
@@ -357,3 +357,7 @@ Si la consulta falla o es inválida, se muestra un aviso, no se sube la imagen y
 Se corrigió el retorno de una sesión vencida: conserva los datos de contacto en memoria, pero condiciones/privacidad y contacto comercial vuelven sin marcar. Los recursos compartidos llevan versión `20261028a`. Las expectativas de CSP incluyen la fuente de LinkedIn ya permitida por el plugin; no se amplió la política.
 
 Validación local final: 132 comprobaciones del widget, 118 de integración y 20 del plugin aprobadas. Incluye navegador, backend simulado, preparación del paquete, formatos alternativos, píxeles, peso y recuperación tras configuración inválida. Sin servicios reales, Odoo, despliegue ni prueba en dispositivos físicos.
+
+## Cotizar desde el buscador de transportistas (03-11-2026)
+
+`window.AGENTE.cotizar({ carrier, place, resolution, waste_kind, waste })` abre la ventana y manda `option_id: cotizar_retiro` con `quote_context`. Lo usa «Solicitar cotización» del buscador (`transporte.js`). Sin sesión, el pedido espera a que la persona pase la puerta; si se está leyendo el historial, a que termine. Devuelve `false` sin dirección del asistente o sin transportista, y entonces el buscador abre WhatsApp. El mensaje propio dice «Solicitar cotización a …». Dos pedidos con distinto contexto son dos mensajes (el contexto cuenta en `mismo()`). Lo cubre la sección 2-4b de `widget.mjs`. Los recursos compartidos llevan versión `20261103c`.
