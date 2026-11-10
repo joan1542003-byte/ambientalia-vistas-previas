@@ -12,6 +12,7 @@
   --line-strong: #c9d4d0;
   --marca: #006248;   --marca-2: #78DCB4;
   --azul-2: #4DDBF0;
+  --celeste: #9ADCF7;
   --accent: var(--marca);
   --accent-strong: #004a37;
   --on-accent: #ffffff;
@@ -108,14 +109,15 @@ svg { display: block; }
 .dock-action:active { background: #fff; }
 .dock-action.is-primary:active { background: var(--accent-strong); }
 .dock-action:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-/* «Chat con IA»: un borde de luz recorre los colores de la marca y un halo respira despacio. Sutil, pero se distingue de
-   las otras acciones; solo se mueve con la burbuja abierta */
+/* «Chat con IA»: un borde de luz recorre un degradado de verde a celeste y un halo celeste respira despacio. Más sutil que
+   el de Transporte (pedido del 10-11-2026), pero se distingue de las otras acciones; solo se mueve con la burbuja abierta */
+/* @property no rige dentro de un Shadow DOM: asistente.js registra --ia-giro en la página (CSS.registerProperty) */
 @property --ia-giro { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
-.dock-action.is-ia { position: relative; isolation: isolate; border-color: transparent; background: rgb(255 255 255 / .94); box-shadow: 0 6px 16px -10px rgb(0 98 72 / .55); }
+.dock-action.is-ia { position: relative; isolation: isolate; border-color: transparent; background: rgb(255 255 255 / .94); box-shadow: 0 6px 14px -12px rgb(0 98 72 / .35); }
 .dock-action.is-ia svg { color: var(--marca); }
 .dock-action.is-ia::before {
-  content: ""; position: absolute; inset: -1px; z-index: -1; padding: 1.5px; border-radius: 19px; pointer-events: none;
-  background: conic-gradient(from var(--ia-giro), var(--marca), var(--marca-2) 30%, var(--azul-2) 50%, var(--marca-2) 70%, var(--marca));
+  content: ""; position: absolute; inset: -1px; z-index: -1; padding: 1.25px; border-radius: 19px; pointer-events: none;
+  background: conic-gradient(from var(--ia-giro, 0deg), #1D9E6E, #6FD3B0 22%, var(--celeste) 50%, #6FD3B0 78%, #1D9E6E);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
 }
@@ -139,11 +141,11 @@ svg { display: block; }
   .dock-action:nth-last-child(6) { --d: .26s; }
   @keyframes ia-giro { to { --ia-giro: 360deg; } }
   @keyframes ia-halo {
-    0%, 100% { box-shadow: 0 6px 16px -10px rgb(0 98 72 / .55), 0 0 0 0 rgb(120 220 180 / 0); }
-    50% { box-shadow: 0 8px 18px -9px rgb(0 98 72 / .65), 0 0 12px 0 rgb(120 220 180 / .75); }
+    0%, 100% { box-shadow: 0 6px 14px -12px rgb(0 98 72 / .35), 0 0 0 0 rgb(154 220 247 / 0); }
+    50% { box-shadow: 0 6px 16px -12px rgb(0 98 72 / .4), 0 0 8px 0 rgb(154 220 247 / .38); }
   }
-  .dock.is-open .dock-action.is-ia { animation: ia-halo 3.2s ease-in-out infinite; }
-  .dock.is-open .dock-action.is-ia::before { animation: ia-giro 4.5s linear infinite; }
+  .dock.is-open .dock-action.is-ia { animation: ia-halo 4.2s ease-in-out infinite; }
+  .dock.is-open .dock-action.is-ia::before { animation: ia-giro 6s linear infinite; }
 }
 @media (prefers-reduced-motion: reduce) { .dock, .dock.is-visible, .dock.is-open { transition: none; } }
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) { .dock.is-open { background: rgb(255 255 255 / .97); } }

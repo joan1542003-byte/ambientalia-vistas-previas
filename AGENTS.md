@@ -252,5 +252,5 @@ Las vistas de este repositorio son deliberadamente `noindex`; su canonical puede
 
 ## 10-11-2026: asistente IA para ambientalia.cl
 
-- Plugin aparte, `wordpress/ambientalia-asistente/` (versión 1.2.0), con su vista previa `ambientalia-asistente.html` y el asistente de prueba `tools/asistente-simulado.py`. Detalle, instalación y verificación en [docs/asistente-ambientalia.md](docs/asistente-ambientalia.md).
+- Plugin aparte, `wordpress/ambientalia-asistente/` (versión 1.3.0), con su vista previa `ambientalia-asistente.html` y el asistente de prueba `tools/asistente-simulado.py`. Detalle, instalación y verificación en [docs/asistente-ambientalia.md](docs/asistente-ambientalia.md).
 - Usa el mismo contrato del chat de Transporte, pero con código propio: no toca `assets/site/agente*.js|css` (el chat de Transporte sigue siendo de Jeremy).

@@ -13,8 +13,10 @@
      conserva su client_message_id en los reintentos. Las respuestas se muestran como texto, nunca como HTML.
    - Todo vive en un Shadow DOM (#amb-asistente): los estilos del tema y de Elementor no lo alteran y los suyos
      (asistente.css) no tocan el sitio.
-   - Configuración en window.AMB_ASISTENTE (la escribe el plugin): asistente (dirección), turnstile, whatsapp, contacto,
-     posicion y css. En este computador (localhost) se puede probar con ?asistente=<dirección>.
+   - Configuración en window.AMB_ASISTENTE (la escribe el plugin, Ajustes → Asistente IA): posicion, leyenda, destacada
+     ('contacto' | 'whatsapp' | 'ninguna'), chat y chatTexto, asistente (dirección) y turnstile, whatsapp, waTexto y
+     waMensaje, contacto y contactoTexto, y css. Una acción apagada llega vacía y no se muestra; sin ninguna, no hay
+     burbuja. En este computador (localhost) se puede probar con ?asistente=<dirección>.
    Sin lookbehind en las expresiones regulares (Safari < 16.4). */
 (() => {
   if (window.__ambAsistente) return;
@@ -51,7 +53,18 @@
     return limpiar(C.asistente);
   })();
   const WA = String(C.whatsapp || '').replace(/\D/g, '');
-  const CONTACTO = (() => { if (!C.contacto) return ''; try { const u = new URL(C.contacto, location.href); return /^https?:$/.test(u.protocol) ? u.href : ''; } catch { return ''; } })();
+  const CONTACTO = (() => { if (!C.contacto) return ''; try { const u = new URL(C.contacto, location.href); return /^(https?|mailto):$/.test(u.protocol) ? u.href : ''; } catch { return ''; } })();
+  const CHAT = C.chat !== false;
+  const corto = (t, max, defecto) => (typeof t === 'string' && t.trim() ? t.trim().slice(0, max) : defecto);
+  const TEXTOS = {
+    contacto: corto(C.contactoTexto, 30, 'Contacto'),
+    wa: corto(C.waTexto, 30, 'WhatsApp'),
+    chat: corto(C.chatTexto, 30, 'Chat con IA'),
+    leyenda: corto(C.leyenda, 40, '¿En qué te ayudamos?'),
+    waMensaje: corto(C.waMensaje, 300, 'Hola, me gustaría recibir más información.')
+  };
+  const DESTACADA = ['contacto', 'whatsapp', 'ninguna'].includes(C.destacada) ? C.destacada : 'contacto';
+  if (!CONTACTO && !WA && !CHAT) return;  // sin acciones, no hay burbuja
   const LEGAL = (ruta) => (API ? `${API}/${ruta}` : '');
 
   /* ---------- Elementos (los íconos son los de Transporte: trazos fijos, nunca texto del servicio) ---------- */
@@ -102,6 +115,10 @@
   const tactil = matchMedia('(hover: none)');
   const suave = () => (motion.matches ? 'smooth' : 'auto');
 
+  /* El giro del borde de «Chat con IA» anima un ángulo: @property no rige dentro de un Shadow DOM, así que se registra en
+     la página (una sola vez; si ya existe o el navegador no lo admite, el borde queda quieto) */
+  try { CSS.registerProperty({ name: '--ia-giro', syntax: '<angle>', inherits: false, initialValue: '0deg' }); } catch { /* ya registrada o sin soporte */ }
+
   /* ---------- Shadow DOM ---------- */
   const host = h('div', { id: 'amb-asistente', 'data-posicion': C.posicion === 'izquierda' ? 'izquierda' : 'derecha' });
   host.style.cssText = 'all: initial; display: none;';
@@ -114,12 +131,14 @@
   /* La burbuja «?» con sus acciones */
   const toggle = h('button', { class: 'dock-toggle', type: 'button', 'aria-expanded': 'false', 'aria-controls': 'dock-menu', 'aria-label': 'Ayuda y contacto' },
     icono(I.q, { size: 24, clase: 'dock-q' }), icono(I.x, { size: 24, clase: 'dock-x' }));
-  const abrirChat = h('button', { class: 'dock-action is-ia', type: 'button', 'aria-haspopup': 'dialog', 'aria-controls': 'agente', 'aria-expanded': 'false' }, icono(I.ia), 'Chat con IA');
+  const abrirChat = h('button', { class: 'dock-action is-ia', type: 'button', 'aria-haspopup': 'dialog', 'aria-controls': 'agente', 'aria-expanded': 'false' }, icono(I.ia), TEXTOS.chat);
+  /* La destacada va arriba, en verde (la «Cotizar retiro» de Transporte) */
+  const accionContacto = CONTACTO ? h('a', { class: `dock-action${DESTACADA === 'contacto' ? ' is-primary' : ''}`, href: CONTACTO }, icono(I.correo), TEXTOS.contacto) : null;
+  const accionWa = WA ? h('a', { class: `dock-action${DESTACADA === 'whatsapp' ? ' is-primary' : ''}`, href: `https://wa.me/${WA}?text=${encodeURIComponent(TEXTOS.waMensaje)}`, target: '_blank', rel: 'noopener noreferrer' }, icono(I.wa, { relleno: true }), TEXTOS.wa, h('span', { class: 'sr-only', text: ' (pestaña nueva)' })) : null;
   const menu = h('nav', { class: 'dock-menu', id: 'dock-menu', 'aria-label': 'Acciones rápidas' },
-    CONTACTO ? h('a', { class: 'dock-action is-primary', href: CONTACTO }, icono(I.correo), 'Contacto') : null,
-    WA ? h('a', { class: 'dock-action', href: `https://wa.me/${WA}?text=${encodeURIComponent('Hola, me gustaría recibir más información.')}`, target: '_blank', rel: 'noopener noreferrer' }, icono(I.wa, { relleno: true }), 'WhatsApp', h('span', { class: 'sr-only', text: ' (pestaña nueva)' })) : null,
-    abrirChat,
-    h('p', { class: 'dock-caption', 'aria-hidden': 'true', text: '¿En qué te ayudamos?' }));
+    DESTACADA === 'whatsapp' ? [accionWa, accionContacto] : [accionContacto, accionWa],
+    CHAT ? abrirChat : null,
+    h('p', { class: 'dock-caption', 'aria-hidden': 'true', text: TEXTOS.leyenda }));
   const dock = h('div', { class: 'dock', 'data-dock': true }, toggle, menu);
 
   /* La ventana del chat */
@@ -185,7 +204,7 @@
     abrirChat.setAttribute('aria-expanded', String(si));
   };
   const abrir = () => {
-    if (abierto() && !panel.classList.contains('is-saliendo')) return;
+    if (!CHAT || (abierto() && !panel.classList.contains('is-saliendo'))) return;
     clearTimeout(saliendo);
     setMenu(false);
     panel.classList.remove('is-saliendo');

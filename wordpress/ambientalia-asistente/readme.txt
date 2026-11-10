@@ -2,7 +2,7 @@
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 
 Burbuja «?» de Ambientalia (Contacto, WhatsApp y Chat con IA), presente en todas las páginas públicas del sitio. Mismo diseño que la de Transporte Autorizado, en el verde de Ambientalia.
 
@@ -17,12 +17,16 @@ Burbuja «?» de Ambientalia (Contacto, WhatsApp y Chat con IA), presente en tod
 == Instalación ==
 
 1. Plugins → Añadir nuevo → Subir plugin → ambientalia-asistente.zip → Activar.
-2. Ajustes → Asistente IA: dirección del asistente (https, sin barra final), clave pública de Turnstile (solo si el asistente la exige), WhatsApp, página de contacto, posición e invitación.
+2. Ajustes → Asistente IA: qué acciones muestra la burbuja (Contacto, WhatsApp, Chat con IA) y sus textos, la página de contacto, el número y el mensaje de WhatsApp, la dirección del asistente (https, sin barra final), la clave pública de Turnstile (solo si el asistente la exige) y la posición.
 3. Vaciar la caché de páginas y de la CDN si la hay (el plugin vacía LiteSpeed, WP Rocket y W3 Total Cache al guardar).
 
 El asistente debe aceptar el origen del sitio (https://ambientalia.cl y, si se usa, https://www.ambientalia.cl).
 
 == Changelog ==
+
+= 1.3.0 =
+* Ajustes por acción: mostrar u ocultar Contacto, WhatsApp y Chat con IA, sus textos, la página de contacto, el número y el mensaje inicial de WhatsApp, el texto junto a la X y la acción destacada.
+* «Chat con IA» más sutil: borde de verde a celeste que gira despacio y halo celeste suave. El giro ahora funciona dentro del Shadow DOM.
 
 = 1.2.0 =
 * Diseño idéntico al de Transporte Autorizado: la burbuja «?» que se expande con Contacto, WhatsApp y Chat con IA, y la ventana del chat que nace desde ella. En el verde de Ambientalia y con Montserrat.

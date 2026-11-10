@@ -20,15 +20,26 @@
 <body>
 <iframe class="sitio" src="https://ambientalia.cl/" title="ambientalia.cl"></iframe>
 <script>
-  window.AMB_ASISTENTE = {
-    asistente: '',
-    turnstile: '',
-    whatsapp: '56983082096',
-    contacto: 'https://ambientalia.cl/contacto/',
-    posicion: new URLSearchParams(location.search).get('posicion') === 'izquierda' ? 'izquierda' : 'derecha',
-    css: 'wordpress/ambientalia-asistente/assets/asistente.css?v=20261110f'
-  };
+  /* Los mismos datos que escribe el plugin. Para probar los ajustes: ?wa=0, ?contacto=0, ?chat=0, ?destacada=whatsapp|ninguna */
+  (() => {
+    const q = new URLSearchParams(location.search);
+    window.AMB_ASISTENTE = {
+      posicion: q.get('posicion') === 'izquierda' ? 'izquierda' : 'derecha',
+      leyenda: '¿En qué te ayudamos?',
+      destacada: q.get('destacada') || 'contacto',
+      chat: q.get('chat') !== '0',
+      chatTexto: 'Chat con IA',
+      asistente: '',
+      turnstile: '',
+      whatsapp: q.get('wa') === '0' ? '' : '56983082096',
+      waTexto: 'WhatsApp',
+      waMensaje: 'Hola, me gustaría recibir más información.',
+      contacto: q.get('contacto') === '0' ? '' : 'https://ambientalia.cl/contacto/',
+      contactoTexto: 'Contacto',
+      css: 'wordpress/ambientalia-asistente/assets/asistente.css?v=20261110h'
+    };
+  })();
 </script>
-<script src="wordpress/ambientalia-asistente/assets/asistente.js?v=20261110f" defer></script>
+<script src="wordpress/ambientalia-asistente/assets/asistente.js?v=20261110h" defer></script>
 </body>
 </html>
