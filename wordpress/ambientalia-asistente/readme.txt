@@ -2,13 +2,13 @@
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 
 Burbuja del asistente con IA de Ambientalia, presente en todas las páginas públicas del sitio.
 
 == Descripción ==
 
-* La burbuja aparece abajo a la izquierda (o a la derecha, sobre el botón de WhatsApp) en todas las páginas, también las hechas con Elementor. No aparece en el escritorio ni en el editor de Elementor.
+* La burbuja aparece abajo a la derecha (o a la izquierda) en todas las páginas, también las hechas con Elementor. No aparece en el escritorio ni en el editor de Elementor.
 * La ventana conversa directo con el asistente (POST /api/chat/sessions, /api/chat/messages, GET /api/chat/history, DELETE /api/chat/session). Antes de conversar pide nombre, correo, teléfono y la aceptación de las condiciones y el aviso de privacidad.
 * Sin dirección del asistente, la burbuja sigue presente y ofrece WhatsApp y la página de contacto.
 * Se arma dentro de un Shadow DOM: los estilos del tema y de Elementor no la alteran, y ella no altera el sitio.
@@ -23,6 +23,13 @@ Burbuja del asistente con IA de Ambientalia, presente en todas las páginas púb
 El asistente debe aceptar el origen del sitio (https://ambientalia.cl y, si se usa, https://www.ambientalia.cl).
 
 == Changelog ==
+
+= 1.1.0 =
+* Nuevo diseño con el lenguaje del header del sitio (vidrio verde, menta, curvas de resorte) y la ventana del chat de Transporte Autorizado.
+* Nueva marca de la burbuja, invitación con sugerencias, bienvenida con preguntas de ejemplo y pregunta inmediata (los datos se piden después).
+* Micro interacciones: apertura de gota, mensajes y opciones animados, copiar respuesta, «Nuevo mensaje», estados de espera.
+* Teléfono: pantalla visible con teclado, página quieta, «atrás» cierra el chat, campos de 16 px.
+* Burbuja a la derecha por omisión.
 
 = 1.0.0 =
 * Primera versión.

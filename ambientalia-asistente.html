@@ -8,7 +8,7 @@
 <!-- Vista previa de la burbuja del plugin wordpress/ambientalia-asistente sobre el sitio real de Ambientalia (detrás, en
      un <iframe>). Es lo mismo que carga el plugin en WordPress: asistente.js y asistente.css, con la configuración en
      window.AMB_ASISTENTE. Sin dirección del asistente, la ventana ofrece WhatsApp y contacto. En este computador se prueba
-     el chat con ?asistente=http://127.0.0.1:8794 (python3 tools/asistente-simulado.py) y la posición con ?posicion=derecha. -->
+     el chat con ?asistente=http://127.0.0.1:8794 (python3 tools/asistente-simulado.py) y la posición con ?posicion=izquierda. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,11 +25,11 @@
     turnstile: '',
     whatsapp: '56983082096',
     contacto: 'https://ambientalia.cl/contacto/',
-    posicion: new URLSearchParams(location.search).get('posicion') === 'derecha' ? 'derecha' : 'izquierda',
+    posicion: new URLSearchParams(location.search).get('posicion') === 'izquierda' ? 'izquierda' : 'derecha',
     saludo: true,
-    css: 'wordpress/ambientalia-asistente/assets/asistente.css?v=20261110c'
+    css: 'wordpress/ambientalia-asistente/assets/asistente.css?v=20261110e'
   };
 </script>
-<script src="wordpress/ambientalia-asistente/assets/asistente.js?v=20261110c" defer></script>
+<script src="wordpress/ambientalia-asistente/assets/asistente.js?v=20261110e" defer></script>
 </body>
 </html>
