@@ -2,9 +2,9 @@
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 
-Burbuja del asistente con IA de Ambientalia, presente en todas las páginas públicas del sitio.
+Burbuja «?» de Ambientalia (Contacto, WhatsApp y Chat con IA), presente en todas las páginas públicas del sitio. Mismo diseño que la de Transporte Autorizado, en el verde de Ambientalia.
 
 == Descripción ==
 
@@ -23,6 +23,10 @@ Burbuja del asistente con IA de Ambientalia, presente en todas las páginas púb
 El asistente debe aceptar el origen del sitio (https://ambientalia.cl y, si se usa, https://www.ambientalia.cl).
 
 == Changelog ==
+
+= 1.2.0 =
+* Diseño idéntico al de Transporte Autorizado: la burbuja «?» que se expande con Contacto, WhatsApp y Chat con IA, y la ventana del chat que nace desde ella. En el verde de Ambientalia y con Montserrat.
+* Sin la invitación ni los agregados de la 1.1.0, que no están en Transporte.
 
 = 1.1.0 =
 * Nuevo diseño con el lenguaje del header del sitio (vidrio verde, menta, curvas de resorte) y la ventana del chat de Transporte Autorizado.

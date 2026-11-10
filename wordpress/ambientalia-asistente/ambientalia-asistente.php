@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Ambientalia · Asistente IA
- * Description: Burbuja del asistente con IA de Ambientalia, presente en todas las páginas del sitio (también las hechas con Elementor). La dirección del asistente se configura en Ajustes → Asistente IA.
- * Version: 1.1.0
+ * Description: Burbuja «?» de Ambientalia con Contacto, WhatsApp y Chat con IA, presente en todas las páginas del sitio (también las hechas con Elementor). La dirección del asistente se configura en Ajustes → Asistente IA.
+ * Version: 1.2.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Ambientalia
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('AMB_ASISTENTE_VERSION', '1.1.0');
+define('AMB_ASISTENTE_VERSION', '1.2.0');
 define('AMB_ASISTENTE_OPCION', 'amb_asistente');
 
 /** Ajustes con sus valores por omisión. */
@@ -31,7 +31,6 @@ function amb_asistente_ajustes() {
         'whatsapp' => '56983082096',
         'contacto' => '',
         'posicion' => 'derecha',
-        'saludo' => 1,
     ];
     $guardado = get_option(AMB_ASISTENTE_OPCION, []);
     return array_merge($porDefecto, is_array($guardado) ? $guardado : []);
@@ -71,7 +70,6 @@ function amb_asistente_sanear($v) {
         'whatsapp' => preg_replace('/\D/', '', (string) ($v['whatsapp'] ?? '')),
         'contacto' => esc_url_raw(trim((string) ($v['contacto'] ?? ''))),
         'posicion' => ($v['posicion'] ?? '') === 'izquierda' ? 'izquierda' : 'derecha',
-        'saludo' => empty($v['saludo']) ? 0 : 1,
     ];
     if ($limpio['whatsapp'] !== '' && (strlen($limpio['whatsapp']) < 8 || strlen($limpio['whatsapp']) > 15)) {
         $limpio['whatsapp'] = '';
@@ -125,7 +123,7 @@ function amb_asistente_pagina() {
     ?>
     <div class="wrap">
         <h1>Asistente IA</h1>
-        <p>La burbuja del asistente aparece en todas las páginas públicas del sitio. Sin dirección del asistente, la burbuja sigue visible y ofrece WhatsApp y contacto.</p>
+        <p>La burbuja «?» aparece en todas las páginas públicas del sitio, con Contacto, WhatsApp y Chat con IA. Sin dirección del asistente, el chat dice que no está disponible por ahora.</p>
         <form method="post" action="options.php">
             <?php settings_fields('amb_asistente'); ?>
             <table class="form-table" role="presentation">
@@ -151,14 +149,14 @@ function amb_asistente_pagina() {
                     <th scope="row"><label for="amb-asistente-wa">WhatsApp</label></th>
                     <td>
                         <input type="text" id="amb-asistente-wa" class="regular-text" name="<?php echo esc_attr($n); ?>[whatsapp]" value="<?php echo esc_attr($a['whatsapp']); ?>" inputmode="numeric" placeholder="56912345678">
-                        <p class="description">Con código de país y sin «+». Se ofrece en el menú del chat y cuando el asistente no está disponible.</p>
+                        <p class="description">Con código de país y sin «+». Es la acción «WhatsApp» de la burbuja; vacío, no se muestra.</p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row"><label for="amb-asistente-contacto">Página de contacto</label></th>
                     <td>
                         <input type="url" id="amb-asistente-contacto" class="regular-text" name="<?php echo esc_attr($n); ?>[contacto]" value="<?php echo esc_attr($a['contacto']); ?>" placeholder="<?php echo esc_attr(home_url('/contacto/')); ?>">
-                        <p class="description">Opcional. Se ofrece junto a WhatsApp cuando el asistente no está disponible.</p>
+                        <p class="description">La acción «Contacto» de la burbuja. Vacío: <code><?php echo esc_html(home_url('/contacto/')); ?></code>.</p>
                     </td>
                 </tr>
                 <tr>
@@ -167,10 +165,6 @@ function amb_asistente_pagina() {
                         <label><input type="radio" name="<?php echo esc_attr($n); ?>[posicion]" value="derecha" <?php checked($a['posicion'], 'derecha'); ?>> Abajo a la derecha</label><br>
                         <label><input type="radio" name="<?php echo esc_attr($n); ?>[posicion]" value="izquierda" <?php checked($a['posicion'], 'izquierda'); ?>> Abajo a la izquierda</label>
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row">Invitación</th>
-                    <td><label><input type="checkbox" name="<?php echo esc_attr($n); ?>[saludo]" value="1" <?php checked($a['saludo'], 1); ?>> Mostrar una vez por visita, sobre la burbuja, un saludo del asistente con dos sugerencias</label></td>
                 </tr>
             </table>
             <?php submit_button('Guardar ajustes'); ?>
@@ -204,9 +198,8 @@ add_action('wp_enqueue_scripts', function () {
         'asistente' => $a['asistente'],
         'turnstile' => $a['turnstile'],
         'whatsapp' => $a['whatsapp'],
-        'contacto' => $a['contacto'],
+        'contacto' => $a['contacto'] !== '' ? $a['contacto'] : home_url('/contacto/'),
         'posicion' => $a['posicion'],
-        'saludo' => (bool) $a['saludo'],
         'css' => $base . 'asistente.css?ver=' . AMB_ASISTENTE_VERSION,
     ];
     wp_add_inline_script('amb-asistente', 'window.AMB_ASISTENTE=' . wp_json_encode($config) . ';', 'before');
