@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Asistente IA · vista previa para ambientalia.cl</title>
+<meta name="robots" content="noindex,nofollow">
+<!-- Vista previa de la burbuja del plugin wordpress/ambientalia-asistente sobre el sitio real de Ambientalia (detrás, en
+     un <iframe>). Es lo mismo que carga el plugin en WordPress: asistente.js y asistente.css, con la configuración en
+     window.AMB_ASISTENTE. Sin dirección del asistente, la ventana ofrece WhatsApp y contacto. En este computador se prueba
+     el chat con ?asistente=http://127.0.0.1:8794 (python3 tools/asistente-simulado.py) y la posición con ?posicion=derecha. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html, body { height: 100%; margin: 0; overflow: hidden; background: #fff; }
+  .sitio { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; }
+</style>
+</head>
+<body>
+<iframe class="sitio" src="https://ambientalia.cl/" title="ambientalia.cl"></iframe>
+<script>
+  window.AMB_ASISTENTE = {
+    asistente: '',
+    turnstile: '',
+    whatsapp: '56983082096',
+    contacto: 'https://ambientalia.cl/contacto/',
+    posicion: new URLSearchParams(location.search).get('posicion') === 'derecha' ? 'derecha' : 'izquierda',
+    saludo: true,
+    css: 'wordpress/ambientalia-asistente/assets/asistente.css?v=20261110c'
+  };
+</script>
+<script src="wordpress/ambientalia-asistente/assets/asistente.js?v=20261110c" defer></script>
+</body>
+</html>

@@ -249,3 +249,8 @@ Las vistas de este repositorio son deliberadamente `noindex`; su canonical puede
 - Por eso ya no aplican las notas del 23-10 sobre el chat (datos en `localStorage` propios, saludo al recargar, íconos de las opciones como máscara, pantalla completa del chat con el teclado, burbuja oculta con el chat abierto): ahora el chat es como lo describe `docs/integracion-widget-chatbot.md`. Lo demás del 23-10 sigue (íconos Lucide, ayuda por temas, checklists, mapa, normativa oficial, imágenes y WhatsApp en WordPress, hojas y ventanas sobre el teclado).
 - **No cambiar el chat desde esta rama**: lo ve Jeremy. Lo nuestro es todo lo que no es chat.
 
+
+## 10-11-2026: asistente IA para ambientalia.cl
+
+- Plugin aparte, `wordpress/ambientalia-asistente/` (versión 1.0.0), con su vista previa `ambientalia-asistente.html` y el asistente de prueba `tools/asistente-simulado.py`. Detalle, instalación y verificación en [docs/asistente-ambientalia.md](docs/asistente-ambientalia.md).
+- Usa el mismo contrato del chat de Transporte, pero con código propio: no toca `assets/site/agente*.js|css` (el chat de Transporte sigue siendo de Jeremy).
