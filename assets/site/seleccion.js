@@ -209,7 +209,8 @@
     scroller.addEventListener('scroll', update, { passive: true });
     if ('ResizeObserver' in window) new ResizeObserver(update).observe(scroller);
     new MutationObserver(() => requestAnimationFrame(update)).observe(scroller, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'open'] });
-    update();
+    // La primera medida espera al próximo cuadro: leer el alto al cargar la página obligaba a recalcular el diseño (reflujo forzado)
+    requestAnimationFrame(update);
     return update;
   };
 

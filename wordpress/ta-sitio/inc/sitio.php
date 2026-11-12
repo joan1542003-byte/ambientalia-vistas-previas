@@ -319,8 +319,8 @@ function ta_sitio_politica( array $sellos, array $op ) {
 			array(
 				"default-src 'self'",
 				"script-src 'self' " . implode( ' ', array_unique( $sellos ) ) . ( '' !== $turnstile ? ' ' . $turnstile : '' ),
-				"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-				"font-src 'self' https://fonts.gstatic.com",
+				"style-src 'self' 'unsafe-inline'",
+				"font-src 'self'",  // Nunito va en el propio sitio (assets/site/fonts/) desde el 12-11-2026
 				"img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://joan1542003-byte.github.io",  // blob: miniaturas de las fotografías que se adjuntan; github.io: portadas de LinkedIn
 				"connect-src 'self' https://joan1542003-byte.github.io" . ( '' !== $asistente ? ' ' . $asistente : '' ),  // github.io: publicaciones de LinkedIn
 				'' !== $turnstile ? "frame-src 'self' " . $turnstile : '',
@@ -366,4 +366,27 @@ add_filter(
 		return 'publicado' === $op['modo'] ? $texto . "\nSitemap: " . home_url( '/sitemap-sitio.xml' ) . "\n" : $texto;
 	},
 	20
+);
+
+/*
+ * El mapa propio de WordPress (wp-sitemap.xml) no lista autores y las páginas de autor llevan al inicio (12-11-2026): la
+ * única que había mostraba el nombre del usuario de acceso y, para los buscadores, era una página vacía.
+ */
+add_filter(
+	'wp_sitemaps_add_provider',
+	static function ( $proveedor, $nombre ) {
+		return 'users' === $nombre ? false : $proveedor;
+	},
+	10,
+	2
+);
+add_action(
+	'template_redirect',
+	static function () {
+		if ( is_author() ) {
+			wp_safe_redirect( home_url( '/' ), 301 );
+			exit;
+		}
+	},
+	1
 );

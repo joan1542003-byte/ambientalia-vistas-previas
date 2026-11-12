@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.14
+Stable tag: 1.4.15
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,13 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.15 =
+* Hero sin viñeta: la foto se ve limpia, sin velo oscuro ni bordes fundidos, en un recuadro con esquinas redondeadas; título, campo y opciones quedan sobre el tono sólido.
+* Imágenes subidas a la biblioteca: la página entrega las medidas que WordPress generó al subirlas (srcset) y el navegador baja solo la que necesita; antes bajaba el original (el PNG de la portada pesa 2 MB). Las medidas nuevas que genera WordPress de un PNG o JPG quedan en WebP; las ya subidas cambian al volver a subirlas.
+* Nunito va en el propio sitio, precargada: ya no se pide a Google Fonts (la política de contenido deja de permitirlo).
+* Accesibilidad (WCAG 2.2 AA): el gris de los textos secundarios sube su contraste a 4,9:1 sobre el fondo gris claro.
+* El mapa de WordPress (wp-sitemap.xml) ya no lista autores y las páginas de autor llevan al inicio.
 
 = 1.4.14 =
 * Cambios de Jeremy del 03-11: condiciones de acceso del encargado (28, agrupadas por tipo en secciones plegables), «Solicitar cotización» del buscador abre la cotización del asistente (WhatsApp y correo quedan como alternativa) y el chat muestra párrafos y listas en sus respuestas.

@@ -1683,6 +1683,31 @@ a.route { text-decoration: none; }
 @media (max-width: 599px) and (max-height: 600px) {
   body[data-site="transporte"] .stage-media img { height: 84px; }
 }
+/* Hero sin viñeta (pedido del cliente, 12-11-2026): la foto va limpia, sin velo ni bordes fundidos, enmarcada con esquinas
+   redondeadas; el título, el campo y las opciones quedan sobre el tono sólido, con el contraste de siempre */
+body[data-site="transporte"] .stage::before, body[data-site="transporte"] .stage-media::after { display: none; }
+@media (min-width: 861px) {
+  body[data-site="transporte"] :is(.stage-media, .stage-fotos) { inset: 10px 10px 10px 460px; overflow: hidden; border-radius: 20px; }
+  body[data-site="transporte"] .stage-media { background: rgb(255 255 255 / .06); }
+  body[data-site="transporte"] .stage-media img {
+    position: static; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: 72% 100%;
+    -webkit-mask-image: none; mask-image: none;
+  }
+}
+@media (max-width: 860px) {
+  body[data-site="transporte"] .stage-media { margin: 8px 8px 0; overflow: hidden; border-radius: 16px; }
+  body[data-site="transporte"] .stage-side { margin-top: 0; padding-top: 16px; }
+}
+/* Teléfono: la foto cede lo que antes quedaba bajo el título (y bajo el velo), para que el hero siga cabiendo en la
+   primera pantalla; en teléfonos bajos queda una franja, como la parte de la foto que antes se veía limpia, y en los muy
+   bajos (iPhone SE con las barras abiertas) no hay foto: título, campo y las cuatro opciones caben sin ella */
+@media (max-width: 599px) {
+  body[data-site="transporte"] .stage-media img { height: clamp(52px, calc(100vh - 624px), 190px); height: clamp(52px, calc(100svh - 624px), 190px); }
+}
+@media (max-width: 599px) and (max-height: 600px) {
+  body[data-site="transporte"] .stage-media { display: none; }
+  body[data-site="transporte"] .stage-side { padding-top: 20px; }
+}
 
 /* =====================================================================================
    HDS y Campañas (02-10-2026): el mismo hero, la misma tarjeta y las mismas ventanas de Transporte.

@@ -3,6 +3,18 @@
   Escala contenida, un acento por sitio (body[data-site]) y neutros con leve sesgo al acento.
 */
 
+/* Nunito desde el propio sitio (12-11-2026): antes venía de Google Fonts, una hoja de otro dominio que frenaba el primer
+   dibujo de la página. Fuente variable (pesos 200 a 1000), solo los caracteres latinos (incluye tildes, ñ, ¿ y ¡), 40 KB;
+   cada página la precarga. Nunito: SIL Open Font License 1.1, © The Nunito Project Authors (github.com/googlefonts/nunito). */
+@font-face {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url("fonts/nunito-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ---------- Tokens ---------- */
 :root {
   --bg: #ffffff;
@@ -10,7 +22,7 @@
   --bg-sunk: #efedf6;
   --ink: #151a2d;
   --ink-2: #3e4459;
-  --muted: #6b7185;
+  --muted: #646a7e;
   --line: #e4e7ee;
   --line-strong: #cfd4df;
 

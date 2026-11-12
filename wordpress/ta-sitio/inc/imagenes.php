@@ -12,6 +12,21 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/*
+ * Las medidas que WordPress genera al subir un PNG o un JPG se guardan en WebP (12-11-2026): pesan una fracción y todos los
+ * navegadores actuales las muestran. El original queda como se subió. Solo si el servidor sabe escribir WebP; las imágenes
+ * ya subidas cambian al volver a subirlas (o al regenerar sus miniaturas).
+ */
+add_filter(
+	'image_editor_output_format',
+	function ( $formatos ) {
+		if ( ! wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ) {
+			return $formatos;
+		}
+		return array_merge( (array) $formatos, array( 'image/png' => 'image/webp', 'image/jpeg' => 'image/webp' ) );
+	}
+);
+
 /** Orden de los grupos en los ajustes. */
 function ta_sitio_imagenes_grupos() {
 	return array( 'Portada', 'Servicios', 'Otras secciones', 'Residuos', 'Logo e ícono', 'Al compartir' );
@@ -64,7 +79,8 @@ function ta_sitio_imagenes_mapa() {
 	$espacios = ta_sitio_imagenes_espacios();
 	$out      = array();
 	foreach ( ta_sitio_imagenes_elegidas() as $clave => $id ) {
-		$url = wp_get_attachment_image_url( $id, 'full' );
+		// Las miniaturas de los residuos se ven pequeñas: basta la medida mediana (300 px) que WordPress genera al subirla
+		$url = wp_get_attachment_image_url( $id, 0 === strpos( $clave, 'cat_' ) ? 'medium' : 'full' );
 		foreach ( $url ? $espacios[ $clave ]['archivos'] : array() as $archivo ) {
 			$out[ $archivo ] = esc_url_raw( $url );
 		}
@@ -72,15 +88,53 @@ function ta_sitio_imagenes_mapa() {
 	return $out;
 }
 
+/**
+ * Medidas de una imagen de la biblioteca (12-11-2026). El original subido puede pesar varios MB (en la portada, un PNG
+ * de 2 MB alargaba la carga en el teléfono), así que cada <img>, <source> y precarga de la página que la usa recibe las
+ * medidas que WordPress generó al subirla (srcset) y el navegador baja solo la que necesita según el «sizes» del HTML.
+ * width y height pasan a ser los de la imagen subida. Sin otras medidas (imagen pequeña), queda como estaba.
+ */
+function ta_sitio_imagenes_medidas( $html, $id, $url ) {
+	$srcset = wp_get_attachment_image_srcset( $id, 'full' );
+	if ( ! $srcset ) {
+		return $html;
+	}
+	$meta = wp_get_attachment_metadata( $id );
+	$w    = ! empty( $meta['width'] ) ? (int) $meta['width'] : 0;
+	$h    = ! empty( $meta['height'] ) ? (int) $meta['height'] : 0;
+	return preg_replace_callback(
+		'#<(img|source|link)\b[^>]*\s(?:src|srcset|href)="' . preg_quote( esc_url( $url ), '#' ) . '"[^>]*>#i',
+		function ( $m ) use ( $srcset, $w, $h ) {
+			$tag      = $m[0];
+			$etiqueta = strtolower( $m[1] );
+			if ( 'link' === $etiqueta && ! preg_match( '#\sas="image"#i', $tag ) ) {
+				return $tag;
+			}
+			$lista  = 'link' === $etiqueta ? 'imagesrcset' : 'srcset';
+			$tamano = 'link' === $etiqueta ? 'imagesizes' : 'sizes';
+			// La lista reemplaza la que traiga: una medida del sitio no corresponde a la imagen nueva
+			$tag = preg_replace( '#\s' . $lista . '="[^"]*"#i', '', $tag );
+			if ( 'link' !== $etiqueta && $w && $h ) {
+				$tag = preg_replace( array( '#\swidth="\d+"#i', '#\sheight="\d+"#i' ), array( ' width="' . $w . '"', ' height="' . $h . '"' ), $tag );
+			}
+			$extra = ' ' . $lista . '="' . esc_attr( $srcset ) . '"' . ( preg_match( '#\s' . $tamano . '="#i', $tag ) ? '' : ' ' . $tamano . '="100vw"' );
+			$fin   = '/>' === substr( $tag, -2 ) ? '/>' : '>';
+			return rtrim( substr( $tag, 0, -strlen( $fin ) ) ) . $extra . $fin;
+		},
+		$html
+	);
+}
+
 /** La página con las imágenes elegidas en lugar de las del sitio. */
 function ta_sitio_imagenes_aplicar( $html ) {
 	$espacios = ta_sitio_imagenes_espacios();
 	foreach ( ta_sitio_imagenes_elegidas() as $clave => $id ) {
-		$url = wp_get_attachment_image_url( $id, 'full' );
+		$e = $espacios[ $clave ];
+		// Las fotos de las opciones del hero se ven en un recuadro de unos 620 px de alto: basta la medida de 1536 px
+		$url = wp_get_attachment_image_url( $id, 'insertar' === $e['tipo'] ? '1536x1536' : 'full' );
 		if ( ! $url ) {
 			continue;
 		}
-		$e = $espacios[ $clave ];
 		if ( 'insertar' === $e['tipo'] ) {
 			$html = str_replace( $e['buscar'], sprintf( $e['reemplazo'], esc_url( $url ) ), $html );
 			continue;
@@ -88,6 +142,9 @@ function ta_sitio_imagenes_aplicar( $html ) {
 		foreach ( $e['archivos'] as $archivo ) {
 			// La dirección relativa (también desde ayuda/, normativa/ y legal/), con su ?v=, o la absoluta del dominio
 			$html = preg_replace_callback( '#(?:\.\./)*(?:https?://transporteautorizado\.cl/)?' . preg_quote( $archivo, '#' ) . '(?:\?v=[\w.-]*)?#', fn() => esc_url( $url ), $html );
+		}
+		if ( '' === $e['tipo'] ) {
+			$html = ta_sitio_imagenes_medidas( $html, $id, $url );
 		}
 		if ( 'logo' === $e['tipo'] ) {
 			$meta  = wp_get_attachment_metadata( $id );

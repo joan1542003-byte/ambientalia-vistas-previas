@@ -498,9 +498,7 @@ def pagina(n, cuerpo, toc, version, tools=('', '')):
 <link rel="icon" href="../assets/transporte/favicon-48.png?v={version}" sizes="48x48" type="image/png">
 <link rel="icon" href="../assets/transporte/favicon-192.png?v={version}" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png?v={version}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" href="../assets/site/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/site/site.css?v={version}">
 <link rel="stylesheet" href="../assets/site/transporte.css?v={version}">
 <script>document.documentElement.classList.add('js')</script>
