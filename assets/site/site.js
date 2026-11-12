@@ -1,6 +1,16 @@
 /* Comportamiento compartido de los tres sitios. */
 (() => {
   const d = document;
+  /* Estilos que no se ven al cargar (el chat, cerrado): llegan con media="print" para no frenar el primer dibujo de la
+     página y aquí pasan a regir (12-11-2026). No se pueden activar con onload: la política de contenido no lo permite. */
+  d.querySelectorAll('link[data-tarde]').forEach((l) => { l.media = 'all'; });
+  /* Scripts que solo se usan al abrir algo (mapa, asistente guiado, biblioteca, chat): se piden después del primer dibujo,
+     en orden, para que no compitan con la foto del hero en el teléfono (12-11-2026). Quien los usa revisa que estén. */
+  const tardios = [...d.querySelectorAll('script[data-tarde-src]')];
+  if (tardios.length) {
+    const cargar = () => tardios.forEach((t) => { const s = d.createElement('script'); s.src = t.dataset.tardeSrc; s.async = false; d.body.append(s); });
+    if (d.visibilityState === 'visible') requestAnimationFrame(() => setTimeout(cargar, 0)); else setTimeout(cargar, 0);
+  }
   const WHATSAPP = '56986067930';
   /* El correo del equipo (cliente, 26-10-2026): el mismo de las condiciones del servicio y del asistente */
   const CORREO = 'contacto@transporteautorizado.cl';
@@ -336,7 +346,10 @@
       entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
     }, { rootMargin: '0px 0px 40px 0px' });
     d.querySelectorAll('.reveal, .reveal-group').forEach((el) => {
-      if (el.getBoundingClientRect().top < innerHeight) return;
+      /* Primero la sección: las que están bajo la primera pantalla no se calculan hasta acercarse (content-visibility en
+         transporte.css) y medir algo dentro de ellas obligaría a calcularlas al cargar */
+      const caja = el.closest('main > section, footer');
+      if ((!caja || caja.getBoundingClientRect().top < innerHeight) && el.getBoundingClientRect().top < innerHeight) return;
       io.observe(el);
     });
   }

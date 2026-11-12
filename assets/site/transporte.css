@@ -1695,6 +1695,10 @@ a.route { text-decoration: none; }
 @media (max-width: 599px) and (max-height: 600px) {
   body[data-site="transporte"] .stage-media img { height: 84px; }
 }
+/* Secciones bajo la primera pantalla y pie (12-11-2026): no se calculan ni se dibujan hasta que se acercan a la vista, así
+   la carga en el teléfono hace menos trabajo antes de mostrar el hero. El alto estimado se reemplaza por el real («auto»)
+   la primera vez que se dibujan. Los diálogos y la burbuja están fuera de ellas (en <body>). */
+body[data-site="transporte"] main > .section, body[data-site="transporte"] .site-footer { content-visibility: auto; contain-intrinsic-size: auto 760px; }
 /* Hero sin la viñeta oscura (pedido del cliente, 12-11-2026): la foto sigue llenando el hero, pero sin el oscurecido de
    abajo ni el fundido negro del teléfono. Solo queda el tono lila a la izquierda, bajo el título y las opciones (contraste
    AA del texto blanco), y se desvanece antes de la flota. */

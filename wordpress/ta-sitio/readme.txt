@@ -24,7 +24,8 @@ El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `p
 = 1.4.15 =
 * Hero sin la viñeta oscura: la foto sigue llenando el hero, sin el oscurecido de abajo ni el fundido negro del teléfono; queda solo el tono lila bajo el título y las opciones.
 * Tarjetas de servicio de igual alto: la tarjeta lleva la foto y el texto; el botón y «Qué necesitamos» van debajo, fuera de ella.
-* Carga más rápida en el teléfono: el panel «Ayuda» cerrado no se calcula, y el listado de transportistas y las miniaturas se descargan con el primer gesto de la persona.
+* Carga más rápida en el teléfono: el panel «Ayuda» cerrado y las secciones bajo la primera pantalla no se calculan hasta que se usan o se acercan; el mapa, el asistente guiado, la biblioteca y el chat se cargan después del primer dibujo; el listado de transportistas y las miniaturas, con el primer gesto de la persona.
+* Fotos nuevas en WebP (portada en tres medidas, fotos de las opciones del hero y de los servicios). Los espacios de «Imágenes del sitio» conservan sus claves: lo ya subido sigue rigiendo; con «Volver a la del sitio» se usan estas versiones livianas.
 * Imágenes subidas a la biblioteca: la página entrega las medidas que WordPress generó al subirlas (srcset) y el navegador baja solo la que necesita; antes bajaba el original (el PNG de la portada pesa 2 MB). Las medidas nuevas que genera WordPress de un PNG o JPG quedan en WebP; las ya subidas cambian al volver a subirlas.
 * Nunito va en el propio sitio, precargada: ya no se pide a Google Fonts (la política de contenido deja de permitirlo).
 * Accesibilidad (WCAG 2.2 AA): el gris de los textos secundarios sube su contraste a 4,9:1 sobre el fondo gris claro. Los enlaces de WhatsApp, condiciones y privacidad del formulario son rastreables.

@@ -1236,8 +1236,12 @@
      Solo se carga donde hay un contador que lo usa (buscador, asistente o biblioteca de normas). Es una copia local
      (assets/site/vendor/number-flow/): la dirección se resuelve respecto de este archivo. */
   if (motion.matches && d.querySelector('[data-finder], [data-guide], [data-lib]')) {
-    import('./vendor/number-flow/number-flow.js')
+    /* Después de la carga y con la página libre (12-11-2026): antes se pedía al cargar, con prioridad alta, y competía con
+       la foto del hero en el teléfono. Los contadores se ven igual sin él hasta que llega. */
+    const flow = () => import('./vendor/number-flow/number-flow.js')
       .then(() => d.dispatchEvent(new Event('numberflow:ready')))
       .catch(() => {});
+    const libre = (f) => (window.requestIdleCallback ? requestIdleCallback(f, { timeout: 3000 }) : setTimeout(f, 1200));
+    if (d.readyState === 'complete') libre(flow); else addEventListener('load', () => libre(flow), { once: true });
   }
 })();

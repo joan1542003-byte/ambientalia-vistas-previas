@@ -19,15 +19,15 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Fotografía ilustrativa de una flota de camiones">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="assets/transporte/favicon-48.png?v=20261112c" sizes="48x48" type="image/png">
-<link rel="icon" href="assets/transporte/favicon-192.png?v=20261112c" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="assets/transporte/apple-touch-icon.png?v=20261112c">
+<link rel="icon" href="assets/transporte/favicon-48.png?v=20261112d" sizes="48x48" type="image/png">
+<link rel="icon" href="assets/transporte/favicon-192.png?v=20261112d" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="assets/transporte/apple-touch-icon.png?v=20261112d">
 <link rel="preload" href="assets/site/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="assets/transporte/transporte-portada.webp" imagesrcset="assets/transporte/transporte-portada-720.webp 720w, assets/transporte/transporte-portada-1200.webp 1200w, assets/transporte/transporte-portada.webp 1600w" imagesizes="(max-width: 860px) 100vw, 1100px" fetchpriority="high">
-<link rel="stylesheet" href="assets/site/site.css?v=20261112c">
-<link rel="stylesheet" href="assets/site/transporte.css?v=20261112c">
-<link rel="stylesheet" href="assets/site/agente.css?v=20261112c">
-<link rel="stylesheet" href="assets/site/agente-chat.css?v=20261112c">
+<link rel="preload" as="image" href="assets/transporte/transporte-portada.webp" imagesrcset="assets/transporte/transporte-portada-720.webp 720w, assets/transporte/transporte-portada-1200.webp 1200w, assets/transporte/transporte-portada.webp 1600w" imagesizes="(max-width: 860px) calc(100vw - 32px), 1100px" fetchpriority="high">
+<link rel="stylesheet" href="assets/site/site.css?v=20261112d">
+<link rel="stylesheet" href="assets/site/transporte.css?v=20261112d">
+<link rel="stylesheet" href="assets/site/agente.css?v=20261112d" media="print" data-tarde>
+<link rel="stylesheet" href="assets/site/agente-chat.css?v=20261112d" media="print" data-tarde>
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {
@@ -350,7 +350,7 @@
     <div class="container">
       <div class="stage" data-hero data-view="inicio">
         <picture class="stage-media" aria-hidden="true">
-          <img src="assets/transporte/transporte-portada.webp" srcset="assets/transporte/transporte-portada-720.webp 720w, assets/transporte/transporte-portada-1200.webp 1200w, assets/transporte/transporte-portada.webp 1600w" sizes="(max-width: 860px) 100vw, 1100px" width="1600" height="900" alt="" fetchpriority="high" decoding="async">
+          <img src="assets/transporte/transporte-portada.webp" srcset="assets/transporte/transporte-portada-720.webp 720w, assets/transporte/transporte-portada-1200.webp 1200w, assets/transporte/transporte-portada.webp 1600w" sizes="(max-width: 860px) calc(100vw - 32px), 1100px" width="1600" height="900" alt="" fetchpriority="high" decoding="async">
         </picture>
 
         <div class="stage-side">
@@ -1034,18 +1034,19 @@
   </div>
 </div>
 
-<script src="assets/site/site.js?v=20261112c" defer></script>
-<script src="assets/site/pickers.js?v=20261112c" defer></script>
-<script src="assets/site/seleccion.js?v=20261112c" defer></script>
-<script src="assets/site/interpretar.js?v=20261112c" defer></script>
-<script src="assets/site/geo.js?v=20261112c" defer></script>
-<script src="assets/site/mapa.js?v=20261112c" defer></script>
-<script src="assets/site/transporte.js?v=20261112c" defer></script>
-<script src="assets/site/transporte-ui.js?v=20261112c" defer></script>
-<script src="assets/site/asistente.js?v=20261112c" defer></script>
-<script src="assets/site/normativa.js?v=20261112c" defer></script>
-<script src="assets/site/ayuda.js?v=20261112c" defer></script>
-<script src="assets/site/agente.js?v=20261112c" defer></script>
-<script src="assets/site/agente-chat.js?v=20261112c" defer></script>
+<script src="assets/site/site.js?v=20261112d" defer></script>
+<script src="assets/site/pickers.js?v=20261112d" defer></script>
+<script src="assets/site/seleccion.js?v=20261112d" defer></script>
+<script src="assets/site/interpretar.js?v=20261112d" defer></script>
+<script src="assets/site/transporte.js?v=20261112d" defer></script>
+<script src="assets/site/transporte-ui.js?v=20261112d" defer></script>
+<script src="assets/site/ayuda.js?v=20261112d" defer></script>
+<!-- Se cargan después del primer dibujo, en este orden (site.js): solo se usan al abrir el mapa, el asistente guiado, la biblioteca o el chat -->
+<script type="text/plain" data-tarde-src="assets/site/geo.js?v=20261112d"></script>
+<script type="text/plain" data-tarde-src="assets/site/mapa.js?v=20261112d"></script>
+<script type="text/plain" data-tarde-src="assets/site/asistente.js?v=20261112d"></script>
+<script type="text/plain" data-tarde-src="assets/site/normativa.js?v=20261112d"></script>
+<script type="text/plain" data-tarde-src="assets/site/agente.js?v=20261112d"></script>
+<script type="text/plain" data-tarde-src="assets/site/agente-chat.js?v=20261112d"></script>
 </body>
 </html>
