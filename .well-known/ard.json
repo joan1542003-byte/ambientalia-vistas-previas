@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "identifier": "urn:air:transporteautorizado.cl:skills:retiro-de-residuos",
+      "displayName": "Transporte Autorizado: retiro y transporte de residuos",
+      "type": "text/markdown; profile=\"urn:air:agent-skills\"",
+      "url": "https://transporteautorizado.cl/.well-known/agent-skills/retiro-de-residuos/SKILL.md",
+      "description": "Cómo ayudar a una empresa en Chile a coordinar el retiro, transporte y gestión de residuos peligrosos y no peligrosos con Transporte Autorizado: cotizar un retiro, buscar transportistas autorizados por comuna y tipo de residuo, y consultar la normativa chilena con su fuente oficial.",
+      "representativeQueries": [
+        "Cotizar el retiro de residuos industriales en la Región Metropolitana",
+        "¿Quién retira residuos peligrosos en Quilicura?",
+        "Buscar un transportista autorizado de residuos por comuna y tipo de residuo",
+        "¿Qué normativa regula el transporte de residuos peligrosos en Chile?"
+      ],
+      "capabilities": ["CotizarRetiro", "BuscarTransportista", "ConsultarNormativa"],
+      "tags": ["residuos", "residuos peligrosos", "residuos no peligrosos", "transporte de residuos", "Chile", "Región Metropolitana"],
+      "version": "2026-11-12",
+      "updatedAt": "2026-11-12T00:00:00-03:00",
+      "metadata": {
+        "idioma": "es-CL",
+        "sitio": "https://transporteautorizado.cl/",
+        "resumen": "https://transporteautorizado.cl/llms.txt"
+      }
+    }
+  ]
+}

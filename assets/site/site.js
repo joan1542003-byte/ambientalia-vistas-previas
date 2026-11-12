@@ -1,16 +1,39 @@
 /* Comportamiento compartido de los tres sitios. */
 (() => {
   const d = document;
-  /* Estilos que no se ven al cargar (el chat, cerrado): llegan con media="print" para no frenar el primer dibujo de la
-     página y aquí pasan a regir (12-11-2026). No se pueden activar con onload: la política de contenido no lo permite. */
-  d.querySelectorAll('link[data-tarde]').forEach((l) => { l.media = 'all'; });
-  /* Scripts que solo se usan al abrir algo (mapa, asistente guiado, biblioteca, chat): se piden después del primer dibujo,
-     en orden, para que no compitan con la foto del hero en el teléfono (12-11-2026). Quien los usa revisa que estén. */
+  /* El resto de los scripts de la página (formulario, hero, ayuda, mapa, asistente guiado, biblioteca y chat) se piden
+     después del primer dibujo y se ejecutan en el orden del HTML (async = false), para que no compitan con la foto del
+     hero ni con los estilos en el teléfono (12-11-2026). Quien usa los de más abajo revisa que estén. */
   const tardios = [...d.querySelectorAll('script[data-tarde-src]')];
-  if (tardios.length) {
-    const cargar = () => tardios.forEach((t) => { const s = d.createElement('script'); s.src = t.dataset.tardeSrc; s.async = false; d.body.append(s); });
-    if (d.visibilityState === 'visible') requestAnimationFrame(() => setTimeout(cargar, 0)); else setTimeout(cargar, 0);
-  }
+  /* Empiezan cuando ya se pintó la foto principal (su «Largest Contentful Paint»), al terminar la carga, con el primer
+     gesto de la persona o a los 3 s, lo que ocurra primero. Las fotos de más abajo (img[data-tarde-img]) bajan desde ahí. */
+  let hecho = false;
+  const despues = () => {
+    if (hecho) return;
+    hecho = true;
+    /* Estilos que no se ven al cargar (el chat, cerrado): se piden desde aquí, después de la foto del hero (12-11-2026) */
+    d.querySelectorAll('script[data-tarde-css]').forEach((t) => {
+      const l = d.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = t.dataset.tardeCss;
+      d.head.append(l);
+    });
+    d.querySelectorAll('img[data-tarde-img]').forEach((i) => i.removeAttribute('data-tarde-img'));
+    tardios.forEach((t) => { const s = d.createElement('script'); s.src = t.dataset.tardeSrc; s.async = false; d.body.append(s); });
+  };
+  const pronto = () => setTimeout(despues, 0);
+  /* En la portada (la que carga lo demás después), el arranque de abajo va en tramos cortos, cada uno en su propia tarea,
+     para no ocupar el procesador de una vez en el teléfono; en las demás páginas corre de inmediato, como siempre */
+  const enSeguida = tardios.length ? (f) => setTimeout(f, 0) : (f) => f();
+  if (window.PerformanceObserver && PerformanceObserver.supportedEntryTypes?.includes('largest-contentful-paint')) {
+    const po = new PerformanceObserver((lista) => {
+      if (lista.getEntries().some((e) => e.element?.tagName === 'IMG')) { po.disconnect(); pronto(); }
+    });
+    po.observe({ type: 'largest-contentful-paint', buffered: true });
+  } else if (d.readyState === 'complete') requestAnimationFrame(pronto);  // sin esa medida (Safari): al terminar la carga
+  else addEventListener('load', () => requestAnimationFrame(pronto), { once: true });
+  ['pointerdown', 'keydown', 'touchstart'].forEach((g) => addEventListener(g, despues, { once: true, capture: true, passive: true }));
+  setTimeout(despues, 3000);
   const WHATSAPP = '56986067930';
   /* El correo del equipo (cliente, 26-10-2026): el mismo de las condiciones del servicio y del asistente */
   const CORREO = 'contacto@transporteautorizado.cl';
@@ -271,14 +294,17 @@
   if (vv) {
     const root = d.documentElement.style;
     const typing = () => d.activeElement?.matches?.('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="button"]):not([type="submit"]), textarea');
+    /* Solo se escribe si cambia: un valor nuevo en :root obliga a recalcular los estilos de toda la página (al cargar,
+       el CSS ya usa 0 px por omisión) */
+    let antes = '0px 0px';
     const sync = () => {
-      if (!typing() || vv.scale > 1.01) {
-        root.setProperty('--vv-top', '0px');
-        root.setProperty('--vv-bottom', '0px');
-        return;
-      }
-      root.setProperty('--vv-top', `${Math.max(0, Math.round(vv.offsetTop))}px`);
-      root.setProperty('--vv-bottom', `${Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop))}px`);
+      const quieto = !typing() || vv.scale > 1.01;
+      const top = quieto ? '0px' : `${Math.max(0, Math.round(vv.offsetTop))}px`;
+      const bottom = quieto ? '0px' : `${Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop))}px`;
+      if (`${top} ${bottom}` === antes) return;
+      antes = `${top} ${bottom}`;
+      root.setProperty('--vv-top', top);
+      root.setProperty('--vv-bottom', bottom);
     };
     vv.addEventListener('resize', sync);
     vv.addEventListener('scroll', sync);
@@ -310,7 +336,7 @@
   const header = d.querySelector('.site-header');
   const onScroll = () => header?.classList.toggle('is-scrolled', scrollY > 4);
   addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  requestAnimationFrame(onScroll);  // en el cuadro siguiente: leer scrollY al iniciar obligaba a calcular toda la página
 
   /* Menú móvil */
   const toggle = d.querySelector('.menu-toggle');
@@ -327,6 +353,7 @@
     matchMedia('(min-width: 861px)').addEventListener('change', () => setOpen(false));
   }
 
+  enSeguida(() => {  // tramo 1: navegación, animaciones de entrada, acordeones, pestañas y campos (hasta «Formularios»)
   /* Sección activa en la navegación */
   const navLinks = [...d.querySelectorAll('#nav a[href^="#"]:not(.btn)')];
   if ('IntersectionObserver' in window && navLinks.length) {
@@ -340,8 +367,9 @@
   }
 
   /* Animación al entrar en pantalla. Lo que ya se ve al cargar queda quieto y visible. */
-  d.querySelectorAll('.reveal-group').forEach((g) => [...g.children].forEach((c, i) => c.style.setProperty('--i', Math.min(i, 6))));
-  if ('IntersectionObserver' in window && motion.matches) {
+  /* El desfase de cada elemento de un grupo (--i) lo pone site.css con :nth-child; se mide en el cuadro siguiente, con la
+     página ya calculada (antes se medía al iniciar y obligaba a calcularla dos veces) */
+  if ('IntersectionObserver' in window && motion.matches) requestAnimationFrame(() => {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
     }, { rootMargin: '0px 0px 40px 0px' });
@@ -352,7 +380,7 @@
       if ((!caja || caja.getBoundingClientRect().top < innerHeight) && el.getBoundingClientRect().top < innerHeight) return;
       io.observe(el);
     });
-  }
+  });
 
   /* Acordeones con altura animada */
   d.querySelectorAll('.accordion details').forEach((det) => {
@@ -459,6 +487,7 @@
     link.href = window.SITE.whatsapp(text);
   });
 
+  enSeguida(() => {  // tramo 2: formularios con resumen (hasta «Burbuja de ayuda»)
   /* Formularios que preparan un resumen para WhatsApp (con pasos opcionales: data-steps) */
   const labelFor = (field) => {
     if (field.dataset.label) return field.dataset.label;
@@ -751,6 +780,9 @@
     });
   });
 
+  });  // fin del tramo 2
+  });  // fin del tramo 1
+
   /* Burbuja de ayuda: aparece al pasar el hero y se oculta sobre el pie de página. Al abrirla se expande
      (CSS: vidrio líquido) y muestra las acciones; se cierra al elegir una, al tocar fuera o con Escape. */
   const dock = d.querySelector('[data-dock]');
@@ -807,7 +839,7 @@
     if (escenaHero) new MutationObserver(refresh).observe(escenaHero, { attributes: true, attributeFilter: ['data-view'] });
     dock.addEventListener('dock:abrir', () => { refresh(); setOpen(true); });  // «Volver» del chat: de vuelta a las opciones
     toggle?.addEventListener('click', () => setTimeout(refresh));
-    refresh();
+    requestAnimationFrame(refresh);
     const entrar = () => setTimeout(() => { entro = true; refresh(); }, 650);
     if (d.readyState === 'complete') entrar(); else addEventListener('load', entrar, { once: true });
   }

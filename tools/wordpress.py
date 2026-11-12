@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ORIGEN = ROOT / 'wordpress' / 'ta-sitio'
 DOMINIO = 'https://transporteautorizado.cl/'
-SITIO = ['transporte-autorizado.html', 'assets/site/', 'assets/transporte/', 'normativa/', 'ayuda/', 'documentos/', 'legal/']
+SITIO = ['transporte-autorizado.html', 'assets/site/', 'assets/transporte/', 'normativa/', 'ayuda/', 'documentos/', 'legal/', '.well-known/']
 FUERA = {'filas.js'}  # solo de HDS y Campañas
 AGENTE = {'agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.css'}  # no van con --sin-agente
 
@@ -139,6 +139,31 @@ def imagenes():
     return out
 
 
+# CSS y JS del paquete en versión compacta (12-11-2026): sin comentarios ni espacios bajan ~14 KB de CSS y ~29 KB del JS que
+# se descarga antes de la foto del hero (comprimidos), lo que Lighthouse marcaba en el teléfono. El repositorio queda legible;
+# solo se compacta la copia del paquete. Usa esbuild (versión fija, por npx); sin Node, el paquete sale sin compactar.
+ESBUILD = ['npx', '--yes', 'esbuild@0.28.2']
+
+
+def compactar(carpeta):
+    """Compacta en su lugar assets/site/*.css y *.js del paquete, salvo los del chat (de Jeremy, van tal cual)."""
+    archivos = sorted(f for f in carpeta.glob('*.css')) + sorted(f for f in carpeta.glob('*.js'))
+    archivos = [f for f in archivos if f.name not in AGENTE]
+    try:
+        subprocess.run([*ESBUILD, '--version'], capture_output=True, text=True, check=True, timeout=180)
+    except (OSError, subprocess.SubprocessError):
+        print('Aviso: sin esbuild (Node/npx); el CSS y el JS van sin compactar.')
+        return 0
+    antes = sum(f.stat().st_size for f in archivos)
+    for f in archivos:
+        extra = ['--target=es2022'] if f.suffix == '.js' else []
+        subprocess.run([*ESBUILD, str(f), '--minify', '--charset=utf8', '--legal-comments=none', '--log-level=warning',
+                        *extra, f'--outfile={f}', '--allow-overwrite'], check=True, capture_output=True, text=True, timeout=180)
+    despues = sum(f.stat().st_size for f in archivos)
+    print(f'{len(archivos)} archivos CSS y JS compactados: {antes / 1e3:.0f} KB → {despues / 1e3:.0f} KB')
+    return len(archivos)
+
+
 HTACCESS = """# Las páginas las entrega WordPress (con su control de acceso); aquí solo se sirven los archivos.
 <FilesMatch "\\.html$">
   <IfModule mod_authz_core.c>
@@ -180,6 +205,7 @@ def main():
         pagina = (sitio / 'transporte-autorizado.html').read_text(encoding='utf-8')
         assert 'data-agente-abrir' in pagina and 'assets/site/agente-chat.js' in pagina, 'la página no trae el agente'
         assert all((sitio / 'assets' / 'site' / a).is_file() for a in AGENTE), 'faltan archivos del agente en el paquete'
+    compactar(sitio / 'assets' / 'site')
     (sitio / 'llms.txt').write_text(llms(), encoding='utf-8')
     (sitio / 'imagenes.json').write_text(json.dumps(imagenes(), ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     (sitio / '.htaccess').write_text(HTACCESS, encoding='utf-8')

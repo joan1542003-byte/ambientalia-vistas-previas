@@ -1678,6 +1678,11 @@ a.route { text-decoration: none; }
 @media (max-width: 599px) and (max-height: 600px) {
   body[data-site="transporte"] .stage-media img { height: 84px; }
 }
+/* Fotos de más abajo (12-11-2026): con JavaScript empiezan a bajar después del primer dibujo (site.js les quita
+   data-tarde-img), así no compiten con la foto del hero en el teléfono. Sus cajas ya tienen el tamaño final y están lejos
+   de la primera pantalla: nada se mueve a la vista. Sin JavaScript se cargan como siempre. Se marca cada foto y no la
+   página entera: una clase en <html> obligaba a recalcular los estilos de todo. */
+html.js img[data-tarde-img] { display: none; }
 /* Secciones bajo la primera pantalla y pie (12-11-2026): no se calculan ni se dibujan hasta que se acercan a la vista, así
    la carga en el teléfono hace menos trabajo antes de mostrar el hero. El alto estimado se reemplaza por el real («auto»)
    la primera vez que se dibujan. Los diálogos y la burbuja están fuera de ellas (en <body>). */

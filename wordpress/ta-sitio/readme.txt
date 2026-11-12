@@ -25,6 +25,8 @@ El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `p
 * Hero sin la viñeta oscura: la foto sigue llenando el hero, sin el oscurecido de abajo ni el fundido negro del teléfono; queda solo el tono lila bajo el título y las opciones.
 * Tarjetas de servicio de igual alto: la tarjeta lleva la foto y el texto; el botón y «Qué necesitamos» van debajo, fuera de ella.
 * Carga más rápida en el teléfono: el panel «Ayuda» cerrado y las secciones bajo la primera pantalla no se calculan hasta que se usan o se acercan; el mapa, el asistente guiado, la biblioteca y el chat se cargan después del primer dibujo; el listado de transportistas y las miniaturas, con el primer gesto de la persona.
+* Navegación con agentes de IA: manifiesto ARD en /.well-known/ard.json (y su nombre anterior, ai-catalog.json) con una habilidad que describe el sitio; robots.txt lo anuncia con Agentmap.
+* CSS y JS del paquete compactados (602 KB → 379 KB); en la portada, el código y las fotos de más abajo se piden después de pintar la foto del hero, y site.js ya no recalcula la página al iniciar.
 * Horario: solo Cualquier horario (la hora la definimos nosotros), Mañana, Tarde y Vespertino; sin rango de horas.
 * Retiro Programado: se agenda desde pasado mañana (ni hoy ni mañana), en el formulario, el asistente y el campo del hero.
 * Fotos nuevas en WebP (portada en tres medidas, fotos de las opciones del hero y de los servicios). Los espacios de «Imágenes del sitio» conservan sus claves: lo ya subido sigue rigiendo; con «Volver a la del sitio» se usan estas versiones livianas.

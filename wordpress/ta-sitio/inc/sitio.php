@@ -160,8 +160,44 @@ function ta_sitio_despachar() {
 	if ( 'sitemap-sitio.xml' === $ruta ) {
 		ta_sitio_mapa();
 	}
+	if ( array_key_exists( $ruta, TA_SITIO_AGENTES ) ) {  // isset() no admite constantes
+		ta_sitio_agentes( TA_SITIO_AGENTES[ $ruta ] );
+	}
 }
 add_action( 'init', 'ta_sitio_despachar', 20 );
+
+/*
+ * Descubrimiento para agentes de IA (12-11-2026): el manifiesto ARD (Agentic Resource Discovery) en /.well-known/ard.json,
+ * con su nombre anterior (ai-catalog.json), y la habilidad que describe. Lighthouse lo revisa en «Navegación con agentes».
+ * Los archivos vienen del repositorio (sitio/.well-known/); la lista es cerrada: nada más de esa carpeta se entrega.
+ */
+const TA_SITIO_AGENTES = array(
+	'.well-known/ard.json'                                  => 'ard.json',
+	'.well-known/ai-catalog.json'                           => 'ard.json',
+	'.well-known/agent-skills/retiro-de-residuos/SKILL.md' => 'agent-skills/retiro-de-residuos/SKILL.md',
+);
+
+/** Entrega un archivo de descubrimiento para agentes (JSON o Markdown), legible desde cualquier origen. */
+function ta_sitio_agentes( $archivo ) {
+	$ruta = TA_SITIO_DIR . 'sitio/.well-known/' . $archivo;
+	if ( ! is_file( $ruta ) ) {
+		return;
+	}
+	$contenido = (string) file_get_contents( $ruta ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	if ( ta_sitio_whatsapp_cambiado() ) {
+		$contenido = ta_sitio_whatsapp_aplicar( $contenido );
+	}
+	status_header( 200 );
+	header( 'Content-Type: ' . ( '.json' === substr( $archivo, -5 ) ? 'application/json' : 'text/markdown' ) . '; charset=utf-8' );
+	header( 'X-Content-Type-Options: nosniff' );
+	header( 'Access-Control-Allow-Origin: *' );
+	header( 'Cache-Control: public, max-age=' . DAY_IN_SECONDS );
+	header( 'Content-Length: ' . strlen( $contenido ) );
+	if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'HEAD' !== $_SERVER['REQUEST_METHOD'] ) {
+		echo $contenido; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- archivo fijo del propio sitio (JSON o Markdown), no HTML.
+	}
+	exit;
+}
 
 /** Entrega una página o un archivo del sitio. Si no existe, no hace nada (WordPress responde su 404). */
 function ta_sitio_entregar( $interna, $privado ) {
@@ -363,7 +399,8 @@ add_filter(
 	'robots_txt',
 	static function ( $texto ) {
 		$op = ta_sitio_opciones();
-		return 'publicado' === $op['modo'] ? $texto . "\nSitemap: " . home_url( '/sitemap-sitio.xml' ) . "\n" : $texto;
+		// Agentmap: dónde está el manifiesto para agentes de IA (ARD §5.1)
+		return 'publicado' === $op['modo'] ? $texto . "\nSitemap: " . home_url( '/sitemap-sitio.xml' ) . "\nAgentmap: " . home_url( '/.well-known/ard.json' ) . "\n" : $texto;
 	},
 	20
 );

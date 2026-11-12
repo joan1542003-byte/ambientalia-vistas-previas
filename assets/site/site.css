@@ -627,6 +627,9 @@ a.card { text-decoration: none; color: inherit; transition: box-shadow .3s var(-
   @keyframes panel-in { from { opacity: 0; transform: translateY(6px); } }
   .reveal.is-in, .reveal-group.is-in > * { animation: rise .9s var(--ease) both; }
   .reveal-group.is-in > * { animation-delay: calc(var(--i, 0) * 70ms); }
+  /* Desfase de cada elemento del grupo (antes lo ponía site.js uno por uno) */
+  .reveal-group > :nth-child(2) { --i: 1; } .reveal-group > :nth-child(3) { --i: 2; } .reveal-group > :nth-child(4) { --i: 3; }
+  .reveal-group > :nth-child(5) { --i: 4; } .reveal-group > :nth-child(6) { --i: 5; } .reveal-group > :nth-child(n + 7) { --i: 6; }
   .accordion details.is-opening .answer { animation: fade-in .4s var(--ease) both; }
   [data-tab-panel]:not([hidden]) { animation: panel-in .35s var(--ease) both; }
   .hero-copy > * { animation: rise .8s var(--ease) both; }
