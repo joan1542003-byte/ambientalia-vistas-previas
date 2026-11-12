@@ -84,16 +84,23 @@ def llms():
 # Imágenes que se pueden cambiar desde WordPress («Ajustes del sitio» → «Imágenes del sitio», inc/imagenes.php). La lista se
 # arma sola al armar el paquete: toda imagen de assets/transporte/ que usan las páginas, las miniaturas de los residuos (las
 # pone pickers.js), el logo y el ícono de la pestaña. Aquí solo van los rótulos y las claves antiguas (ajustes ya guardados).
-ROTULOS = {  # archivo → (grupo, rótulo, clave antigua o None)
-    'transporte-hero-flota-ciudad-cielo.webp': ('Portada', 'Portada del inicio', 'hero'),
-    'transporte-hero-flota-ciudad-movil.webp': ('Portada', 'Portada del inicio en el teléfono', 'hero_movil'),
-    'transporte-hero-panorama.webp': ('Portada', 'Hero: «¿Buscas un transportista autorizado?»', 'hero_buscar'),
-    'transporte-camion-lluvia-1200.webp': ('Servicios', 'Servicio: retiro de residuos no peligrosos', 'servicio_1'),
-    'transporte-camion-industrial-dia-1200.webp': ('Servicios', 'Servicio: retiro de residuos peligrosos', 'servicio_2'),
+ROTULOS = {  # archivo → (grupo, rótulo, clave antigua o None[, medida de WordPress]); la medida, si la imagen se ve en un tamaño acotado
+    'transporte-portada.webp': ('Portada', 'Portada del inicio (computador y teléfono)', 'hero'),
+    'transporte-opcion-buscar.webp': ('Portada', 'Hero: «¿Buscas un transportista autorizado?»', 'hero_buscar', '1536x1536'),
+    'transporte-opcion-orientacion.webp': ('Portada', 'Hero: «¿Necesitas orientación?»', 'hero_especialista', '1536x1536'),
+    'transporte-opcion-reciclador.webp': ('Portada', 'Hero: «Quiero hacer convenio con un reciclador de base»', 'hero_reciclador', '1536x1536'),
+    'transporte-servicio-no-peligrosos.webp': ('Servicios', 'Servicio: retiro de residuos no peligrosos', 'servicio_1'),
+    'transporte-servicio-peligrosos.webp': ('Servicios', 'Servicio: retiro de residuos peligrosos', 'servicio_2'),
     'transporte-portacontenedor-azul-1200.webp': ('Servicios', 'Servicio: arriendo de contenedores', 'servicio_3'),
-    'ecosistema-hds-transporte-1200.webp': ('Otras secciones', 'Otros sitios: HDS', None),
-    'ecosistema-campanas-1200.webp': ('Otras secciones', 'Otros sitios: Campañas de reciclaje', None),
+    'ecosistema-hds-transporte-400.webp': ('Otras secciones', 'Otros sitios: HDS', 'img_ecosistema_hds_transporte_1200'),
+    'ecosistema-campanas-400.webp': ('Otras secciones', 'Otros sitios: Campañas de reciclaje', 'img_ecosistema_campanas_1200'),
     'og-transporte.jpg': ('Al compartir', 'Imagen al compartir el enlace (WhatsApp, LinkedIn, redes)', None),
+}
+# Medidas más chicas de una misma imagen (srcset): van en el mismo espacio que la principal, así una imagen de la biblioteca
+# las reemplaza a todas y el plugin pone en su lugar las medidas que generó WordPress
+VARIANTES = {
+    'transporte-portada-1200.webp': 'transporte-portada.webp',
+    'transporte-portada-720.webp': 'transporte-portada.webp',
 }
 ICONOS = ['favicon-48.png', 'favicon-192.png', 'apple-touch-icon.png']  # un solo espacio: el ícono de la pestaña
 
@@ -108,12 +115,20 @@ def imagenes():
                 vistas.append(m.group(1))
     out = [{'clave': 'logo', 'grupo': 'Logo e ícono', 'rotulo': 'Logo (arriba y en el pie; la imagen elegida no cambia de color al pasar el mouse)', 'archivos': ['assets/transporte/logo/logotipo.svg'], 'tipo': 'logo'},
            {'clave': 'icono', 'grupo': 'Logo e ícono', 'rotulo': 'Ícono de la pestaña del navegador (cuadrado, de al menos 192 px)', 'archivos': [f'assets/transporte/{i}' for i in ICONOS]}]
+    principales = {}
     for ruta in vistas:
         nombre = Path(ruta).name
-        if nombre in ICONOS:
+        if nombre in ICONOS or nombre in VARIANTES:
             continue
-        grupo, rotulo, clave = ROTULOS.get(nombre, ('Otras secciones', re.sub(r'[-_]+', ' ', Path(ruta).stem).capitalize(), None))
-        out.append({'clave': clave or 'img_' + re.sub(r'[^a-z0-9]+', '_', Path(ruta).stem.lower()), 'grupo': grupo, 'rotulo': rotulo, 'archivos': [ruta]})
+        grupo, rotulo, clave, *medida = ROTULOS.get(nombre, ('Otras secciones', re.sub(r'[-_]+', ' ', Path(ruta).stem).capitalize(), None))
+        e = {'clave': clave or 'img_' + re.sub(r'[^a-z0-9]+', '_', Path(ruta).stem.lower()), 'grupo': grupo, 'rotulo': rotulo, 'archivos': [ruta]}
+        if medida:
+            e['medida'] = medida[0]
+        out.append(e)
+        principales[nombre] = e
+    for ruta in vistas:
+        if Path(ruta).name in VARIANTES:
+            principales[VARIANTES[Path(ruta).name]]['archivos'].append(ruta)
     pickers = (ROOT / 'assets/site/pickers.js').read_text(encoding='utf-8')
     for nombre, archivo in re.findall(r"\['([^']+)', '((?:np|p)-[a-z-]+)'\]", pickers):
         peligro = 'peligroso' if archivo.startswith('p-') else 'no peligroso'

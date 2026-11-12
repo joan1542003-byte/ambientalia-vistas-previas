@@ -52,12 +52,12 @@ function ta_sitio_imagenes_espacios() {
 			'rotulo'   => (string) ( $e['rotulo'] ?? $e['clave'] ),
 			'archivos' => array_map( 'strval', (array) $e['archivos'] ),
 			'tipo'     => (string) ( $e['tipo'] ?? '' ),
+			'medida'   => (string) ( $e['medida'] ?? '' ),  // medida de WordPress si la imagen se ve acotada (fotos de las opciones del hero)
 		);
 	}
-	// Las opciones del hero que hoy usan la portada del inicio: se les agrega una foto propia
-	$espacios['hero_cotizar']      = array( 'grupo' => 'Portada', 'rotulo' => 'Hero: «Necesito gestionar mis residuos»', 'archivos' => array(), 'tipo' => 'insertar', 'buscar' => 'data-route="cotizar">', 'reemplazo' => 'data-route="cotizar" data-foto="%s">' );
-	$espacios['hero_especialista'] = array( 'grupo' => 'Portada', 'rotulo' => 'Hero: «¿Necesitas orientación?»', 'archivos' => array(), 'tipo' => 'insertar', 'buscar' => 'data-route="especialista">', 'reemplazo' => 'data-route="especialista" data-foto="%s">' );
-	$espacios['hero_reciclador']   = array( 'grupo' => 'Portada', 'rotulo' => 'Hero: «Quiero hacer convenio con un reciclador de base»', 'archivos' => array(), 'tipo' => 'insertar', 'buscar' => '<a class="route route-link" href="https://recicladordebase.cl"', 'reemplazo' => '<a class="route route-link" href="https://recicladordebase.cl" data-foto="%s"' );
+	// La opción del hero que hoy usa la portada del inicio: se le agrega una foto propia. «¿Necesitas orientación?» y el
+	// reciclador de base ya traen la suya desde el 12-11-2026 (mismas claves, en sitio/imagenes.json).
+	$espacios['hero_cotizar'] = array( 'grupo' => 'Portada', 'rotulo' => 'Hero: «Necesito gestionar mis residuos»', 'archivos' => array(), 'tipo' => 'insertar', 'medida' => '1536x1536', 'buscar' => 'data-route="cotizar">', 'reemplazo' => 'data-route="cotizar" data-foto="%s">' );
 	return $espacios;
 }
 
@@ -130,8 +130,8 @@ function ta_sitio_imagenes_aplicar( $html ) {
 	$espacios = ta_sitio_imagenes_espacios();
 	foreach ( ta_sitio_imagenes_elegidas() as $clave => $id ) {
 		$e = $espacios[ $clave ];
-		// Las fotos de las opciones del hero se ven en un recuadro de unos 620 px de alto: basta la medida de 1536 px
-		$url = wp_get_attachment_image_url( $id, 'insertar' === $e['tipo'] ? '1536x1536' : 'full' );
+		// Las fotos de las opciones del hero se ven a lo más del tamaño del hero: basta la medida de 1536 px ('medida')
+		$url = wp_get_attachment_image_url( $id, '' !== $e['medida'] ? $e['medida'] : 'full' );
 		if ( ! $url ) {
 			continue;
 		}
