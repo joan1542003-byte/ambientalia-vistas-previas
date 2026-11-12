@@ -18,8 +18,7 @@
     next: svg('<path d="m9 18 6-6-6-6"/>'),
     search: svg('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'),
     check: svg('<path d="M20 6 9 17l-5-5"/>'),
-    help: svg('<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>'),
-    range: svg('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>')
+    help: svg('<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>')
   };
 
   /* ---------- Renderizadores en línea ---------- */
@@ -497,7 +496,7 @@
   /* Modalidades de retiro (las usa el asistente) */
   const MODES = [
     { value: 'express', label: 'Retiro Express', hint: 'Prioridad dentro de 24 horas hábiles.' },
-    { value: 'programado', label: 'Retiro Programado', hint: 'Eliges el día del retiro.' },
+    { value: 'programado', label: 'Retiro Programado', hint: 'Eliges el día, desde pasado mañana.' },
     { value: 'flexible', label: 'Espera y ahorra', hint: 'Propones hasta tres días.' }
   ];
 
@@ -822,88 +821,19 @@
     return p;
   };
 
-  /* Horario: opciones de un toque o un rango con un deslizador de dos puntas (23-10-2026; antes, botones de hora):
-     de 8:00 a 18:00, cada media hora, con al menos una hora entre «desde» y «hasta». Con teclado, las flechas lo mueven */
-  const INICIO = 8 * 60;
-  const FIN = 18 * 60;
-  const PASO = 30;
-  const mins = (h) => Number(h.split(':')[0]) * 60 + Number(h.split(':')[1] || 0);
-  const hora = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
-  const valida = (h) => /^\d{1,2}:\d{2}$/.test(h || '') && mins(h) >= INICIO && mins(h) <= FIN && mins(h) % PASO === 0;
+  /* Horario: cuatro opciones de un toque (12-11-2026, pedido del cliente: sin rango de horas; en «Cualquier horario»
+     la hora la definimos nosotros). Antes había un deslizador «desde y hasta» */
   const time = ({ value = {} } = {}) => {
-    const p = open({ title: '¿En qué horario?', sub: 'Es tu preferencia: la confirmamos al coordinar el retiro.', done: 'Listo' });
-    let desde = valida(value.desde) ? mins(value.desde) : 9 * 60;
-    let hasta = valida(value.hasta) ? mins(value.hasta) : 12 * 60;
-    if (desde > FIN - 60) desde = FIN - 60;
-    if (hasta < desde + 60) hasta = desde + 60;
-    const st = { slot: value.slot || 'Cualquier horario' };
-    const presets = [
-      { value: 'Cualquier horario', label: 'Cualquier horario', hint: 'Toda la jornada', icon: PICK.ICONS.clock },
-      { value: 'Mañana', label: 'Mañana', hint: '8:00 a 13:00', icon: PICK.ICONS.sun },
-      { value: 'Tarde', label: 'Tarde', hint: '13:00 a 18:00', icon: PICK.ICONS.sunset },
-      { value: 'Vespertino', label: 'Vespertino', hint: 'De noche · sujeto a confirmación', icon: PICK.ICONS.moon },
-      { value: 'otro', label: 'Elegir un rango', hint: 'Desde y hasta, con el deslizador', icon: ICON.range }
-    ];
-    const marcas = [8, 10, 12, 14, 16, 18].map((h) => `<span>${h}:00</span>`).join('');
-    el.body.innerHTML = `<div class="time">
-      <div class="opts is-cards" data-presets role="group" aria-label="Horario">${presets.map((o) => optionHTML(o, st.slot === o.value)).join('')}</div>
-      <section class="time-range" data-range${st.slot === 'otro' ? '' : ' hidden'}>
-        <p class="slider-valor" aria-live="polite"><strong data-desde-t></strong><span>a</span><strong data-hasta-t></strong></p>
-        <div class="slider" data-slider>
-          <div class="slider-pista" aria-hidden="true"><i></i></div>
-          <input type="range" min="${INICIO}" max="${FIN}" step="${PASO}" value="${desde}" aria-label="Desde" data-desde>
-          <input type="range" min="${INICIO}" max="${FIN}" step="${PASO}" value="${hasta}" aria-label="Hasta" data-hasta>
-        </div>
-        <div class="slider-marcas" aria-hidden="true">${marcas}</div>
-      </section>
-    </div>`;
-    const range = el.body.querySelector('[data-range]');
-    const slider = range.querySelector('[data-slider]');
-    const inDesde = slider.querySelector('[data-desde]');
-    const inHasta = slider.querySelector('[data-hasta]');
-    const paintRange = () => {
-      inDesde.value = desde;
-      inHasta.value = hasta;
-      inDesde.setAttribute('aria-valuetext', hora(desde));
-      inHasta.setAttribute('aria-valuetext', hora(hasta));
-      slider.style.setProperty('--a', (desde - INICIO) / (FIN - INICIO));
-      slider.style.setProperty('--b', (hasta - INICIO) / (FIN - INICIO));
-      range.querySelector('[data-desde-t]').textContent = hora(desde);
-      range.querySelector('[data-hasta-t]').textContent = hora(hasta);
-      el.count.textContent = st.slot === 'otro' ? `Entre ${hora(desde)} y ${hora(hasta)}` : '';
-      el.foot.hidden = st.slot !== 'otro';
-    };
-    /* Cada punta empuja a la otra si se acercan a menos de una hora */
-    inDesde.addEventListener('input', () => {
-      desde = Math.min(Number(inDesde.value), FIN - 60);
-      if (hasta < desde + 60) hasta = desde + 60;
-      paintRange();
-    });
-    inHasta.addEventListener('input', () => {
-      hasta = Math.max(Number(inHasta.value), INICIO + 60);
-      if (desde > hasta - 60) desde = hasta - 60;
-      paintRange();
-    });
-    /* La punta que se toca queda encima (si están juntas, se puede tomar la que corresponde) */
-    slider.addEventListener('pointerdown', (e) => {
-      const r = slider.getBoundingClientRect();
-      const m = INICIO + ((e.clientX - r.left) / r.width) * (FIN - INICIO);
-      const cerca = Math.abs(m - desde) <= Math.abs(m - hasta) ? inDesde : inHasta;
-      inDesde.classList.toggle('is-arriba', cerca === inDesde);
-      inHasta.classList.toggle('is-arriba', cerca === inHasta);
-    });
+    const p = open({ title: '¿En qué horario?', sub: 'Es tu preferencia: la confirmamos al coordinar el retiro.' });
+    const actual = PICK.SLOTS.some(([t]) => t === value.slot) ? value.slot : 'Cualquier horario';
+    const opciones = PICK.SLOTS.map(([t, h]) => ({ value: t, label: t, hint: h, icon: PICK.SLOT_ICONS[t] }));
+    el.body.innerHTML = `<div class="time"><div class="opts is-cards" data-presets role="group" aria-label="Horario">${opciones.map((o) => optionHTML(o, actual === o.value)).join('')}</div></div>`;
     el.body.onclick = (e) => {
       const opt = e.target.closest('.opt[data-value]');
       if (!opt) return;
       el.body.querySelectorAll('[data-presets] .opt').forEach((x) => x.setAttribute('aria-pressed', String(x === opt)));
-      if (opt.dataset.value !== 'otro') { finish({ slot: opt.dataset.value }); return; }
-      st.slot = 'otro';
-      range.hidden = false;
-      paintRange();
-      range.scrollIntoView({ block: 'nearest', behavior: motion.matches ? 'smooth' : 'auto' });
+      finish({ slot: opt.dataset.value });
     };
-    hooks.done = () => finish({ slot: 'otro', desde: hora(desde), hasta: hora(hasta) });
-    paintRange();
     focusFirst();
     return p;
   };

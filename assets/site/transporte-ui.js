@@ -31,7 +31,7 @@
 
   /* ---------- Formulario: filas que abren una ventana de selección ---------- */
   const form = d.getElementById('cotizacion');
-  const when = { modalidad: '', dates: [], slot: 'Cualquier horario', desde: '8:00', hasta: '17:00' };
+  const when = { modalidad: '', dates: [], slot: 'Cualquier horario' };
   if (form && PICK && Picker) {
     const field = (n) => form.querySelector(`[name="${n}"]`);
     const set = (n, value = '', text) => {
@@ -42,7 +42,7 @@
     };
     const list = (v) => (v ? v.split(', ') : []);
     const sorted = (picked, all) => all.filter((x) => picked.includes(x));
-    const slotText = () => (when.slot === 'otro' ? `Entre ${when.desde} y ${when.hasta}` : PICK.slotText(when.slot));
+    const slotText = () => PICK.slotText(when.slot);
     /* Vehículos y contenedores: los que no están disponibles para el tipo de residuo elegido no se pueden pedir */
     const tipoTexto = { peligroso: 'residuos peligrosos', 'no-peligroso': 'residuos no peligrosos' };
     const offer = (items, tipo) => items.map((x) => {
@@ -80,7 +80,7 @@
     const MODE_HINT = {
       '': 'Elige qué tan pronto lo necesitas.',
       express: 'Priorizamos tu retiro dentro de 24 horas hábiles, sujeto a disponibilidad, tipo de residuo y comuna.',
-      programado: 'Eliges el día del primer retiro y lo organizamos mes a mes.',
+      programado: 'Eliges el día del primer retiro, desde pasado mañana, y lo organizamos mes a mes.',
       flexible: 'Tú propones hasta tres días y coordinamos según disponibilidad.'
     };
     const PIN_FLAG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
@@ -165,7 +165,7 @@
       const m = field('modalidad').value;
       if (m !== when.modalidad) {
         when.modalidad = m;
-        if (m === 'programado') when.dates = when.dates.slice(0, 1);
+        if (m === 'programado') when.dates = when.dates.filter((v) => PICK.fechaOk('programado', v)).slice(0, 1);
         if (m === 'express') when.dates = [];
       }
       writeWhen();
@@ -279,7 +279,8 @@
         const multi = when.modalidad === 'flexible';
         const v = await Picker.dates({
           title: multi ? '¿Qué días te acomodan?' : '¿Qué día retiramos?',
-          sub: multi ? 'Elige hasta tres días posibles, de lunes a sábado.' : 'De lunes a sábado.', multi, max: 3, value: when.dates
+          sub: multi ? 'Elige hasta tres días posibles, de lunes a sábado.' : 'De lunes a sábado, desde pasado mañana.', multi, max: 3, value: when.dates,
+          desde: PICK.DESDE[when.modalidad] || 1
         });
         if (v) { when.dates = v; writeWhen(); }
         return v;
@@ -337,7 +338,7 @@
       if (!b) return;
       when.modalidad = b.dataset.modalidad;
       if (when.modalidad === 'express') when.dates = [];
-      if (when.modalidad === 'programado') when.dates = when.dates.slice(0, 1);
+      if (when.modalidad === 'programado') when.dates = when.dates.filter((v) => PICK.fechaOk('programado', v)).slice(0, 1);
       /* El botón se marca al instante; el resto del formulario se pinta en el cuadro siguiente (en Firefox se notaba la espera) */
       b.parentElement.querySelectorAll('[data-modalidad]').forEach((x) => x.setAttribute('aria-checked', String(x === b)));
       b.closest('.pick')?.removeAttribute('data-invalid');
@@ -384,9 +385,7 @@
         if (mode) {
           when.modalidad = mode;
           when.dates = (mode === 'programado' ? meta.dates?.fecha : mode === 'flexible' ? meta.dates?.fechas : []) || [];
-          const range = String(a.horario || '').match(/(\d{1,2}:\d{2}) y (\d{1,2}:\d{2})/);
-          if (range) Object.assign(when, { slot: 'otro', desde: range[1], hasta: range[2] });
-          else if (a.horario) when.slot = a.horario.split(' (')[0];
+          if (a.horario) { const s = a.horario.split(' (')[0]; when.slot = PICK.SLOTS.some(([t]) => t === s) ? s : 'Cualquier horario'; }
           writeWhen();
         }
         if (a.almacenamiento) set('almacenamiento', a.almacenamiento);
@@ -407,12 +406,15 @@
         if (r.comuna) a.comuna = r.comuna.commune;
         if (r.almacenamiento) a.almacenamiento = r.almacenamiento;
         if (r.documentos.length) a.documentos = r.documentos.join(', ');
-        if (r.fecha && r.modalidad !== 'flexible') { a.modalidad = PICK.MODE_LABEL.programado; meta.dates.fecha = [r.fecha]; }
+        /* Programado: no para hoy ni para mañana (cliente, 12-11-2026); si pidió esos días, queda el plan sin fecha y el aviso */
+        const pronto = r.fecha && r.modalidad !== 'flexible' && !PICK.fechaOk('programado', r.fecha);
+        if (pronto) a.modalidad = PICK.MODE_LABEL.programado;
+        else if (r.fecha && r.modalidad !== 'flexible') { a.modalidad = PICK.MODE_LABEL.programado; meta.dates.fecha = [r.fecha]; }
         else if (r.fecha) { a.modalidad = PICK.MODE_LABEL.flexible; meta.dates.fechas = [r.fecha]; }
         else if (r.modalidad) a.modalidad = PICK.MODE_LABEL[r.modalidad];
         if (r.horario) a.horario = r.horario;
         window.QUOTE.fill({ answers: a, meta });
-        return r.fueraDeCobertura ? `Por ahora coordinamos retiros en ${PICK.coberturaTexto}; ${r.fueraDeCobertura} queda fuera.` : (r.fechaError && !r.fecha ? r.fechaError : '');
+        return r.fueraDeCobertura ? `Por ahora coordinamos retiros en ${PICK.coberturaTexto}; ${r.fueraDeCobertura} queda fuera.` : pronto ? PICK.AVISO_PROGRAMADO : (r.fechaError && !r.fecha ? r.fechaError : '');
       }
     };
     normalize();

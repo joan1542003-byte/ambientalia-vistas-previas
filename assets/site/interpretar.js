@@ -107,7 +107,11 @@
     if (/(?:en|por|de|durante) la noche|vespertin|nocturn/.test(t)) return 'Vespertino';
     if (/cualquier (?:hora|horario|momento)|todo el dia/.test(t)) return 'Cualquier horario';
     const r = t.match(/\b(?:de|entre|desde)?\s*(\d{1,2})(?::(\d{2}))?\s*(?:a|y|-|hasta)\s*(\d{1,2})(?::(\d{2}))?\s*(?:hrs?|horas)?\b/);
-    if (r && Number(r[1]) >= 6 && Number(r[3]) <= 21 && Number(r[3]) > Number(r[1])) return `Entre ${Number(r[1])}:${r[2] || '00'} y ${Number(r[3])}:${r[4] || '00'}`;
+    /* Sin rango de horas en el formulario (12-11-2026): «entre 9 y 12» queda en la opción que lo contiene */
+    if (r && Number(r[1]) >= 6 && Number(r[3]) <= 21 && Number(r[3]) > Number(r[1])) {
+      const a = Number(r[1]); const b = Number(r[3]);
+      return a >= 18 ? 'Vespertino' : b <= 13 ? 'Mañana' : a >= 13 && b <= 18 ? 'Tarde' : 'Cualquier horario';
+    }
     return '';
   };
 

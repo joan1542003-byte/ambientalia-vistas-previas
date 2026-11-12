@@ -59,13 +59,23 @@
   };
 
   /* [nombre, lo que se ve en la opción, cómo queda en el resumen (si difiere)]. El horario vespertino (de noche) no se
-     promete: siempre queda sujeto a confirmación y la opción lo dice (pedido del cliente, 08-10-2026) */
+     promete: siempre queda sujeto a confirmación y la opción lo dice (pedido del cliente, 08-10-2026). Solo estas cuatro:
+     sin rango de horas (cliente, 12-11-2026); en «Cualquier horario» la hora la definimos nosotros */
   const SLOTS = [
+    ['Cualquier horario', 'Nosotros definimos la hora'],
     ['Mañana', '8:00 a 13:00'],
     ['Tarde', '13:00 a 18:00'],
-    ['Vespertino', 'De noche · sujeto a confirmación', 'de noche, sujeto a confirmación'],
-    ['Cualquier horario', 'Dentro de la jornada']
+    ['Vespertino', 'De noche · sujeto a confirmación', 'de noche, sujeto a confirmación']
   ];
+  /* Anticipación mínima por plan, en días desde hoy (cliente, 12-11-2026): el Retiro Programado no se agenda para hoy ni
+     para mañana; Espera y ahorra, desde mañana. Lo usan el formulario, el asistente guiado y el campo del hero */
+  const DESDE = { programado: 2, flexible: 1 };
+  const fechaOk = (modo, v) => {
+    const min = new Date(); min.setHours(12, 0, 0, 0); min.setDate(min.getDate() + (DESDE[modo] || 1));
+    const [y, m, dd] = String(v).split('-').map(Number);
+    return new Date(y, m - 1, dd, 12) >= min;
+  };
+  const AVISO_PROGRAMADO = 'El Retiro Programado se agenda desde pasado mañana. Si lo necesitas antes, elige Retiro Express.';
   const slotText = (name) => {
     const s = SLOTS.find(([t]) => t === name);
     return s && name !== 'Cualquier horario' ? `${s[0]} (${s[2] || s[1]})` : name;
@@ -226,5 +236,5 @@
   const enCobertura = (c) => COBERTURA.includes(c);
   const coberturaTexto = COBERTURA.length > 1 ? `${COBERTURA.slice(0, -1).join(', ')} y ${COBERTURA[COBERTURA.length - 1]}` : COBERTURA[0] || '';
 
-  window.PICK = { COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS_ICONS, STATE_ICONS, DOC_ICONS, ACCESS, ACCESS_GROUPS, accessGroup, pickedFrom, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
+  window.PICK = { DESDE, fechaOk, AVISO_PROGRAMADO, COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS_ICONS, STATE_ICONS, DOC_ICONS, ACCESS, ACCESS_GROUPS, accessGroup, pickedFrom, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
 })();
