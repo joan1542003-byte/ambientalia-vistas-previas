@@ -19,16 +19,16 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Fotografía ilustrativa de una flota de camiones">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="assets/transporte/favicon-48.png?v=20261112a" sizes="48x48" type="image/png">
-<link rel="icon" href="assets/transporte/favicon-192.png?v=20261112a" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="assets/transporte/apple-touch-icon.png?v=20261112a">
+<link rel="icon" href="assets/transporte/favicon-48.png?v=20261112b" sizes="48x48" type="image/png">
+<link rel="icon" href="assets/transporte/favicon-192.png?v=20261112b" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="assets/transporte/apple-touch-icon.png?v=20261112b">
 <link rel="preload" href="assets/site/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="assets/transporte/transporte-hero-flota-ciudad-cielo.webp" imagesizes="1100px" media="(min-width: 861px)" fetchpriority="high">
 <link rel="preload" as="image" href="assets/transporte/transporte-hero-flota-ciudad-movil.webp" imagesizes="100vw" media="(max-width: 860px)" fetchpriority="high">
-<link rel="stylesheet" href="assets/site/site.css?v=20261112a">
-<link rel="stylesheet" href="assets/site/transporte.css?v=20261112a">
-<link rel="stylesheet" href="assets/site/agente.css?v=20261112a">
-<link rel="stylesheet" href="assets/site/agente-chat.css?v=20261112a">
+<link rel="stylesheet" href="assets/site/site.css?v=20261112b">
+<link rel="stylesheet" href="assets/site/transporte.css?v=20261112b">
+<link rel="stylesheet" href="assets/site/agente.css?v=20261112b">
+<link rel="stylesheet" href="assets/site/agente-chat.css?v=20261112b">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {
@@ -597,7 +597,7 @@
 
                 <div class="hcard-foot step-nav">
                   <div class="cotizar-aviso" data-cotizar-campos hidden>
-                    <label class="acepto"><input type="checkbox" name="aviso" required disabled data-summary-skip data-required-text="Para enviar la solicitud, acepta las condiciones del servicio y el aviso de privacidad."><span>Acepto las <a data-cotizar-condiciones target="_blank" rel="noopener noreferrer">condiciones del servicio</a> y el <a data-cotizar-aviso target="_blank" rel="noopener noreferrer">aviso de privacidad</a>.</span></label>
+                    <label class="acepto"><input type="checkbox" name="aviso" required disabled data-summary-skip data-required-text="Para enviar la solicitud, acepta las condiciones del servicio y el aviso de privacidad."><span>Acepto las <a href="https://transporteautorizado.cl/legal/condiciones-del-servicio.html" data-cotizar-condiciones target="_blank" rel="noopener noreferrer">condiciones del servicio</a> y el <a href="https://transporteautorizado.cl/legal/politica-de-privacidad.html" data-cotizar-aviso target="_blank" rel="noopener noreferrer">aviso de privacidad</a>.</span></label>
                     <label class="acepto"><input type="checkbox" name="comercial" disabled data-summary-skip><span>Acepto que Transporte Autorizado me contacte por correo, teléfono o llamada para hacer seguimiento de mi consulta o cotización y ofrecerme sus servicios (opcional).</span></label>
                   </div>
                   <button class="btn btn-quiet btn-small" type="button" data-back><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Atrás</button>
@@ -735,39 +735,45 @@
       </div>
 
       <div class="services is-3 reveal-group">
-        <article class="service is-safe">
-          <figure class="service-media"><img src="assets/transporte/transporte-camion-lluvia-1200.webp" sizes="(max-width: 860px) 100vw, 460px" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
-          <div class="service-body">
-            <h3>Retiro de residuos no peligrosos</h3>
-            <p>Coordinamos el retiro y traslado de residuos industriales no peligrosos a una planta de valorización o disposición adecuada.</p>
-            <div class="service-foot">
-              <a class="btn btn-primary btn-small" href="#cotizar" data-set="servicio=retiro;tipo=no-peligroso">Cotizar retiro <svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
-              <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-np" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
+        <article class="service-item is-safe">
+          <div class="service">
+            <figure class="service-media"><img src="assets/transporte/transporte-camion-lluvia-1200.webp" sizes="(max-width: 860px) 100vw, 460px" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
+            <div class="service-body">
+              <h3>Retiro de residuos no peligrosos</h3>
+              <p>Coordinamos el retiro y traslado de residuos industriales no peligrosos a una planta de valorización o disposición adecuada.</p>
             </div>
+          </div>
+          <div class="service-cta"><a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro;tipo=no-peligroso">Cotizar retiro <svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>
+          <div class="service-extra">
+            <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-np" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
             <div class="collapse" id="sv-np"><div class="collapse-inner"><p class="service-more">Cuéntanos qué residuo es, cuánto hay aproximadamente, en qué comuna está y cómo está almacenado. También puedes enviarnos fotografías.</p></div></div>
           </div>
         </article>
-        <article class="service is-hazard">
-          <figure class="service-media"><img src="assets/transporte/transporte-camion-industrial-dia-1200.webp" sizes="(max-width: 860px) 100vw, 460px" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
-          <div class="service-body">
-            <h3>Retiro de residuos peligrosos</h3>
-            <p>Evaluamos las características del residuo y la documentación necesaria antes de coordinar el transporte y la gestión.</p>
-            <div class="service-foot">
-              <a class="btn btn-primary btn-small" href="#cotizar" data-set="servicio=retiro;tipo=peligroso">Evaluar mi residuo <svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
-              <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-p" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
+        <article class="service-item is-hazard">
+          <div class="service">
+            <figure class="service-media"><img src="assets/transporte/transporte-camion-industrial-dia-1200.webp" sizes="(max-width: 860px) 100vw, 460px" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
+            <div class="service-body">
+              <h3>Retiro de residuos peligrosos</h3>
+              <p>Evaluamos las características del residuo y la documentación necesaria antes de coordinar el transporte y la gestión.</p>
             </div>
+          </div>
+          <div class="service-cta"><a class="btn btn-primary" href="#cotizar" data-set="servicio=retiro;tipo=peligroso">Evaluar mi residuo <svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>
+          <div class="service-extra">
+            <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-p" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
             <div class="collapse" id="sv-p"><div class="collapse-inner"><p class="service-more">Envíanos una fotografía, HDS/FDS, análisis u otros antecedentes para cotizar a la brevedad. Si falta información, te indicamos qué revisar antes de coordinar.</p></div></div>
           </div>
         </article>
-        <article class="service">
-          <figure class="service-media"><img src="assets/transporte/transporte-portacontenedor-azul-1200.webp" sizes="(max-width: 860px) 100vw, 460px" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
-          <div class="service-body">
-            <h3>Arriendo de contenedores</h3>
-            <p>Solicita contenedores por día, semana o mes, según el tipo de residuo que necesitas almacenar.</p>
-            <div class="service-foot">
-              <a class="btn btn-primary btn-small" href="#cotizar" data-set="servicio=contenedores">Cotizar arriendo <svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
-              <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-c" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
+        <article class="service-item">
+          <div class="service">
+            <figure class="service-media"><img src="assets/transporte/transporte-portacontenedor-azul-1200.webp" sizes="(max-width: 860px) 100vw, 460px" width="1200" height="800" alt="" loading="lazy" decoding="async"></figure>
+            <div class="service-body">
+              <h3>Arriendo de contenedores</h3>
+              <p>Solicita contenedores por día, semana o mes, según el tipo de residuo que necesitas almacenar.</p>
             </div>
+          </div>
+          <div class="service-cta"><a class="btn btn-primary" href="#cotizar" data-set="servicio=contenedores">Cotizar arriendo <svg width="20" height="20" class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>
+          <div class="service-extra">
+            <button class="more-toggle" type="button" aria-expanded="false" aria-controls="sv-c" data-toggle><span class="pm" aria-hidden="true"></span>Qué necesitamos</button>
             <div class="collapse" id="sv-c"><div class="collapse-inner"><p class="service-more">Indícanos por cuánto tiempo los necesitas, qué residuo vas a almacenar, el contenedor que prefieres y la comuna.</p></div></div>
           </div>
         </article>
@@ -1030,18 +1036,18 @@
   </div>
 </div>
 
-<script src="assets/site/site.js?v=20261112a" defer></script>
-<script src="assets/site/pickers.js?v=20261112a" defer></script>
-<script src="assets/site/seleccion.js?v=20261112a" defer></script>
-<script src="assets/site/interpretar.js?v=20261112a" defer></script>
-<script src="assets/site/geo.js?v=20261112a" defer></script>
-<script src="assets/site/mapa.js?v=20261112a" defer></script>
-<script src="assets/site/transporte.js?v=20261112a" defer></script>
-<script src="assets/site/transporte-ui.js?v=20261112a" defer></script>
-<script src="assets/site/asistente.js?v=20261112a" defer></script>
-<script src="assets/site/normativa.js?v=20261112a" defer></script>
-<script src="assets/site/ayuda.js?v=20261112a" defer></script>
-<script src="assets/site/agente.js?v=20261112a" defer></script>
-<script src="assets/site/agente-chat.js?v=20261112a" defer></script>
+<script src="assets/site/site.js?v=20261112b" defer></script>
+<script src="assets/site/pickers.js?v=20261112b" defer></script>
+<script src="assets/site/seleccion.js?v=20261112b" defer></script>
+<script src="assets/site/interpretar.js?v=20261112b" defer></script>
+<script src="assets/site/geo.js?v=20261112b" defer></script>
+<script src="assets/site/mapa.js?v=20261112b" defer></script>
+<script src="assets/site/transporte.js?v=20261112b" defer></script>
+<script src="assets/site/transporte-ui.js?v=20261112b" defer></script>
+<script src="assets/site/asistente.js?v=20261112b" defer></script>
+<script src="assets/site/normativa.js?v=20261112b" defer></script>
+<script src="assets/site/ayuda.js?v=20261112b" defer></script>
+<script src="assets/site/agente.js?v=20261112b" defer></script>
+<script src="assets/site/agente-chat.js?v=20261112b" defer></script>
 </body>
 </html>

@@ -579,7 +579,15 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .service-body { padding: clamp(18px, 2.6vw, 24px); }
 .service h3 { font-size: var(--fs-card); letter-spacing: -.012em; }
 .service-body > p { margin-top: 6px; color: var(--ink-2); font-size: .9375rem; }
-.service-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 18px; }
+/* Tarjetas de servicio (12-11-2026, pedido del cliente): la tarjeta lleva solo la foto y el texto; el botón y «Qué
+   necesitamos» van debajo, fuera de ella. Con subgrid, las tarjetas de una fila miden lo mismo y abrir «Qué necesitamos»
+   no agranda ninguna: solo crece el espacio bajo los botones. */
+.services { row-gap: 0; }
+.service-item { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; min-width: 0; }
+.service-cta { padding-top: 14px; }
+.service-cta .btn { width: 100%; }
+.service-extra { padding: 6px 0 clamp(24px, 3vw, 32px); }
+.service-extra .service-more { margin-top: 6px; }
 .more-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 2px; border: 0; background: none; color: var(--ink-2); font: 800 .875rem/1 var(--font); cursor: pointer; }
 .more-toggle:hover { color: var(--ink); }
 .more-toggle .pm { background-color: transparent; }
@@ -1338,6 +1346,10 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 .docs-panel { flex: 0 0 100%; display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.32, .72, 0, 1); }
 .docs-open .docs-panel { grid-template-rows: 1fr; }
 .docs-inner { min-height: 0; overflow: hidden; }
+/* Cerrado, el panel no se calcula ni se dibuja (12-11-2026): son la mitad de los elementos de la página y alargaban la
+   carga en el teléfono. Ya es inert cerrado (ayuda.js). Al cerrar, sigue visible hasta que termina la animación. */
+.site-header:not(.docs-open) .docs-inner { content-visibility: hidden; }
+.docs-inner { transition: content-visibility .5s allow-discrete; }
 .docs-scroll { max-height: calc(100dvh - 120px); overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 /* Simplificada el 22-10-2026: primero los temas; al elegir uno, su ayuda se despliega debajo de su fila (en el teléfono,
    debajo del tema): sus guías con su checklist y su Excel, o la normativa con su buscador */
@@ -1533,8 +1545,8 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 /* Servicios: tres tarjetas, cada una con su color: verde (no peligrosos), rojo (peligrosos) y el lila de la marca
    (arriendo de contenedores). El color va en una línea bajo la foto y en el botón. */
 .services.is-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.service.is-safe { --accent: var(--safe); --accent-strong: #03662A; --accent-soft: var(--safe-soft); --linea: var(--verde); }
-.service.is-hazard { --accent: var(--hazard); --accent-strong: #C00A25; --accent-soft: var(--hazard-soft); --linea: var(--rojo); }
+.service-item.is-safe { --accent: var(--safe); --accent-strong: #03662A; --accent-soft: var(--safe-soft); --linea: var(--verde); }
+.service-item.is-hazard { --accent: var(--hazard); --accent-strong: #C00A25; --accent-soft: var(--hazard-soft); --linea: var(--rojo); }
 .service-media { border-bottom: 3px solid var(--linea, var(--accent)); }
 @media (max-width: 1000px) { .services.is-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .services.is-3 { grid-template-columns: minmax(0, 1fr); } }
@@ -1683,26 +1695,21 @@ a.route { text-decoration: none; }
 @media (max-width: 599px) and (max-height: 600px) {
   body[data-site="transporte"] .stage-media img { height: 84px; }
 }
-/* Hero sin viñeta (pedido del cliente, 12-11-2026): la foto va limpia, sin velo ni bordes fundidos, enmarcada con esquinas
-   redondeadas; el título, el campo y las opciones quedan sobre el tono sólido, con el contraste de siempre */
-body[data-site="transporte"] .stage::before, body[data-site="transporte"] .stage-media::after { display: none; }
-@media (min-width: 861px) {
-  body[data-site="transporte"] :is(.stage-media, .stage-fotos) { inset: 10px 10px 10px 460px; overflow: hidden; border-radius: 20px; }
-  body[data-site="transporte"] .stage-media { background: rgb(255 255 255 / .06); }
-  body[data-site="transporte"] .stage-media img {
-    position: static; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: 72% 100%;
-    -webkit-mask-image: none; mask-image: none;
-  }
+/* Hero sin la viñeta oscura (pedido del cliente, 12-11-2026): la foto sigue llenando el hero, pero sin el oscurecido de
+   abajo ni el fundido negro del teléfono. Solo queda el tono lila a la izquierda, bajo el título y las opciones (contraste
+   AA del texto blanco), y se desvanece antes de la flota. */
+body[data-site="transporte"] .stage::before {
+  background: linear-gradient(90deg, rgb(var(--stage) / .92) 0%, rgb(var(--stage) / .8) 34%, rgb(var(--stage) / 0) 60%);
 }
+/* Teléfono y tablet: la foto termina limpia y el título va debajo, sobre el tono (antes se montaba sobre la foto
+   oscurecida). La foto cede ese alto, para que título, campo y las cuatro opciones sigan en la primera pantalla; en los
+   teléfonos muy bajos (iPhone SE con las barras abiertas) no hay foto. */
 @media (max-width: 860px) {
-  body[data-site="transporte"] .stage-media { margin: 8px 8px 0; overflow: hidden; border-radius: 16px; }
-  body[data-site="transporte"] .stage-side { margin-top: 0; padding-top: 16px; }
+  body[data-site="transporte"] .stage-media::after { display: none; }
+  body[data-site="transporte"] .stage-side { margin-top: 0; padding-top: 18px; }
 }
-/* Teléfono: la foto cede lo que antes quedaba bajo el título (y bajo el velo), para que el hero siga cabiendo en la
-   primera pantalla; en teléfonos bajos queda una franja, como la parte de la foto que antes se veía limpia, y en los muy
-   bajos (iPhone SE con las barras abiertas) no hay foto: título, campo y las cuatro opciones caben sin ella */
 @media (max-width: 599px) {
-  body[data-site="transporte"] .stage-media img { height: clamp(52px, calc(100vh - 624px), 190px); height: clamp(52px, calc(100svh - 624px), 190px); }
+  body[data-site="transporte"] .stage-media img { height: clamp(60px, calc(100vh - 618px), 190px); height: clamp(60px, calc(100svh - 618px), 190px); }
 }
 @media (max-width: 599px) and (max-height: 600px) {
   body[data-site="transporte"] .stage-media { display: none; }

@@ -247,8 +247,18 @@
     warm.push(img);
   });
   /* En las páginas de normativa (sin hero) no se adelanta nada: se carga al abrir el buscador desde la burbuja */
-  const prefetch = () => { if (!navigator.connection?.saveData && !document.querySelector('[data-float-only]')) idle(() => { load(); warmImages(); }, { timeout: 4000 }); };
-  if (document.readyState === 'complete') prefetch(); else addEventListener('load', prefetch, { once: true });
+  /* Empieza con el primer gesto de la persona (tocar, desplazar, teclear o mover el puntero) o a los 15 s (12-11-2026):
+     antes partía apenas cargaba la página y competía con ella en el teléfono. Abrir el buscador antes lo carga igual. */
+  let adelantado = false;
+  const GESTOS = ['pointerdown', 'pointermove', 'keydown', 'touchstart', 'wheel', 'scroll'];
+  const prefetch = () => {
+    if (adelantado) return;
+    adelantado = true;
+    GESTOS.forEach((g) => removeEventListener(g, prefetch, { capture: true }));
+    if (!navigator.connection?.saveData && !document.querySelector('[data-float-only]')) idle(() => { load(); warmImages(); }, { timeout: 4000 });
+  };
+  GESTOS.forEach((g) => addEventListener(g, prefetch, { capture: true, passive: true }));
+  setTimeout(prefetch, 15000);
 
   /* Eventos */
   root.addEventListener('click', async (e) => {

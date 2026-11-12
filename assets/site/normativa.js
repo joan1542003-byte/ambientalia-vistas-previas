@@ -235,7 +235,7 @@
       drawTopics();
     });
     addEventListener('resize', () => { place(true); edges(); });
-    if ('ResizeObserver' in window) new ResizeObserver(() => place(true)).observe(topics);
+    if ('ResizeObserver' in window) new ResizeObserver(() => { place(true); edges(); }).observe(topics);  // también al abrir el panel «Ayuda», que cerrado no se calcula
 
     /* Teclado: «/» lleva a la búsqueda (con el panel abierto); ↓ baja a la lista y ↑ ↓ recorren las normas */
     d.addEventListener('keydown', (e) => {
