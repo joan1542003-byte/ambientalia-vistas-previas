@@ -5,7 +5,8 @@
 
    <div class="pick" data-fila="…" data-title="…" data-sub="…"> con un .pick-btn y, según el tipo:
    - opciones: <select hidden> con las opciones (data-hint en cada <option> agrega una línea). Una se elige con un toque.
-   - varias:   <input type="hidden"> y data-options="A|B|C" (data-exclusive="C" si una opción excluye a las demás).
+   - varias:   <input type="hidden"> y data-options="A|B|C" (data-exclusive="C" si una opción excluye a las demás;
+               data-hints, una línea bajo cada opción; data-guia, una ayuda plegable sobre la lista).
    - fecha:    <input type="hidden">; calendario de un día (data-hasta="365": hasta cuántos días desde hoy).
    - comuna:   <input type="hidden" name="comuna"> y, si se quiere, otro name="region": todas las comunas de Chile.
    - texto:    <input type="hidden">; data-placeholder, data-maxlength y data-optional. Con data-mapa, también el mapa
@@ -88,15 +89,20 @@
       set(other, ok[0]);
       window.SITE.toast?.(`${other.dataset.label}: ${other.selectedOptions[0]?.textContent.trim()}`);
     },
+    /* data-hints="…|…" pone una línea bajo cada opción (en el mismo orden) y data-guia="id" suma arriba de la lista,
+       plegada, la ayuda de ese <div hidden> (la misma que abre su botón data-ventana), con su data-pregunta como título */
     varias: async (row, f) => {
       const all = row.dataset.options.split('|');
+      const hints = row.dataset.hints ? row.dataset.hints.split('|') : [];
+      const guia = row.dataset.guia ? d.getElementById(row.dataset.guia) : null;
       /* Lo guardado puede traer «Otro material: lo escrito» */
       const now = (f.value ? f.value.split(', ') : []).map(PICK.splitOther);
       const r = await Picker.choose({
         title: row.dataset.title, sub: row.dataset.sub || '', layout: 'list', multi: true,
         exclusive: row.dataset.exclusive ? row.dataset.exclusive.split('|') : [],
         otherText: now.find(([base]) => PICK.isOther(base))?.[1] || '',
-        groups: [{ options: all.map((x) => ({ value: x, label: x, other: PICK.isOther(x) })) }], value: now.map(([base]) => base)
+        intro: guia ? `<details class="opt-guia"><summary>${guia.dataset.pregunta || guia.dataset.title}</summary><div class="ventana-texto">${guia.innerHTML}</div></details>` : '',
+        groups: [{ options: all.map((x, i) => ({ value: x, label: x, hint: hints[i] || '', other: PICK.isOther(x) })) }], value: now.map(([base]) => base)
       });
       if (!r) return;
       const values = Array.isArray(r) ? r : r.values;

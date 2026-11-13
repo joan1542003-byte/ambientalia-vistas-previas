@@ -54,7 +54,8 @@
   /* Opciones agrupadas. layout: 'tiles' (imagen), 'cards' (ícono y texto), 'list' (filas) o 'chips'.
      Una opción con `disabled` se ve, pero no se puede elegir (su `hint` dice por qué). Una opción con `other: true`
      despliega un campo para escribir cuál; ese texto se lee con other() (otherText es el texto ya escrito). */
-  const options = (host, { groups, value, multi = false, max = 0, exclusive = [], layout = 'list', onPick, onChange, otherText = '', otherLabel }) => {
+  /* `intro`: HTML que va sobre la lista (p. ej., una ayuda plegable); no cambia la elección */
+  const options = (host, { groups, value, multi = false, max = 0, exclusive = [], layout = 'list', onPick, onChange, otherText = '', otherLabel, intro = '' }) => {
     const picked = new Set(multi ? [].concat(value || []).filter(Boolean) : []);
     const others = groups.flatMap((g) => g.options.filter((o) => o.other).map((o) => o.value));
     let chosen = multi ? '' : value;
@@ -75,7 +76,7 @@
         const other = list.find((o) => o.other);
         return `<section class="opt-group">${g.label ? `<h3>${esc(g.label)}</h3>` : ''}<div class="opts is-${g.layout || layout}">${list.map((o) => optionHTML(o, isOn(o.value))).join('')}</div>${other ? otherHTML(other.value, text, otherLabel) : ''}</section>`;
       }).join('');
-      host.innerHTML = html || `<p class="opt-empty">No encontramos resultados para «${esc(q)}».</p>`;
+      host.innerHTML = intro + (html || `<p class="opt-empty">No encontramos resultados para «${esc(q)}».</p>`);
       syncOther();
     };
     draw();
@@ -558,6 +559,18 @@
       const opener = zone.querySelector('[data-map-open]');
       const clave = (t) => (map.key ? map.key(t) : t.trim().toLowerCase());
       const partesDe = (t) => (map.parts ? map.parts(t) : { calle: t.trim(), numero: '', resto: '' });
+      /* Lo escrito, leído a partir de la calle del punto: si el texto ya empieza con ese nombre, lo que sigue es el número
+         y la referencia. Así una calle con número en el nombre («Ruta 68») no se lee como «Ruta» n.° 68, aunque falte el
+         índice de calles (ese 68 se agregaba de nuevo cada vez que se movía el punto: «Ruta 68 68, 68») */
+      const partesJunto = (t, calle) => {
+        const txt = t.trim().replace(/\s+/g, ' ');
+        const nombre = calle.trim().replace(/\s+/g, ' ');
+        const sigue = txt.slice(nombre.length);
+        if (!nombre || fold(txt.slice(0, nombre.length)) !== fold(nombre) || /^[^\s,]/.test(sigue)) return partesDe(t);
+        const limpia = (x) => x.replace(/^[\s,.;-]+/, '').trim();
+        const m = sigue.match(/^[\s,]*(\d{1,5})(?!\d)(.*)$/);
+        return m ? { calle: nombre, numero: m[1], resto: limpia(m[2]) } : { calle: nombre, numero: '', resto: limpia(sigue) };
+      };
       const AVISO = {
         escrita: 'Escribimos la dirección de ese lugar.',
         faltaNumero: 'Falta el número: agrégalo a la dirección.',
@@ -607,8 +620,8 @@
           if (mine !== turno || !dlg.open || !r) return;
           if (r.comuna) map.onPlace?.({ comuna: r.comuna });
           if (tecleo !== antes) return;  // la persona siguió escribiendo: manda su texto
-          const cur = partesDe(input.value);
           if (!r.calle) { if (!input.value.trim()) decir(AVISO.sinCalle); return; }
+          const cur = partesJunto(input.value, r.calle);
           const manual = Boolean(cur.numero) && !(delMapa && delMapa.numero === cur.numero && delMapa.calle === clave(cur.calle));
           const misma = clave(cur.calle) === clave(r.calle);
           if (manual && !misma) {

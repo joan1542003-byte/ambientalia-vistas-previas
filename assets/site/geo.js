@@ -28,9 +28,29 @@
   /* «Av. Providencia» y «Avenida Providencia» son la misma calle: se compara sin el tipo de vía */
   const TIPO = /^(avenida|avda|av|calle|pasaje|psje|pje|camino|cno|autopista|carretera|ruta|paseo|callejon|diagonal)\s+(?=\S)/;
   const limpio = (s) => fold(s).replace(/[.,;]/g, ' ').replace(/\s+/g, ' ').trim();
-  const nucleo = (s) => limpio(s).replace(TIPO, '');
   const CLASE = { av: 'avenida', avda: 'avenida', psje: 'pasaje', pje: 'pasaje', cno: 'camino' };
+  /* Sin el tipo de vía, salvo que lo siga un número: «Ruta 68» o «Pasaje 3» quedarían en «68» o «3», que no son una
+     calle; ahí el tipo se conserva, con su nombre completo («pje 3» → «pasaje 3») */
+  const nucleo = (s) => {
+    const l = limpio(s);
+    const m = l.match(TIPO);
+    if (!m) return l;
+    const resto = l.slice(m[0].length);
+    return /^\d/.test(resto) ? `${CLASE[m[1]] || m[1]} ${resto}` : resto;
+  };
   const tipoDe = (s) => { const m = limpio(s).match(TIPO); return m ? CLASE[m[1]] || m[1] : ''; };
+
+  /* Calles cuyo nombre lleva un número después de letras («Ruta 68», «Pasaje 3», «Avenida 2 Sur»), según el índice de
+     calles: nombre hasta ese número → lo que sigue del nombre («» o «sur»). Si la parte de antes ya es una calle
+     («Antupirén» y «Antupirén 9098»), el número se lee como el de la casa. Se llena al cargar el índice (cargar()). */
+  const numeradas = new Map();
+  const normal = (s) => { const [t, ...r] = limpio(s).split(' '); return [CLASE[t] || t, ...r].join(' '); };
+  const delNombre = (antes, numero, despues) => {
+    const sigue = numeradas.get(normal(`${antes} ${numero}`));
+    if (!sigue) return false;
+    const luego = limpio(despues);
+    return sigue.some((x) => !x || luego === x || luego.startsWith(`${x} `));
+  };
 
   /* «av providencia 1234 oficina 5» → calle «av providencia», número «1234», resto «oficina 5».
      Los números que son parte del nombre («11 de Septiembre», «5 de Abril») no cuentan como número de la dirección, y
@@ -48,6 +68,7 @@
       const despues = cabeza.slice(m.index + m[1].length);
       if (!/[a-záéíóúñ]{3,}/i.test(antes)) continue;      // aún no hay nombre de calle
       if (/^\s+de\s/i.test(despues)) continue;            // «11 de septiembre»
+      if (delNombre(antes, m[1], despues)) continue;      // «Ruta 68»: ese 68 es parte del nombre
       return { calle: antes.replace(/[,\s]+$/, ''), numero: m[1], resto: junta(despues, cola) };
     }
     /* «Los Aromos, 123»: el número viene justo después de la coma */
@@ -69,6 +90,20 @@
         const c = calles.find((x) => x.nombre === oficial);
         if (c) calles.push({ ...c, k: apodo, ks: apodo.split(' '), orden: -1 });
       });
+      const todas = new Set(calles.map((c) => normal(c.nombre)));
+      calles.forEach((c) => {
+        const t = normal(c.nombre).split(' ');
+        t.forEach((x, i) => {
+          if (!i || !/^\d{1,5}$/.test(x)) return;
+          const antes = t.slice(0, i).join(' ');
+          /* «Antupirén» y «Antupirén 9098» existen: ahí 9098 es el número de casa. Un tipo de vía solo («Pasaje», que el
+             mapa trae como nombre de algunas calles sin nombre) no cuenta: «Pasaje 3 45» es el n.° 45 del Pasaje 3 */
+          if (!/[a-zñ]{3,}/.test(antes) || (todas.has(antes) && !TIPO.test(`${antes} x`))) return;
+          const k = t.slice(0, i + 1).join(' ');
+          if (!numeradas.has(k)) numeradas.set(k, []);
+          numeradas.get(k).push(t.slice(i + 1).join(' '));
+        });
+      });
       return calles;
     })
     .catch(() => { indice = null; return null; }));
@@ -86,6 +121,8 @@
      `comuna` es la elegida en el formulario (sus calles van primero). Una calle que cruza muchas comunas, sin comuna
      elegida, se sugiere una sola vez y no cambia la comuna. */
   const suggest = async (texto, { comuna = '' } = {}) => {
+    if (limpio(texto).length < 3) return [];
+    await cargar();  // partes() necesita el índice para las calles con número en el nombre
     let { calle, numero, resto } = partes(texto);
     /* La comuna escrita a continuación («pajaritos 3000, maipú») manda sobre la elegida y no se repite en la dirección */
     const escrita = COMUNAS.get(fold(resto));
@@ -346,6 +383,7 @@
      La comuna se toma de la sugerencia elegida (`preferida`) o de la del formulario si la calle pasa por ella; una
      calle que existe en muchas comunas no se busca sin saber cuál. */
   const search = async (texto, { comuna = '', preferida = '' } = {}) => {
+    await cargar();
     const { calle, numero } = partes(texto);
     if (!numero || nucleo(calle).length < 3) return null;
     const calles = await cargar();
@@ -375,7 +413,7 @@
      El número se entrega solo si hay una dirección conocida en ese lugar. Si el punto está sobre la calzada de otra
      calle (una esquina) y más cerca de ella que de esa dirección, vale la calle y no el edificio vecino. */
   const reverse = async (p) => {
-    const comuna = await comunaEn(p);
+    const [comuna] = await Promise.all([comunaEn(p), cargar()]);  // con el índice, quien lea la dirección la separa bien
     if (comuna === null) return null;
     const D = await datos(comuna);
     if (!D) return comuna ? { calle: '', numero: '', comuna } : null;
