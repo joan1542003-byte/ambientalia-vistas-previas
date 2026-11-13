@@ -8,6 +8,23 @@
   /* Empiezan cuando ya se pintó la foto principal (su «Largest Contentful Paint»), al terminar la carga, con el primer
      gesto de la persona o a los 3 s, lo que ocurra primero. Las fotos de más abajo (img[data-tarde-img]) bajan desde ahí. */
   let hecho = false;
+  /* Un toque que llega antes que esos scripts (p. ej., una opción del hero o «Ayuda») no se pierde: se recuerda y se
+     repite cuando terminan de cargar. Solo lo que manejan ellos, para no repetir lo que ya respondió este archivo. */
+  const TARDIO = '[data-route], [data-dock-open], [data-docs-open], [data-ayu-tema], .pick-btn';
+  let pendiente = null;
+  const anota = (e) => {
+    const el = e.target.closest?.(TARDIO);
+    if (!el) return;
+    pendiente = el;
+    if (el.matches('a[href^="#"]')) e.preventDefault();  // «Ayuda» no salta a su ancla mientras tanto
+  };
+  if (tardios.length) addEventListener('click', anota, true);
+  const repite = () => {
+    removeEventListener('click', anota, true);
+    const el = pendiente;
+    pendiente = null;
+    if (el?.isConnected) el.click();
+  };
   const despues = () => {
     if (hecho) return;
     hecho = true;
@@ -19,7 +36,11 @@
       d.head.append(l);
     });
     d.querySelectorAll('img[data-tarde-img]').forEach((i) => i.removeAttribute('data-tarde-img'));
-    tardios.forEach((t) => { const s = d.createElement('script'); s.src = t.dataset.tardeSrc; s.async = false; d.body.append(s); });
+    let ultimo = null;
+    tardios.forEach((t) => { const s = d.createElement('script'); s.src = t.dataset.tardeSrc; s.async = false; d.body.append(s); ultimo = s; });
+    /* Se ejecutan en orden: cuando corre el último, ya están todos */
+    ultimo?.addEventListener('load', () => setTimeout(repite, 0), { once: true });
+    ultimo?.addEventListener('error', () => setTimeout(repite, 0), { once: true });
   };
   const pronto = () => setTimeout(despues, 0);
   /* En la portada (la que carga lo demás después), el arranque de abajo va en tramos cortos, cada uno en su propia tarea,

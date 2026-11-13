@@ -8,7 +8,8 @@
    - varias:   <input type="hidden"> y data-options="A|B|C" (data-exclusive="C" si una opción excluye a las demás).
    - fecha:    <input type="hidden">; calendario de un día (data-hasta="365": hasta cuántos días desde hoy).
    - comuna:   <input type="hidden" name="comuna"> y, si se quiere, otro name="region": todas las comunas de Chile.
-   - texto:    <input type="hidden">; data-placeholder, data-maxlength y data-optional.
+   - texto:    <input type="hidden">; data-placeholder, data-maxlength y data-optional. Con data-mapa, también el mapa
+               y las calles de la comuna (mapa.js, geo.js); el punto va en otro <input type="hidden" name="ubicacion">.
    Una opción que empieza con «Otro», «Otra» u «Otros» despliega un campo para escribir cuál (opciones y varias); lo
    escrito queda como «Otro: …» en la fila, en el resumen y en los mensajes de WhatsApp.
    Además, .seg[data-seg="campo"] es un grupo de botones de un toque en la misma fila (como «Tipo de retiro»). */
@@ -119,13 +120,26 @@
       if (region) region.value = PICK.regionLabel(PICK.COMMUNES.find((c) => c.name === v)?.region || '');
       set(f, v);
     },
+    /* Con data-mapa, la ventana suma el mapa (mapa.js) y las calles reales de la comuna elegida (geo.js), como la
+       dirección de Transporte; el punto marcado queda en el campo name="ubicacion" de la fila como enlace de Google Maps */
     texto: async (row, f) => {
       const optional = row.hasAttribute('data-optional');
+      const MAPA = row.hasAttribute('data-mapa') ? window.MAPA : null;
+      const GEO = MAPA ? window.GEO : null;
+      const ubic = MAPA ? row.querySelector('[name="ubicacion"]') : null;
+      const comuna = () => row.closest('form')?.querySelector('[name="comuna"]')?.value || '';
+      let punto = ubic ? MAPA.punto(ubic.value) : null;
+      GEO?.prepare();  // el índice de calles se descarga al abrir la ventana
       const v = await Picker.text({
         title: row.dataset.title, sub: row.dataset.sub || '', label: row.querySelector('.pick-label')?.textContent || row.dataset.title,
-        value: f.value, placeholder: row.dataset.placeholder || '', maxlength: Number(row.dataset.maxlength) || 600, optional
+        value: f.value, placeholder: row.dataset.placeholder || '', maxlength: Number(row.dataset.maxlength) || 600, optional,
+        suggest: GEO ? (q, signal) => GEO.suggest(q, { comuna: comuna(), signal }) : null, source: GEO?.fuente || '',
+        map: ubic ? MAPA.paraTexto({ comuna, value: punto, onDone: (p) => { punto = p; } }) : null
       });
-      if (v !== undefined && (v || optional)) set(f, v);
+      if (v !== undefined && (v || optional)) {
+        set(f, v);
+        if (ubic) set(ubic, v ? MAPA.enlace(punto) : '');
+      }
     }
   };
 

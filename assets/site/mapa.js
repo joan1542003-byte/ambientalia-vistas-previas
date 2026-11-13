@@ -46,9 +46,11 @@
     calma: 4000,     // ms sin mejorar una lectura ya razonable (100 m o menos): no va a mejorar
     limite: 15000    // ms sin ninguna lectura
   };
+  /* En Campañas, el punto que se marca es el de la recolección; en Transporte, el del retiro */
+  const LUGAR = d.body?.dataset.site === 'campanas' ? 'punto de recolección' : 'lugar del retiro';
   const TEXTO = {
-    inicio: 'Mueve el mapa o toca el lugar del retiro: escribiremos la dirección.',
-    lejos: 'Acerca el mapa al lugar del retiro: toca la zona o usa los botones + y −.',
+    inicio: `Mueve el mapa o toca el ${LUGAR}: escribiremos la dirección.`,
+    lejos: `Acerca el mapa al ${LUGAR}: toca la zona o usa los botones + y −.`,
     acercado: 'Ahora toca el lugar exacto o mueve el mapa para marcar el punto.',
     aproximada: 'Ubicación aproximada. Toca el lugar exacto o mueve el mapa para marcar el punto.',
     exacta: 'Encontramos esa dirección. Si el marcador no quedó en el lugar, mueve el mapa.',
