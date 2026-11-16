@@ -22,6 +22,9 @@ const JOHAN_PLUGIN = '415821b60ff8c6ac841a3f6778c704aec6e1d3a2';
 /* Ayuda del 22-10 (guías, checklists y panel por pestañas), con HDS y Campañas sin «Vista previa de diseño» en el pie */
 const JOHAN_AYUDA = 'a9ab37d';
 const JOHAN_CHAT = 'a9ab37d';
+/* Plugin 1.4.17 (13-11-2026), la base aprobada de lo que sigue: HDS, Campañas, las páginas generadas y los enlaces de
+   WhatsApp se comparan con ella (la 1.4.15–1.4.17 cambió a propósito la tipografía local, el href de WhatsApp y filas.js) */
+const VERSION_1_4_17 = '258849f258a36b6e51de9f65d2da7ef82158c36d';
 const leer = (f) => readFileSync(join(ROOT, f), 'utf8');
 const git = (...a) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 });
 /* Archivos del repositorio, sin repetir (durante una fusión sin cerrar, git ls-files nombra tres veces cada archivo en conflicto) */
@@ -105,12 +108,12 @@ seccion('3. Formulario de Transporte: un solo destino, el asistente');
 seccion('4. HDS y Campañas sin cambios de comportamiento');
 for (const f of ['hds.html', 'campanas-reciclaje.html']) {
   const s = leer(f);
-  const antes = enRama(JOHAN_AYUDA, f);
-  if (antes === null) { avisos.push(`No encontré ${JOHAN_AYUDA.slice(0, 7)} para comparar ${f}.`); continue; }
-  ok(sinVersion(s) === sinVersion(antes), `${f}: igual a la versión del 22-10 salvo la versión de los archivos (?v=)`);
+  const antes = enRama(VERSION_1_4_17, f);
+  if (antes === null) { avisos.push(`No encontré ${VERSION_1_4_17.slice(0, 7)} para comparar ${f}.`); continue; }
+  ok(sinVersion(s) === sinVersion(antes), `${f}: igual a la 1.4.17 salvo la versión de los archivos (?v=)`);
   ok(!/data-cotizar-api/.test(s) && /data-enviar hidden/.test(s), `${f}: sin destino Laravel; conserva su «Enviar solicitud» de WordPress`);
 }
-for (const f of ['assets/site/filas.js']) ok(leer(f) === enRama(JOHAN, f), `${f} sin cambios`);
+for (const f of ['assets/site/filas.js']) ok(leer(f) === enRama(VERSION_1_4_17, f), `${f} sin cambios desde la 1.4.17`);
 
 seccion('5. Una sola versión de los archivos en todas las páginas');
 {
@@ -129,12 +132,12 @@ seccion('6. Páginas generadas (normativa y ayuda) al día con la fuente');
   const paginas = archivos('normativa/*.html', 'ayuda/*.html');
   const malas = paginas.filter((f) => { const p = leer(f); return bloque(p, '<div class="hcard">') !== tarjeta || bloque(p, '<div class="dock" data-dock data-dock-always>') !== burbuja; });
   ok(!malas.length, `${paginas.length} páginas con la tarjeta y la burbuja idénticas a las de transporte-autorizado.html (lo que copian tools/normativa.py y tools/ayuda.py)${malas.length ? `: ${malas.join(', ')}` : ''}`);
-  const antes = paginas.filter((f) => enRama(JOHAN_AYUDA, f) !== null);
+  const antes = paginas.filter((f) => enRama(VERSION_1_4_17, f) !== null);
   const editadas = antes.filter((f) => {
     const neutro = (p) => sinVersion(p.replace(bloque(p, '<div class="hcard">'), '').replace(bloque(p, '<div class="dock" data-dock data-dock-always>'), ''));
-    return neutro(leer(f)) !== neutro(enRama(JOHAN_AYUDA, f));
+    return neutro(leer(f)) !== neutro(enRama(VERSION_1_4_17, f));
   });
-  ok(!editadas.length, `fuera de la tarjeta, la burbuja y la versión, las ${antes.length} páginas quedan como en la versión del 22-10 (contenido normativo y editorial intacto)`);
+  ok(!editadas.length, `fuera de la tarjeta, la burbuja y la versión, las ${antes.length} páginas quedan como en la 1.4.17 (contenido normativo y editorial intacto)${editadas.length ? `: ${editadas.join(', ')}` : ''}`);
 }
 
 seccion('7. Plugin de WordPress conservado');
@@ -218,19 +221,20 @@ seccion('9. Paquete del plugin (tools/wordpress.py, en una carpeta temporal)');
 
 seccion('10. WhatsApp: contacto opcional, igual que antes');
 {
-  /* Cada enlace a wa.me y cada mensaje precargado (data-wa, data-expert-wa) de cada página, contra cambios-15-10 */
+  /* Cada enlace a wa.me y cada mensaje precargado (data-wa, data-expert-wa) de cada página, contra la 1.4.17 (que sumó el
+     href del botón de WhatsApp del resumen para que sea rastreable; antes se comparaba con cambios-15-10) */
   const WA = /https:\/\/wa\.me\/[^"'\s<>]*|data-wa="[^"]*"|data-expert-wa="[^"]*"/g;
   const cuenta = (s) => (s.match(WA) || []).reduce((m, x) => m.set(x, (m.get(x) || 0) + 1), new Map());
   const iguales = (a, b) => a.size === b.size && [...a].every(([k, v]) => b.get(k) === v);
-  const paginas = archivos('*.html').filter((f) => enRama(JOHAN, f) !== null);
-  const distintas = paginas.filter((f) => !iguales(cuenta(leer(f)), cuenta(enRama(JOHAN, f))));
+  const paginas = archivos('*.html').filter((f) => enRama(VERSION_1_4_17, f) !== null);
+  const distintas = paginas.filter((f) => !iguales(cuenta(leer(f)), cuenta(enRama(VERSION_1_4_17, f))));
   const total = paginas.reduce((n, f) => n + (leer(f).match(WA) || []).length, 0);
-  ok(!distintas.length && total > 0, `${total} enlaces y mensajes de WhatsApp en ${paginas.length} páginas, idénticos a cambios-15-10${distintas.length ? `; cambian en: ${distintas.join(', ')}` : ''}`);
+  ok(!distintas.length && total > 0, `${total} enlaces y mensajes de WhatsApp en ${paginas.length} páginas, idénticos a la 1.4.17${distintas.length ? `; cambian en: ${distintas.join(', ')}` : ''}`);
   const site = leer('assets/site/site.js');
   ok(/const WHATSAPP = '56986067930';/.test(site) && site.includes("whatsapp: (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`"), 'site.js conserva el número y cómo se arma el enlace (SITE.whatsapp)');
   const codigo = ['site.js', 'transporte-ui.js', 'asistente.js', 'transporte.js', 'filas.js'].map((f) => leer(`assets/site/${f}`)).join('\n');
   ok(!/window\.open\(|(wa|send)\.hidden\s*=|(wa|send)\.click\(\)|\[data-send\]'\)\??\.click\(\)/.test(codigo), 'ningún script oculta el botón de WhatsApp ni lo abre solo');
-  ok(/class="btn btn-wa btn-small" data-send target="_blank"/.test(bloque(leer('transporte-autorizado.html'), '<div class="summary" id="cotizacion-resumen"') || ''), 'el resumen de la cotización conserva su botón de WhatsApp');
+  ok(/class="btn btn-wa btn-small"(?: href="https:\/\/wa\.me\/\d+")? data-send target="_blank"/.test(bloque(leer('transporte-autorizado.html'), '<div class="summary" id="cotizacion-resumen"') || ''), 'el resumen de la cotización conserva su botón de WhatsApp');
 }
 
 seccion('11. Frontend y backend desacoplados');
