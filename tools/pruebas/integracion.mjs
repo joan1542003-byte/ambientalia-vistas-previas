@@ -386,7 +386,8 @@ async function enNavegador() {
     const cargada = new Promise((r) => { const f = (m) => { if (m.method === 'Page.loadEventFired') { oyentes.delete(f); r(); } }; oyentes.add(f); });
     await cdp('Page.navigate', { url });
     await cargada;
-    await hasta(() => document.readyState === 'complete' && !!window.SITE, 'página cargada');
+    /* Desde la 1.4.15 transporte-ui.js y el resto llegan después del primer dibujo: se espera también a window.QUOTE */
+    await hasta(() => document.readyState === 'complete' && !!window.SITE && (!document.getElementById('cotizacion') || !!window.QUOTE), 'página cargada');
   };
 
   await cdp('Page.enable');
@@ -442,6 +443,8 @@ async function enNavegador() {
     const b = r.querySelector('[data-cotizar-enviar]');
     return {
       titulo: r.querySelector('[data-resumen-titulo]').textContent, bajada: r.querySelector('[data-resumen-bajada]').textContent,
+      /* El número de seguimiento va aparte, grande, bajo la bajada (16-11-2026) */
+      numero: r.querySelector('[data-cotizar-numero]:not([hidden]) strong')?.textContent || '',
       estado: e.hidden ? '' : e.textContent, info: e.classList.contains('is-info'), boton: !b.hidden, ocupado: b.disabled,
       wp: !!r.querySelector('[data-enviar]'), wa: r.querySelector('[data-send]').getAttribute('href') || '', abiertas: window.__abiertas.length,
       aviso: { visible: !document.querySelector('[data-cotizar-campos]').hidden, activo: !document.querySelector('[name="aviso"]').disabled }
@@ -533,7 +536,7 @@ async function enNavegador() {
     e = await evaluar(estado);
     const segunda = de('/api/quotes');
     ok(segunda.length === 2 && segunda[1].campos.client_request_id === q.campos.client_request_id, 'el reintento lleva el mismo client_request_id');
-    ok(/TA-000777/.test(e.bajada) && !e.boton && /envi%C3%A9%20la%20solicitud%20TA-000777|envié la solicitud TA-000777/.test(decodeURIComponent(e.wa)), '200 duplicada: la da por recibida con su número; WhatsApp pasa a ser contacto con ese número');
+    ok(e.numero === 'TA-000777' && !e.boton && /envi%C3%A9%20la%20solicitud%20TA-000777|envié la solicitud TA-000777/.test(decodeURIComponent(e.wa)), '200 duplicada: la da por recibida con su número; WhatsApp pasa a ser contacto con ese número');
 
     /* Volver a preparar el mismo resumen después de una falla (sin cambios) conserva el identificador */
     await evaluar(otraVez, true);
@@ -542,7 +545,7 @@ async function enNavegador() {
     await hasta(() => document.querySelector('[data-resumen-titulo]').textContent === 'Recibimos tu solicitud.', '201');
     const tercera = de('/api/quotes');
     ok(tercera[2].campos.client_request_id !== q.campos.client_request_id, 'después de una recibida, la siguiente solicitud lleva otro identificador');
-    ok(/TA-000778/.test((await evaluar(estado)).bajada), '201: muestra el número de la solicitud');
+    ok((await evaluar(estado)).numero === 'TA-000778', '201: muestra el número de la solicitud, grande y aparte');
 
     /* Errores: el mensaje correcto, el botón listo para reintentar y nada enviado a otro lado */
     const CASOS = [

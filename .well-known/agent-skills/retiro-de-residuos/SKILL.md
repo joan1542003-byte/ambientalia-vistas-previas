@@ -31,5 +31,5 @@ Resumen completo del sitio para asistentes: https://transporteautorizado.cl/llms
 
 ## Límites
 
-- Cobertura: por ahora, comunas de la Región Metropolitana (Quilicura, Lampa y Pudahuel al 12-11-2026); la cobertura vigente se confirma al cotizar.
+- Cobertura: por ahora, Quilicura, Lampa y Pudahuel (Región Metropolitana); la cobertura vigente se confirma al cotizar.
 - No tramita autorizaciones sanitarias ni entrega asesoría legal. Las guías orientan y citan el texto oficial; para efectos legales, consulta siempre la fuente oficial y el Diario Oficial.

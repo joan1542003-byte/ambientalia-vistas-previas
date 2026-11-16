@@ -27,6 +27,12 @@ DOMINIO = 'https://transporteautorizado.cl/'
 SITIO = ['transporte-autorizado.html', 'assets/site/', 'assets/transporte/', 'normativa/', 'ayuda/', 'documentos/', 'legal/', '.well-known/']
 FUERA = {'filas.js'}  # solo de HDS y Campañas
 AGENTE = {'agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.css'}  # no van con --sin-agente
+# Textos de llms.txt y de .well-known/agent-skills/…/SKILL.md que el plugin reemplaza al entregarlos por las comunas y el
+# horario de sus ajustes (TA_SITIO_COBERTURA_BASE y TA_SITIO_HORARIO_BASE en wordpress/ta-sitio/inc/ajustes.php): deben
+# quedar idénticos en los tres lugares
+COBERTURA_BASE = 'Quilicura, Lampa y Pudahuel (Región Metropolitana)'
+HORARIO_BASE = 'cualquier horario (la hora la define el equipo), mañana (9:00 a 13:00), tarde (13:00 a 17:00) o vespertino (de noche, sujeto a confirmación)'
+SKILL = '.well-known/agent-skills/retiro-de-residuos/SKILL.md'
 
 
 def sin_agente(html):
@@ -60,9 +66,9 @@ def llms():
         (listas if 'ck-page' in html_f else guias).append(f'- [{titulo}]({DOMINIO}ayuda/{f.name}): {resumen}')
     lineas = [
         '# Transporte Autorizado', '', f'> {bajada}', '',
-        'Sitio de retiro y coordinación de residuos para empresas en Chile. No tramita autorizaciones sanitarias. Por ahora coordina retiros en Quilicura, Lampa y Pudahuel (Región Metropolitana).', '',
+        f'Sitio de retiro y coordinación de residuos para empresas en Chile. No tramita autorizaciones sanitarias. Por ahora coordina retiros en {COBERTURA_BASE}. Los retiros se coordinan de lunes a sábado; horario: {HORARIO_BASE}.', '',
         '## Qué se puede hacer',
-        f'- [Cotizar un retiro]({DOMINIO}#cotizar): formulario en dos pasos (residuo, cantidad, comuna, dirección, tipo de retiro y contacto). También cotiza el arriendo de contenedores.',
+        f'- [Cotizar un retiro]({DOMINIO}#cotizar): formulario en dos pasos (residuo, cantidad, comuna, dirección, tipo de retiro, horario y contacto). También cotiza el arriendo de contenedores.',
         f'- [Asistente de retiro]({DOMINIO}#asistente): las mismas preguntas, una por una.',
         f'- [Buscar un transportista autorizado]({DOMINIO}#buscar): listado por tipo de residuo y comuna, con datos al 31-12-2025; la vigencia de cada autorización se confirma al consultar.',
         f'- [Hablar con un especialista]({DOMINIO}#especialista): por WhatsApp, +56 9 8606 7930.', '',
@@ -206,7 +212,11 @@ def main():
         assert 'data-agente-abrir' in pagina and 'assets/site/agente-chat.js' in pagina, 'la página no trae el agente'
         assert all((sitio / 'assets' / 'site' / a).is_file() for a in AGENTE), 'faltan archivos del agente en el paquete'
     compactar(sitio / 'assets' / 'site')
-    (sitio / 'llms.txt').write_text(llms(), encoding='utf-8')
+    texto_llms = llms()
+    texto_skill = (sitio / SKILL).read_text(encoding='utf-8')
+    for nombre, texto in (('llms.txt', texto_llms), (SKILL, texto_skill)):
+        assert COBERTURA_BASE in texto and HORARIO_BASE in texto, f'{nombre}: falta el texto de cobertura u horario que el plugin reemplaza'
+    (sitio / 'llms.txt').write_text(texto_llms, encoding='utf-8')
     (sitio / 'imagenes.json').write_text(json.dumps(imagenes(), ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     (sitio / '.htaccess').write_text(HTACCESS, encoding='utf-8')
     (sitio / 'index.php').write_text("<?php // Silencio.\n", encoding='utf-8')

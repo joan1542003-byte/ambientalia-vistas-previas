@@ -187,6 +187,9 @@ function ta_sitio_agentes( $archivo ) {
 	if ( ta_sitio_whatsapp_cambiado() ) {
 		$contenido = ta_sitio_whatsapp_aplicar( $contenido );
 	}
+	if ( '.md' === substr( $archivo, -3 ) ) {
+		$contenido = ta_sitio_textos_agentes( $contenido );  // cobertura y horario de los ajustes (inc/ajustes.php)
+	}
 	status_header( 200 );
 	header( 'Content-Type: ' . ( '.json' === substr( $archivo, -5 ) ? 'application/json' : 'text/markdown' ) . '; charset=utf-8' );
 	header( 'X-Content-Type-Options: nosniff' );
@@ -234,7 +237,12 @@ function ta_sitio_entregar( $interna, $privado ) {
 	if ( in_array( $ext, array( 'js', 'txt' ), true ) && ta_sitio_whatsapp_cambiado() ) {
 		$contenido = ta_sitio_whatsapp_aplicar( (string) file_get_contents( $archivo ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 	}
-	$etiqueta = '"' . md5( $archivo . '|' . $fecha . '|' . filesize( $archivo ) . ( null === $contenido ? '' : '|' . ta_sitio_opciones()['whatsapp'] ) ) . '"';
+	// llms.txt lleva además la cobertura y el horario de los ajustes (inc/ajustes.php)
+	if ( 'llms.txt' === basename( $archivo ) ) {
+		$contenido = ta_sitio_textos_agentes( null === $contenido ? (string) file_get_contents( $archivo ) : $contenido ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	}
+	// Con el contenido cambiado, la etiqueta depende de él: otro ajuste da otra etiqueta y el navegador no usa la guardada
+	$etiqueta = '"' . md5( $archivo . '|' . $fecha . '|' . filesize( $archivo ) . ( null === $contenido ? '' : '|' . md5( $contenido ) ) ) . '"';
 	header( 'Content-Type: ' . $tipos[ $ext ] );
 	header( 'X-Content-Type-Options: nosniff' );
 	header( 'ETag: ' . $etiqueta );

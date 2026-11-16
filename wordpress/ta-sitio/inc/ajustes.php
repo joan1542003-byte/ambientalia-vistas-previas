@@ -52,6 +52,49 @@ function ta_sitio_horas_validas( $inicio, $corte, $fin ) {
 	return $inicio >= 5 && $inicio < $corte && $corte < $fin && $fin <= 23;
 }
 
+/*
+ * llms.txt y la habilidad para agentes de IA (.well-known/agent-skills/…/SKILL.md) salen del paquete con la cobertura y el
+ * horario de siempre; al entregarlos, el plugin los cambia por los de estos ajustes. Los textos deben ser idénticos a
+ * COBERTURA_BASE y HORARIO_BASE de tools/wordpress.py (el armado del paquete comprueba que estén).
+ */
+const TA_SITIO_COBERTURA_BASE = 'Quilicura, Lampa y Pudahuel (Región Metropolitana)';
+const TA_SITIO_HORARIO_BASE   = 'cualquier horario (la hora la define el equipo), mañana (9:00 a 13:00), tarde (13:00 a 17:00) o vespertino (de noche, sujeto a confirmación)';
+
+/** Las comunas que se atienden, para un asistente de IA: todas nombradas (sin elegir ninguna, las del paquete). */
+function ta_sitio_cobertura_texto() {
+	$comunas = ta_sitio_comunas();
+	if ( ! $comunas ) {
+		return TA_SITIO_COBERTURA_BASE;  // el sitio usa entonces las comunas por defecto (assets/site/pickers.js)
+	}
+	if ( count( $comunas ) === count( ta_sitio_comunas_rm() ) ) {
+		return 'toda la Región Metropolitana';
+	}
+	$ultima = array_pop( $comunas );
+	return ( $comunas ? implode( ', ', $comunas ) . ' y ' : '' ) . $ultima . ' (Región Metropolitana)';
+}
+
+/** El horario de retiro en palabras: las opciones que se ofrecen, con sus horas. */
+function ta_sitio_horario_texto() {
+	$h        = ta_sitio_horario();
+	$opciones = array( 'cualquier horario (la hora la define el equipo)' );
+	if ( $h['manana'] ) {
+		$opciones[] = 'mañana (' . $h['inicio'] . ':00 a ' . $h['corte'] . ':00)';
+	}
+	if ( $h['tarde'] ) {
+		$opciones[] = 'tarde (' . $h['corte'] . ':00 a ' . $h['fin'] . ':00)';
+	}
+	if ( $h['vespertino'] ) {
+		$opciones[] = 'vespertino (de noche, sujeto a confirmación)';
+	}
+	$ultima = array_pop( $opciones );
+	return ( $opciones ? implode( ', ', $opciones ) . ' o ' : '' ) . $ultima;
+}
+
+/** llms.txt o SKILL.md con la cobertura y el horario de los ajustes. */
+function ta_sitio_textos_agentes( $texto ) {
+	return str_replace( array( TA_SITIO_COBERTURA_BASE, TA_SITIO_HORARIO_BASE ), array( ta_sitio_cobertura_texto(), ta_sitio_horario_texto() ), $texto );
+}
+
 /** Respuestas rápidas de los ajustes: [[título, texto]…]. Se separan con una línea «---»; la primera línea es el título. */
 function ta_sitio_plantillas() {
 	$op  = ta_sitio_opciones();

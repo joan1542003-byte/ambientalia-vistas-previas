@@ -27,6 +27,7 @@ El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `p
 * Comunas: con hasta cinco marcadas, los avisos las nombran; con más, dicen cuántas son («Por ahora atendemos 12 comunas de la Región Metropolitana»). Cambiar las comunas o el horario vacía la caché de páginas.
 * Sin la fila «Vehículo» (tipo de camión) en el formulario.
 * Solicitud enviada: el número de seguimiento se muestra grande y aparte. El envío al asistente no cambia.
+* llms.txt y la habilidad para agentes de IA (/.well-known/agent-skills/…/SKILL.md) dicen las comunas y el horario de los ajustes (antes, siempre Quilicura, Lampa y Pudahuel); llms.txt suma el horario y lo nombra en el formulario.
 
 = 1.4.17 =
 * Mapa de la dirección: en una calle cuyo nombre lleva un número (Ruta 68, Pasaje 3, Avenida 2 Sur), ese número ya no se toma como el de la casa. Antes, al mover el punto sobre la Ruta 68 la dirección quedaba «Ruta 68 68, 68…», un 68 más cada vez.
