@@ -273,6 +273,7 @@ function ta_sitio_pagina( $archivo, $privado ) {
 		'url' => esc_url_raw( rest_url( 'ta/v1/' ) ),
 		'v'   => TA_SITIO_VERSION,
 		'comunas' => ta_sitio_comunas(),  // comunas que se atienden (assets/site/pickers.js las usa en el formulario y el asistente)
+		'horario' => ta_sitio_horario(),  // horas y opciones del horario de retiro (assets/site/pickers.js, PICK.JORNADA y PICK.SLOTS)
 		'linkedin' => TA_SITIO_LINKEDIN,  // publicaciones recientes, al día sin subir otro zip: las lee el navegador (docs/linkedin.md)
 	);
 	if ( '' !== $op['asistente'] ) {

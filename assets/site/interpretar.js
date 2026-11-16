@@ -101,16 +101,20 @@
     return { value: iso(dt) };
   };
 
+  /* Solo se entiende una opción que el formulario ofrece: si en los ajustes se quitó (p. ej., Vespertino), queda sin
+     entender y se pregunta. Las horas de corte son las de la jornada (PICK.JORNADA) */
   const slot = (t) => {
-    if (/(?:en|por|a|de|durante) la manana|\bam\b|temprano/.test(t)) return 'Mañana';
-    if (/(?:en|por|a|de|durante) la tarde|\bpm\b/.test(t)) return 'Tarde';
-    if (/(?:en|por|de|durante) la noche|vespertin|nocturn/.test(t)) return 'Vespertino';
+    const hay = (s) => (PICK.SLOTS.some(([x]) => x === s) ? s : '');
+    const J = PICK.JORNADA || { corte: 13, fin: 18 };
+    if (/(?:en|por|a|de|durante) la manana|\bam\b|temprano/.test(t)) return hay('Mañana');
+    if (/(?:en|por|a|de|durante) la tarde|\bpm\b/.test(t)) return hay('Tarde');
+    if (/(?:en|por|de|durante) la noche|vespertin|nocturn/.test(t)) return hay('Vespertino');
     if (/cualquier (?:hora|horario|momento)|todo el dia/.test(t)) return 'Cualquier horario';
     const r = t.match(/\b(?:de|entre|desde)?\s*(\d{1,2})(?::(\d{2}))?\s*(?:a|y|-|hasta)\s*(\d{1,2})(?::(\d{2}))?\s*(?:hrs?|horas)?\b/);
     /* Sin rango de horas en el formulario (12-11-2026): «entre 9 y 12» queda en la opción que lo contiene */
     if (r && Number(r[1]) >= 6 && Number(r[3]) <= 21 && Number(r[3]) > Number(r[1])) {
       const a = Number(r[1]); const b = Number(r[3]);
-      return a >= 18 ? 'Vespertino' : b <= 13 ? 'Mañana' : a >= 13 && b <= 18 ? 'Tarde' : 'Cualquier horario';
+      return hay(a >= J.fin ? 'Vespertino' : b <= J.corte ? 'Mañana' : a >= J.corte && b <= J.fin ? 'Tarde' : 'Cualquier horario');
     }
     return '';
   };

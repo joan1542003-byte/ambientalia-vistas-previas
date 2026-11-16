@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.17
+Stable tag: 1.4.18
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,13 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.18 =
+* Horario de retiro: Mañana de 9:00 a 13:00 y Tarde de 13:00 a 17:00 (la mañana empieza a las 9 y nada pasa de las 17:00). Nueva sección «Horario de retiro» en los ajustes: las horas de inicio, de corte y de término, y si se ofrecen Mañana, Tarde y Vespertino. «Cualquier horario» va siempre. El campo del hero y el asistente solo entienden las opciones que se ofrecen.
+* «Detalles del retiro»: en cada sección van primero las condiciones prioritarias y al final las demás. Es solo el orden en pantalla: lo que se guarda y se envía al asistente sigue en el orden de siempre (el mismo del chat).
+* Comunas: con hasta cinco marcadas, los avisos las nombran; con más, dicen cuántas son («Por ahora atendemos 12 comunas de la Región Metropolitana»). Cambiar las comunas o el horario vacía la caché de páginas.
+* Sin la fila «Vehículo» (tipo de camión) en el formulario.
+* Solicitud enviada: el número de seguimiento se muestra grande y aparte. El envío al asistente no cambia.
 
 = 1.4.17 =
 * Mapa de la dirección: en una calle cuyo nombre lleva un número (Ruta 68, Pasaje 3, Avenida 2 Sur), ese número ya no se toma como el de la casa. Antes, al mover el punto sobre la Ruta 68 la dirección quedaba «Ruta 68 68, 68…», un 68 más cada vez.

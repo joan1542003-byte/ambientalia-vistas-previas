@@ -60,12 +60,22 @@
 
   /* [nombre, lo que se ve en la opción, cómo queda en el resumen (si difiere)]. El horario vespertino (de noche) no se
      promete: siempre queda sujeto a confirmación y la opción lo dice (pedido del cliente, 08-10-2026). Solo estas cuatro:
-     sin rango de horas (cliente, 12-11-2026); en «Cualquier horario» la hora la definimos nosotros */
+     sin rango de horas (cliente, 12-11-2026); en «Cualquier horario» la hora la definimos nosotros.
+     Jornada (cliente, 16-11-2026): la mañana empieza a las 9:00 y nada pasa de las 17:00; el corte entre mañana y tarde,
+     a las 13:00. Sobre WordPress se ajusta en «Ajustes del sitio» → «Horario de retiro» (window.TA_API.horario): las tres
+     horas y si se ofrecen Mañana, Tarde y Vespertino. «Cualquier horario» está siempre. Un ajuste incoherente (p. ej., el
+     inicio después del corte) se ignora y vale la jornada de 9:00 a 17:00 */
+  const JORNADA = (() => {
+    const h = window.TA_API?.horario || {};
+    const hora = (v) => Number.isInteger(v) && v >= 5 && v <= 23;
+    const [inicio, corte, fin] = hora(h.inicio) && hora(h.corte) && hora(h.fin) && h.inicio < h.corte && h.corte < h.fin ? [h.inicio, h.corte, h.fin] : [9, 13, 17];
+    return { inicio, corte, fin, manana: h.manana !== false, tarde: h.tarde !== false, vespertino: h.vespertino !== false };
+  })();
   const SLOTS = [
     ['Cualquier horario', 'Nosotros definimos la hora'],
-    ['Mañana', '8:00 a 13:00'],
-    ['Tarde', '13:00 a 18:00'],
-    ['Vespertino', 'De noche · sujeto a confirmación', 'de noche, sujeto a confirmación']
+    ...(JORNADA.manana ? [['Mañana', `${JORNADA.inicio}:00 a ${JORNADA.corte}:00`]] : []),
+    ...(JORNADA.tarde ? [['Tarde', `${JORNADA.corte}:00 a ${JORNADA.fin}:00`]] : []),
+    ...(JORNADA.vespertino ? [['Vespertino', 'De noche · sujeto a confirmación', 'de noche, sujeto a confirmación']] : [])
   ];
   /* Anticipación mínima por plan, en días desde hoy (cliente, 12-11-2026): el Retiro Programado no se agenda para hoy ni
      para mañana; Espera y ahorra, desde mañana. Lo usan el formulario, el asistente guiado y el campo del hero */
@@ -198,7 +208,24 @@
   /* «Otro: jaulas» → ['Otro', 'jaulas'] */
   const splitOther = (v) => { const at = String(v || '').indexOf(': '); return at < 0 ? [v || '', ''] : [v.slice(0, at), v.slice(at + 2)]; };
   const joinOther = (base, text) => (base && text ? `${base}: ${text}` : base || '');
-  const SERVICES = [['retiro', 'Retiro de residuos'], ['contenedores', 'Arriendo de contenedores'], ['rep', 'Gestión REP y productos prioritarios'], ['marcas', 'Destrucción de marcas'], ['reas', 'Gestión de REAS'], ['patios', 'Limpieza y patios de residuos']];
+  /* Orden de las condiciones en la ventana «Detalles del retiro» (cliente, 16-11-2026): en cada sección, primero las que
+     el cliente marcó como prioritarias (en verde) y al final las demás (en rojo), cada parte en el orden de ACCESS.
+     Es solo presentación: ACCESS no cambia (el campo guarda los rótulos en su orden, el mismo del chat) */
+  const ACCESS_PRIMERO = [
+    'Altura máxima de ingreso', 'Residuos ubicados en bodega subterránea', 'Distancia extensa entre el punto de acopio y el camión',
+    'No hay acceso directo del camión al punto de carga',
+    'Grúa requerida', 'Carga o descarga manual', 'Se requiere personal adicional para cargar', 'Se requiere coordinar el uso de equipos del cliente',
+    'Registro obligatorio del vehículo, conductor o personal', 'Inducción de seguridad obligatoria',
+    'Horario de carga definido'
+  ];
+  const ACCESS_VISTA = [
+    ...ACCESS_GROUPS.flatMap(([name]) => {
+      const del = ACCESS.filter((x) => accessGroup(x) === name);
+      return [...del.filter((x) => ACCESS_PRIMERO.includes(x)), ...del.filter((x) => !ACCESS_PRIMERO.includes(x))];
+    }),
+    ...ACCESS.filter((x) => !accessGroup(x))
+  ];
+  const SERVICES =[['retiro', 'Retiro de residuos'], ['contenedores', 'Arriendo de contenedores'], ['rep', 'Gestión REP y productos prioritarios'], ['marcas', 'Destrucción de marcas'], ['reas', 'Gestión de REAS'], ['patios', 'Limpieza y patios de residuos']];
   /* Arriendo de contenedores: primero el período, después el residuo y recién entonces el contenedor */
   const PERIODS = [['mensual', 'Mensual'], ['semanal', 'Semanal'], ['diario', 'Diario']];
   /* Vehículos y contenedores que se pueden pedir. Cada uno dice con qué tipo de residuo está disponible
@@ -206,13 +233,13 @@
      NO INVENTAR: la lista la entrega el cliente. Vacía, la fila correspondiente no aparece en el formulario.
      Vehículos: lista del cliente (09-10-2026), sin distinción por tipo de residuo ni capacidades: todos quedan
      disponibles para ambos tipos y sin descripción. La primera opción deja la elección al equipo.
-     Contenedores: el cliente todavía no entrega la lista. */
+     Contenedores: el cliente todavía no entrega la lista.
+     Vehículos (16-11-2026): el cliente pidió sacar la opción del tipo de camión; la lista queda vacía y la fila no se
+     muestra. Para volver a ofrecerla: [{ label: 'Elijan ustedes', hint: 'Lo definimos según tu residuo y la cantidad',
+     tipos: AMBOS }, y 'Camión ampliroll (hook lift)', 'Camión cerrado 3/4', 'Camión recolector/compactador de residuos
+     trasero', 'Camioneta', 'Camión doble', 'Camión con acoplado', 'Camión cerrado de mayor tamaño', cada uno con tipos: AMBOS] */
   const AMBOS = ['no-peligroso', 'peligroso'];
-  const VEHICLES = [
-    { label: 'Elijan ustedes', hint: 'Lo definimos según tu residuo y la cantidad', tipos: AMBOS },
-    ...['Camión ampliroll (hook lift)', 'Camión cerrado 3/4', 'Camión recolector/compactador de residuos trasero', 'Camioneta', 'Camión doble', 'Camión con acoplado', 'Camión cerrado de mayor tamaño']
-      .map((label) => ({ label, tipos: AMBOS }))
-  ];
+  const VEHICLES = [];
   const CONTAINERS = [];
   const allowed = (item, tipo) => !tipo || tipo === 'no-se' || item.tipos.includes(tipo);
   const TIPO_LABEL = { 'no-peligroso': 'No peligroso', peligroso: 'Peligroso', 'no-se': 'No lo sé' };
@@ -234,7 +261,12 @@
   const pedidas = Array.isArray(window.TA_API?.comunas) && window.TA_API.comunas.length ? window.TA_API.comunas : COBERTURA_BASE;
   const COBERTURA = RM.filter((c) => pedidas.includes(c));
   const enCobertura = (c) => COBERTURA.includes(c);
-  const coberturaTexto = COBERTURA.length > 1 ? `${COBERTURA.slice(0, -1).join(', ')} y ${COBERTURA[COBERTURA.length - 1]}` : COBERTURA[0] || '';
+  /* Lo que dicen los avisos («Por ahora atendemos …»). Hasta cinco comunas se nombran; con más, la lista se hacía larga en
+     cada aviso (cliente, 16-11-2026) y se dice cuántas son (la ventana de comuna las muestra todas) */
+  const COBERTURA_NOMBRADAS = 5;
+  const coberturaTexto = COBERTURA.length > COBERTURA_NOMBRADAS
+    ? (COBERTURA.length === RM.length ? 'toda la Región Metropolitana' : `${COBERTURA.length} comunas de la Región Metropolitana`)
+    : COBERTURA.length > 1 ? `${COBERTURA.slice(0, -1).join(', ')} y ${COBERTURA[COBERTURA.length - 1]}` : COBERTURA[0] || '';
 
-  window.PICK = { DESDE, fechaOk, AVISO_PROGRAMADO, COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS_ICONS, STATE_ICONS, DOC_ICONS, ACCESS, ACCESS_GROUPS, accessGroup, pickedFrom, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
+  window.PICK = { DESDE, fechaOk, AVISO_PROGRAMADO, COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS_ICONS, STATE_ICONS, DOC_ICONS, ACCESS, ACCESS_VISTA, ACCESS_GROUPS, accessGroup, pickedFrom, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, JORNADA, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
 })();

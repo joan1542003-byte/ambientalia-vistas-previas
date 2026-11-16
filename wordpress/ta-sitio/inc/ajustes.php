@@ -23,6 +23,35 @@ function ta_sitio_comunas() {
 	return array_values( array_intersect( ta_sitio_comunas_rm(), (array) $op['comunas'] ) );
 }
 
+/**
+ * Horario de retiro que ofrece el formulario (assets/site/pickers.js lo recibe en window.TA_API.horario): la hora en que
+ * empieza la mañana, la del corte entre mañana y tarde, la del término de la jornada y si se ofrecen Mañana, Tarde y
+ * Vespertino. «Cualquier horario» va siempre. Unas horas incoherentes no se usan: vale la jornada de 9:00 a 17:00.
+ */
+function ta_sitio_horario() {
+	$op     = ta_sitio_opciones();
+	$h      = is_array( $op['horario'] ) ? $op['horario'] : array();
+	$inicio = isset( $h['inicio'] ) ? (int) $h['inicio'] : 9;
+	$corte  = isset( $h['corte'] ) ? (int) $h['corte'] : 13;
+	$fin    = isset( $h['fin'] ) ? (int) $h['fin'] : 17;
+	if ( ! ta_sitio_horas_validas( $inicio, $corte, $fin ) ) {
+		list( $inicio, $corte, $fin ) = array( 9, 13, 17 );
+	}
+	return array(
+		'inicio'     => $inicio,
+		'corte'      => $corte,
+		'fin'        => $fin,
+		'manana'     => ! isset( $h['manana'] ) || (bool) $h['manana'],
+		'tarde'      => ! isset( $h['tarde'] ) || (bool) $h['tarde'],
+		'vespertino' => ! isset( $h['vespertino'] ) || (bool) $h['vespertino'],
+	);
+}
+
+/** Horas enteras entre las 5 y las 23, cada una después de la anterior. */
+function ta_sitio_horas_validas( $inicio, $corte, $fin ) {
+	return $inicio >= 5 && $inicio < $corte && $corte < $fin && $fin <= 23;
+}
+
 /** Respuestas rápidas de los ajustes: [[título, texto]…]. Se separan con una línea «---»; la primera línea es el título. */
 function ta_sitio_plantillas() {
 	$op  = ta_sitio_opciones();
@@ -55,6 +84,8 @@ function ta_sitio_opciones() {
 			'paises_bloqueados'  => 'RU FR DE',
 			// Comunas donde hoy se coordinan retiros (cliente, 16-10-2026)
 			'comunas'            => array( 'Quilicura', 'Lampa', 'Pudahuel' ),
+			// Horario de retiro (cliente, 16-11-2026): la mañana desde las 9:00 y nada después de las 17:00 (ta_sitio_horario())
+			'horario'            => array( 'inicio' => 9, 'corte' => 13, 'fin' => 17, 'manana' => true, 'tarde' => true, 'vespertino' => true ),
 			// Firma al final de todos los correos a las personas: texto y una imagen de la biblioteca de medios
 			'firma_texto'        => "Equipo Transporte Autorizado\nWhatsApp +56 9 8606 7930\nhttps://transporteautorizado.cl",
 			'firma_imagen'       => 0,
@@ -295,6 +326,23 @@ add_action(
 			$pedidas       = isset( $_POST['comunas'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['comunas'] ) ) : array();
 			$op['comunas'] = array_values( array_intersect( ta_sitio_comunas_rm(), $pedidas ) );
 		}
+		$horario_invalido = false;
+		if ( isset( $_POST['ta_horario_enviado'] ) ) {
+			$guardado = ta_sitio_horario();
+			$inicio   = isset( $_POST['horario_inicio'] ) ? absint( wp_unslash( $_POST['horario_inicio'] ) ) : $guardado['inicio'];
+			$corte    = isset( $_POST['horario_corte'] ) ? absint( wp_unslash( $_POST['horario_corte'] ) ) : $guardado['corte'];
+			$fin      = isset( $_POST['horario_fin'] ) ? absint( wp_unslash( $_POST['horario_fin'] ) ) : $guardado['fin'];
+			// Horas incoherentes (la tarde antes que la mañana, p. ej.): se mantienen las guardadas y se avisa
+			$horario_invalido = ! ta_sitio_horas_validas( $inicio, $corte, $fin );
+			$op['horario']    = array(
+				'inicio'     => $horario_invalido ? $guardado['inicio'] : $inicio,
+				'corte'      => $horario_invalido ? $guardado['corte'] : $corte,
+				'fin'        => $horario_invalido ? $guardado['fin'] : $fin,
+				'manana'     => ! empty( $_POST['horario_manana'] ),
+				'tarde'      => ! empty( $_POST['horario_tarde'] ),
+				'vespertino' => ! empty( $_POST['horario_vespertino'] ),
+			);
+		}
 		if ( isset( $_POST['firma_texto'] ) ) {
 			$op['firma_texto']      = sanitize_textarea_field( wp_unslash( $_POST['firma_texto'] ) );
 			$imagen                 = isset( $_POST['firma_imagen'] ) ? absint( $_POST['firma_imagen'] ) : 0;
@@ -319,11 +367,15 @@ add_action(
 		update_option( 'ta_sitio', $op, false );
 		ta_sitio_reglas();
 		flush_rewrite_rules( true );
-		// La portada y la vista previa guardadas en caché son las de antes (con la configuración y la política de antes)
-		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] || $antes['whatsapp'] !== $op['whatsapp'] ) {
+		// La portada y la vista previa guardadas en caché son las de antes (con la configuración y la política de antes).
+		// Las comunas y el horario también viajan en la página (window.TA_API): al cambiarlos, la caché ya no corresponde
+		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] || $antes['whatsapp'] !== $op['whatsapp'] || $antes['comunas'] !== $op['comunas'] || $antes['horario'] !== $op['horario'] ) {
 			ta_sitio_purgar();
 		}
 		$aviso = '' !== trim( $pedida ) && '' === $op['asistente'] ? array( 'asistente_invalido' => 1 ) : array();
+		if ( $horario_invalido ) {
+			$aviso['horario_invalido'] = 1;
+		}
 		wp_safe_redirect( add_query_arg( array( 'post_type' => 'ta_solicitud', 'page' => 'ta-sitio', 'guardado' => 1 ) + $aviso, admin_url( 'edit.php' ) ) );
 		exit;
 	}
@@ -342,6 +394,9 @@ function ta_sitio_pagina_ajustes() {
 		<?php endif; ?>
 		<?php if ( isset( $_GET['asistente_invalido'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 			<div class="notice notice-error"><p>La dirección del asistente no se guardó: debe empezar con <code>https://</code> y no llevar consulta, fragmento ni datos de acceso. Mientras falte, el formulario de cotización no envía en línea.</p></div>
+		<?php endif; ?>
+		<?php if ( isset( $_GET['horario_invalido'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+			<div class="notice notice-error"><p>Las horas del horario de retiro no se guardaron: la tarde debe empezar después de la mañana y la jornada terminar después de la tarde. Se mantienen las anteriores; las opciones marcadas sí se guardaron.</p></div>
 		<?php endif; ?>
 		<p>El sitio nuevo vive dentro de este plugin. Mientras esté en <strong>privado</strong> solo se ve en la dirección de vista previa, con una sesión iniciada o con el enlace con clave; los buscadores no lo indexan. Al <strong>publicarlo</strong>, reemplaza la portada actual.</p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -399,13 +454,47 @@ function ta_sitio_pagina_ajustes() {
 				</tr>
 			</table>
 			<h2>Comunas que se atienden</h2>
-			<p>El formulario y el asistente solo ofrecen estas comunas; si alguien escribe otra, el sitio le dice que por ahora no se atiende y le ofrece WhatsApp.</p>
+			<p>El formulario y el asistente solo ofrecen estas comunas; si alguien escribe otra, el sitio le dice que por ahora no se atiende y le ofrece WhatsApp. Con hasta cinco marcadas, los avisos las nombran («Por ahora atendemos Lampa, Pudahuel y Quilicura»); con más, dicen cuántas son («Por ahora atendemos 12 comunas de la Región Metropolitana»).</p>
 			<input type="hidden" name="ta_comunas_enviado" value="1">
 			<fieldset class="ta-comunas"><legend class="screen-reader-text">Comunas que se atienden</legend>
 				<?php foreach ( ta_sitio_comunas_rm() as $comuna ) : ?>
 					<label><input type="checkbox" name="comunas[]" value="<?php echo esc_attr( $comuna ); ?>" <?php checked( in_array( $comuna, (array) $op['comunas'], true ) ); ?>> <?php echo esc_html( $comuna ); ?></label>
 				<?php endforeach; ?>
 			</fieldset>
+
+			<h2>Horario de retiro</h2>
+			<p>Las opciones de «Horario» del formulario de cotización y del asistente de retiro. «Cualquier horario» (la hora la definen ustedes) aparece siempre.</p>
+			<input type="hidden" name="ta_horario_enviado" value="1">
+			<?php
+			$horario = ta_sitio_horario();
+			$horas   = static function ( $nombre, $elegida ) {
+				echo '<select name="' . esc_attr( $nombre ) . '">';
+				foreach ( range( 5, 23 ) as $h ) {
+					echo '<option value="' . esc_attr( $h ) . '"' . selected( $h, $elegida, false ) . '>' . esc_html( $h . ':00' ) . '</option>';
+				}
+				echo '</select>';
+			};
+			?>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row">Horas</th>
+					<td>
+						<label>La mañana empieza a las <?php $horas( 'horario_inicio', $horario['inicio'] ); ?></label>,
+						<label>la tarde empieza a las <?php $horas( 'horario_corte', $horario['corte'] ); ?></label>
+						<label>y la jornada termina a las <?php $horas( 'horario_fin', $horario['fin'] ); ?></label>
+						<p class="description">Hoy se ofrecen «Mañana (<?php echo esc_html( $horario['inicio'] . ':00 a ' . $horario['corte'] . ':00' ); ?>)» y «Tarde (<?php echo esc_html( $horario['corte'] . ':00 a ' . $horario['fin'] . ':00' ); ?>)». Cada hora debe ser posterior a la anterior.</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Opciones que se ofrecen</th>
+					<td>
+						<label><input type="checkbox" name="horario_manana" value="1" <?php checked( $horario['manana'] ); ?>> Mañana</label><br>
+						<label><input type="checkbox" name="horario_tarde" value="1" <?php checked( $horario['tarde'] ); ?>> Tarde</label><br>
+						<label><input type="checkbox" name="horario_vespertino" value="1" <?php checked( $horario['vespertino'] ); ?>> Vespertino (de noche, sujeto a confirmación)</label>
+						<p class="description">Una opción desmarcada deja de aparecer en el formulario y en el asistente. Las solicitudes ya enviadas no cambian.</p>
+					</td>
+				</tr>
+			</table>
 
 			<h2>Correos y firma</h2>
 			<p>Todos los correos a las personas (confirmación, «Lista» y respuestas) llevan al final esta firma. Se envían con formato y con una versión de solo texto.</p>

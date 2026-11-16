@@ -301,14 +301,15 @@
       },
       /* «Otra condición» y «Otro» despliegan un campo para escribir cuál; queda guardado como «Otro: …».
          Las condiciones de acceso son muchas (28) y de rótulo largo: van en filas, repartidas en secciones plegables
-         (PICK.ACCESS_GROUPS), para que el estado y el almacenamiento sigan a la vista en el teléfono */
+         (PICK.ACCESS_GROUPS), para que el estado y el almacenamiento sigan a la vista en el teléfono. Se muestran en el orden
+         de PICK.ACCESS_VISTA (las prioritarias primero en cada sección); el campo las guarda en el de PICK.ACCESS */
       detalles: async () => {
         const acc = PICK.pickedFrom(field('acceso').value, PICK.ACCESS).map(PICK.splitOther);
         const [alm, almOtro] = PICK.splitOther(field('almacenamiento').value);
         const v = await Picker.chooseEach({
           title: 'Detalles del retiro', sub: 'Todo es opcional, pero ayuda a evitar retiros fallidos.',
           groups: [
-            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, layout: 'list', otherLabel: '¿Cuál es la otra condición?', options: PICK.ACCESS.map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x), section: PICK.accessGroup(x) })) },
+            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, layout: 'list', otherLabel: '¿Cuál es la otra condición?', options: (PICK.ACCESS_VISTA || PICK.ACCESS).map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x), section: PICK.accessGroup(x) })) },
             { key: 'estado', label: 'Estado del residuo', options: PICK.STATES.map((x) => ({ value: x, label: x, icon: PICK.STATE_ICONS[x] })) },
             { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', otherLabel: '¿Cómo está almacenado?', allowed: (p) => PICK.STORAGE_BY_STATE[p.estado] || null, options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) }
           ],
@@ -769,11 +770,25 @@
       429: 'Hubo muchos envíos seguidos. Espera unos minutos o envía la solicitud por WhatsApp.'
     };
     const REINTENTAR = 'No pudimos confirmar el envío. Vuelve a intentarlo en un momento: si ya la habíamos recibido, no se duplicará.';
+    /* El número de seguimiento va grande y aparte, bajo la bajada (cliente, 16-11-2026): es lo que la persona guarda.
+       Se crea la primera vez que hace falta; un resumen nuevo lo oculta (summary:ready) */
+    const numeroDe = () => resumen.querySelector('[data-cotizar-numero]') || (() => {
+      const p = d.createElement('p');
+      p.className = 'cotizar-numero';
+      p.setAttribute('data-cotizar-numero', '');
+      p.append(Object.assign(d.createElement('span'), { textContent: 'Tu número de seguimiento' }), d.createElement('strong'));
+      sub.after(p);
+      return p;
+    })();
+    cotizar.addEventListener('summary:ready', () => { const n = resumen.querySelector('[data-cotizar-numero]'); if (n) n.hidden = true; });
     const listo = (ref) => {
       titulo.textContent = 'Recibimos tu solicitud.';
       sub.textContent = ref
-        ? `Tu número de solicitud es ${ref}. Revisaremos los antecedentes y te contactaremos para confirmar disponibilidad, valor y condiciones.`
+        ? 'Guárdalo para cualquier consulta. Revisaremos los antecedentes y te contactaremos para confirmar disponibilidad, valor y condiciones.'
         : 'Revisaremos los antecedentes y te contactaremos para confirmar disponibilidad, valor y condiciones.';
+      const numero = numeroDe();
+      numero.querySelector('strong').textContent = ref || '';
+      numero.hidden = !ref;
       avisar('');
       boton.hidden = true;
       rotuloEditar.textContent = 'Otra solicitud';  // vuelve al formulario con los datos de contacto ya escritos

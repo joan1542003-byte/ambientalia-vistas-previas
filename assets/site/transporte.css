@@ -1637,6 +1637,11 @@ html:has(.toc-sheet[open]) { overflow: hidden; }
 .cotizar-estado { margin-bottom: 14px; padding: 10px 12px; border-radius: var(--r-s); background: #fdecea; color: #b42318; font-size: var(--fs-small); font-weight: 600; line-height: 1.45; }
 /* Sin dirección del asistente: aviso de que el envío en línea no está disponible (no es un error de la persona) */
 .cotizar-estado.is-info { background: var(--bg-sunk); color: var(--ink-2); font-weight: 500; }
+/* Número de seguimiento de una solicitud recibida (transporte-ui.js): grande, aparte y con línea lateral, para guardarlo */
+.cotizar-numero { display: flex; flex-direction: column; gap: 2px; margin-top: 12px; padding: 2px 0 2px 12px; border-left: 3px solid var(--accent); }
+.cotizar-numero[hidden] { display: none; }
+.cotizar-numero span { color: var(--muted); font-size: var(--fs-caption); font-weight: 800; }
+.cotizar-numero strong { color: var(--ink); font-size: clamp(1.625rem, 5vw, 2rem); font-weight: 800; line-height: 1.15; letter-spacing: .02em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; user-select: all; }
 /* El widget de Turnstile, entre el resumen y los botones: no ocupa lugar hasta que pide resolver algo (.is-visible) */
 .cotizar-humano { flex: none; height: 0; overflow: hidden; padding-inline: 20px; }
 .cotizar-humano.is-visible { height: auto; padding-top: 12px; }
