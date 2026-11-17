@@ -449,7 +449,7 @@
       const lista = `<div class="opt-elegidas" data-elegidas aria-live="polite" hidden></div><div class="opt-secciones">`
         + secs.map((r, i) => `<div class="opt-seccion-caja"><button type="button" class="opt-seccion" id="${id(i)}" aria-expanded="false" aria-controls="${id(i)}-p" data-seccion="${i}">`
           + `${g.sectionIcons?.[r.section] ? `<span class="opt-seccion-icono" aria-hidden="true">${g.sectionIcons[r.section]}</span>` : ''}`
-          + `<span class="opt-seccion-nombre">${esc(r.section)}</span><span class="opt-seccion-cuenta" aria-hidden="true"></span><span class="opt-seccion-flecha" aria-hidden="true"></span></button>`
+          + `<span class="opt-seccion-textos"><span class="opt-seccion-nombre">${esc(r.section)}</span><span class="opt-seccion-resumen" aria-hidden="true"></span></span><span class="opt-seccion-cuenta" aria-hidden="true"></span><span class="opt-seccion-flecha" aria-hidden="true"></span></button>`
           + `<div class="opt-seccion-panel" id="${id(i)}-p" role="region" aria-labelledby="${id(i)}" data-seccion-panel="${i}" hidden>${optsHTML(g, r.options)}</div></div>`).join('')
         + `</div>${rs.filter((r) => !r.section).map((r) => optsHTML(g, r.options)).join('')}`;
       if (!g.gate) return lista;
@@ -461,20 +461,23 @@
     const head = (g, i) => (steps ? `<p class="opt-paso-n">Paso ${i + 1} de ${groups.length}</p><h3 class="opt-paso-t">${esc(g.label)}</h3>${g.hint ? `<p class="opt-paso-sub">${esc(g.hint)}</p>` : ''}` : `<h3>${esc(g.label)}</h3>`);
     const pasos = steps ? `<ol class="opt-pasos" aria-label="Pasos">${groups.map((g, i) => `<li><button type="button" class="opt-pasos-b" data-ir="${i}"><span class="opt-pasos-n" aria-hidden="true">${i + 1}</span><span class="opt-pasos-t">${esc(g.short || g.label)}</span></button></li>`).join('')}</ol>` : '';
     el.body.innerHTML = pasos + groups.map((g, i) => `<section class="opt-group${steps ? ' opt-paso' : ''}" data-group="${esc(g.key)}"${steps && i ? ' hidden' : ''}>${head(g, i)}${groupHTML(g)}${otherOf(g) ? otherHTML(otherOf(g).value, value[`${g.key}Otro`] || '', g.otherLabel) : ''}</section>`).join('');
-    /* Cuántas hay elegidas en cada categoría, y lo elegido arriba (cada una se quita con un toque) */
+    /* En cada categoría, cuántas hay elegidas y cuáles (una línea que se recorta); arriba, solo el total y «Quitar todas»
+       (17-11-2026: la lista de lo elegido arriba crecía hasta llenar la pantalla) */
     const paintSections = () => el.body.querySelectorAll('[data-group]').forEach((sec) => {
       const heads = sec.querySelectorAll('.opt-seccion');
       if (!heads.length) return;
       const g = groupOf(sec);
       heads.forEach((t) => {
         const n = sec.querySelectorAll(`[data-seccion-panel="${t.dataset.seccion}"] .opt[aria-pressed="true"]`).length;
+        const nombres = [...sec.querySelectorAll(`[data-seccion-panel="${t.dataset.seccion}"] .opt[aria-pressed="true"]`)].map((o) => o.dataset.value);
         t.querySelector('.opt-seccion-cuenta').textContent = n ? String(n) : '';
-        t.setAttribute('aria-label', `${t.querySelector('.opt-seccion-nombre').textContent}${n ? `, ${counter(n, 'elegida', 'elegidas')}` : ''}`);
+        t.querySelector('.opt-seccion-resumen').textContent = nombres.join(', ');
+        t.setAttribute('aria-label', `${t.querySelector('.opt-seccion-nombre').textContent}${n ? `, ${counter(n, 'elegida', 'elegidas')}: ${nombres.join(', ')}` : ''}`);
       });
       const box = sec.querySelector('[data-elegidas]');
-      const lista = [].concat(picked[g.key] || []).filter((v) => !otherOf(g) || v !== otherOf(g).value);
-      box.hidden = !lista.length;
-      box.innerHTML = lista.length ? `<span class="opt-elegidas-t">${esc(counter(lista.length, 'elegida', 'elegidas'))}:</span>${lista.map((v) => `<button type="button" class="opt-elegida" data-quitar="${esc(v)}" aria-label="Quitar: ${esc(v)}">${esc(v)}<span aria-hidden="true">×</span></button>`).join('')}` : '';
+      const total = [].concat(picked[g.key] || []).length;
+      box.hidden = !total;
+      box.innerHTML = total ? `<span class="opt-elegidas-t">${esc(counter(total, 'condición elegida', 'condiciones elegidas'))}</span><button type="button" class="opt-quitar-todas" data-quitar-todas>Quitar todas</button>` : '';
     });
     /* Abre una categoría (y cierra las demás) o la cierra si ya estaba abierta */
     const toggleSection = (t) => {
@@ -554,12 +557,15 @@
       }
       const head2 = e.target.closest('.opt-seccion');
       if (head2) { toggleSection(head2); return; }
-      const quitar = e.target.closest('[data-quitar]');
-      if (quitar) {
-        const sec = quitar.closest('[data-group]');
-        const opt = [...sec.querySelectorAll('.opt[data-value]')].find((x) => x.dataset.value === quitar.dataset.quitar);
-        if (opt) opt.click();
-        (sec.querySelector('[data-quitar]') || sec.querySelector('.opt-seccion'))?.focus({ preventScroll: true });  // el foco no se pierde al quitar
+      const todas = e.target.closest('[data-quitar-todas]');
+      if (todas) {
+        const sec = todas.closest('[data-group]');
+        const g = groupOf(sec);
+        picked[g.key] = [];
+        repaint(g);
+        paintSections();
+        syncOther();
+        sec.querySelector('.opt-seccion')?.focus({ preventScroll: true });  // el foco no se pierde al quitar
         return;
       }
       const b = e.target.closest('.opt[data-value]');

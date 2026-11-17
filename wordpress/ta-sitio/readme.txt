@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.21
+Stable tag: 1.4.22
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,9 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.22 =
+* «Detalles del retiro», condiciones de acceso: lo elegido ya no se lista arriba (con muchas, llenaba la pantalla). Arriba va una sola línea con el total y «Quitar todas»; cada categoría dice cuántas y cuáles tiene elegidas, en una línea que se recorta. Con todas las categorías cerradas, las 27 condiciones caben en una pantalla aunque haya muchas elegidas.
 
 = 1.4.21 =
 * «Detalles del retiro» por pasos: 1) estado del residuo, 2) almacenaje (según el estado) y 3) condiciones de acceso. En los dos primeros se avanza solo al elegir; arriba se ven los pasos (los respondidos con su check) y se puede volver a cualquiera. Las condiciones empiezan con «¿Hay alguna?» (Sí/No); con «Sí», cuatro categorías que parten cerradas, se abren de a una y se cierran tocándolas (su encabezado queda a la vista mientras se recorre la lista). Lo elegido sigue arriba, quitable con un toque.
