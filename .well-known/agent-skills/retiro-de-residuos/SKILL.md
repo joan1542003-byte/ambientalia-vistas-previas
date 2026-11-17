@@ -20,7 +20,7 @@ Resumen completo del sitio para asistentes: https://transporteautorizado.cl/llms
 
 - **Retiro Express**: prioridad dentro de 24 horas hábiles, sujeto a disponibilidad, tipo de residuo y comuna.
 - **Retiro Programado**: plan mensual; el primer retiro se agenda desde pasado mañana (ni el mismo día ni el siguiente).
-- **Espera y ahorra**: la empresa propone hasta tres días posibles, desde mañana.
+- **Espera y ahorra**: la empresa propone hasta tres días posibles, desde pasado mañana (ni el mismo día ni el siguiente).
 - Los retiros se coordinan de lunes a sábado. Horario: cualquier horario (la hora la define el equipo), mañana (9:00 a 13:00), tarde (13:00 a 17:00) o vespertino (de noche, sujeto a confirmación).
 
 ## Cómo ayudar

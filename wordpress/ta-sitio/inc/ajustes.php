@@ -143,6 +143,7 @@ function ta_sitio_opciones() {
 			'turnstile'          => '',  // clave pública del widget de Cloudflare Turnstile (la secreta va solo en el asistente)
 			'whatsapp'           => '56986067930',  // número del sitio (wa.me), con código de país; ta_sitio_whatsapp_aplicar() lo cambia en las páginas
 			'imagenes'           => array(),  // portadas y fotos elegidas en la biblioteca de medios: [espacio => id] (inc/imagenes.php)
+			'verificacion'       => array(),  // Google Search Console y Bing: códigos y archivos de verificación (inc/buscadores.php)
 		)
 	);
 }
@@ -312,14 +313,7 @@ function ta_sitio_desactivar() {
 	ta_sitio_purgar();
 }
 
-/* ---------- Página de ajustes ---------- */
-
-add_action(
-	'admin_menu',
-	static function () {
-		add_submenu_page( 'edit.php?post_type=ta_solicitud', 'Ajustes del sitio', 'Ajustes del sitio', 'manage_options', 'ta-sitio', 'ta_sitio_pagina_ajustes' );
-	}
-);
+/* ---------- Guardado de los ajustes (la página, con sus pestañas, está en inc/panel.php) ---------- */
 
 add_action(
 	'admin_post_ta_sitio_guardar',
@@ -401,6 +395,10 @@ add_action(
 		if ( isset( $_POST['ta_imagenes_enviado'] ) ) {
 			$op['imagenes'] = ta_sitio_imagenes_desde_post();
 		}
+		$aviso_verificacion = '';
+		if ( isset( $_POST['ta_buscadores_enviado'] ) ) {
+			list( $op['verificacion'], $aviso_verificacion ) = ta_sitio_verificacion_desde_post();  // inc/buscadores.php
+		}
 		$pedida           = isset( $_POST['asistente'] ) ? sanitize_text_field( wp_unslash( $_POST['asistente'] ) ) : $op['asistente'];
 		$op['asistente']  = ta_sitio_url_asistente( $pedida );
 		$op['turnstile']  = isset( $_POST['turnstile'] ) ? substr( (string) preg_replace( '/[^A-Za-z0-9_-]/', '', sanitize_text_field( wp_unslash( $_POST['turnstile'] ) ) ), 0, 100 ) : $op['turnstile'];
@@ -412,215 +410,18 @@ add_action(
 		flush_rewrite_rules( true );
 		// La portada y la vista previa guardadas en caché son las de antes (con la configuración y la política de antes).
 		// Las comunas y el horario también viajan en la página (window.TA_API): al cambiarlos, la caché ya no corresponde
-		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] || $antes['whatsapp'] !== $op['whatsapp'] || $antes['comunas'] !== $op['comunas'] || $antes['horario'] !== $op['horario'] ) {
+		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] || $antes['whatsapp'] !== $op['whatsapp'] || $antes['comunas'] !== $op['comunas'] || $antes['horario'] !== $op['horario'] || $antes['verificacion'] !== $op['verificacion'] ) {
 			ta_sitio_purgar();
 		}
 		$aviso = '' !== trim( $pedida ) && '' === $op['asistente'] ? array( 'asistente_invalido' => 1 ) : array();
 		if ( $horario_invalido ) {
 			$aviso['horario_invalido'] = 1;
 		}
-		wp_safe_redirect( add_query_arg( array( 'post_type' => 'ta_solicitud', 'page' => 'ta-sitio', 'guardado' => 1 ) + $aviso, admin_url( 'edit.php' ) ) );
+		if ( '' !== $aviso_verificacion ) {
+			$aviso['verificacion'] = $aviso_verificacion;
+		}
+		$pestana = isset( $_POST['pestana'] ) ? sanitize_key( wp_unslash( $_POST['pestana'] ) ) : '';  // se vuelve a la pestaña en que se estaba
+		wp_safe_redirect( add_query_arg( array( 'guardado' => 1 ) + $aviso, ta_sitio_url_ajustes( $pestana ) ) );
 		exit;
 	}
 );
-
-function ta_sitio_pagina_ajustes() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		return;
-	}
-	$op = ta_sitio_opciones();
-	?>
-	<div class="wrap">
-		<h1>Transporte Autorizado: sitio nuevo</h1>
-		<?php if ( isset( $_GET['guardado'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-			<div class="notice notice-success is-dismissible"><p>Ajustes guardados.</p></div>
-		<?php endif; ?>
-		<?php if ( isset( $_GET['asistente_invalido'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-			<div class="notice notice-error"><p>La dirección del asistente no se guardó: debe empezar con <code>https://</code> y no llevar consulta, fragmento ni datos de acceso. Mientras falte, el formulario de cotización no envía en línea.</p></div>
-		<?php endif; ?>
-		<?php if ( isset( $_GET['horario_invalido'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
-			<div class="notice notice-error"><p>Las horas del horario de retiro no se guardaron: la tarde debe empezar después de la mañana y la jornada terminar después de la tarde. Se mantienen las anteriores; las opciones marcadas sí se guardaron.</p></div>
-		<?php endif; ?>
-		<p>El sitio nuevo vive dentro de este plugin. Mientras esté en <strong>privado</strong> solo se ve en la dirección de vista previa, con una sesión iniciada o con el enlace con clave; los buscadores no lo indexan. Al <strong>publicarlo</strong>, reemplaza la portada actual.</p>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="ta_sitio_guardar">
-			<?php wp_nonce_field( 'ta_sitio_guardar' ); ?>
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row">Estado</th>
-					<td>
-						<label><input type="radio" name="modo" value="privado" <?php checked( $op['modo'], 'privado' ); ?>> Privado (vista previa)</label><br>
-						<label><input type="radio" name="modo" value="publicado" <?php checked( $op['modo'], 'publicado' ); ?>> Publicado: reemplaza la portada de <?php echo esc_html( home_url( '/' ) ); ?></label>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="ta-ruta">Dirección de la vista previa</label></th>
-					<td><code><?php echo esc_html( home_url( '/' ) ); ?></code><input id="ta-ruta" name="ruta" type="text" class="regular-text" style="width:12em" value="<?php echo esc_attr( $op['ruta'] ); ?>"><code>/</code>
-						<p class="description">Con tu sesión iniciada: <a href="<?php echo esc_url( ta_sitio_url_vista() ); ?>" target="_blank" rel="noopener"><?php echo esc_html( ta_sitio_url_vista() ); ?></a></p></td>
-				</tr>
-				<tr>
-					<th scope="row">Enlace para compartir</th>
-					<td><input type="text" class="large-text code" readonly value="<?php echo esc_attr( ta_sitio_url_vista( true ) ); ?>" onfocus="this.select()">
-						<p class="description">Quien tenga este enlace ve la vista previa sin iniciar sesión. <label><input type="checkbox" name="nueva_clave" value="1"> Cambiar la clave (el enlace anterior deja de servir)</label></p></td>
-				</tr>
-				<tr>
-					<th scope="row">Correos que reciben las solicitudes</th>
-					<td><?php $reciben = ta_sitio_correos_destino(); $principal = ta_sitio_correo_destino(); ?>
-						<table class="ta-casillas">
-							<thead><tr><th>Recibe</th><th>Principal</th><th>Correo</th><th></th></tr></thead>
-							<tbody>
-							<?php foreach ( ta_sitio_correos_guardados() as $i => $casilla ) : ?>
-								<tr>
-									<td><input type="checkbox" name="correos_reciben[]" value="<?php echo esc_attr( $casilla ); ?>" aria-label="<?php echo esc_attr( "Recibe: $casilla" ); ?>" <?php checked( in_array( $casilla, $reciben, true ) ); ?>></td>
-									<td><input type="radio" name="correo_principal" value="<?php echo esc_attr( $casilla ); ?>" aria-label="<?php echo esc_attr( "Principal: $casilla" ); ?>" <?php checked( $casilla, $principal ); ?>></td>
-									<td><code><?php echo esc_html( $casilla ); ?></code><?php echo get_option( 'admin_email' ) === $casilla ? ' <span class="description">(administración de WordPress)</span>' : ''; ?></td>
-									<td><?php if ( get_option( 'admin_email' ) !== $casilla ) : ?><label class="ta-quitar-casilla"><input type="checkbox" name="correo_quitar[]" value="<?php echo esc_attr( $casilla ); ?>"> Quitar de la lista</label><?php endif; ?></td>
-								</tr>
-							<?php endforeach; ?>
-								<tr>
-									<td><input type="checkbox" name="correo_nuevo_recibe" value="1" checked aria-label="El correo nuevo recibe"></td>
-									<td><input type="radio" name="correo_principal" value="nuevo" aria-label="El correo nuevo es el principal"></td>
-									<td colspan="2"><input name="correo_nuevo" type="email" class="regular-text" placeholder="Escribe otro correo para agregarlo" aria-label="Agregar otro correo"></td>
-								</tr>
-							</tbody>
-						</table>
-						<p class="description">Marca en «Recibe» todas las casillas a las que debe llegar cada solicitud (pueden ser varias). La <strong>principal</strong> es a donde llegan las respuestas de las personas y la copia de tus respuestas; siempre recibe. Para agregar una casilla, escríbela en la última fila y guarda.</p></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="ta-remitente">Nombre con que se firman los correos</label></th>
-					<td><input id="ta-remitente" name="remitente" type="text" class="regular-text" value="<?php echo esc_attr( $op['remitente'] ); ?>"></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="ta-whatsapp">WhatsApp del sitio</label></th>
-					<td><input id="ta-whatsapp" name="whatsapp" type="tel" class="regular-text code" value="<?php echo esc_attr( ta_sitio_whatsapp_texto( $op['whatsapp'] ) ); ?>" placeholder="+56 9 1234 5678">
-						<p class="description">El número de todos los botones y enlaces de WhatsApp del sitio, del texto que lo muestra y del pie de los PDF. Un celular de Chile: +56 9 y ocho dígitos. Si no es válido, queda el anterior.</p></td>
-				</tr>
-			</table>
-			<h2>Comunas que se atienden</h2>
-			<p>El formulario y el asistente solo ofrecen estas comunas; si alguien escribe otra, el sitio le dice que por ahora no se atiende y le ofrece WhatsApp. Con hasta cinco marcadas, los avisos las nombran («Por ahora atendemos Lampa, Pudahuel y Quilicura»); con más, dicen cuántas son («Por ahora atendemos 12 comunas de la Región Metropolitana»).</p>
-			<input type="hidden" name="ta_comunas_enviado" value="1">
-			<fieldset class="ta-comunas"><legend class="screen-reader-text">Comunas que se atienden</legend>
-				<?php foreach ( ta_sitio_comunas_rm() as $comuna ) : ?>
-					<label><input type="checkbox" name="comunas[]" value="<?php echo esc_attr( $comuna ); ?>" <?php checked( in_array( $comuna, (array) $op['comunas'], true ) ); ?>> <?php echo esc_html( $comuna ); ?></label>
-				<?php endforeach; ?>
-			</fieldset>
-
-			<h2>Horario de retiro</h2>
-			<p>Las opciones de «Horario» del formulario de cotización y del asistente de retiro. «Cualquier horario» (la hora la definen ustedes) aparece siempre.</p>
-			<input type="hidden" name="ta_horario_enviado" value="1">
-			<?php
-			$horario = ta_sitio_horario();
-			$horas   = static function ( $nombre, $elegida ) {
-				echo '<select name="' . esc_attr( $nombre ) . '">';
-				foreach ( range( 5, 23 ) as $h ) {
-					echo '<option value="' . esc_attr( $h ) . '"' . selected( $h, $elegida, false ) . '>' . esc_html( $h . ':00' ) . '</option>';
-				}
-				echo '</select>';
-			};
-			?>
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row">Horas</th>
-					<td>
-						<label>La mañana empieza a las <?php $horas( 'horario_inicio', $horario['inicio'] ); ?></label>,
-						<label>la tarde empieza a las <?php $horas( 'horario_corte', $horario['corte'] ); ?></label>
-						<label>y la jornada termina a las <?php $horas( 'horario_fin', $horario['fin'] ); ?></label>
-						<p class="description">Hoy se ofrecen «Mañana (<?php echo esc_html( $horario['inicio'] . ':00 a ' . $horario['corte'] . ':00' ); ?>)» y «Tarde (<?php echo esc_html( $horario['corte'] . ':00 a ' . $horario['fin'] . ':00' ); ?>)». Cada hora debe ser posterior a la anterior.</p>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">Opciones que se ofrecen</th>
-					<td>
-						<label><input type="checkbox" name="horario_manana" value="1" <?php checked( $horario['manana'] ); ?>> Mañana</label><br>
-						<label><input type="checkbox" name="horario_tarde" value="1" <?php checked( $horario['tarde'] ); ?>> Tarde</label><br>
-						<label><input type="checkbox" name="horario_vespertino" value="1" <?php checked( $horario['vespertino'] ); ?>> Vespertino (de noche, sujeto a confirmación)</label>
-						<p class="description">Una opción desmarcada deja de aparecer en el formulario y en el asistente. Las solicitudes ya enviadas no cambian.</p>
-					</td>
-				</tr>
-			</table>
-
-			<h2>Correos y firma</h2>
-			<p>Todos los correos a las personas (confirmación, «Lista» y respuestas) llevan al final esta firma. Se envían con formato y con una versión de solo texto.</p>
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row"><label for="ta-firma-texto">Texto de la firma</label></th>
-					<td><textarea id="ta-firma-texto" name="firma_texto" rows="4" class="large-text"><?php echo esc_textarea( $op['firma_texto'] ); ?></textarea>
-						<p class="description">Una línea por renglón. Las direcciones web quedan como enlace.</p></td>
-				</tr>
-				<tr>
-					<th scope="row">Imagen de la firma</th>
-					<td><div class="ta-firma-imagen" data-ta-firma>
-							<input type="hidden" name="firma_imagen" value="<?php echo esc_attr( (int) $op['firma_imagen'] ); ?>" data-ta-firma-id>
-							<div class="ta-firma-vista" data-ta-firma-vista><?php echo $op['firma_imagen'] ? wp_get_attachment_image( (int) $op['firma_imagen'], 'medium' ) : ''; ?></div>
-							<button type="button" class="button" data-ta-firma-elegir><?php echo $op['firma_imagen'] ? 'Cambiar imagen' : 'Subir o elegir imagen'; ?></button>
-							<button type="button" class="button-link button-link-delete" data-ta-firma-quitar <?php echo $op['firma_imagen'] ? '' : 'hidden'; ?>>Quitar</button>
-						</div>
-						<p class="description">PNG o JPG (por ejemplo, el logo con tus datos de contacto). <label>Ancho en el correo: <input type="number" name="firma_ancho" min="60" max="560" step="10" value="<?php echo esc_attr( (int) $op['firma_ancho'] ); ?>" style="width:6em"> px</label></p></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="ta-plantillas">Respuestas rápidas</label></th>
-					<td><textarea id="ta-plantillas" name="plantillas" rows="10" class="large-text code"><?php echo esc_textarea( $op['plantillas'] ); ?></textarea>
-						<p class="description">Aparecen al responder una solicitud. Sepáralas con una línea <code>---</code>; la primera línea de cada una es su nombre. <code>{nombre}</code>, <code>{empresa}</code> y <code>{numero}</code> se completan con los datos de la solicitud.</p></td>
-				</tr>
-				<tr>
-					<th scope="row">Copia de las respuestas</th>
-					<td><label><input type="checkbox" name="copia_respuestas" value="1" <?php checked( $op['copia_respuestas'] ); ?>> Enviar una copia oculta de cada respuesta a <?php echo esc_html( ta_sitio_correo_destino() ); ?></label></td>
-				</tr>
-				<tr>
-					<th scope="row">Vista previa</th>
-					<td><a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ta_sitio_vista_correo' ), 'ta_sitio_vista_correo' ) ); ?>" target="_blank" rel="noopener">Ver cómo se ve un correo</a>
-						<p class="description">Muestra la firma guardada; guarda los ajustes antes de mirarla.</p></td>
-				</tr>
-			</table>
-
-			<h2>Imágenes del sitio</h2>
-			<p>Cualquier imagen del sitio se puede cambiar por una de la biblioteca de medios: portadas, servicios, otras secciones, las miniaturas de cada residuo, el logo, el ícono de la pestaña y la imagen que se ve al compartir el enlace. Las del hero para cada opción se ven en escritorio, al pasar el mouse por la opción. Usa imágenes livianas (WebP o JPG de menos de 400 KB) con la misma forma que la original; «Volver a la del sitio» deja la original.</p>
-			<input type="hidden" name="ta_imagenes_enviado" value="1">
-			<table class="form-table" role="presentation">
-				<?php ta_sitio_imagenes_filas(); ?>
-			</table>
-			<h2>Cotizaciones de Transporte</h2>
-			<p>El formulario de cotización envía cada solicitud, con sus fotografías, al asistente de Transporte Autorizado (servicio aparte), que la registra en Odoo y le da su número. WordPress no la recibe ni la guarda en «Solicitudes». El asistente de retiro lleva al mismo formulario. Sin dirección, el formulario avisa que el envío en línea no está disponible.</p>
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row"><label for="ta-asistente">Dirección del asistente</label></th>
-					<td><input id="ta-asistente" name="asistente" type="url" class="regular-text code" value="<?php echo esc_attr( $op['asistente'] ); ?>" placeholder="https://asistente.transporteautorizado.cl">
-						<p class="description">Con <code>https://</code>, la de esta instalación (pruebas o producción). Las páginas la pueden llamar (se agrega a su política de contenido). En el asistente, <code>CHAT_ALLOWED_ORIGINS</code> debe incluir <code><?php echo esc_html( ta_sitio_origen( home_url( '/' ) ) ); ?></code>.</p></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="ta-turnstile">Clave pública de Turnstile</label></th>
-					<td><input id="ta-turnstile" name="turnstile" type="text" class="regular-text code" value="<?php echo esc_attr( $op['turnstile'] ); ?>" autocomplete="off">
-						<p class="description">Opcional: solo si el asistente tiene la clave secreta del mismo widget de Cloudflare. La clave secreta nunca va aquí.</p></td>
-				</tr>
-			</table>
-			<h2>Protección del formulario</h2>
-			<p>Cada solicitud pasa por un permiso de un solo uso, un campo trampa y límites por visita, por correo, por hora y por día; las fotografías se revisan y se vuelven a generar antes de guardarlas. Además se rechaza lo siguiente:</p>
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row"><label for="ta-correos-bloqueados">Correos que no se aceptan</label></th>
-					<td><textarea id="ta-correos-bloqueados" name="correos_bloqueados" rows="2" class="large-text code"><?php echo esc_textarea( $op['correos_bloqueados'] ); ?></textarea>
-						<p class="description">Separados por espacios. Sin punto es una terminación (<code>ru</code> rechaza todo correo que termine en <code>.ru</code>); con punto, un dominio (<code>yandex.com</code>). Por defecto: Rusia, Francia y Alemania, con sus proveedores más usados.</p></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="ta-paises-bloqueados">Países que no se aceptan</label></th>
-					<td><input id="ta-paises-bloqueados" name="paises_bloqueados" type="text" class="regular-text code" value="<?php echo esc_attr( $op['paises_bloqueados'] ); ?>">
-						<p class="description">Códigos de dos letras (<code>RU FR DE</code>).
-							<?php if ( '' !== ta_sitio_pais() ) : ?>
-								El servidor informa el país de cada visita: la tuya llega desde <code><?php echo esc_html( ta_sitio_pais() ); ?></code>.
-							<?php else : ?>
-								<strong>Este servidor no informa el país de las visitas, así que por ahora esta lista no se aplica.</strong> El bloqueo por correo y los demás controles sí.
-							<?php endif; ?>
-						</p></td>
-				</tr>
-				<tr>
-					<th scope="row">Tu visita, según el servidor</th>
-					<td><?php $ips = ta_sitio_ips(); ?>
-						<code><?php echo esc_html( $ips['visita'] ); ?></code><?php echo $ips['visita'] !== $ips['servidor'] ? ' (red del proveedor: <code>' . esc_html( $ips['servidor'] ) . '</code>)' : ''; ?>
-						<p class="description">Con esta dirección se cuentan los envíos por visita. Debería ser la de tu conexión a internet.</p></td>
-				</tr>
-			</table>
-			<?php submit_button( 'Guardar ajustes' ); ?>
-		</form>
-	</div>
-	<?php
-}

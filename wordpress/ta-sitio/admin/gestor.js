@@ -70,3 +70,57 @@
     $caja.find('[data-ta-firma-elegir]').text('Subir o elegir imagen');
   });
 })(jQuery);
+
+/* Ajustes por pestañas (inc/panel.php): una sección a la vista, la elegida queda en la dirección y vuelve al guardar;
+   flechas, Inicio y Fin recorren las pestañas; la barra de guardar avisa si hay cambios sin guardar. */
+(function () {
+  var form = document.querySelector('[data-ta-pestanas]');
+  if (!form) return;
+  var tabs = [].slice.call(form.querySelectorAll('[data-ta-pestana]'));
+  var actual = form.querySelector('[data-ta-pestana-actual]');
+  var barra = form.querySelector('[data-ta-guardar]');
+  var estado = form.querySelector('[data-ta-guardar-estado]');
+  var sucio = false;
+  var enviando = false;
+  form.classList.add('ta-js');
+
+  function abrir(clave, foco) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('data-ta-pestana') === clave;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !on;
+      if (on && foco) t.focus();
+    });
+    actual.value = clave;
+    var url = new URL(window.location.href);
+    url.searchParams.set('pestana', clave);
+    ['guardado', 'asistente_invalido', 'horario_invalido', 'verificacion'].forEach(function (k) { url.searchParams.delete(k); });
+    window.history.replaceState(null, '', url);
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { abrir(t.getAttribute('data-ta-pestana')); });
+    t.addEventListener('keydown', function (e) {
+      var n = { ArrowDown: i + 1, ArrowRight: i + 1, ArrowUp: i - 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (n === undefined) return;
+      e.preventDefault();
+      abrir(tabs[(n + tabs.length) % tabs.length].getAttribute('data-ta-pestana'), true);
+    });
+  });
+  abrir(actual.value || tabs[0].getAttribute('data-ta-pestana'));
+
+  function marcar() {
+    if (sucio) return;
+    sucio = true;
+    barra.classList.add('is-sucio');
+    estado.textContent = 'Hay cambios sin guardar';
+  }
+  form.addEventListener('input', marcar);
+  form.addEventListener('change', marcar);
+  /* El selector de imágenes cambia campos ocultos sin avisar: se mira el clic en sus botones */
+  form.addEventListener('click', function (e) { if (e.target.closest('[data-ta-firma-elegir], [data-ta-firma-quitar]')) marcar(); });
+  form.addEventListener('submit', function () { enviando = true; estado.textContent = 'Guardando…'; });
+  window.addEventListener('beforeunload', function (e) { if (sucio && !enviando) { e.preventDefault(); e.returnValue = ''; } });
+})();

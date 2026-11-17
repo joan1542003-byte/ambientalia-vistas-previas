@@ -318,9 +318,16 @@ add_action(
 		if ( ! $n || ! is_array( $menu ) ) {
 			return;
 		}
-		foreach ( $menu as $i => $item ) {
+		global $submenu;
+		$insignia = ' <span class="awaiting-mod"><span class="pending-count">' . (int) $n . '</span></span>';
+		foreach ( $menu as $i => $item ) {  // en el menú «Transporte Autorizado» (inc/panel.php)…
+			if ( 'ta-sitio' === ( $item[2] ?? '' ) ) {
+				$menu[ $i ][0] .= $insignia; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			}
+		}
+		foreach ( (array) ( $submenu['ta-sitio'] ?? array() ) as $i => $item ) {  // …y junto a «Solicitudes»
 			if ( 'edit.php?post_type=ta_solicitud' === ( $item[2] ?? '' ) ) {
-				$menu[ $i ][0] .= ' <span class="awaiting-mod"><span class="pending-count">' . (int) $n . '</span></span>'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+				$submenu['ta-sitio'][ $i ][0] .= $insignia; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			}
 		}
 	},

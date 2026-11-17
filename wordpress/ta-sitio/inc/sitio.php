@@ -111,6 +111,11 @@ function ta_sitio_despachar() {
 	$ruta  = ta_sitio_ruta_pedida();
 	$vista = trim( $op['ruta'], '/' );
 
+	// Archivos de verificación de Google y Bing (inc/buscadores.php): en la raíz, publicado o no
+	if ( function_exists( 'ta_sitio_verificacion_servir' ) && false === strpos( $ruta, '/' ) ) {
+		ta_sitio_verificacion_servir( $ruta );
+	}
+
 	// Vista privada: /nuevo/…
 	if ( '' !== $vista && ( $ruta === $vista || 0 === strpos( $ruta, $vista . '/' ) ) ) {
 		$interna = (string) substr( $ruta, strlen( $vista ) + 1 );
@@ -294,6 +299,9 @@ function ta_sitio_pagina( $archivo, $privado ) {
 	if ( $imagenes ) {
 		$api['imagenes'] = $imagenes;
 	}
+	if ( 'transporte-autorizado.html' === basename( $archivo ) && function_exists( 'ta_sitio_verificacion_aplicar' ) ) {
+		$html = ta_sitio_verificacion_aplicar( $html );  // etiquetas de Google y Bing en la portada (inc/buscadores.php)
+	}
 	$html   = ta_sitio_whatsapp_aplicar( $html );  // el número de WhatsApp de los ajustes (inc/ajustes.php)
 	$html   = ta_sitio_imagenes_aplicar( $html );  // portadas y fotos elegidas en los ajustes (inc/imagenes.php)
 	$config = '<script>window.TA_API=' . wp_json_encode( $api, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES ) . ';</script>';
@@ -408,8 +416,9 @@ add_filter(
 	'robots_txt',
 	static function ( $texto ) {
 		$op = ta_sitio_opciones();
-		// Agentmap: dónde está el manifiesto para agentes de IA (ARD §5.1)
-		return 'publicado' === $op['modo'] ? $texto . "\nSitemap: " . home_url( '/sitemap-sitio.xml' ) . "\nAgentmap: " . home_url( '/.well-known/ard.json' ) . "\n" : $texto;
+		// El manifiesto para agentes de IA (ARD) va como comentario: «Agentmap:» no es una directiva de robots.txt y Lighthouse
+		// marcaba el archivo como inválido (SEO 92, 17-11-2026). Los agentes lo encuentran por /.well-known/ y <link rel="ard">
+		return 'publicado' === $op['modo'] ? $texto . "\nSitemap: " . home_url( '/sitemap-sitio.xml' ) . "\n# Agentmap: " . home_url( '/.well-known/ard.json' ) . "\n" : $texto;
 	},
 	20
 );

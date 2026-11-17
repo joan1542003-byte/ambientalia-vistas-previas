@@ -1667,10 +1667,16 @@ a.route { text-decoration: none; }
   .route-link:hover::after { opacity: .9; }
 }
 .stage-fotos { position: absolute; inset: 0; z-index: -2; pointer-events: none; }
-.stage-fotos img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 80% 50%; opacity: 0; transition: opacity .7s var(--ease); }
-.stage-fotos img.is-on { opacity: 1; }
+/* Fundido suave entre fotos (17-11-2026): la nueva entra encima con un leve acercamiento que se asienta; la anterior queda
+   visible debajo (.is-antes) hasta que la nueva se ve entera (transporte-ui.js) */
+.stage-fotos img {
+  position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; object-position: 80% 50%;
+  opacity: 0; transform: scale(1.025); transition: opacity .9s cubic-bezier(.4, 0, .2, 1), transform 1.6s cubic-bezier(.22, 1, .36, 1);
+}
+.stage-fotos img.is-on { z-index: 2; opacity: 1; transform: none; }
+.stage-fotos img.is-antes { z-index: 1; opacity: 1; transform: none; transition: none; }
 @media (max-width: 860px) { .stage-fotos { display: none; } }
-@media (prefers-reduced-motion: reduce) { .stage-fotos img { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .stage-fotos img { transform: none; transition: opacity .3s linear; } }
 /* Teléfono: con cuatro opciones, la foto cede alto para que el hero siga cabiendo en la primera pantalla */
 @media (max-width: 599px) {
   body[data-site="transporte"] .stage-media img { height: clamp(96px, calc(100vh - 556px), 210px); height: clamp(96px, calc(100svh - 556px), 210px); }

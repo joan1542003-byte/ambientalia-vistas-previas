@@ -1,15 +1,15 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.18
+Stable tag: 1.4.19
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
 == Qué hace ==
 
-* Muestra el sitio en una dirección privada (por defecto /nuevo/): solo con sesión iniciada o con el enlace con clave de «Solicitudes → Ajustes del sitio». Los buscadores no lo indexan.
+* Muestra el sitio en una dirección privada (por defecto /nuevo/): solo con sesión iniciada o con el enlace con clave de «Transporte Autorizado → Ajustes». Los buscadores no lo indexan.
 * Al pasar a «Publicado», el sitio reemplaza la portada y abre /normativa/, /ayuda/ y /documentos/.
-* Las cotizaciones de Transporte (formulario de cotización, y el asistente de retiro, que lleva a ese formulario) van solo al asistente cuya dirección se indica en «Solicitudes → Ajustes del sitio»: el asistente las registra en Odoo con sus fotografías y les da su número. WordPress no las recibe. Sin esa dirección, el formulario avisa que el envío en línea no está disponible.
+* Las cotizaciones de Transporte (formulario de cotización, y el asistente de retiro, que lleva a ese formulario) van solo al asistente cuya dirección se indica en «Transporte Autorizado → Ajustes»: el asistente las registra en Odoo con sus fotografías y les da su número. WordPress no las recibe. Sin esa dirección, el formulario avisa que el envío en línea no está disponible.
 * Para otros formularios que lo usen, el servicio de solicitudes sigue disponible: guarda cada solicitud en «Solicitudes», le asigna un número y envía dos correos, al equipo y a la persona.
 * Recibe las fotografías que la persona adjunta (hasta 6): las revisa, las vuelve a generar, las guarda en una carpeta que no se entrega al público, las muestra en la solicitud y las adjunta al correo del equipo.
 * Rechaza los correos de los dominios bloqueados en los ajustes (por defecto, Rusia, Francia y Alemania), el texto en cirílico y los envíos hechos desde otros sitios; limita los envíos por visita, por correo, por hora y por día.
@@ -20,6 +20,13 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.19 =
+* Panel propio en el escritorio: menú «Transporte Autorizado» con Resumen (el estado de todo en tarjetas, cada una con su atajo), Solicitudes y Ajustes. Los ajustes van en pestañas (Sitio, Contacto, Retiros, Imágenes, Correos a clientes, Buscadores y SEO, Cotizaciones y chat, Seguridad), con la barra de guardar siempre a la vista y aviso de cambios sin guardar; al guardar se vuelve a la misma pestaña. La dirección anterior de los ajustes lleva a la nueva.
+* Buscadores: verificación de Google Search Console y Bing Webmaster Tools desde los ajustes, subiendo el archivo que entregan (google….html o BingSiteAuth.xml, que queda en la raíz del dominio) o pegando su etiqueta; lista de lo que falta para indexar y pasos para agregar el mapa del sitio. «Vaciar caché» desde el resumen.
+* robots.txt: el manifiesto para agentes va como comentario («# Agentmap:»); como directiva, Lighthouse marcaba el archivo como inválido y bajaba el SEO.
+* Espera y ahorra se agenda desde pasado mañana, como el Retiro Programado (antes dejaba elegir mañana).
+* Hero: cambio de foto más suave al pasar por las opciones (la nueva entra encima de la anterior, sin pasar por la principal).
 
 = 1.4.18 =
 * Horario de retiro: Mañana de 9:00 a 13:00 y Tarde de 13:00 a 17:00 (la mañana empieza a las 9 y nada pasa de las 17:00). Nueva sección «Horario de retiro» en los ajustes: las horas de inicio, de corte y de término, y si se ofrecen Mañana, Tarde y Vespertino. «Cualquier horario» va siempre. El campo del hero y el asistente solo entienden las opciones que se ofrecen.
@@ -117,7 +124,7 @@ El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `p
 * La burbuja «?» aparece al entrar; brillo leve en «Necesito gestionar mis residuos» y en el tipo de retiro elegido.
 
 = 1.4.0 =
-* El agente vuelve al sitio: «Chat con IA», en la burbuja «?», conversa con el asistente cuya dirección se indica en «Solicitudes → Ajustes del sitio» (la misma de las cotizaciones). Sin esa dirección, la ventana avisa que el asistente no está disponible.
+* El agente vuelve al sitio: «Chat con IA», en la burbuja «?», conversa con el asistente cuya dirección se indica en «Transporte Autorizado → Ajustes» (la misma de las cotizaciones). Sin esa dirección, la ventana avisa que el asistente no está disponible.
 * El sitio incluido es el del 22-10-2026 (burbuja «?» y chat). `python3 tools/wordpress.py` arma el paquete con el agente; con `--sin-agente` lo deja fuera.
 * Al actualizar, el plugin vacía las cachés de páginas (LiteSpeed y otras) y vuelve a registrar sus reglas.
 

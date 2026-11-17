@@ -48,7 +48,7 @@
     { id: 'fecha', label: 'Fecha', type: 'calendar', sub: true, skip: 'Aún no lo sé', when: (a) => a.modalidad === 'Retiro Programado',
       ask: '¿Qué día te acomoda?', help: 'Desde pasado mañana; lo confirmamos según disponibilidad, tipo de residuo y comuna.', hint: 'Ej.: el lunes' },
     { id: 'fechas', label: 'Fechas posibles', type: 'calendar', multi: 3, sub: true, when: (a) => a.modalidad === 'Espera y ahorra',
-      ask: '¿Qué días te acomodan?', help: 'Elige hasta tres; coordinamos según nuestra disponibilidad.', hint: 'Ej.: lunes 5 de octubre' },
+      ask: '¿Qué días te acomodan?', help: 'Elige hasta tres, desde pasado mañana; coordinamos según nuestra disponibilidad.', hint: 'Ej.: lunes 5 de octubre' },
     { id: 'horario', label: 'Horario', type: 'options', layout: 'cards', sub: true, ask: '¿En qué horario se puede retirar?', hint: 'Ej.: en la mañana', options: SLOT_OPTIONS },
     { id: 'documentos', label: 'Documentación del residuo', type: 'multi', layout: 'list', exclusive: 'Sin documentos por ahora', hint: 'Ej.: tengo la HDS',
       ask: '¿Tienes algún antecedente o documento del residuo?', help: 'Si tienes HDS/FDS, análisis u otra documentación, podrás adjuntarla por WhatsApp.',
@@ -336,8 +336,9 @@
       if (answers.modalidad !== label) { delete answers.fecha; delete answers.fechas; meta.dates = {}; }
       answers.modalidad = label;
     }
-    /* Programado: no para hoy ni para mañana (cliente, 12-11-2026) */
-    if (r.fecha && answers.modalidad !== 'Espera y ahorra' && !PICK.fechaOk('programado', r.fecha)) { r.fechaError = PICK.AVISO_PROGRAMADO; r.fecha = ''; }
+    /* Programado y Espera y ahorra: no para hoy ni para mañana (cliente, 12-11-2026 y 17-11-2026) */
+    const espera = answers.modalidad === 'Espera y ahorra';
+    if (r.fecha && !PICK.fechaOk(espera ? 'flexible' : 'programado', r.fecha)) { r.fechaError = espera ? PICK.AVISO_FLEXIBLE : PICK.AVISO_PROGRAMADO; r.fecha = ''; }
     if (r.fecha && may('fecha', 'fechas')) {
       if (answers.modalidad === 'Espera y ahorra') {
         const list = [...new Set([...(meta.dates.fechas || []), r.fecha])].sort().slice(-3);

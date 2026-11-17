@@ -498,7 +498,7 @@
   const MODES = [
     { value: 'express', label: 'Retiro Express', hint: 'Prioridad dentro de 24 horas hábiles.' },
     { value: 'programado', label: 'Retiro Programado', hint: 'Eliges el día, desde pasado mañana.' },
-    { value: 'flexible', label: 'Espera y ahorra', hint: 'Propones hasta tres días.' }
+    { value: 'flexible', label: 'Espera y ahorra', hint: 'Propones hasta tres días, desde pasado mañana.' }
   ];
 
   /* Texto en su propia ventana (p. ej., la dirección): el campo queda arriba, así el teclado nunca lo tapa

@@ -77,15 +77,16 @@
     ...(JORNADA.tarde ? [['Tarde', `${JORNADA.corte}:00 a ${JORNADA.fin}:00`]] : []),
     ...(JORNADA.vespertino ? [['Vespertino', 'De noche · sujeto a confirmación', 'de noche, sujeto a confirmación']] : [])
   ];
-  /* Anticipación mínima por plan, en días desde hoy (cliente, 12-11-2026): el Retiro Programado no se agenda para hoy ni
-     para mañana; Espera y ahorra, desde mañana. Lo usan el formulario, el asistente guiado y el campo del hero */
-  const DESDE = { programado: 2, flexible: 1 };
+  /* Anticipación mínima por plan, en días desde hoy: ni el Retiro Programado (cliente, 12-11-2026) ni Espera y ahorra
+     (17-11-2026) se agendan para hoy ni para mañana. Lo usan el formulario, el asistente guiado y el campo del hero */
+  const DESDE = { programado: 2, flexible: 2 };
   const fechaOk = (modo, v) => {
     const min = new Date(); min.setHours(12, 0, 0, 0); min.setDate(min.getDate() + (DESDE[modo] || 1));
     const [y, m, dd] = String(v).split('-').map(Number);
     return new Date(y, m - 1, dd, 12) >= min;
   };
   const AVISO_PROGRAMADO = 'El Retiro Programado se agenda desde pasado mañana. Si lo necesitas antes, elige Retiro Express.';
+  const AVISO_FLEXIBLE = 'Espera y ahorra se agenda desde pasado mañana. Si lo necesitas antes, elige Retiro Express.';
   const slotText = (name) => {
     const s = SLOTS.find(([t]) => t === name);
     return s && name !== 'Cualquier horario' ? `${s[0]} (${s[2] || s[1]})` : name;
@@ -268,5 +269,5 @@
     ? (COBERTURA.length === RM.length ? 'toda la Región Metropolitana' : `${COBERTURA.length} comunas de la Región Metropolitana`)
     : COBERTURA.length > 1 ? `${COBERTURA.slice(0, -1).join(', ')} y ${COBERTURA[COBERTURA.length - 1]}` : COBERTURA[0] || '';
 
-  window.PICK = { DESDE, fechaOk, AVISO_PROGRAMADO, COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS_ICONS, STATE_ICONS, DOC_ICONS, ACCESS, ACCESS_VISTA, ACCESS_GROUPS, accessGroup, pickedFrom, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, JORNADA, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
+  window.PICK = { DESDE, fechaOk, AVISO_PROGRAMADO, AVISO_FLEXIBLE, COBERTURA, enCobertura, coberturaTexto, CATEGORIES, AMOUNTS, shortAmount, ICONS, AMOUNT_ICONS, STORAGE, STATES, STORAGE_BY_STATE, DOCS, ACCESS_ICONS, STATE_ICONS, DOC_ICONS, ACCESS, ACCESS_VISTA, ACCESS_GROUPS, accessGroup, pickedFrom, SERVICES, PERIODS, VEHICLES, CONTAINERS, allowed, TIPO_LABEL, MODE_LABEL, SLOT_ICONS, slotText, JORNADA, isOther, splitOther, joinOther, thumb, shortDate, REGIONS, REGION_NAMES, regionLabel, communesOf, COMMUNES, days, longDate, SLOTS, HOURS, fold };
 })();

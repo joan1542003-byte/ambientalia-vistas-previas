@@ -166,6 +166,7 @@
       if (m !== when.modalidad) {
         when.modalidad = m;
         if (m === 'programado') when.dates = when.dates.filter((v) => PICK.fechaOk('programado', v)).slice(0, 1);
+        if (m === 'flexible') when.dates = when.dates.filter((v) => PICK.fechaOk('flexible', v));
         if (m === 'express') when.dates = [];
       }
       writeWhen();
@@ -279,7 +280,7 @@
         const multi = when.modalidad === 'flexible';
         const v = await Picker.dates({
           title: multi ? '¿Qué días te acomodan?' : '¿Qué día retiramos?',
-          sub: multi ? 'Elige hasta tres días posibles, de lunes a sábado.' : 'De lunes a sábado, desde pasado mañana.', multi, max: 3, value: when.dates,
+          sub: multi ? 'Hasta tres días posibles, de lunes a sábado, desde pasado mañana.' : 'De lunes a sábado, desde pasado mañana.', multi, max: 3, value: when.dates,
           desde: PICK.DESDE[when.modalidad] || 1
         });
         if (v) { when.dates = v; writeWhen(); }
@@ -340,6 +341,7 @@
       when.modalidad = b.dataset.modalidad;
       if (when.modalidad === 'express') when.dates = [];
       if (when.modalidad === 'programado') when.dates = when.dates.filter((v) => PICK.fechaOk('programado', v)).slice(0, 1);
+      if (when.modalidad === 'flexible') when.dates = when.dates.filter((v) => PICK.fechaOk('flexible', v));
       /* El botón se marca al instante; el resto del formulario se pinta en el cuadro siguiente (en Firefox se notaba la espera) */
       b.parentElement.querySelectorAll('[data-modalidad]').forEach((x) => x.setAttribute('aria-checked', String(x === b)));
       b.closest('.pick')?.removeAttribute('data-invalid');
@@ -407,15 +409,17 @@
         if (r.comuna) a.comuna = r.comuna.commune;
         if (r.almacenamiento) a.almacenamiento = r.almacenamiento;
         if (r.documentos.length) a.documentos = r.documentos.join(', ');
-        /* Programado: no para hoy ni para mañana (cliente, 12-11-2026); si pidió esos días, queda el plan sin fecha y el aviso */
-        const pronto = r.fecha && r.modalidad !== 'flexible' && !PICK.fechaOk('programado', r.fecha);
-        if (pronto) a.modalidad = PICK.MODE_LABEL.programado;
+        /* Programado y Espera y ahorra: no para hoy ni para mañana (cliente, 12-11-2026 y 17-11-2026); si pidió esos días,
+           queda el plan sin fecha y el aviso */
+        const plan = r.modalidad === 'flexible' ? 'flexible' : 'programado';
+        const pronto = r.fecha && !PICK.fechaOk(plan, r.fecha);
+        if (pronto) a.modalidad = PICK.MODE_LABEL[plan];
         else if (r.fecha && r.modalidad !== 'flexible') { a.modalidad = PICK.MODE_LABEL.programado; meta.dates.fecha = [r.fecha]; }
         else if (r.fecha) { a.modalidad = PICK.MODE_LABEL.flexible; meta.dates.fechas = [r.fecha]; }
         else if (r.modalidad) a.modalidad = PICK.MODE_LABEL[r.modalidad];
         if (r.horario) a.horario = r.horario;
         window.QUOTE.fill({ answers: a, meta });
-        return r.fueraDeCobertura ? `Por ahora coordinamos retiros en ${PICK.coberturaTexto}; ${r.fueraDeCobertura} queda fuera.` : pronto ? PICK.AVISO_PROGRAMADO : (r.fechaError && !r.fecha ? r.fechaError : '');
+        return r.fueraDeCobertura ? `Por ahora coordinamos retiros en ${PICK.coberturaTexto}; ${r.fueraDeCobertura} queda fuera.` : pronto ? (plan === 'flexible' ? PICK.AVISO_FLEXIBLE : PICK.AVISO_PROGRAMADO) : (r.fechaError && !r.fecha ? r.fechaError : '');
       }
     };
     normalize();
@@ -1022,15 +1026,32 @@
         layer.append(img);
         imgs.set(r, img);
       });
+      /* Transición suave (17-11-2026): de una opción a otra, la foto nueva aparece encima de la anterior, que queda quieta
+         debajo hasta que la nueva termina de verse (sin pasar por la foto principal a medio camino); al salir del grupo,
+         la foto se desvanece. Pasar por el espacio entre dos opciones no cuenta como salir (se espera un momento) */
       let over = null;
+      let actual = null;
+      let salida = 0;
       const paintFoto = () => {
         const on = over || withFoto.find((r) => r.dataset.route && r.dataset.route === tab) || null;
-        imgs.forEach((img, r) => img.classList.toggle('is-on', r === on && img.complete && img.naturalWidth > 0));
+        const img = on && imgs.get(on);
+        const lista = img && img.complete && img.naturalWidth > 0 ? img : null;
+        if (lista === actual) return;
+        const antes = actual;
+        actual = lista;
+        lista?.classList.remove('is-antes');  // si se vuelve a la que se estaba yendo, entra como cualquier otra
+        imgs.forEach((x) => x.classList.toggle('is-on', x === lista));
+        if (antes && lista) {
+          antes.classList.add('is-antes');
+          const soltar = () => antes.classList.remove('is-antes');
+          lista.addEventListener('transitionend', soltar, { once: true });
+          setTimeout(soltar, 1100);
+        }
       };
       (window.requestIdleCallback || ((f) => setTimeout(f, 1500)))(load);
       withFoto.forEach((r) => {
-        const enter = () => { load(); over = r; const img = imgs.get(r); if (img.complete) paintFoto(); else img.addEventListener('load', paintFoto, { once: true }); };
-        const leave = () => { if (over === r) over = null; paintFoto(); };
+        const enter = () => { clearTimeout(salida); load(); over = r; const img = imgs.get(r); if (img.complete) paintFoto(); else img.addEventListener('load', paintFoto, { once: true }); };
+        const leave = () => { clearTimeout(salida); salida = setTimeout(() => { if (over === r) over = null; paintFoto(); }, 140); };
         r.addEventListener('pointerenter', enter);
         r.addEventListener('pointerleave', leave);
         r.addEventListener('focus', enter);
