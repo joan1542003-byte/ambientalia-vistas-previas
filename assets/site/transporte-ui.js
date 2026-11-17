@@ -301,18 +301,20 @@
         return v;
       },
       /* «Otra condición» y «Otro» despliegan un campo para escribir cuál; queda guardado como «Otro: …».
-         Las condiciones de acceso son muchas (27) y de rótulo largo: van en filas, repartidas en cuatro pestañas
-         (PICK.ACCESS_GROUPS, una a la vista, con cuántas hay elegidas en cada una) y arriba lo elegido, quitable con un toque. Se muestran en el orden
+         Va por pasos (17-11-2026): estado, almacenamiento (según el estado) y condiciones de acceso. Estas son muchas (27):
+         primero «¿Hay alguna?» (Sí/No) y, con «Sí», cuatro categorías plegables (PICK.ACCESS_GROUPS), todas cerradas al
+         abrir, con cuántas hay elegidas en cada una; arriba, lo elegido, quitable con un toque. Se muestran en el orden
          de PICK.ACCESS_VISTA (las prioritarias primero en cada sección); el campo las guarda en el de PICK.ACCESS */
       detalles: async () => {
         const acc = PICK.pickedFrom(field('acceso').value, PICK.ACCESS).map(PICK.splitOther);
         const [alm, almOtro] = PICK.splitOther(field('almacenamiento').value);
         const v = await Picker.chooseEach({
           title: 'Detalles del retiro', sub: 'Todo es opcional, pero ayuda a evitar retiros fallidos.',
+          steps: true,
           groups: [
-            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, layout: 'list', otherLabel: '¿Cuál es la otra condición?', options: (PICK.ACCESS_VISTA || PICK.ACCESS).map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x), section: PICK.accessGroup(x) })), sectionIcons: PICK.ACCESS_GROUP_ICONS },
-            { key: 'estado', label: 'Estado del residuo', options: PICK.STATES.map((x) => ({ value: x, label: x, icon: PICK.STATE_ICONS[x] })) },
-            { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', otherLabel: '¿Cómo está almacenado?', allowed: (p) => PICK.STORAGE_BY_STATE[p.estado] || null, options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) }
+            { key: 'estado', label: '¿En qué estado está el residuo?', short: 'Estado', layout: 'cards', options: PICK.STATES.map((x) => ({ value: x, label: x, icon: PICK.STATE_ICONS[x] })) },
+            { key: 'almacenamiento', label: '¿Cómo está almacenado?', short: 'Almacenaje', layout: 'cards', otherLabel: '¿Cómo está almacenado?', allowed: (p) => PICK.STORAGE_BY_STATE[p.estado] || null, options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) },
+            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', short: 'Acceso', gate: { no: 'No, ninguna', si: 'Sí, hay condiciones' }, hint: 'Por ejemplo, altura máxima, grúa o inducción de seguridad.', multi: true, layout: 'list', otherLabel: '¿Cuál es la otra condición?', options: (PICK.ACCESS_VISTA || PICK.ACCESS).map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x), section: PICK.accessGroup(x) })), sectionIcons: PICK.ACCESS_GROUP_ICONS }
           ],
           value: { acceso: acc.map(([base]) => base), accesoOtro: acc.find(([base]) => PICK.isOther(base))?.[1] || '', estado: field('estado').value, almacenamiento: alm, almacenamientoOtro: almOtro }
         });

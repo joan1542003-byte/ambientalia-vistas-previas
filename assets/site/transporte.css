@@ -432,25 +432,73 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .opt[data-tone="express"]::before { background: var(--grad-express); }
 .opt[data-tone="flexible"]::before { background: var(--grad-flexible); }
 .opt-empty { padding: 18px 2px; color: var(--muted); font-size: .9375rem; }
-/* Pestañas de una lista larga (chooseEach, opciones con `section`; 17-11-2026): p. ej., las condiciones de acceso. Las
-   cuatro se ven siempre (dos por fila en el teléfono), con su ícono y cuántas hay elegidas; arriba, lo elegido */
-.opt-secciones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-.opt-seccion {
-  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-height: 76px; padding: 10px 12px;
-  border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink-2); font: 700 .8125rem/1.25 var(--font); text-align: left; cursor: pointer;
-  transition: border-color .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease);
+/* Ventana por pasos (chooseEach con `steps`; 17-11-2026, «Detalles del retiro»): los pasos arriba, fijos al desplazar;
+   el que se ve, marcado; los ya respondidos, con su check, y se puede volver a ellos */
+.opt-pasos { position: sticky; top: -4px; z-index: 2; display: flex; gap: 6px; margin: -4px -22px 14px; padding: 8px 22px 10px; list-style: none; background: #fff; }
+.opt-pasos li { flex: 1; min-width: 0; }
+.opt-pasos-b {
+  display: flex; align-items: center; gap: 7px; width: 100%; min-height: 40px; padding: 6px 8px; border: 0; border-radius: 12px;
+  background: var(--bg-sunk); color: var(--muted); font: 700 .8125rem/1.2 var(--font); text-align: left; cursor: pointer;
+  transition: background-color .2s var(--ease), color .2s var(--ease);
 }
-.opt-seccion-icono { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: var(--bg-sunk); color: var(--ink-2); transition: background-color .2s var(--ease), color .2s var(--ease); }
-.opt-seccion-icono svg { width: 17px; height: 17px; }
-.opt-seccion-cuenta { position: absolute; top: 9px; right: 9px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent); color: #fff; font-size: .75rem; font-weight: 800; line-height: 20px; text-align: center; }
-.opt-seccion-cuenta:empty { display: none; }
-@media (hover: hover) { .opt-seccion:hover { border-color: var(--line-strong); } }
-.opt-seccion[aria-selected="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, #fff); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
-.opt-seccion[aria-selected="true"] .opt-seccion-icono { background: var(--accent); color: #fff; }
+.opt-pasos-n { display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 99px; background: #fff; color: var(--ink-2); font-size: .75rem; font-weight: 800; }
+.opt-pasos-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.opt-pasos-b[aria-current="step"] { background: color-mix(in srgb, var(--accent) 12%, #fff); color: var(--accent-strong); }
+.opt-pasos-b[aria-current="step"] .opt-pasos-n { background: var(--accent); color: #fff; }
+.opt-pasos-b.is-hecho .opt-pasos-n { background: var(--accent-strong); color: transparent; position: relative; }
+.opt-pasos-b.is-hecho .opt-pasos-n::after {
+  content: ""; position: absolute; inset: 5px; background: #fff;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.opt-pasos-b:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opt-paso-n { margin: 0 0 2px; color: var(--muted); font-size: var(--fs-caption); font-weight: 800; }
+.opt-group .opt-paso-t { margin: 0 0 12px; color: var(--ink); font-size: 1.125rem; letter-spacing: -.01em; line-height: 1.3; }
+.opt-paso-sub { margin: -6px 0 14px; color: var(--muted); font-size: var(--fs-small); line-height: 1.45; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes opt-paso-in { from { opacity: 0; transform: translateX(10px); } }
+  .opt-paso:not([hidden]) { animation: opt-paso-in .26s var(--ease) both; }
+}
+
+/* «¿Hay alguna…?»: Sí o No antes de la lista (grupos con `gate`) */
+.opt-si-no { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.opt-si-no-b {
+  min-height: 52px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink-2);
+  font: 800 .9375rem/1.25 var(--font); cursor: pointer; transition: border-color .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease);
+}
+@media (hover: hover) { .opt-si-no-b:hover { border-color: var(--line-strong); } }
+.opt-si-no-b[aria-checked="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, #fff); color: var(--accent-strong); box-shadow: inset 0 0 0 1px var(--accent); }
+.opt-si-no-b:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opt-gate { margin-top: 14px; }
+
+/* Categorías plegables de una lista larga (opciones con `section`): todas cerradas al abrir; una abierta a la vez; se
+   cierran tocándolas otra vez. Muestran su ícono y cuántas hay elegidas. Arriba, lo elegido, quitable con un toque */
+.opt-secciones { display: grid; gap: 6px; }
+.opt-seccion-caja { border: 1px solid var(--line); border-radius: 14px; background: #fff; transition: border-color .2s var(--ease); }
+.opt-seccion-caja.is-abierta { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.opt-seccion {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 8px 12px; border: 0; border-radius: 13px;
+  background: none; color: var(--ink); font: 700 .9375rem/1.3 var(--font); text-align: left; cursor: pointer;
+}
+@media (hover: hover) { .opt-seccion:hover { background: var(--bg-alt); } }
 .opt-seccion:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.opt-seccion-panel { margin-top: 8px; }
+.opt-seccion-icono { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 10px; background: var(--bg-sunk); color: var(--ink-2); transition: background-color .2s var(--ease), color .2s var(--ease); }
+.opt-seccion-icono svg { width: 18px; height: 18px; }
+.opt-seccion[aria-expanded="true"] .opt-seccion-icono { background: var(--accent); color: #fff; }
+.opt-seccion-nombre { flex: 1; min-width: 0; }
+.opt-seccion-cuenta { flex: none; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 99px; background: var(--accent); color: #fff; font-size: .75rem; font-weight: 800; line-height: 22px; text-align: center; }
+.opt-seccion-cuenta:empty { display: none; }
+.opt-seccion-flecha {
+  flex: none; width: 16px; height: 16px; background: var(--muted); rotate: 90deg; transition: rotate .2s var(--ease);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.opt-seccion[aria-expanded="true"] .opt-seccion-flecha { rotate: -90deg; }
+/* Abierta, su encabezado queda a la vista (bajo los pasos) mientras se recorre la lista: se puede cerrar desde ahí */
+.opt-seccion-caja.is-abierta .opt-seccion { position: sticky; top: var(--pasos-alto, 0px); z-index: 1; border-radius: 13px 13px 0 0; background: #fff; box-shadow: 0 6px 10px -10px rgb(21 26 45 / .35); }
+.opt-seccion-panel { padding: 0 8px 8px; }
 .opt-seccion-panel .opt { min-height: 46px; padding: 9px 12px; }
-.opt-seccion-panel + .opts { margin-top: 8px; }
+.opt-secciones + .opts { margin-top: 6px; }
 .opt-elegidas { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 10px; }
 .opt-elegidas-t { color: var(--muted); font-size: var(--fs-caption); font-weight: 800; }
 .opt-elegida {
@@ -460,12 +508,8 @@ button.text-link { padding: 0; border: 0; background: none; font: inherit; font-
 .opt-elegida span { font-size: 1rem; line-height: 1; opacity: .7; }
 @media (hover: hover) { .opt-elegida:hover { background: color-mix(in srgb, var(--accent) 16%, #fff); } }
 .opt-elegida:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-@media (max-width: 640px) {
-  .opt-secciones { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .opt-seccion { flex-direction: row; align-items: center; min-height: 52px; padding: 8px 34px 8px 10px; }
-  .opt-seccion-cuenta { top: 50%; translate: 0 -50%; }
-}
-@media (prefers-reduced-motion: reduce) { .opt-seccion, .opt-seccion-icono { transition: none; } }
+@media (max-width: 640px) { .opt-pasos { margin-inline: -18px; padding-inline: 18px; } }
+@media (prefers-reduced-motion: reduce) { .opt-seccion-caja, .opt-seccion-icono, .opt-seccion-flecha, .opt-si-no-b, .opt-pasos-b { transition: none; } }
 @media (max-width: 560px) { .opts.is-modes { grid-template-columns: minmax(0, 1fr); } .opts.is-tiles { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); } }
 
 /* Fecha y horario */

@@ -340,6 +340,8 @@
     el.tabs.innerHTML = '';
     el.body.innerHTML = '';
     el.body.onclick = null;
+    el.body.onkeydown = null;
+    el.body.style.removeProperty('--pasos-alto');
     el.body.scrollTop = 0;
     d.documentElement.classList.add('picker-open');
     dlg.showModal();
@@ -415,43 +417,56 @@
     return p;
   };
 
-  /* Varios grupos en una ventana, con «Listo»: cada grupo es de una opción o, con multi, de varias */
-  const chooseEach = ({ title, sub, groups, value = {}, layout = 'chips' }) => {
+  /* Varios grupos en una ventana, con «Listo»: cada grupo es de una opción o, con multi, de varias.
+     Con `steps` (17-11-2026, «Detalles del retiro»: «hazlo por pasos, se pierde lo que está abajo»): un grupo por pantalla,
+     con los pasos arriba (se puede volver a uno ya visto), «Atrás» y «Siguiente»; en un grupo de una opción se avanza solo
+     al elegir. Se responde todo en el último paso («Listo»); cerrar la ventana no guarda, como siempre */
+  const chooseEach = ({ title, sub, groups, value = {}, layout = 'chips', steps = false }) => {
     const p = open({ title, sub, done: 'Listo' });
     const picked = Object.fromEntries(groups.map((g) => [g.key, g.multi ? [].concat(value[g.key] || []) : value[g.key] || '']));
     const on = (g, v) => (g.multi ? picked[g.key].includes(v) : picked[g.key] === v);
     /* Un grupo con una opción «Otro» (other: true) despliega su campo al elegirla; lo escrito vuelve en `${key}Otro` */
     const otherOf = (g) => g.options.find((o) => o.other);
-    /* Una lista larga se reparte en pestañas (17-11-2026; antes, secciones plegables en las que era fácil perderse): las
-       opciones seguidas con el mismo `section` van en una pestaña, con su ícono (`sectionIcons`) y cuántas hay elegidas;
-       se ve una a la vez (abre en la primera con algo elegido). Arriba, lo elegido en todas, quitable con un toque. Las
-       opciones sin `section` quedan siempre a la vista. Es solo presentación: el grupo y su valor son los mismos */
+    const groupOf = (node) => groups.find((x) => x.key === node.closest('[data-group]').dataset.group);
+    /* Una lista larga se reparte en categorías plegables (17-11-2026): las opciones seguidas con el mismo `section` van
+       bajo un encabezado con su ícono (`sectionIcons`) y cuántas hay elegidas. Todas parten cerradas; se abre una a la vez
+       y se vuelve a cerrar tocándola. Arriba, lo elegido en todas, quitable con un toque. Con `gate` ({ no, si }), antes
+       se pregunta si hay alguna: con «No» no se muestra la lista. Las opciones sin `section` van al final, a la vista.
+       Es solo presentación: el grupo y su valor son los mismos */
     const runs = (g) => g.options.reduce((acc, o) => {
       const last = acc[acc.length - 1];
       if (last && last.section === (o.section || '')) last.options.push(o); else acc.push({ section: o.section || '', options: [o] });
       return acc;
     }, []);
     const optsHTML = (g, list) => `<div class="opts is-${g.layout || layout}">${list.map((o) => optionHTML(o, on(g, o.value))).join('')}</div>`;
+    /* Respuesta a la pregunta previa de cada grupo con `gate`: 'si', 'no' o '' (sin responder; «Sí» si ya trae algo elegido) */
+    const gateResp = Object.fromEntries(groups.filter((g) => g.gate).map((g) => [g.key, picked[g.key].length ? 'si' : '']));
     const groupHTML = (g) => {
       const rs = runs(g);
       const secs = rs.filter((r) => r.section);
       if (!secs.length) return rs.map((r) => optsHTML(g, r.options)).join('');
-      const first = Math.max(0, secs.findIndex((r) => r.options.some((o) => on(g, o.value))));
       const id = (i) => `sec-${esc(g.key)}-${i}`;
-      const tabs = secs.map((r, i) => `<button type="button" role="tab" class="opt-seccion" id="${id(i)}" aria-controls="${id(i)}-p" aria-selected="${i === first}" tabindex="${i === first ? 0 : -1}" data-seccion="${i}">`
-        + `${g.sectionIcons?.[r.section] ? `<span class="opt-seccion-icono" aria-hidden="true">${g.sectionIcons[r.section]}</span>` : ''}`
-        + `<span class="opt-seccion-nombre">${esc(r.section)}</span><span class="opt-seccion-cuenta" aria-hidden="true"></span></button>`).join('');
-      const panels = secs.map((r, i) => `<div class="opt-seccion-panel" role="tabpanel" id="${id(i)}-p" aria-labelledby="${id(i)}" data-seccion-panel="${i}"${i === first ? '' : ' hidden'}>${optsHTML(g, r.options)}</div>`).join('');
-      return `<div class="opt-elegidas" data-elegidas aria-live="polite" hidden></div><div class="opt-secciones" role="tablist" aria-label="${esc(g.label)}">${tabs}</div>${panels}`
-        + rs.filter((r) => !r.section).map((r) => optsHTML(g, r.options)).join('');
+      const lista = `<div class="opt-elegidas" data-elegidas aria-live="polite" hidden></div><div class="opt-secciones">`
+        + secs.map((r, i) => `<div class="opt-seccion-caja"><button type="button" class="opt-seccion" id="${id(i)}" aria-expanded="false" aria-controls="${id(i)}-p" data-seccion="${i}">`
+          + `${g.sectionIcons?.[r.section] ? `<span class="opt-seccion-icono" aria-hidden="true">${g.sectionIcons[r.section]}</span>` : ''}`
+          + `<span class="opt-seccion-nombre">${esc(r.section)}</span><span class="opt-seccion-cuenta" aria-hidden="true"></span><span class="opt-seccion-flecha" aria-hidden="true"></span></button>`
+          + `<div class="opt-seccion-panel" id="${id(i)}-p" role="region" aria-labelledby="${id(i)}" data-seccion-panel="${i}" hidden>${optsHTML(g, r.options)}</div></div>`).join('')
+        + `</div>${rs.filter((r) => !r.section).map((r) => optsHTML(g, r.options)).join('')}`;
+      if (!g.gate) return lista;
+      const si = gateResp[g.key] === 'si';
+      return `<div class="opt-si-no" role="radiogroup" aria-label="${esc(g.label)}"><button type="button" role="radio" class="opt-si-no-b" data-gate="no" aria-checked="${gateResp[g.key] === 'no'}">${esc(g.gate.no)}</button>`
+        + `<button type="button" role="radio" class="opt-si-no-b" data-gate="si" aria-checked="${si}">${esc(g.gate.si)}</button></div>`
+        + `<div class="opt-gate" data-gate-lista${si ? '' : ' hidden'}>${lista}</div>`;
     };
-    el.body.innerHTML = groups.map((g) => `<section class="opt-group" data-group="${esc(g.key)}"><h3>${esc(g.label)}</h3>${groupHTML(g)}${otherOf(g) ? otherHTML(otherOf(g).value, value[`${g.key}Otro`] || '', g.otherLabel) : ''}</section>`).join('');
-    /* Cuántas hay elegidas en cada pestaña, y lo elegido arriba (cada una se quita con un toque) */
+    const head = (g, i) => (steps ? `<p class="opt-paso-n">Paso ${i + 1} de ${groups.length}</p><h3 class="opt-paso-t">${esc(g.label)}</h3>${g.hint ? `<p class="opt-paso-sub">${esc(g.hint)}</p>` : ''}` : `<h3>${esc(g.label)}</h3>`);
+    const pasos = steps ? `<ol class="opt-pasos" aria-label="Pasos">${groups.map((g, i) => `<li><button type="button" class="opt-pasos-b" data-ir="${i}"><span class="opt-pasos-n" aria-hidden="true">${i + 1}</span><span class="opt-pasos-t">${esc(g.short || g.label)}</span></button></li>`).join('')}</ol>` : '';
+    el.body.innerHTML = pasos + groups.map((g, i) => `<section class="opt-group${steps ? ' opt-paso' : ''}" data-group="${esc(g.key)}"${steps && i ? ' hidden' : ''}>${head(g, i)}${groupHTML(g)}${otherOf(g) ? otherHTML(otherOf(g).value, value[`${g.key}Otro`] || '', g.otherLabel) : ''}</section>`).join('');
+    /* Cuántas hay elegidas en cada categoría, y lo elegido arriba (cada una se quita con un toque) */
     const paintSections = () => el.body.querySelectorAll('[data-group]').forEach((sec) => {
-      const tabs = sec.querySelectorAll('.opt-seccion');
-      if (!tabs.length) return;
-      const g = groups.find((x) => x.key === sec.dataset.group);
-      tabs.forEach((t) => {
+      const heads = sec.querySelectorAll('.opt-seccion');
+      if (!heads.length) return;
+      const g = groupOf(sec);
+      heads.forEach((t) => {
         const n = sec.querySelectorAll(`[data-seccion-panel="${t.dataset.seccion}"] .opt[aria-pressed="true"]`).length;
         t.querySelector('.opt-seccion-cuenta').textContent = n ? String(n) : '';
         t.setAttribute('aria-label', `${t.querySelector('.opt-seccion-nombre').textContent}${n ? `, ${counter(n, 'elegida', 'elegidas')}` : ''}`);
@@ -461,27 +476,19 @@
       box.hidden = !lista.length;
       box.innerHTML = lista.length ? `<span class="opt-elegidas-t">${esc(counter(lista.length, 'elegida', 'elegidas'))}:</span>${lista.map((v) => `<button type="button" class="opt-elegida" data-quitar="${esc(v)}" aria-label="Quitar: ${esc(v)}">${esc(v)}<span aria-hidden="true">×</span></button>`).join('')}` : '';
     });
-    const showSection = (sec, i, focus) => {
-      sec.querySelectorAll('.opt-seccion').forEach((t) => {
-        const onTab = t.dataset.seccion === String(i);
-        t.setAttribute('aria-selected', String(onTab));
-        t.tabIndex = onTab ? 0 : -1;
-        if (onTab && focus) t.focus();
+    /* Abre una categoría (y cierra las demás) o la cierra si ya estaba abierta */
+    const toggleSection = (t) => {
+      const abrir = t.getAttribute('aria-expanded') !== 'true';
+      t.closest('[data-group]').querySelectorAll('.opt-seccion').forEach((x) => {
+        const si = abrir && x === t;
+        x.setAttribute('aria-expanded', String(si));
+        x.closest('.opt-seccion-caja').classList.toggle('is-abierta', si);
+        document.getElementById(x.getAttribute('aria-controls')).hidden = !si;
       });
-      sec.querySelectorAll('[data-seccion-panel]').forEach((p2) => { p2.hidden = p2.dataset.seccionPanel !== String(i); });
-    };
-    el.body.onkeydown = (e) => {
-      const t = e.target.closest('.opt-seccion');
-      if (!t) return;
-      const tabs = [...t.parentElement.children];
-      const k = tabs.indexOf(t);
-      const n = { ArrowRight: k + 1, ArrowDown: k + 1, ArrowLeft: k - 1, ArrowUp: k - 1, Home: 0, End: tabs.length - 1 }[e.key];
-      if (n === undefined) return;
-      e.preventDefault();
-      showSection(t.closest('[data-group]'), tabs[(n + tabs.length) % tabs.length].dataset.seccion, true);
+      if (abrir) requestAnimationFrame(() => reveal(t.closest('.opt-seccion-caja'), t));
     };
     const syncOther = (focus) => el.body.querySelectorAll('[data-other]').forEach((f) => {
-      const g = groups.find((x) => x.key === f.closest('[data-group]').dataset.group);
+      const g = groupOf(f);
       const shown = on(g, f.dataset.other);
       f.hidden = !shown;
       if (!shown || focus !== f) return;
@@ -499,38 +506,87 @@
         x.setAttribute('aria-pressed', String(on(g, x.dataset.value)));
       });
     });
+    const repaint = (g) => el.body.querySelectorAll(`[data-group="${g.key}"] .opt[data-value]`).forEach((x) => x.setAttribute('aria-pressed', String(on(g, x.dataset.value))));
+
+    /* Pasos */
+    let paso = 0;
+    let avance = 0;
+    const leerOtros = () => groups.forEach((g) => {
+      const f = el.body.querySelector(`[data-group="${g.key}"] [data-other]`);
+      if (f) picked[`${g.key}Otro`] = f.hidden ? '' : f.querySelector('input').value.trim().replace(/\s+/g, ' ');
+    });
+    const hecho = (g) => (g.multi ? picked[g.key].length > 0 || gateResp[g.key] === 'no' : Boolean(picked[g.key]));
+    const irA = (n, foco = true) => {
+      clearTimeout(avance);
+      paso = Math.max(0, Math.min(groups.length - 1, n));
+      el.body.querySelectorAll('.opt-paso').forEach((sec, i) => { sec.hidden = i !== paso; });
+      el.body.querySelectorAll('.opt-pasos-b').forEach((b, i) => {
+        if (i === paso) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+        b.classList.toggle('is-hecho', i !== paso && Boolean(hecho(groups[i])));
+      });
+      const ultimo = paso === groups.length - 1;
+      el.done.innerHTML = ultimo ? `${ICON.check}Listo` : `Siguiente${ICON.next || ''}`;
+      el.action.hidden = paso === 0;
+      el.action.innerHTML = `${ICON.back}Atrás`;
+      el.back.hidden = true;  // «Atrás» va en el pie; la flecha del título lo repetiría
+      el.body.scrollTop = 0;
+      const actual = el.body.querySelectorAll('.opt-paso')[paso];
+      if (foco && !coarse.matches) requestAnimationFrame(() => actual.querySelector('[aria-pressed="true"], [aria-checked="true"], button:not([disabled]):not([hidden])')?.focus({ preventScroll: true }));
+    };
+
     filtrar();
     paintSections();
     syncOther();
     el.body.onclick = (e) => {
-      const tab = e.target.closest('.opt-seccion');
-      if (tab) { showSection(tab.closest('[data-group]'), tab.dataset.seccion); return; }
+      const ir = e.target.closest('[data-ir]');
+      if (ir) { irA(Number(ir.dataset.ir)); return; }
+      const gate = e.target.closest('[data-gate]');
+      if (gate) {
+        const sec = gate.closest('[data-group]');
+        const g = groupOf(sec);
+        const si = gate.dataset.gate === 'si';
+        gateResp[g.key] = si ? 'si' : 'no';
+        sec.querySelectorAll('[data-gate]').forEach((b) => b.setAttribute('aria-checked', String(b === gate)));
+        sec.querySelector('[data-gate-lista]').hidden = !si;
+        if (!si) { picked[g.key] = []; repaint(g); paintSections(); syncOther(); }  // «No, ninguna»: lo marcado antes se quita
+        else requestAnimationFrame(() => reveal(sec.querySelector('[data-gate-lista]'), gate));
+        return;
+      }
+      const head2 = e.target.closest('.opt-seccion');
+      if (head2) { toggleSection(head2); return; }
       const quitar = e.target.closest('[data-quitar]');
       if (quitar) {
-        const opt = [...quitar.closest('[data-group]').querySelectorAll('.opt[data-value]')].find((x) => x.dataset.value === quitar.dataset.quitar);
         const sec = quitar.closest('[data-group]');
+        const opt = [...sec.querySelectorAll('.opt[data-value]')].find((x) => x.dataset.value === quitar.dataset.quitar);
         if (opt) opt.click();
-        (sec.querySelector('[data-quitar]') || sec.querySelector('.opt-seccion[aria-selected="true"]'))?.focus({ preventScroll: true });  // el foco no se pierde al quitar
+        (sec.querySelector('[data-quitar]') || sec.querySelector('.opt-seccion'))?.focus({ preventScroll: true });  // el foco no se pierde al quitar
         return;
       }
       const b = e.target.closest('.opt[data-value]');
       if (!b) return;
-      const g = groups.find((x) => x.key === b.closest('[data-group]').dataset.group);
+      const g = groupOf(b);
       const v = b.dataset.value;
       if (g.multi) picked[g.key] = on(g, v) ? picked[g.key].filter((x) => x !== v) : [...picked[g.key], v];
       else picked[g.key] = picked[g.key] === v ? '' : v;
-      b.closest('[data-group]').querySelectorAll('.opt[data-value]').forEach((x) => x.setAttribute('aria-pressed', String(on(g, x.dataset.value))));
+      repaint(g);
       filtrar();
       paintSections();
       syncOther(otherOf(g)?.value === v ? b.closest('[data-group]').querySelector('[data-other]') : null);
+      /* Por pasos: en un grupo de una opción, elegir lleva al siguiente (no con «Otro», que pide escribir) */
+      if (steps && !g.multi && picked[g.key] && !(otherOf(g)?.value === v) && paso < groups.length - 1) avance = setTimeout(() => irA(paso + 1), 320);
     };
     hooks.done = () => {
-      groups.forEach((g) => {
-        const f = el.body.querySelector(`[data-group="${g.key}"] [data-other]`);
-        if (f) picked[`${g.key}Otro`] = f.hidden ? '' : f.querySelector('input').value.trim().replace(/\s+/g, ' ');
-      });
+      if (steps && paso < groups.length - 1) { irA(paso + 1); return; }
+      leerOtros();
       finish(picked);
     };
+    if (steps) {
+      hooks.action = () => irA(paso - 1);
+      el.foot.hidden = false;
+      irA(0, false);
+      /* Alto de la barra de pasos (fija arriba): el encabezado de una categoría abierta se queda justo debajo */
+      requestAnimationFrame(() => { const barra = el.body.querySelector('.opt-pasos'); if (barra) el.body.style.setProperty('--pasos-alto', `${Math.round(barra.offsetHeight - 4)}px`); });
+    }
     focusFirst();
     return p;
   };
