@@ -122,3 +122,7 @@
   .ta-panel .form-table th { width: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .ta-pestanas [role="tab"], .ta-pestanas [role="tab"] .dashicons { transition: none; } }
+
+/* Sitios relacionados (Ajustes → Sitio) */
+.ta-relacionados td { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.ta-interruptor { font-weight: 600; }

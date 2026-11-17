@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.19
+Stable tag: 1.4.20
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,10 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.20 =
+* «Ajustes → Sitio → Sitios relacionados»: mostrar u ocultar HDS y Campañas de reciclaje y cambiar sus enlaces (portada, pie y llms.txt). Sin ninguno, la sección deja solo «¿Eres gestor o transportista autorizado?».
+* «Detalles del retiro»: las condiciones de acceso van en cuatro pestañas siempre visibles (con su ícono y cuántas hay elegidas) en vez de cuatro desplegables, y arriba se ve lo elegido, que se quita con un toque. Todas las condiciones tienen ícono.
 
 = 1.4.19 =
 * Panel propio en el escritorio: menú «Transporte Autorizado» con Resumen (el estado de todo en tarjetas, cada una con su atajo), Solicitudes y Ajustes. Los ajustes van en pestañas (Sitio, Contacto, Retiros, Imágenes, Correos a clientes, Buscadores y SEO, Cotizaciones y chat, Seguridad), con la barra de guardar siempre a la vista y aviso de cambios sin guardar; al guardar se vuelve a la misma pestaña. La dirección anterior de los ajustes lleva a la nueva.

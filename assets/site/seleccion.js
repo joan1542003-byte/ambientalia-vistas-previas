@@ -422,23 +422,64 @@
     const on = (g, v) => (g.multi ? picked[g.key].includes(v) : picked[g.key] === v);
     /* Un grupo con una opción «Otro» (other: true) despliega su campo al elegirla; lo escrito vuelve en `${key}Otro` */
     const otherOf = (g) => g.options.find((o) => o.other);
-    /* Una lista larga se reparte en secciones plegables: las opciones seguidas con el mismo `section` van bajo ese título,
-       que dice cuántas hay elegidas. Abre desplegada la sección que ya tiene algo elegido; las opciones sin `section`
-       quedan siempre a la vista. Es solo presentación: el grupo y su valor son los mismos */
+    /* Una lista larga se reparte en pestañas (17-11-2026; antes, secciones plegables en las que era fácil perderse): las
+       opciones seguidas con el mismo `section` van en una pestaña, con su ícono (`sectionIcons`) y cuántas hay elegidas;
+       se ve una a la vez (abre en la primera con algo elegido). Arriba, lo elegido en todas, quitable con un toque. Las
+       opciones sin `section` quedan siempre a la vista. Es solo presentación: el grupo y su valor son los mismos */
     const runs = (g) => g.options.reduce((acc, o) => {
       const last = acc[acc.length - 1];
       if (last && last.section === (o.section || '')) last.options.push(o); else acc.push({ section: o.section || '', options: [o] });
       return acc;
     }, []);
     const optsHTML = (g, list) => `<div class="opts is-${g.layout || layout}">${list.map((o) => optionHTML(o, on(g, o.value))).join('')}</div>`;
-    const runHTML = (g, r) => (r.section
-      ? `<details class="opt-section"${r.options.some((o) => on(g, o.value)) ? ' open' : ''}><summary><span class="opt-section-name">${esc(r.section)}</span><span class="opt-section-count" aria-live="polite"></span></summary>${optsHTML(g, r.options)}</details>`
-      : optsHTML(g, r.options));
-    el.body.innerHTML = groups.map((g) => `<section class="opt-group" data-group="${esc(g.key)}"><h3>${esc(g.label)}</h3>${runs(g).map((r) => runHTML(g, r)).join('')}${otherOf(g) ? otherHTML(otherOf(g).value, value[`${g.key}Otro`] || '', g.otherLabel) : ''}</section>`).join('');
-    const paintSections = () => el.body.querySelectorAll('.opt-section').forEach((s) => {
-      const n = s.querySelectorAll('.opt[aria-pressed="true"]').length;
-      s.querySelector('.opt-section-count').textContent = counter(n, 'elegida', 'elegidas');
+    const groupHTML = (g) => {
+      const rs = runs(g);
+      const secs = rs.filter((r) => r.section);
+      if (!secs.length) return rs.map((r) => optsHTML(g, r.options)).join('');
+      const first = Math.max(0, secs.findIndex((r) => r.options.some((o) => on(g, o.value))));
+      const id = (i) => `sec-${esc(g.key)}-${i}`;
+      const tabs = secs.map((r, i) => `<button type="button" role="tab" class="opt-seccion" id="${id(i)}" aria-controls="${id(i)}-p" aria-selected="${i === first}" tabindex="${i === first ? 0 : -1}" data-seccion="${i}">`
+        + `${g.sectionIcons?.[r.section] ? `<span class="opt-seccion-icono" aria-hidden="true">${g.sectionIcons[r.section]}</span>` : ''}`
+        + `<span class="opt-seccion-nombre">${esc(r.section)}</span><span class="opt-seccion-cuenta" aria-hidden="true"></span></button>`).join('');
+      const panels = secs.map((r, i) => `<div class="opt-seccion-panel" role="tabpanel" id="${id(i)}-p" aria-labelledby="${id(i)}" data-seccion-panel="${i}"${i === first ? '' : ' hidden'}>${optsHTML(g, r.options)}</div>`).join('');
+      return `<div class="opt-elegidas" data-elegidas aria-live="polite" hidden></div><div class="opt-secciones" role="tablist" aria-label="${esc(g.label)}">${tabs}</div>${panels}`
+        + rs.filter((r) => !r.section).map((r) => optsHTML(g, r.options)).join('');
+    };
+    el.body.innerHTML = groups.map((g) => `<section class="opt-group" data-group="${esc(g.key)}"><h3>${esc(g.label)}</h3>${groupHTML(g)}${otherOf(g) ? otherHTML(otherOf(g).value, value[`${g.key}Otro`] || '', g.otherLabel) : ''}</section>`).join('');
+    /* Cuántas hay elegidas en cada pestaña, y lo elegido arriba (cada una se quita con un toque) */
+    const paintSections = () => el.body.querySelectorAll('[data-group]').forEach((sec) => {
+      const tabs = sec.querySelectorAll('.opt-seccion');
+      if (!tabs.length) return;
+      const g = groups.find((x) => x.key === sec.dataset.group);
+      tabs.forEach((t) => {
+        const n = sec.querySelectorAll(`[data-seccion-panel="${t.dataset.seccion}"] .opt[aria-pressed="true"]`).length;
+        t.querySelector('.opt-seccion-cuenta').textContent = n ? String(n) : '';
+        t.setAttribute('aria-label', `${t.querySelector('.opt-seccion-nombre').textContent}${n ? `, ${counter(n, 'elegida', 'elegidas')}` : ''}`);
+      });
+      const box = sec.querySelector('[data-elegidas]');
+      const lista = [].concat(picked[g.key] || []).filter((v) => !otherOf(g) || v !== otherOf(g).value);
+      box.hidden = !lista.length;
+      box.innerHTML = lista.length ? `<span class="opt-elegidas-t">${esc(counter(lista.length, 'elegida', 'elegidas'))}:</span>${lista.map((v) => `<button type="button" class="opt-elegida" data-quitar="${esc(v)}" aria-label="Quitar: ${esc(v)}">${esc(v)}<span aria-hidden="true">×</span></button>`).join('')}` : '';
     });
+    const showSection = (sec, i, focus) => {
+      sec.querySelectorAll('.opt-seccion').forEach((t) => {
+        const onTab = t.dataset.seccion === String(i);
+        t.setAttribute('aria-selected', String(onTab));
+        t.tabIndex = onTab ? 0 : -1;
+        if (onTab && focus) t.focus();
+      });
+      sec.querySelectorAll('[data-seccion-panel]').forEach((p2) => { p2.hidden = p2.dataset.seccionPanel !== String(i); });
+    };
+    el.body.onkeydown = (e) => {
+      const t = e.target.closest('.opt-seccion');
+      if (!t) return;
+      const tabs = [...t.parentElement.children];
+      const k = tabs.indexOf(t);
+      const n = { ArrowRight: k + 1, ArrowDown: k + 1, ArrowLeft: k - 1, ArrowUp: k - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (n === undefined) return;
+      e.preventDefault();
+      showSection(t.closest('[data-group]'), tabs[(n + tabs.length) % tabs.length].dataset.seccion, true);
+    };
     const syncOther = (focus) => el.body.querySelectorAll('[data-other]').forEach((f) => {
       const g = groups.find((x) => x.key === f.closest('[data-group]').dataset.group);
       const shown = on(g, f.dataset.other);
@@ -462,6 +503,16 @@
     paintSections();
     syncOther();
     el.body.onclick = (e) => {
+      const tab = e.target.closest('.opt-seccion');
+      if (tab) { showSection(tab.closest('[data-group]'), tab.dataset.seccion); return; }
+      const quitar = e.target.closest('[data-quitar]');
+      if (quitar) {
+        const opt = [...quitar.closest('[data-group]').querySelectorAll('.opt[data-value]')].find((x) => x.dataset.value === quitar.dataset.quitar);
+        const sec = quitar.closest('[data-group]');
+        if (opt) opt.click();
+        (sec.querySelector('[data-quitar]') || sec.querySelector('.opt-seccion[aria-selected="true"]'))?.focus({ preventScroll: true });  // el foco no se pierde al quitar
+        return;
+      }
       const b = e.target.closest('.opt[data-value]');
       if (!b) return;
       const g = groups.find((x) => x.key === b.closest('[data-group]').dataset.group);

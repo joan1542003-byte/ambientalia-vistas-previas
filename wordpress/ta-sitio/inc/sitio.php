@@ -245,6 +245,9 @@ function ta_sitio_entregar( $interna, $privado ) {
 	// llms.txt lleva además la cobertura y el horario de los ajustes (inc/ajustes.php)
 	if ( 'llms.txt' === basename( $archivo ) ) {
 		$contenido = ta_sitio_textos_agentes( null === $contenido ? (string) file_get_contents( $archivo ) : $contenido ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		if ( function_exists( 'ta_sitio_relacionados_llms' ) ) {
+			$contenido = ta_sitio_relacionados_llms( $contenido );  // HDS y Campañas, según los ajustes (inc/relacionados.php)
+		}
 	}
 	// Con el contenido cambiado, la etiqueta depende de él: otro ajuste da otra etiqueta y el navegador no usa la guardada
 	$etiqueta = '"' . md5( $archivo . '|' . $fecha . '|' . filesize( $archivo ) . ( null === $contenido ? '' : '|' . md5( $contenido ) ) ) . '"';
@@ -301,6 +304,9 @@ function ta_sitio_pagina( $archivo, $privado ) {
 	}
 	if ( 'transporte-autorizado.html' === basename( $archivo ) && function_exists( 'ta_sitio_verificacion_aplicar' ) ) {
 		$html = ta_sitio_verificacion_aplicar( $html );  // etiquetas de Google y Bing en la portada (inc/buscadores.php)
+	}
+	if ( 'transporte-autorizado.html' === basename( $archivo ) && function_exists( 'ta_sitio_relacionados_aplicar' ) ) {
+		$html = ta_sitio_relacionados_aplicar( $html );  // HDS y Campañas: mostrar u ocultar y sus enlaces (inc/relacionados.php)
 	}
 	$html   = ta_sitio_whatsapp_aplicar( $html );  // el número de WhatsApp de los ajustes (inc/ajustes.php)
 	$html   = ta_sitio_imagenes_aplicar( $html );  // portadas y fotos elegidas en los ajustes (inc/imagenes.php)

@@ -143,7 +143,8 @@ function ta_sitio_opciones() {
 			'turnstile'          => '',  // clave pública del widget de Cloudflare Turnstile (la secreta va solo en el asistente)
 			'whatsapp'           => '56986067930',  // número del sitio (wa.me), con código de país; ta_sitio_whatsapp_aplicar() lo cambia en las páginas
 			'imagenes'           => array(),  // portadas y fotos elegidas en la biblioteca de medios: [espacio => id] (inc/imagenes.php)
-			'verificacion'       => array(),  // Google Search Console y Bing: códigos y archivos de verificación (inc/buscadores.php)
+			'verificacion'       => array(),
+			'relacionados'       => array(),  // HDS y Campañas: [clave => [activo, url]] (inc/relacionados.php); vacío = los dos, con sus enlaces  // Google Search Console y Bing: códigos y archivos de verificación (inc/buscadores.php)
 		)
 	);
 }
@@ -395,6 +396,10 @@ add_action(
 		if ( isset( $_POST['ta_imagenes_enviado'] ) ) {
 			$op['imagenes'] = ta_sitio_imagenes_desde_post();
 		}
+		$relacionado_invalido = false;
+		if ( isset( $_POST['ta_relacionados_enviado'] ) ) {
+			list( $op['relacionados'], $relacionado_invalido ) = ta_sitio_relacionados_desde_post();  // inc/relacionados.php
+		}
 		$aviso_verificacion = '';
 		if ( isset( $_POST['ta_buscadores_enviado'] ) ) {
 			list( $op['verificacion'], $aviso_verificacion ) = ta_sitio_verificacion_desde_post();  // inc/buscadores.php
@@ -410,12 +415,15 @@ add_action(
 		flush_rewrite_rules( true );
 		// La portada y la vista previa guardadas en caché son las de antes (con la configuración y la política de antes).
 		// Las comunas y el horario también viajan en la página (window.TA_API): al cambiarlos, la caché ya no corresponde
-		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] || $antes['whatsapp'] !== $op['whatsapp'] || $antes['comunas'] !== $op['comunas'] || $antes['horario'] !== $op['horario'] || $antes['verificacion'] !== $op['verificacion'] ) {
+		if ( $antes['modo'] !== $op['modo'] || $antes['ruta'] !== $op['ruta'] || $antes['asistente'] !== $op['asistente'] || $antes['turnstile'] !== $op['turnstile'] || $antes['imagenes'] !== $op['imagenes'] || $antes['whatsapp'] !== $op['whatsapp'] || $antes['comunas'] !== $op['comunas'] || $antes['horario'] !== $op['horario'] || $antes['verificacion'] !== $op['verificacion'] || $antes['relacionados'] !== $op['relacionados'] ) {
 			ta_sitio_purgar();
 		}
 		$aviso = '' !== trim( $pedida ) && '' === $op['asistente'] ? array( 'asistente_invalido' => 1 ) : array();
 		if ( $horario_invalido ) {
 			$aviso['horario_invalido'] = 1;
+		}
+		if ( $relacionado_invalido ) {
+			$aviso['relacionado_invalido'] = 1;
 		}
 		if ( '' !== $aviso_verificacion ) {
 			$aviso['verificacion'] = $aviso_verificacion;

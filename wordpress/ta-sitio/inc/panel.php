@@ -157,6 +157,7 @@ function ta_sitio_pagina_resumen() {
 				array(
 					array( 'Dirección', '<a href="' . esc_url( $publicado ? home_url( '/' ) : ta_sitio_url_vista() ) . '" target="_blank" rel="noopener">' . esc_html( $publicado ? home_url( '/' ) : ta_sitio_url_vista() ) . '</a>' ),
 					array( 'Páginas', esc_html( $paginas . ' (portada, guías, checklists, normativa y legales)' ) ),
+					array( 'Sitios relacionados', esc_html( implode( ', ', array_map( static fn( $r ) => $r['nombre'] . ( $r['activo'] ? '' : ' (oculto)' ), ta_sitio_relacionados() ) ) ) ),
 					array( 'Versión del plugin', esc_html( TA_SITIO_VERSION ) ),
 				),
 				'sitio',
@@ -251,6 +252,9 @@ function ta_sitio_pagina_ajustes() {
 		<?php if ( isset( $_GET['horario_invalido'] ) ) : ?>
 			<div class="notice notice-error"><p>Las horas del horario de retiro no se guardaron: la tarde debe empezar después de la mañana y la jornada terminar después de la tarde. Se mantienen las anteriores; las opciones marcadas sí se guardaron.</p></div>
 		<?php endif; ?>
+		<?php if ( isset( $_GET['relacionado_invalido'] ) ) : ?>
+			<div class="notice notice-error"><p>Un enlace de los sitios relacionados no se guardó: debe ser una dirección completa, como <code>https://hds.cl</code>. Se mantiene el anterior.</p></div>
+		<?php endif; ?>
 		<?php if ( isset( $_GET['verificacion'] ) ) : ?>
 			<div class="notice notice-error"><p><?php echo 'archivo' === $_GET['verificacion'] ? 'El archivo de verificación no se subió: debe ser el que descargas de Google (<code>google….html</code>) o de Bing (<code>BingSiteAuth.xml</code>), sin cambiarle el nombre ni el contenido.' : 'Un código de verificación no se guardó: pega la etiqueta completa que te da Google o Bing, o solo lo que va entre las comillas de <code>content="…"</code>.'; ?></p></div>
 		<?php endif; ?>
@@ -287,6 +291,20 @@ function ta_sitio_pagina_ajustes() {
 						<td><input type="text" class="large-text code" readonly value="<?php echo esc_attr( ta_sitio_url_vista( true ) ); ?>" onfocus="this.select()">
 							<p class="description">Quien tenga este enlace ve la vista previa sin iniciar sesión. <label><input type="checkbox" name="nueva_clave" value="1"> Cambiar la clave (el enlace anterior deja de servir)</label></p></td>
 					</tr>
+				</table>
+				<h3>Sitios relacionados</h3>
+				<p class="description">Las tarjetas de «Servicios relacionados» de la portada, la columna «Sitios relacionados» del pie y llms.txt. Apagado, el sitio deja de mostrarse en los tres; sin ninguno, la sección muestra solo «¿Eres gestor o transportista autorizado?». El enlace vacío vuelve al de siempre.</p>
+				<input type="hidden" name="ta_relacionados_enviado" value="1">
+				<table class="form-table ta-relacionados" role="presentation">
+					<?php foreach ( ta_sitio_relacionados() as $clave => $r ) : ?>
+						<tr>
+							<th scope="row"><?php echo esc_html( $r['nombre'] ); ?></th>
+							<td>
+								<label class="ta-interruptor"><input type="checkbox" name="relacionado_activo_<?php echo esc_attr( $clave ); ?>" value="1" <?php checked( $r['activo'] ); ?>> Mostrar en el sitio</label>
+								<label class="ta-relacionado-url"><span class="screen-reader-text">Enlace de <?php echo esc_html( $r['nombre'] ); ?></span><input type="url" name="relacionado_url_<?php echo esc_attr( $clave ); ?>" class="regular-text code" value="<?php echo esc_attr( $r['url'] ); ?>" placeholder="<?php echo esc_attr( ta_sitio_relacionados_base()[ $clave ][1] ); ?>"></label>
+							</td>
+						</tr>
+					<?php endforeach; ?>
 				</table>
 				</section>
 

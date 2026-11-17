@@ -301,8 +301,8 @@
         return v;
       },
       /* «Otra condición» y «Otro» despliegan un campo para escribir cuál; queda guardado como «Otro: …».
-         Las condiciones de acceso son muchas (28) y de rótulo largo: van en filas, repartidas en secciones plegables
-         (PICK.ACCESS_GROUPS), para que el estado y el almacenamiento sigan a la vista en el teléfono. Se muestran en el orden
+         Las condiciones de acceso son muchas (27) y de rótulo largo: van en filas, repartidas en cuatro pestañas
+         (PICK.ACCESS_GROUPS, una a la vista, con cuántas hay elegidas en cada una) y arriba lo elegido, quitable con un toque. Se muestran en el orden
          de PICK.ACCESS_VISTA (las prioritarias primero en cada sección); el campo las guarda en el de PICK.ACCESS */
       detalles: async () => {
         const acc = PICK.pickedFrom(field('acceso').value, PICK.ACCESS).map(PICK.splitOther);
@@ -310,7 +310,7 @@
         const v = await Picker.chooseEach({
           title: 'Detalles del retiro', sub: 'Todo es opcional, pero ayuda a evitar retiros fallidos.',
           groups: [
-            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, layout: 'list', otherLabel: '¿Cuál es la otra condición?', options: (PICK.ACCESS_VISTA || PICK.ACCESS).map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x), section: PICK.accessGroup(x) })) },
+            { key: 'acceso', label: '¿Hay alguna condición especial de acceso?', multi: true, layout: 'list', otherLabel: '¿Cuál es la otra condición?', options: (PICK.ACCESS_VISTA || PICK.ACCESS).map((x) => ({ value: x, label: x, icon: PICK.ACCESS_ICONS[x], other: PICK.isOther(x), section: PICK.accessGroup(x) })), sectionIcons: PICK.ACCESS_GROUP_ICONS },
             { key: 'estado', label: 'Estado del residuo', options: PICK.STATES.map((x) => ({ value: x, label: x, icon: PICK.STATE_ICONS[x] })) },
             { key: 'almacenamiento', label: '¿Cómo está almacenado?', layout: 'cards', otherLabel: '¿Cómo está almacenado?', allowed: (p) => PICK.STORAGE_BY_STATE[p.estado] || null, options: PICK.STORAGE.map(([x, icon]) => ({ value: x, label: x, icon, other: PICK.isOther(x) })) }
           ],
