@@ -361,3 +361,8 @@ Validación local final: 132 comprobaciones del widget, 118 de integración y 20
 ## Cotizar desde el buscador de transportistas (03-11-2026)
 
 `window.AGENTE.cotizar({ carrier, place, resolution, waste_kind, waste })` abre la ventana y manda `option_id: cotizar_retiro` con `quote_context`. Lo usa «Solicitar cotización» del buscador (`transporte.js`). Sin sesión, el pedido espera a que la persona pase la puerta; si se está leyendo el historial, a que termine. Devuelve `false` sin dirección del asistente o sin transportista, y entonces el buscador abre WhatsApp. El mensaje propio dice «Solicitar cotización a …». Dos pedidos con distinto contexto son dos mensajes (el contexto cuenta en `mismo()`). Lo cubre la sección 2-4b de `widget.mjs`. Los recursos compartidos llevan versión `20261103c`.
+
+## Cotizar desde el chat: abre el formulario del sitio (18-11-2026, D-17 del asistente)
+
+«Cotizar retiro» ya no pregunta dato por dato. La respuesta trae `form: { action: 'abrir_cotizacion', answers: { nombre, correo, telefono, empresa, residuo } }` y una fuente con el enlace `…/#cotizar` (respaldo para un widget anterior). `abrirCotizacion()` cierra el chat, completa el formulario «Cotiza tu retiro» con `QUOTE.fromText` (solo si `PARSE` entendió algo de lo escrito) y `QUOTE.fill` (sin pisar lo que la persona ya escribió) y lo abre con `HERO.show('cotizar', { from: 'dock' })`. `QUOTE.vincular({ token, alEnviar })` hace que la solicitud que sigue vaya a `POST /api/quotes` con `Authorization: Bearer <token del chat>`: el asistente la liga a la conversación y responde `chat_message`, que el chat muestra. Desde el buscador (`AGENTE.cotizar`) es igual: el transportista llega en el detalle de esa solicitud, del lado del asistente.
+

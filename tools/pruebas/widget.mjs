@@ -170,6 +170,13 @@ const asistente = createServer(async (req, res) => {
     return;
   }
   if (url.pathname === '/api/chat/config' && req.method === 'GET') { json(200, { attachments: S.limites }); return; }
+  /* El formulario «Cotiza tu retiro» (POST /api/quotes): con el token de una sesión del chat queda ligada a ella y
+     trae el mensaje que el chat muestra (D-17 del asistente); sin token, como desde el sitio */
+  if (url.pathname === '/api/quotes' && req.method === 'POST') {
+    const ligada = S.tokens.has(token);
+    json(201, { received: true, reference: 'TA-000777', delivered: true, ...(ligada ? { chat_message: 'Listo, recibimos tu solicitud de cotización. Tu número es TA-000777.' } : {}) });
+    return;
+  }
   if (url.pathname === '/api/chat/sessions' && req.method === 'POST') {
     const t = `tok-${++S.n}`;
     S.tokens.add(t);
@@ -413,6 +420,90 @@ try {
     const d2 = de('/messages', 'POST')[1];
     ok(d2.cuerpo.quote_context.carrier === 'Otro Transportista' && d2.cuerpo.client_message_id !== c[0].cuerpo.client_message_id, 'con sesión se envía al tiro, como otro mensaje (otro identificador)');
     ok((await evaluar(() => window.AGENTE.cotizar({}))) === false, 'sin transportista no hace nada (el buscador abre WhatsApp)');
+  }
+
+  seccion('Cotizar desde el chat: abre el formulario «Cotiza tu retiro» del sitio (D-17 del asistente)');
+  {
+    reiniciarAsistente();
+    await navegar(local());
+    await abrir();
+    await entrar();
+    await hasta(() => !document.querySelector('[data-agente-charla] .is-espera') && !document.querySelector('[data-agente-form]').hidden, 'el chat listo');
+    const ABRE = {
+      text: 'Te abro el formulario «Cotiza tu retiro» con tus datos de contacto ya puestos.', intent: 'quote_form',
+      sources: [{ label: 'Formulario «Cotiza tu retiro»', url: 'https://transporteautorizado.cl/#cotizar' }],
+      options: [{ id: 'hablar_especialista', label: 'Hablar con un especialista' }],
+      form: { action: 'abrir_cotizacion', answers: { nombre: 'Persona Chat', correo: 'chat@ejemplo.cl', telefono: '+56 9 8765 4321', empresa: 'Empresa Chat' } }
+    };
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: ABRE, usage: USO } });
+    await escribir('Necesito retirar 500 kg de cartón en Quilicura');
+    await hasta(() => document.getElementById('cotizacion')?.checkVisibility?.() && document.querySelector('[data-agente]').hidden, 'el formulario abierto y el chat cerrado');
+    const f = await evaluar(() => { const e = document.getElementById('cotizacion').elements; return Object.fromEntries(['nombre', 'correo', 'telefono', 'empresa', 'categoria', 'cantidad', 'comuna', 'tipo'].map((k) => [k, e[k].value])); });
+    ok(f.nombre === 'Persona Chat' && f.correo === 'chat@ejemplo.cl' && f.telefono === '+56 9 8765 4321' && f.empresa === 'Empresa Chat', 'el formulario llega con los datos de contacto del chat');
+    ok(f.categoria === 'Papel y cartón' && f.tipo === 'no-peligroso' && !!f.cantidad && f.comuna === 'Quilicura', `y con lo que se entendió de lo escrito (${f.categoria} · ${f.cantidad} · ${f.comuna})`);
+    const tipoMarcado = await evaluar(() => document.querySelector('[data-tipo-residuo][aria-checked="true"]')?.dataset.tipoResiduo);
+    ok(tipoMarcado === 'no-peligroso', 'el tipo de residuo queda marcado en su fila de un toque');
+    const plegado = await evaluar(() => {
+      const fo = document.getElementById('cotizacion');
+      const mas = fo.querySelector('[data-mas-detalles]');
+      const antes = mas.open;
+      fo.querySelector('[data-tipo-residuo="peligroso"]').click();
+      const peligroso = { tipo: fo.elements.tipo.value, categoria: fo.elements.categoria.value };
+      fo.querySelector('[data-tipo-residuo="no-peligroso"]').click();
+      window.QUOTE.fill({ answers: { residuo: 'Papel y cartón', almacenamiento: window.PICK.STORAGE?.[0]?.[0] || 'Sacos' } });
+      return { antes, peligroso, despues: mas.open };
+    });
+    ok(plegado.peligroso.tipo === 'peligroso' && plegado.peligroso.categoria === '', 'tocar «Peligroso» quita un residuo no peligroso ya elegido');
+    ok(plegado.antes === false && plegado.despues === true, '«Agregar más detalles» parte cerrado y se abre solo cuando llega algo para adentro');
+    /* El chat: un botón para volver a abrirlo, sin la fuente del respaldo y con la caja de texto disponible */
+    await abrir();
+    const enChat = await evaluar(() => { const m = [...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].pop(); return { boton: [...m.querySelectorAll('button')].some((b) => b.textContent.includes('Abrir el formulario')), fuente: !!m.querySelector('.msg-fuentes'), caja: !document.querySelector('[data-agente-form]').hidden }; });
+    ok(enChat.boton && !enChat.fuente && enChat.caja, 'en el chat queda «Abrir el formulario», sin la fuente de respaldo y con la caja de texto');
+    /* Enviar desde el formulario: lleva el token del chat y la confirmación vuelve a la conversación */
+    await evaluar(() => {
+      const b = [...[...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].pop().querySelectorAll('button')].find((x) => x.textContent.includes('Abrir el formulario'));
+      b.click();
+      return true;
+    });
+    await hasta(() => document.getElementById('cotizacion')?.checkVisibility?.(), 'el formulario abierto otra vez');
+    const listo = await evaluar(() => {
+      const fo = document.getElementById('cotizacion');
+      window.QUOTE.fill({ answers: { direccion: 'Avenida Chat 123', modalidad: window.PICK.MODE_LABEL.express } });
+      fo.goTo(Infinity);
+      const aviso = fo.querySelector('[name="aviso"]');
+      if (!aviso.disabled) aviso.checked = true;
+      fo.requestSubmit();
+      const resumen = document.getElementById('cotizacion-resumen');
+      if (resumen.hidden) return false;
+      document.querySelector('[data-cotizar-enviar]').click();
+      return true;
+    });
+    ok(listo, 'el formulario prellenado se prepara con la dirección y el plan');
+    for (let n = 0; n < 60 && !llamadas.some((l) => l.ruta === '/api/quotes'); n++) await sleep(50);
+    const q = llamadas.filter((l) => l.ruta === '/api/quotes');
+    const sesionToken = JSON.parse(await guardado()).token;
+    ok(q.length === 1 && q[0].token === sesionToken, 'la solicitud va a /api/quotes con el token de la conversación');
+    await hasta(() => [...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].some((m) => m.textContent.includes('TA-000777')), 'la confirmación en el chat');
+    ok(true, 'el chat muestra la confirmación con el número de la solicitud');
+    /* Después de enviarla se suelta: otra solicitud desde el sitio ya no va ligada */
+    const otra = await evaluar(() => {
+      document.querySelector('#cotizacion-resumen [data-edit]').click();
+      const fo = document.getElementById('cotizacion');
+      fo.elements.comentarios.value = 'otra';
+      fo.goTo(Infinity);
+      fo.querySelector('[name="aviso"]').checked = true;
+      fo.requestSubmit();
+      document.querySelector('[data-cotizar-enviar]').click();
+      return true;
+    });
+    for (let n = 0; n < 60 && llamadas.filter((l) => l.ruta === '/api/quotes').length < 2; n++) await sleep(50);
+    const q2 = llamadas.filter((l) => l.ruta === '/api/quotes');
+    ok(otra && q2.length === 2 && q2[1].token === '', 'la solicitud siguiente, ya sin abrirla desde el chat, va sin token');
+    /* Deja la página como la encontró: el formulario cerrado y el chat abierto, para las secciones que siguen */
+    await evaluar(() => { document.dispatchEvent(new CustomEvent('hero:close', { bubbles: true })); return true; });
+    await hasta(() => !document.getElementById('cotizacion')?.checkVisibility?.() || !document.querySelector('.hero-sheet[open]'), 'el formulario cerrado');
+    await abrir();
+    await hasta(() => !document.querySelector('[data-agente]').hidden && !document.querySelector('[data-agente-form]').hidden, 'el chat abierto otra vez');
   }
 
   seccion('Edición de datos antes de confirmar la solicitud');

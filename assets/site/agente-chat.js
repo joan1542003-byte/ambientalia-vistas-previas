@@ -254,7 +254,8 @@
   const decir = (r, { opciones = true } = {}) => {
     const m = h('div', { class: 'msg is-bot' });
     if (typeof r.text === 'string' && r.text) m.append(conBloques(r.text));
-    const fuentes = (Array.isArray(r.sources) ? r.sources : []).filter((s) => s && typeof s.label === 'string' && s.label);
+    /* El enlace al formulario que trae «Cotizar retiro» es para un widget anterior: aquí lo reemplaza el botón */
+    const fuentes = (Array.isArray(r.sources) && r.form?.action !== 'abrir_cotizacion' ? r.sources : []).filter((s) => s && typeof s.label === 'string' && s.label);
     if (fuentes.length) {
       m.append(h('div', { class: 'msg-fuentes' },
         h('p', { class: 'msg-chips-t', text: fuentes.length > 1 ? 'Fuentes' : 'Fuente' }),
@@ -262,6 +263,11 @@
           const u = typeof s.url === 'string' ? segura(s.url) : null;
           return h('li', {}, h('span', { icono: I.doc }), u ? enlace(u, s.label) : h('span', { text: s.label }));
         }))));
+    }
+    /* «Cotizar retiro» abre el formulario del sitio (abrirCotizacion); el botón lo vuelve a abrir si se cerró */
+    if (opciones && r.form?.action === 'abrir_cotizacion') {
+      m.append(h('div', { class: 'msg-chips' }, h('button', { class: 'btn', type: 'button', icono: I.doc, onclick: () => abrirCotizacion(r.form) },
+        h('span', { text: 'Abrir el formulario' }))));
     }
     if (opciones && r.form?.action === 'guardar_datos' && Array.isArray(r.form.fields)) {
       const edicion = h('form', { class: 'agente-edicion', 'data-edicion': true });
@@ -312,12 +318,15 @@
     abajo();
     return m;
   };
+  /* Lo que mandó el turno que se está respondiendo (para abrirCotizacion) */
+  let ultimoCuerpo = null;
   /* Respuesta del servicio a un turno, a una foto o al abrir la sesión */
   const respuesta = (reply, usage) => {
     vencerOpciones();
     desde(decir(reply && typeof reply === 'object' ? reply : {}));
     uso(usage);
-    form.hidden = Boolean(reply?.form);
+    form.hidden = reply?.form?.action === 'guardar_datos';
+    if (reply?.form?.action === 'abrir_cotizacion') abrirCotizacion(reply.form, ultimoCuerpo);
   };
   const espera = () => {
     const e = h('div', { class: 'msg is-bot is-espera', 'aria-hidden': 'true' }, h('span', {}), h('span', {}), h('span', {}));
@@ -495,7 +504,7 @@
     ocupado = false;
     if (pendiente !== p) return;
     const { estado, json } = r;
-    if (estado === 200 && json.reply && typeof json.reply === 'object') { pendiente = null; guardarPendiente(); respuesta(json.reply, json.usage); return; }
+    if (estado === 200 && json.reply && typeof json.reply === 'object') { pendiente = null; guardarPendiente(); ultimoCuerpo = p.cuerpo; respuesta(json.reply, json.usage); ultimoCuerpo = null; return; }
     if (estado === 200 && json.duplicate) { pendiente = null; guardarPendiente(); uso(json.usage); aviso('Ese mensaje ya lo había recibido. Sigue cuando quieras.'); return; }
     if (estado === 401) { pendiente = null; vencida(p.cuerpo.text && p.visible); return; }
     if (estado === 409 && json.error === 'idempotency_conflict') {
@@ -572,7 +581,7 @@
     if (respondido) { delete sesion.pendiente; guardar(sesion); }
     if (!mensajes.length && !recuperable) { if (encargo) atender(); else reiniciar(); return; }
     const ultimo = mensajes[mensajes.length - 1];
-    form.hidden = Boolean(ultimo?.form);
+    form.hidden = ultimo?.form?.action === 'guardar_datos';
     mensajes.forEach((m) => (m.role === 'user' ? decirYo(m.text) : decir(m, { opciones: m === ultimo })));
     if (recuperable && !respondido) {
       pendiente = { ...guardado, auto: 0, manuales: 0, nota: null };
@@ -762,6 +771,38 @@
     setTimeout(fin, 6000);
     marco.contentWindow.location.href = url;
   });
+  /* «Cotizar retiro» (D-17 del asistente): el chat no pregunta dato por dato; abre el formulario «Cotiza tu retiro» del
+     sitio con lo que ya sabe (los datos de la puerta y, desde el buscador, el residuo) y lo que se entiende de lo que se
+     escribió (PARSE, sin IA). Lo que se envíe desde ahí lleva el token de esta conversación y queda ligado a ella; la
+     confirmación vuelve al chat. Sin acceso al sitio (otra página), abre el formulario en una pestaña nueva */
+  const RESPUESTAS = ['nombre', 'correo', 'telefono', 'empresa', 'residuo'];
+  async function abrirCotizacion(f, cuerpo) {
+    const actual = enSitio();
+    const url = new URL(`${PRINCIPAL}#cotizar`, BASE).href;
+    if (actual === null || (!marco && actual !== PRINCIPAL)) { open(url, '_blank', 'noopener'); return; }
+    cerrar();
+    if (actual !== PRINCIPAL) await ir(url);
+    const win = ventana();
+    if (!win.QUOTE || !win.HERO) { win.location.hash = '#cotizar'; return; }
+    const formulario = win.document.getElementById('cotizacion');
+    const resumen = formulario && win.document.getElementById(formulario.dataset.summary);
+    if (resumen && !resumen.hidden) resumen.querySelector('[data-edit]')?.click();  // un resumen anterior: vuelve al formulario
+    /* Lo escrito («300 kg de cartón en Quilicura»), solo si se entendió algo: si no, quedaría como descripción del residuo */
+    const texto = typeof cuerpo?.text === 'string' && !cuerpo.option_id ? cuerpo.text.trim() : '';
+    const leido = texto && win.PARSE?.read ? win.PARSE.read(texto) : null;
+    if (leido && (leido.categoria || leido.cantidad || leido.comuna || leido.modalidad || leido.fecha || leido.horario || leido.almacenamiento || leido.documentos?.length)) {
+      const nota = win.QUOTE.fromText(texto);
+      if (nota) win.SITE?.toast?.(nota);
+    }
+    /* Los datos de contacto no reemplazan lo que la persona ya escribió en el formulario */
+    const a = f && typeof f.answers === 'object' && f.answers ? f.answers : {};
+    const vacio = (k) => !formulario?.elements[k]?.value;
+    win.QUOTE.fill({ answers: Object.fromEntries(RESPUESTAS.filter((k) => typeof a[k] === 'string' && a[k] && (k === 'residuo' || vacio(k))).map((k) => [k, a[k].slice(0, 160)])) });
+    if (sesion?.token) {
+      win.QUOTE.vincular?.({ token: sesion.token, alEnviar: (mensaje) => { decir({ text: mensaje }, { opciones: false }); abajo(); } });
+    }
+    win.HERO.show('cotizar', { from: 'dock' });
+  }
   const VISTAS = ['cotizar', 'buscar', 'especialista', 'asistente'];
   const AYUDA = ['ayuda', 'documentos', 'normativa', 'checklist'];
   /* Lleva al lugar del sitio que nombra la respuesta: una vista del hero, la «Ayuda» o una sección */

@@ -57,7 +57,7 @@ function ta_sitio_horas_validas( $inicio, $corte, $fin ) {
  * horario de siempre; al entregarlos, el plugin los cambia por los de estos ajustes. Los textos deben ser idénticos a
  * COBERTURA_BASE y HORARIO_BASE de tools/wordpress.py (el armado del paquete comprueba que estén).
  */
-const TA_SITIO_COBERTURA_BASE = 'Quilicura, Lampa y Pudahuel (Región Metropolitana)';
+const TA_SITIO_COBERTURA_BASE = 'Cerrillos, Cerro Navia, Conchalí, El Bosque, Estación Central, Huechuraba, Independencia, La Cisterna, La Florida, La Granja, La Pintana, La Reina, Lampa, Las Condes, Lo Barnechea, Lo Espejo, Lo Prado, Macul, Maipú, Ñuñoa, Pedro Aguirre Cerda, Peñalolén, Providencia, Pudahuel, Puente Alto, Quilicura, Quinta Normal, Recoleta, Renca, San Bernardo, San Joaquín, San Miguel, San Ramón, Santiago y Vitacura (Región Metropolitana)';
 const TA_SITIO_HORARIO_BASE   = 'cualquier horario (la hora la define el equipo), mañana (9:00 a 13:00), tarde (13:00 a 17:00) o vespertino (de noche, sujeto a confirmación)';
 
 /** Las comunas que se atienden, para un asistente de IA: todas nombradas (sin elegir ninguna, las del paquete). */
@@ -125,8 +125,8 @@ function ta_sitio_opciones() {
 			'correos_bloqueados' => 'ru su xn--p1ai fr de yandex.com gmx.net gmx.com laposte.net',
 			// Países desde los que no se aceptan solicitudes (códigos de dos letras); solo si el servidor informa el país.
 			'paises_bloqueados'  => 'RU FR DE',
-			// Comunas donde hoy se coordinan retiros (cliente, 16-10-2026)
-			'comunas'            => array( 'Quilicura', 'Lampa', 'Pudahuel' ),
+			// Comunas donde hoy se coordinan retiros (las 35 del sitio publicado, 25-11-2026; antes Quilicura, Lampa y Pudahuel)
+			'comunas'            => array( 'Cerrillos', 'Cerro Navia', 'Conchalí', 'El Bosque', 'Estación Central', 'Huechuraba', 'Independencia', 'La Cisterna', 'La Florida', 'La Granja', 'La Pintana', 'La Reina', 'Lampa', 'Las Condes', 'Lo Barnechea', 'Lo Espejo', 'Lo Prado', 'Macul', 'Maipú', 'Ñuñoa', 'Pedro Aguirre Cerda', 'Peñalolén', 'Providencia', 'Pudahuel', 'Puente Alto', 'Quilicura', 'Quinta Normal', 'Recoleta', 'Renca', 'San Bernardo', 'San Joaquín', 'San Miguel', 'San Ramón', 'Santiago', 'Vitacura' ),
 			// Horario de retiro (cliente, 16-11-2026): la mañana desde las 9:00 y nada después de las 17:00 (ta_sitio_horario())
 			'horario'            => array( 'inicio' => 9, 'corte' => 13, 'fin' => 17, 'manana' => true, 'tarde' => true, 'vespertino' => true ),
 			// Firma al final de todos los correos a las personas: texto y una imagen de la biblioteca de medios

@@ -30,7 +30,7 @@ AGENTE = {'agente.js', 'agente.css', 'agente-chat.js', 'agente-chat.css'}  # no 
 # Textos de llms.txt y de .well-known/agent-skills/…/SKILL.md que el plugin reemplaza al entregarlos por las comunas y el
 # horario de sus ajustes (TA_SITIO_COBERTURA_BASE y TA_SITIO_HORARIO_BASE en wordpress/ta-sitio/inc/ajustes.php): deben
 # quedar idénticos en los tres lugares
-COBERTURA_BASE = 'Quilicura, Lampa y Pudahuel (Región Metropolitana)'
+COBERTURA_BASE = 'Cerrillos, Cerro Navia, Conchalí, El Bosque, Estación Central, Huechuraba, Independencia, La Cisterna, La Florida, La Granja, La Pintana, La Reina, Lampa, Las Condes, Lo Barnechea, Lo Espejo, Lo Prado, Macul, Maipú, Ñuñoa, Pedro Aguirre Cerda, Peñalolén, Providencia, Pudahuel, Puente Alto, Quilicura, Quinta Normal, Recoleta, Renca, San Bernardo, San Joaquín, San Miguel, San Ramón, Santiago y Vitacura (Región Metropolitana)'
 HORARIO_BASE = 'cualquier horario (la hora la define el equipo), mañana (9:00 a 13:00), tarde (13:00 a 17:00) o vespertino (de noche, sujeto a confirmación)'
 SKILL = '.well-known/agent-skills/retiro-de-residuos/SKILL.md'
 

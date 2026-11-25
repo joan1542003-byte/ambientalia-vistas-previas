@@ -17,12 +17,12 @@
 <meta property="og:image:alt" content="Fotografía ilustrativa de transporte de carga">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" href="../assets/transporte/favicon-48.png?v=20261117e" sizes="48x48" type="image/png">
-<link rel="icon" href="../assets/transporte/favicon-192.png?v=20261117e" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png?v=20261117e">
+<link rel="icon" href="../assets/transporte/favicon-48.png?v=20261118a" sizes="48x48" type="image/png">
+<link rel="icon" href="../assets/transporte/favicon-192.png?v=20261118a" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../assets/transporte/apple-touch-icon.png?v=20261118a">
 <link rel="preload" href="../assets/site/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/site/site.css?v=20261117e">
-<link rel="stylesheet" href="../assets/site/transporte.css?v=20261117e">
+<link rel="stylesheet" href="../assets/site/site.css?v=20261118a">
+<link rel="stylesheet" href="../assets/site/transporte.css?v=20261118a">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {
@@ -379,13 +379,21 @@
                           <input type="hidden" name="periodo" data-label="Período de arriendo">
                           <p class="pick-error">Elige si el arriendo es mensual, semanal o diario.</p>
                         </div>
+                        <div class="pick pick-seg">
+                          <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
+                          <div class="pick-text">
+                            <span class="pick-label" id="l-tipo">Tipo de residuo</span>
+                            <div class="seg" role="radiogroup" aria-labelledby="l-tipo" data-tipos-residuo><button type="button" role="radio" aria-checked="false" data-tipo-residuo="no-peligroso">No peligroso</button><button type="button" role="radio" aria-checked="false" data-tipo-residuo="peligroso">Peligroso</button><button type="button" role="radio" aria-checked="false" data-tipo-residuo="no-se">No lo sé</button></div>
+                          </div>
+                          <input type="hidden" name="tipo" data-label="Tipo de residuo">
+                        </div>
                         <div class="pick" data-pick="residuo" data-required-pick="residuo-ok">
                           <button type="button" class="pick-btn" aria-haspopup="dialog">
                             <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/></svg></span>
                             <span class="pick-text"><span class="pick-label">Residuo</span><span class="pick-value" data-empty="Elige el residuo">Elige el residuo</span></span>
                             <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
                           </button>
-                          <input type="hidden" name="tipo" data-label="Tipo de residuo"><input type="hidden" name="categoria" data-label="Residuo"><input type="hidden" name="residuo-ok" data-summary-skip><input type="hidden" name="describir" data-summary-skip>
+                          <input type="hidden" name="categoria" data-label="Residuo"><input type="hidden" name="residuo-ok" data-summary-skip><input type="hidden" name="describir" data-summary-skip>
                           <p class="pick-error">Elige el residuo que necesitas retirar.</p>
                         </div>
                         <div class="pick pick-field" data-show-when="describir=si">
@@ -467,22 +475,27 @@
                           </button>
                           <input type="hidden" name="horario" data-label="Horario">
                         </div>
-                        <div class="pick" data-pick="antecedentes" data-show-when="tipo=peligroso,no-se">
-                          <button type="button" class="pick-btn" aria-haspopup="dialog">
-                            <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
-                            <span class="pick-text"><span class="pick-label">Antecedentes del residuo</span><span class="pick-value" data-empty="Opcional: HDS/FDS, análisis…">Opcional: HDS/FDS, análisis…</span></span>
-                            <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-                          </button>
-                          <input type="hidden" name="documentos" data-label="Antecedentes">
-                        </div>
-                        <div class="pick" data-pick="detalles">
-                          <button type="button" class="pick-btn" aria-haspopup="dialog">
-                            <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg></span>
-                            <span class="pick-text"><span class="pick-label">Detalles del retiro</span><span class="pick-value" data-empty="Opcional: acceso, estado y almacenamiento">Opcional: acceso, estado y almacenamiento</span></span>
-                            <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-                          </button>
-                          <input type="hidden" name="acceso" data-label="Condiciones de acceso"><input type="hidden" name="estado" data-label="Estado"><input type="hidden" name="almacenamiento" data-label="Almacenamiento">
-                        </div>
+                        <details class="more-fields" data-mas-detalles>
+                          <summary>Agregar más detalles <span>(opcional)</span></summary>
+                          <div class="picks">
+                            <div class="pick" data-pick="antecedentes" data-show-when="tipo=peligroso,no-se">
+                              <button type="button" class="pick-btn" aria-haspopup="dialog">
+                                <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+                                <span class="pick-text"><span class="pick-label">Antecedentes del residuo</span><span class="pick-value" data-empty="Opcional: HDS/FDS, análisis…">Opcional: HDS/FDS, análisis…</span></span>
+                                <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                              </button>
+                              <input type="hidden" name="documentos" data-label="Antecedentes">
+                            </div>
+                            <div class="pick" data-pick="detalles">
+                              <button type="button" class="pick-btn" aria-haspopup="dialog">
+                                <span class="pick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg></span>
+                                <span class="pick-text"><span class="pick-label">Detalles del retiro</span><span class="pick-value" data-empty="Opcional: acceso, estado y almacenamiento">Opcional: acceso, estado y almacenamiento</span></span>
+                                <span class="pick-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                              </button>
+                              <input type="hidden" name="acceso" data-label="Condiciones de acceso"><input type="hidden" name="estado" data-label="Estado"><input type="hidden" name="almacenamiento" data-label="Almacenamiento">
+                            </div>
+                          </div>
+                        </details>
                         </div>
                     </div>
                   </fieldset>
@@ -677,18 +690,18 @@
 </div>
 
 <script>window.SITE_ROOT = '../';</script>
-<script src="../assets/site/site.js?v=20261117e" defer></script>
-<script src="../assets/site/pickers.js?v=20261117e" defer></script>
-<script src="../assets/site/seleccion.js?v=20261117e" defer></script>
-<script src="../assets/site/interpretar.js?v=20261117e" defer></script>
-<script src="../assets/site/geo.js?v=20261117e" defer></script>
-<script src="../assets/site/mapa.js?v=20261117e" defer></script>
-<script src="../assets/site/transporte.js?v=20261117e" defer></script>
-<script src="../assets/site/transporte-ui.js?v=20261117e" defer></script>
-<script src="../assets/site/asistente.js?v=20261117e" defer></script>
-<script src="../assets/site/normativa.js?v=20261117e" defer></script>
-<script src="../assets/site/ayuda.js?v=20261117e" defer></script>
-<script src="../assets/site/exportar.js?v=20261117e" defer></script>
-<script src="../assets/site/checklist.js?v=20261117e" defer></script>
+<script src="../assets/site/site.js?v=20261118a" defer></script>
+<script src="../assets/site/pickers.js?v=20261118a" defer></script>
+<script src="../assets/site/seleccion.js?v=20261118a" defer></script>
+<script src="../assets/site/interpretar.js?v=20261118a" defer></script>
+<script src="../assets/site/geo.js?v=20261118a" defer></script>
+<script src="../assets/site/mapa.js?v=20261118a" defer></script>
+<script src="../assets/site/transporte.js?v=20261118a" defer></script>
+<script src="../assets/site/transporte-ui.js?v=20261118a" defer></script>
+<script src="../assets/site/asistente.js?v=20261118a" defer></script>
+<script src="../assets/site/normativa.js?v=20261118a" defer></script>
+<script src="../assets/site/ayuda.js?v=20261118a" defer></script>
+<script src="../assets/site/exportar.js?v=20261118a" defer></script>
+<script src="../assets/site/checklist.js?v=20261118a" defer></script>
 </body>
 </html>

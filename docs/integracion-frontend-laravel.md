@@ -442,3 +442,8 @@ Fuente: el código del asistente, revisado en `049f18b`.
 - **Generador oficial:** correr `python3 tools/normativa.py` con Python 3.12 o más nuevo y confirmar que no deja diferencias.
 - **Prueba de punta a punta** del formulario contra Laravel de staging con Odoo de prueba, nunca el real.
 - **Widget del chat:** completado; lo que falta comprobar en staging está en [integracion-widget-chatbot.md](integracion-widget-chatbot.md).
+
+## `POST /api/quotes` ligado al chat (18-11-2026)
+
+Cuando el chat abre el formulario («Cotizar retiro», D-17 del asistente), el envío lleva además `Authorization: Bearer <token del chat>` (`QUOTE.vincular`). Con un token vigente, el asistente registra la solicitud en esa conversación (misma persona, fuente `webchat`) y la respuesta trae `chat_message`; con uno vencido, o sin él, llega como siempre desde el sitio. El resto del contrato (campos, fotos, Turnstile, `client_request_id`) no cambia. CORS ya admite `Authorization` en `api/quotes`.
+

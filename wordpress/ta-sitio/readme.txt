@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.22
+Stable tag: 1.4.23
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,11 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.23 =
+* «Cotiza tu retiro» más corto: el tipo de residuo (No peligroso, Peligroso o No lo sé) se elige con un toque en su propia fila, antes del residuo; antecedentes y detalles del retiro (acceso, estado y almacenamiento) quedan en «Agregar más detalles (opcional)», que se abre solo si ya trae algo. Las fotos siguen a la vista en el paso de contacto.
+* El chat ya no pregunta la cotización dato por dato: «Cotizar retiro» abre este mismo formulario con el nombre, el correo y el teléfono del chat ya puestos (y el residuo, si viene del buscador; también lo que se entiende de lo escrito, como «300 kg de cartón en Quilicura»). La solicitud enviada desde ahí lleva el token del chat, queda ligada a esa conversación y el chat muestra la confirmación con el número. Requiere el asistente con la decisión D-17; con uno anterior, el chat sigue preguntando como antes.
+* Cobertura: la pregunta frecuente «¿Dónde realizan retiros?» y los datos estructurados para buscadores nombran las 35 comunas que se atienden (decían Quilicura, Lampa y Pudahuel, aunque los ajustes ya tenían las 35). Las comunas por defecto del plugin pasan a ser esas 35. Si cambias «Comunas que se atienden», cambia también esa pregunta frecuente.
 
 = 1.4.22 =
 * «Detalles del retiro», condiciones de acceso: lo elegido ya no se lista arriba (con muchas, llenaba la pantalla). Arriba va una sola línea con el total y «Quitar todas»; cada categoría dice cuántas y cuáles tiene elegidas, en una línea que se recorta. Con todas las categorías cerradas, las 27 condiciones caben en una pantalla aunque haya muchas elegidas.

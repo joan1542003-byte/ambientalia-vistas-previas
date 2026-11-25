@@ -285,7 +285,7 @@
 
   /* Comunas donde hoy se coordinan retiros (cliente, 16-10-2026). Sobre WordPress las fija el plugin («Comunas que se
      atienden», window.TA_API.comunas). Solo se aceptan nombres de la Región Metropolitana. */
-  const COBERTURA_BASE = ['Quilicura', 'Lampa', 'Pudahuel'];
+  const COBERTURA_BASE = ['Cerrillos', 'Cerro Navia', 'Conchalí', 'El Bosque', 'Estación Central', 'Huechuraba', 'Independencia', 'La Cisterna', 'La Florida', 'La Granja', 'La Pintana', 'La Reina', 'Lampa', 'Las Condes', 'Lo Barnechea', 'Lo Espejo', 'Lo Prado', 'Macul', 'Maipú', 'Ñuñoa', 'Pedro Aguirre Cerda', 'Peñalolén', 'Providencia', 'Pudahuel', 'Puente Alto', 'Quilicura', 'Quinta Normal', 'Recoleta', 'Renca', 'San Bernardo', 'San Joaquín', 'San Miguel', 'San Ramón', 'Santiago', 'Vitacura'];  /* las 35 que se atienden (25-11-2026) */
   const RM = communesOf('Metropolitana');
   const pedidas = Array.isArray(window.TA_API?.comunas) && window.TA_API.comunas.length ? window.TA_API.comunas : COBERTURA_BASE;
   const COBERTURA = RM.filter((c) => pedidas.includes(c));

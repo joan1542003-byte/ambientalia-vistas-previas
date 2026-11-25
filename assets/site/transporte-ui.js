@@ -104,6 +104,8 @@
       const dirText = form.querySelector('[data-pick="direccion"] .pick-text');
       dirText?.querySelector('.pick-flag')?.remove();
       if (dirText && field('ubicacion')?.value && field('direccion').value) dirText.insertAdjacentHTML('beforeend', `<span class="pick-flag">${PIN_FLAG}Punto marcado en el mapa</span>`);
+      /* Tipo de residuo: tres botones a la vista (18-11-2026); también los marca lo elegido en la ventana del residuo */
+      form.querySelectorAll('[data-tipo-residuo]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.tipoResiduo === tipo)));
       /* Tipo de retiro: tres botones en la misma fila y una línea que explica el elegido */
       form.querySelectorAll('[data-modalidad]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.modalidad === when.modalidad)));
       const hint = form.querySelector('[data-modalidad-hint]');
@@ -170,6 +172,10 @@
         if (m === 'express') when.dates = [];
       }
       writeWhen();
+      /* «Agregar más detalles» (antecedentes, acceso, estado y almacenamiento): se abre solo si ya trae algo, porque lo
+         completó el asistente de retiro, el chat o la persona; nunca se cierra solo */
+      const mas = form.querySelector('[data-mas-detalles]');
+      if (mas && !mas.open && ['documentos', 'acceso', 'estado', 'almacenamiento'].some((n) => field(n)?.value)) mas.open = true;
       paint();
     };
 
@@ -352,6 +358,18 @@
         field('modalidad').dispatchEvent(new Event('change', { bubbles: true }));
       }));
     });
+    /* Tipo de residuo: no peligroso, peligroso o «No lo sé», con un toque. Si el residuo elegido es del otro tipo, se
+       quita (normalize) y la ventana del residuo abre en el tipo elegido; con «No lo sé» se pide describirlo */
+    form.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-tipo-residuo]');
+      if (!b) return;
+      const t = b.dataset.tipoResiduo;
+      set('tipo', t, PICK.TIPO_LABEL[t]);
+      b.parentElement.querySelectorAll('[data-tipo-residuo]').forEach((x) => x.setAttribute('aria-checked', String(x === b)));
+      form.querySelector('[data-pick="residuo"]')?.removeAttribute('data-invalid');
+      field('tipo').dispatchEvent(new Event('change', { bubbles: true }));
+      if (t === 'no-se') setTimeout(() => field('descripcion')?.focus(), 250);
+    });
     /* Período del arriendo: mensual, semanal o diario, con un toque */
     form.addEventListener('click', (e) => {
       const b = e.target.closest('[data-periodo]');
@@ -398,6 +416,9 @@
         ['empresa', 'nombre', 'telefono', 'correo'].forEach((k) => { if (a[k]) field(k).value = a[k]; });
         field('tipo').dispatchEvent(new Event('change', { bubbles: true }));
       },
+      /* Desde el chat (D-17 del asistente): la solicitud que sigue lleva el token de esa conversación y queda ligada a ella;
+         `alEnviar` recibe la confirmación que el chat muestra. Lo atiende el envío en línea (más abajo) */
+      vincular: (v) => form.vincular?.(v),
       /* Desde el campo del hero: completa en el formulario lo que se entiende de la frase («600 kg de cartón en Quilicura»,
          «necesito un retiro urgente») y deja a la vista lo que falta. Devuelve el aviso de cobertura, si lo hay */
       fromText: (text) => {
@@ -680,6 +701,10 @@
     let enviando = false;
     const fotosDe = () => zone?.fotos?.() || [];
     const firmaDe = (texto) => [texto, comercial.checked, ...fotosDe().map((f) => `${f.name}:${f.size}`)].join('\n');
+    /* Abierto desde el chat: el token de esa conversación (QUOTE.vincular). Vale para la solicitud que sigue: al recibirla
+       se suelta. Un token vencido no impide el envío: llega como del sitio */
+    let vinculo = null;
+    cotizar.vincular = (v) => { vinculo = v && typeof v.token === 'string' && v.token ? v : null; };
 
     cotizar.dataset.cotizarOn = '';
     campos.hidden = false;
@@ -828,12 +853,20 @@
           return;
         }
         const r = await fetch(`${API}/api/quotes`, {
-          method: 'POST', headers: { Accept: 'application/json' }, body: await cuerpo(),
+          method: 'POST', headers: { Accept: 'application/json', ...(vinculo ? { Authorization: `Bearer ${vinculo.token}` } : {}) }, body: await cuerpo(),
           signal: AbortSignal.timeout ? AbortSignal.timeout(60000) : undefined
         });
         const json = await r.json().catch(() => ({}));
         /* 201: recibida; 200 con «duplicate»: ya estaba recibida con este identificador (mismo número) */
-        if (r.ok && json.received) { confirmada = true; transition(() => listo(json.reference)); return; }
+        if (r.ok && json.received) {
+          confirmada = true;
+          const v = vinculo;
+          vinculo = null;
+          /* Ligada al chat: la confirmación también queda en la conversación (solo la primera vez: 201) */
+          if (v && r.status === 201 && typeof json.chat_message === 'string') { try { v.alEnviar?.(json.chat_message); } catch { /* el chat ya no está */ } }
+          transition(() => listo(json.reference));
+          return;
+        }
         /* El identificador ya se usó con otros datos: el próximo intento lleva uno nuevo */
         if (json.error === 'idempotency_conflict') firma = '';
         /* Los mensajes del asistente ya vienen en español (validación y topes, con «error»); los genéricos, no */

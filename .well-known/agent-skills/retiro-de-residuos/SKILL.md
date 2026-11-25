@@ -31,5 +31,5 @@ Resumen completo del sitio para asistentes: https://transporteautorizado.cl/llms
 
 ## Límites
 
-- Cobertura: por ahora, Quilicura, Lampa y Pudahuel (Región Metropolitana); la cobertura vigente se confirma al cotizar.
+- Cobertura: por ahora, Cerrillos, Cerro Navia, Conchalí, El Bosque, Estación Central, Huechuraba, Independencia, La Cisterna, La Florida, La Granja, La Pintana, La Reina, Lampa, Las Condes, Lo Barnechea, Lo Espejo, Lo Prado, Macul, Maipú, Ñuñoa, Pedro Aguirre Cerda, Peñalolén, Providencia, Pudahuel, Puente Alto, Quilicura, Quinta Normal, Recoleta, Renca, San Bernardo, San Joaquín, San Miguel, San Ramón, Santiago y Vitacura (Región Metropolitana); la cobertura vigente se confirma al cotizar.
 - No tramita autorizaciones sanitarias ni entrega asesoría legal. Las guías orientan y citan el texto oficial; para efectos legales, consulta siempre la fuente oficial y el Diario Oficial.
