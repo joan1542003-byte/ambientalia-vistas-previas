@@ -154,8 +154,9 @@
 
   /* ---------- «Recordar», según el asistente (GET /config → remember) ---------- */
   /* Hasta saberlo, y con un asistente que no lo trae, la casilla es la de antes: solo nombre, correo y teléfono por
-     30 días, nunca el token. Con remember.enabled, también la sesión, con sus textos y sus días. Con enabled en false,
-     no hay casilla y no queda nada en este dispositivo */
+     30 días, nunca el token. Con remember.enabled, también la sesión (el token hasta expires_at), con sus textos y sus
+     días; la política de privacidad del asistente (D-23) describe exactamente eso. Con enabled en false, no hay casilla
+     y no queda nada en este dispositivo */
   const SOLO_DATOS = {
     sesion: false, dias: RECUERDO_DIAS, ayuda: '', olvidar: 'Olvidar mis datos en este dispositivo',
     rotulo: `Recordar mi nombre, correo y teléfono en este dispositivo por ${RECUERDO_DIAS} días (opcional). No lo uses en un equipo compartido.`
@@ -172,9 +173,11 @@
     if (!r || typeof r !== 'object' || Array.isArray(r)) return;  // un asistente anterior
     contratoNuevo = true;
     const t = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
-    if (r.enabled === true && t(r.label, 400)) {
+    if (r.enabled === true) {
       recordarCfg = {
-        sesion: true, rotulo: t(r.label, 400), ayuda: t(r.help, 600), olvidar: t(r.forget_label, 80) || 'Olvidar este dispositivo',
+        sesion: true, rotulo: t(r.label, 400) || 'Recordar mi sesión y conversación (opcional)',
+        ayuda: t(r.help, 600) || 'Guarda en este navegador el acceso a esta conversación mientras siga vigente y tus datos de contacto para un próximo registro. Úsalo solo en un navegador personal.',
+        olvidar: t(r.forget_label, 80) || 'Olvidar este dispositivo',
         dias: Number.isSafeInteger(r.contact_days) && r.contact_days > 0 && r.contact_days <= 400 ? r.contact_days : RECUERDO_DIAS
       };
     } else {
@@ -314,14 +317,15 @@
   const decirYo = (texto) => { charla.append(h('div', { class: 'msg is-user' }, h('p', { text: texto }))); abajo(); };
   /* ---------- El formulario de una respuesta (reply.form) ---------- */
   /* Lo dibuja lo que manda el servicio (LeadForm::present): título, descripción, campos, lo opcional plegado y el botón;
-     aquí solo quedan textos de respaldo. Los nombres de los campos son los del servicio (sin una lista fija). Lo que se
-     va escribiendo queda en la pestaña con su draft_id (sesion.borrador) y se borra al enviarlo o cuando la respuesta ya
-     no trae ese formulario. El servicio valida todo: el navegador solo ayuda con required, maxlength y el correo */
+     aquí solo quedan textos de respaldo. Los nombres de los campos son los del servicio (sin una lista fija). Lo que la
+     persona cambia queda en la pestaña con su draft_id (sesion.borrador: solo los campos que tocó, así lo demás puede
+     venir actualizado del servicio) y se borra al enviarlo o cuando la respuesta ya no trae ese formulario. El servicio
+     valida todo: el navegador solo ayuda con required, maxlength y el correo */
   const NOMBRE_CAMPO = /^[A-Za-z][\w.-]{0,63}$/;
   const TIPOS_CAMPO = ['text', 'email', 'tel', 'textarea', 'select'];
   const AUTOCOMPLETAR = { name: 'name', email: 'email', phone_number: 'tel', company_name: 'organization' };
   const corto = (v, max) => (typeof v === 'string' ? v.slice(0, max) : '');
-  let formularioActivo = null;  // el de la última respuesta, mientras se puede usar: { el, action, draft_id, valores }
+  let formularioActivo = null;  // el de la última respuesta, mientras se puede usar: { el, action, draft_id, valores, cambiados }
   const sincronizarBorrador = (config) => {
     if (sesion?.borrador && sesion.borrador.id !== config?.draft_id) { delete sesion.borrador; guardar(sesion); }
   };
@@ -381,9 +385,13 @@
     /* La validación del navegador no puede mostrar un campo plegado: se abre la sección antes */
     el.addEventListener('invalid', (e) => { if (extra?.contains(e.target)) extra.open = true; }, true);
     const valores = () => Object.fromEntries(new FormData(el));
-    const guardarBorrador = () => {
+    /* Lo que la persona cambió (también lo que ya venía del borrador): solo eso pasa por encima de lo del servicio */
+    const tocados = new Set(Object.keys(guardado || {}).filter((k) => campos.some((f) => f.name === k)));
+    const cambiados = () => Object.fromEntries(Object.entries(valores()).filter(([k]) => tocados.has(k)));
+    const guardarBorrador = (e) => {
+      if (e.target?.name) tocados.add(e.target.name);
       if (!borradorId || !sesion || caja.disabled || formularioActivo?.el !== el) return;
-      sesion.borrador = { id: borradorId, valores: valores() };
+      sesion.borrador = { id: borradorId, valores: cambiados() };
       guardar(sesion);
     };
     el.addEventListener('input', guardarBorrador);
@@ -394,7 +402,7 @@
       if (sesion?.borrador) { delete sesion.borrador; guardar(sesion); }  // lo enviado queda en el pendiente hasta la respuesta
       enviar({ option_id: config.action, form_values: valores() }, rotulo);
     });
-    return { el, action: config.action, draft_id: borradorId, valores };
+    return { el, action: config.action, draft_id: borradorId, valores, cambiados };
   };
   /* El foco en el formulario: el campo con error o, con teclado, el primero vacío a la vista (si no, el primero) */
   const enfocar = (m) => {
@@ -674,7 +682,7 @@
     if (pendiente && mismo(pendiente.cuerpo, cuerpo)) { reintentar(); return; }  // lo mismo otra vez: el mismo mensaje
     pendiente?.nota?.remove();
     /* Una pregunta escrita con el formulario abierto: lo escrito en él vuelve si la respuesta trae el mismo formulario */
-    const previo = cuerpo.text && formularioActivo ? { accion: formularioActivo.action, draft_id: formularioActivo.draft_id, valores: formularioActivo.valores() } : null;
+    const previo = cuerpo.text && formularioActivo ? { accion: formularioActivo.action, draft_id: formularioActivo.draft_id, valores: formularioActivo.cambiados() } : null;
     pendiente = { id: idMensaje(), cuerpo, visible, previo, auto: 0, manuales: 0, nota: null };
     guardarPendiente();
     if (visible) decirYo(visible);
@@ -763,6 +771,37 @@
     return true;
   };
 
+  /* «Ver mensajes anteriores»: el historial llega de a 50 y `next_before` pide la página anterior (?before=). Lo que
+     llega se agrega arriba, sin opciones, y la vista queda donde estaba */
+  const anteriores = (antes) => {
+    const boton = h('button', { class: 'chip', type: 'button', text: 'Ver mensajes anteriores' });
+    const fila = h('div', { class: 'msg-chips agente-anteriores' }, boton);
+    charla.prepend(fila);
+    boton.addEventListener('click', async () => {
+      if (ocupado || !sesion) return;
+      ocupado = true;
+      boton.disabled = true;
+      const actual = sesion;
+      const { estado, json, falla } = await llamar(`/history?before=${encodeURIComponent(antes)}`);
+      if (sesion !== actual) return;
+      ocupado = false;
+      boton.disabled = false;
+      if (estado === 401) { vencida(); return; }
+      if (estado !== 200 || !Array.isArray(json.messages)) { aviso(falla ? SIN_CONEXION : 'No pude traer los mensajes anteriores. Vuelve a intentarlo en un momento.'); return; }
+      const alto = charla.scrollHeight;
+      const arriba = charla.scrollTop;
+      const nodos = json.messages.filter((m) => m && typeof m.text === 'string').map((m) => {
+        if (m.role === 'user') return h('div', { class: 'msg is-user' }, h('p', { text: m.text }));
+        const el = decir(m, { opciones: false });
+        el.remove();
+        return el;
+      });
+      fila.after(...nodos);
+      fila.remove();
+      if (typeof json.next_before === 'string' && json.next_before) anteriores(json.next_before);
+      charla.scrollTop = arriba + (charla.scrollHeight - alto);
+    });
+  };
   /* Al volver, el servicio restaura el historial, el cupo y el número de fotos. Con `reply` (la última respuesta, igual
      que la de un turno) se muestran sus opciones o su formulario pendientes, con el borrador de la pestaña encima; sin
      `reply` (un asistente anterior), las del último mensaje */
@@ -806,6 +845,7 @@
       ? { accion: guardado.cuerpo.option_id, valores: guardado.cuerpo.form_values } : null;
     mensajes.forEach((m) => (m.role === 'user' ? decirYo(m.text) : decir(m === conControles && reply ? reply : m, { opciones: m === conControles, previo })));
     if (aparte) decir(aparte, { previo });
+    if (typeof json.next_before === 'string' && json.next_before) anteriores(json.next_before.slice(0, 100));
     const conFormulario = formularioActivo?.el.closest('.msg');
     if (recuperable && !respondido) {
       pendiente = { ...guardado, auto: 0, manuales: 0, nota: null };
@@ -873,13 +913,13 @@
   /* La copia de la sesión en JSON, como la entrega el asistente. Uno que no la tiene (404 o 405) ya no la ofrece */
   const guardarArchivo = (datosSesion) => {
     const url = URL.createObjectURL(new Blob([`${JSON.stringify(datosSesion, null, 2)}\n`], { type: 'application/json' }));
-    const a = h('a', { href: url, download: 'mis-datos.json', hidden: true });
+    const a = h('a', { href: url, download: 'mis-datos-del-chat.json', hidden: true });
     panel.append(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   };
-  descarga.addEventListener('click', async () => {
+  const descargar = async () => {
     if (ocupado || !sesion) return;
     ocupado = true;
     const actual = sesion;
@@ -890,6 +930,8 @@
     ocupado = false;
     if (estado === 200) { guardarArchivo(json); return; }
     if (estado === 401) { vencida(); return; }
+    /* Un turno en curso (quizá en otra pestaña): el asistente responde 409 busy y se puede repetir */
+    if (estado === 409) { avisoCon('Hay una respuesta en curso en esta conversación. Vuelve a intentarlo en un momento.', [['Reintentar', descargar]]); return; }
     if (estado === 404 || estado === 405) {
       sinDescarga = true;
       pieAlDia();
@@ -899,7 +941,8 @@
     }
     aviso(falla ? SIN_CONEXION : estado === 429 ? 'Hiciste muchas solicitudes seguidas. Espera un momento y vuelve a intentarlo.'
       : 'No pude preparar la copia de tus datos en este momento. Vuelve a intentarlo en un rato.');
-  });
+  };
+  descarga.addEventListener('click', descargar);
 
   /* ---------- Fotos ---------- */
   const cargarLimitesFotos = async () => {

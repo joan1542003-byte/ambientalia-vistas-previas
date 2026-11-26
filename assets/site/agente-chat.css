@@ -22,6 +22,8 @@
 
 /* Opciones de una respuesta anterior (ya no corresponden) y botones mientras se espera la respuesta */
 .agente .chip:disabled { opacity: .5; cursor: default; pointer-events: none; }
+/* «Ver mensajes anteriores», arriba de la conversación */
+.agente-anteriores { justify-content: center; }
 /* La opción que lleva a la solicitud (`primary`): primero y con el borde del sitio */
 .agente .chip.is-principal { border-color: var(--accent); color: var(--accent-strong); }
 
