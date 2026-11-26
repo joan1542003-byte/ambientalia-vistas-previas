@@ -1,7 +1,7 @@
 === Transporte Autorizado – Sitio ===
 Requires at least: 6.2
 Requires PHP: 7.4
-Stable tag: 1.4.23
+Stable tag: 1.4.24
 
 Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones de Transporte las recibe el asistente (servicio Laravel), que las registra en Odoo.
 
@@ -20,6 +20,12 @@ Sirve el sitio nuevo de Transporte Autorizado desde WordPress. Las cotizaciones 
 El contenido de la carpeta sitio/ sale del repositorio de las vistas previas: `python3 tools/wordpress.py` arma el plugin completo y su .zip. Los cambios del sitio se hacen allá y se vuelve a generar.
 
 == Cambios ==
+
+= 1.4.24 =
+* Chat, formulario de contacto en una sola pantalla: el chat dibuja el formulario que manda el asistente (título, descripción, campos, «Agregar más detalles (opcional)» plegado y el botón), con lo ya conocido puesto. Lo que se va escribiendo se conserva en la pestaña si se recarga, y la caja de texto sigue a la vista: se puede preguntar algo sin perder lo escrito.
+* Chat, «Recordar mi sesión y conversación (opcional)» en la puerta, sin marcar: con la casilla, el navegador guarda el acceso a la conversación mientras siga vigente y el nombre, el correo y el teléfono por 30 días; al volver se retoma con las opciones o el formulario pendientes. «Olvidar este dispositivo» y «Borrar esta conversación» lo quitan.
+* Chat, «Descargar mis datos»: la copia de la conversación en JSON (mis-datos-del-chat.json) y «Ver mensajes anteriores» en conversaciones largas.
+* Requiere el asistente con la decisión D-23 (y su política de privacidad del 25-11-2026). Con uno anterior, el chat funciona como antes: la casilla recuerda solo los datos de contacto y no se ofrece la descarga.
 
 = 1.4.23 =
 * «Cotiza tu retiro» más corto: el tipo de residuo (No peligroso, Peligroso o No lo sé) se elige con un toque en su propia fila, antes del residuo; antecedentes y detalles del retiro (acceso, estado y almacenamiento) quedan en «Agregar más detalles (opcional)», que se abre solo si ya trae algo. Las fotos siguen a la vista en el paso de contacto.
