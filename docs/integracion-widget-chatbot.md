@@ -1,6 +1,6 @@
 # Widget del chat conectado al asistente Laravel
 
-Estado al 20-10-2026. Completa el widget sobre la integración del formulario. **Sin despliegue.** El contrato se leyó directamente del asistente (`agente-transporte-autorizado`, Laravel, revisado en `049f18b`), que no se modificó.
+Estado al 20-10-2026, con lo agregado después en las secciones fechadas del final (la última, del 25-11-2026: formulario en pantalla, sesión recordada, retomar con `reply` y «Descargar mis datos»). Completa el widget sobre la integración del formulario. **Sin despliegue.** El contrato se leyó directamente del asistente (`agente-transporte-autorizado`, Laravel, revisado en `049f18b`), que no se modificó.
 
 Complementa a [integracion-frontend-laravel.md](integracion-frontend-laravel.md), que cubre el formulario de cotización y la arquitectura general. Aquí solo va lo del chat; el detalle interno del asistente está en su propio repositorio.
 
@@ -26,7 +26,7 @@ Es el mismo componente de antes, completado, no uno nuevo:
 
 **Decisiones de interfaz** (el diseño no cambió):
 - La etiqueta «Prueba local» aparece solo en `localhost`; fuera de ahí la cabecera dice «Asistente».
-- El botón del pie pasó de «Cambiar mis datos» a **«Borrar esta conversación»**, el nombre que usa la política del asistente (`/eliminacion-de-datos`). Después de borrar vuelve la puerta, así que también sirve para empezar con otros datos.
+- El botón del pie pasó de «Cambiar mis datos» a **«Borrar esta conversación»**, el nombre que usa la política del asistente (`/eliminacion-de-datos`). Después de borrar vuelve la puerta, así que también sirve para empezar con otros datos. Desde el 25-11-2026 lo acompañan «Descargar mis datos» y, con la sesión recordada, «Olvidar este dispositivo».
 - Las opciones de respuestas anteriores quedan inactivas: ya no corresponden al estado de la conversación.
 - `agente-virtual.html` ahora carga `site.js`, para leer la dirección con `window.SITE.asistente()` como las demás páginas.
 
@@ -56,16 +56,18 @@ Todos van directo del navegador al asistente, sin pasar por WordPress:
 
 | Método y ruta | Uso |
 |---|---|
+| `GET /api/chat/config` | Los topes de las fotos (antes de la primera subida) y, en la puerta, la casilla «Recordar» (`remember`). |
 | `POST /api/chat/sessions` | Abrir la sesión desde la puerta. |
-| `POST /api/chat/messages` | Cada turno: texto u opción. |
-| `GET /api/chat/history` | Repintar la conversación al volver. |
+| `POST /api/chat/messages` | Cada turno: texto, opción o formulario (`form_values`). |
+| `GET /api/chat/history` | Repintar la conversación al volver (con `?before=` para los mensajes anteriores). |
 | `POST /api/chat/attachments` | Subir una foto. |
+| `GET /api/chat/session` | «Descargar mis datos» (asistente con D-23). |
 | `DELETE /api/chat/session` | Borrar esta conversación. |
 | `GET /condiciones-del-servicio`, `/politica-de-privacidad`, `/eliminacion-de-datos` | Enlaces legales; se abren en otra pestaña, no son llamadas de la página. |
 
 ## Contratos relevantes (leídos en Laravel)
 
-**Respuesta (`reply`):** `{ text, options: [{ id, label, description? }], sources: [{ label, url? }], intent, lead_status }`.
+**Respuesta (`reply`):** `{ text, options: [{ id, label, description?, primary? }], sources: [{ label, url? }], form?, intent, lead_status }` (`form` y `primary`: ver las secciones del 27-10, 18-11 y 25-11).
 - El texto es plano.
 - El asistente ya lo sanea y aun así el widget lo trata como no confiable.
 
@@ -86,8 +88,9 @@ Todos van directo del navegador al asistente, sin pasar por WordPress:
 - `volver` y `cancelar`: el asistente los acepta, pero sus respuestas no los traen como opciones. Por eso el widget no agregó un botón «Volver»; la persona puede escribirlo.
 
 **Historial.**
-- `{ messages: [{ role, text, options, sources, intent, lead_status }] }`, con hasta 50.
-- No trae `usage`, fotos ni `client_message_id`, ni el estado completo del flujo guiado (solo `intent` y `lead_status` de cada respuesta).
+- `{ messages: [{ client_message_id, role, text, form?, options, sources, intent, lead_status }], usage, photos }`, de a 50.
+- Con D-23 (25-11-2026) además `reply` (la última respuesta, con la forma de un turno; en una sesión recién abierta, el saludo) y `next_before` (para pedir la página anterior con `?before=`), y los mensajes de todas las conversaciones de la sesión.
+- No trae el estado completo del flujo guiado: lo pendiente se muestra con `reply`.
 
 **Foto.**
 - Campo `image`: jpg, jpeg, png o webp, hasta `CHAT_ATTACHMENT_MAX_KB` (5120). El tipo se comprueba por el contenido.
@@ -102,23 +105,23 @@ Todos van directo del navegador al asistente, sin pasar por WordPress:
 
 ## Gestión de sesión
 
-**Qué se guarda en la pestaña** (`sessionStorage`, clave `agente-chat`): solo el **token**, su **vencimiento** y **cuántas fotos se subieron**.
-- Los datos de la puerta (nombre, correo, teléfono) quedan solo en memoria, para no volver a pedirlos en la misma página.
+**Qué se guarda en la pestaña** (`sessionStorage`, clave `agente-chat`): el **token**, su **vencimiento**, **cuántas fotos se subieron** y, mientras duran, el **envío sin respuesta confirmada** (`pendiente`: su identificador, el cuerpo y el texto visible, para reintentarlo después de recargar; desde el 27-10) y el **borrador** del formulario abierto (`borrador`: su `draft_id` y los campos que la persona cambió; desde el 25-11). Con la sesión recordada, también `recordada: true`.
+- Los datos de la puerta (nombre, correo, teléfono) quedan solo en memoria, para no volver a pedirlos en la misma página (salvo lo recordado, abajo).
 - La conversación no se guarda en el navegador: se pide al asistente.
-- Tampoco el texto pendiente ni nombres de archivo.
+- Nunca nombres de archivo ni las casillas de aceptación.
 
-**Datos recordados en el dispositivo** (opcional; `localStorage`, clave `agente-chat-datos`, 23-10-2026). La puerta ofrece «Recordar mi nombre, correo y teléfono en este dispositivo por 30 días (opcional)», **sin marcar** salvo que ya haya datos guardados.
-- Se guarda `{name, email, phone, vence}` y nada más: **nunca el token** (queda en la pestaña), ni las casillas de condiciones y de contacto comercial (cada sesión pide su propia aceptación), ni la conversación. La casilla no se envía al asistente.
+**Datos recordados en el dispositivo** (opcional; `localStorage`, clave `agente-chat-datos`, 23-10-2026; con un asistente con D-23, también la sesión: ver la sección del 25-11-2026). Con un asistente que no trae `remember`, la puerta ofrece «Recordar mi nombre, correo y teléfono en este dispositivo por 30 días (opcional)», **sin marcar** salvo que ya haya datos guardados.
+- Se guarda `{name, email, phone, vence}` y nada más: con ese asistente, **nunca el token** (queda en la pestaña), ni las casillas de condiciones y de contacto comercial (cada sesión pide su propia aceptación), ni la conversación. La casilla no se envía al asistente.
 - Se guarda solo cuando el asistente abre la sesión (`201`), es decir, con datos que ya validó; si lo rechaza (`422`), no se guarda. Cada apertura renueva los 30 días (`RECUERDO_DIAS`) y, con la casilla desmarcada, borra lo guardado.
 - Al abrir la puerta, lo guardado precarga los campos. Vencido, ilegible, incompleto o de otra forma: se ignora y se borra. Se acota al largo de cada campo y entra como valor de un campo, nunca como HTML.
 - «Olvidar mis datos en este dispositivo» (visible solo si hay datos) los borra y vacía los campos. «Borrar esta conversación», al terminar, los borra también.
 - El tope de 10 consultas no cambia: va por el correo con que se entra, no por el navegador (`QueryLimiter`). Tampoco cambia ningún límite por IP ni el campo trampa ni Turnstile: la sesión se abre con `POST /sessions` como si los datos se hubieran escrito.
 - Safari puede borrar `localStorage` tras unos 7 días sin visitar el sitio; en navegación privada o con el almacenamiento bloqueado simplemente no se recuerda nada.
-- La política de privacidad del asistente lo dice en «Qué datos tratamos» («En tu dispositivo»); el plazo vive en dos lugares (`RECUERDO_DIAS` y esa política).
+- La política de privacidad del asistente lo dice en «Qué datos tratamos» («En tu dispositivo»); el plazo vive en dos lugares (`RECUERDO_DIAS` y esa política). Con D-23 el plazo es `remember.contact_days`.
 
 | Caso | Comportamiento |
 |---|---|
-| Token vigente | Al abrir, `GET /history` con ese token y se repinta. |
+| Token vigente | Al abrir, `GET /history` con ese token y se repinta. Primero el de la pestaña; si no hay, el recordado en el dispositivo (25-11). |
 | Token vencido (según `expires_at`) o con forma inválida | Se descarta sin llamar al servicio y aparece la puerta. |
 | Sesión inválida en el servidor (`401 session_expired`) | Olvida el token, avisa y muestra la puerta. Si fue al enviar, lo escrito vuelve al campo. |
 | Historial vacío | Pide el menú con `inicio`, que no se muestra como mensaje propio. |
@@ -158,14 +161,10 @@ Cada mensaje nace con un `client_message_id` (UUID) y lo conserva **hasta que el
   - los mensajes de la persona y del asistente;
   - las negritas, los párrafos y las listas;
   - las fuentes, con las mismas reglas de enlaces;
-  - las opciones, solo las de la última respuesta, porque las anteriores ya no corresponden.
+  - las opciones y el formulario, solo los de la última respuesta, porque los anteriores ya no corresponden. Con `reply` (25-11) salen de ahí, con el borrador de la pestaña encima; sin `reply`, del último mensaje.
 - **Si el último mensaje es de la persona** (turno en curso o fallido): aparece «Tu último mensaje todavía no tiene respuesta» con «Actualizar», que vuelve a leer el historial **sin reenviar** nada.
 
-**No se recupera, porque el contrato no lo entrega:**
-- el consumo de consultas, que aparece con la próxima respuesta;
-- cuántas fotos se subieron: el número local de la pestaña cubre la recarga, y si no, manda el `422 attachment_limit`;
-- el identificador de un mensaje que quedó sin respuesta, así que no se puede reintentar de forma idempotente después de recargar;
-- `intent` y `lead_status`, que llegan pero el widget no los necesita para mostrar la conversación.
+**Lo que llega y el widget no usa:** `intent` y `lead_status` de cada mensaje (solo `intent: main_menu`, para el orden de las opciones). El consumo y las fotos llegan en `usage` y `photos` (antes del 28-10 no venían). Un mensaje que quedó sin respuesta se reintenta con su mismo identificador gracias al `pendiente` de la pestaña (27-10).
 
 ## Fotos
 
@@ -308,8 +307,7 @@ El freno de concurrencia primero no se detectó (lo cubría la segunda guarda) y
 
 ## Limitaciones
 
-- **Recuperación tras recargar (no garantizada):** el identificador de un mensaje pendiente vive solo en la memoria de la página; no se guarda en el navegador, para no conservar mensajes ni datos personales. Si la página se recarga con un mensaje sin respuesta, el widget no puede reintentarlo con el mismo identificador. Ofrece «Actualizar», que relee el historial sin reenviar nada. Si la persona lo escribe de nuevo, es un mensaje nuevo (otro identificador) y el asistente lo procesa otra vez.
-- **Historial:** no devuelve consumo, fotos ni identificadores (ver «Historial»).
+- **Recuperación tras recargar:** desde el 27-10 el envío sin respuesta confirmada queda en la pestaña (`pendiente`) y se ofrece «Reintentar» con el mismo identificador; se borra al resolverse. En otra pestaña o con otro navegador no está: ahí se ofrece «Actualizar», que relee el historial sin reenviar nada.
 - **Fotos:** la subida no es idempotente en el contrato (ver «Fotos»).
 - **Retry-After:** CORS no lo expone, así que en un 429 el widget no sabe cuánto esperar y pide «un momento».
 - **Validación del turno:** sin traducciones (`lang/es`), los 422 de `/messages` llegarían en inglés. El widget muestra un texto propio.
@@ -366,3 +364,30 @@ Validación local final: 132 comprobaciones del widget, 118 de integración y 20
 
 «Cotizar retiro» ya no pregunta dato por dato. La respuesta trae `form: { action: 'abrir_cotizacion', answers: { nombre, correo, telefono, empresa, residuo } }` y una fuente con el enlace `…/#cotizar` (respaldo para un widget anterior). `abrirCotizacion()` cierra el chat, completa el formulario «Cotiza tu retiro» con `QUOTE.fromText` (solo si `PARSE` entendió algo de lo escrito) y `QUOTE.fill` (sin pisar lo que la persona ya escribió) y lo abre con `HERO.show('cotizar', { from: 'dock' })`. `QUOTE.vincular({ token, alEnviar })` hace que la solicitud que sigue vaya a `POST /api/quotes` con `Authorization: Bearer <token del chat>`: el asistente la liga a la conversación y responde `chat_message`, que el chat muestra. Desde el buscador (`AGENTE.cotizar`) es igual: el transportista llega en el detalle de esa solicitud, del lado del asistente.
 
+## Formulario en pantalla, sesión recordada, retomar y descarga (25-11-2026, D-23 del asistente, plugin 1.4.24)
+
+Decisiones del responsable del 25-11: el formulario de contacto pasa a una sola pantalla prellenada (empresa obligatoria) y el chat recuerda la sesión como los de GreenSoft y Ambientalia. El asistente publica una política de privacidad nueva (2026-11-25) que describe exactamente lo de abajo: si cambia algo de esto, cambia la política. El sitio se despliega antes que el asistente, así que todo funciona también con el asistente anterior, que no trae nada de esto.
+
+**Formulario (`reply.form`, salvo `abrir_cotizacion`).** `formularioRespuesta()` dibuja lo que manda el asistente (`LeadForm::present`): `title` (respaldo «Revisa tus datos»), `description`, `submit_label` (respaldo «Guardar cambios», que también es el mensaje propio al enviar), `fields[]` con `name`, `label`, `type` (`text|email|tel|textarea|select`; otro tipo, `text`), `value`, `required`, `max_length`, `error`, `options[]` del select (la primera opción vacía dice `placeholder` o «Elige una opción») y `placeholder`. No hay lista fija de campos: entra todo nombre con letras, números, `_`, `.` o `-`. Con `optional_section` y campos obligatorios y opcionales, los opcionales van en `<details class="agente-mas">` (título del asistente, respaldo «Más información (opcional)», y su `hint`), que se abre si un campo de adentro trae valor o error, y antes de la validación del navegador si uno de adentro no la pasa. Cada error va junto a su campo con `aria-invalid` y `aria-describedby`. El foco va al campo con error o, con teclado, al primero vacío. Las opciones `primary: true` (cotizar_retiro, hablar_especialista, confirmar) van primero y con el borde del sitio (`.chip.is-principal`), salvo en `intent: main_menu`.
+
+**Borrador.** Con `draft_id`, lo que la persona cambia (solo esos campos: lo demás puede venir actualizado del asistente) queda en la pestaña (`sesion.borrador = { id, valores }`) al escribir; se borra al enviar el formulario y cuando una respuesta ya no trae ese `draft_id`. Al volver a dibujar el mismo formulario, el borrador va encima de lo del asistente. Sin `draft_id` (el asistente anterior) no se guarda nada en la pestaña.
+
+**La caja de texto ya no se oculta** con el formulario abierto (antes se ocultaba con `guardar_datos`). Una pregunta escrita sale como texto, sin los datos del formulario; si la respuesta trae el mismo formulario (mismo `draft_id`, o la misma acción sin él), vuelve debajo con lo escrito (desde el borrador o, sin `draft_id`, desde la memoria de la página), la respuesta queda a la vista y el foco sigue en la caja. Una foto sigue esperando a que se envíe o se cancele el formulario.
+
+**Recordar la sesión (`GET /api/chat/config` → `remember: {enabled, label, help, forget_label, contact_days}`).** La puerta lee la configuración y, hasta tenerla, la casilla «Recordar» no se puede marcar (para que haga lo que dice su texto). Es opcional y parte sin marcar (marcada solo si ya hay datos de contacto recordados).
+- Con `enabled: true`: el rótulo y la ayuda son `label` y `help` (respaldo «Recordar mi sesión y conversación (opcional)» y «Guarda en este navegador el acceso a esta conversación mientras siga vigente y tus datos de contacto para un próximo registro. Úsalo solo en un navegador personal.»). Marcada, al abrir la sesión (`201`) se guardan en `localStorage` **solo** `agente-chat-sesion = { token, vence }` (hasta `expires_at`) y `agente-chat-datos = { name, email, phone, vence }` (por `contact_days`). El contacto se renueva, y sus días se cuentan, solo al abrir una sesión con la casilla marcada; sirve solo para precargar la puerta y no se envía hasta tocar «Comenzar». Sin marcar, se quitan los dos. El pendiente y el borrador siguen solo en la pestaña.
+- Al cargar: primero la sesión de la pestaña; si no hay (o la de la pestaña era la recordada), la recordada si sigue vigente, y se anota en la pestaña con `recordada: true`.
+- «Olvidar este dispositivo» (`forget_label`; en el pie con la sesión recordada, y en la puerta si hay datos recordados) quita la sesión y los datos recordados y, con la sesión abierta, cierra el chat aquí (no borra nada en el asistente, y lo dice). «Borrar esta conversación» también quita los dos. Un `401` quita la sesión recordada (los datos de contacto quedan para precargar la puerta).
+- Otra pestaña (o documento) que olvida el dispositivo, borra la conversación o recibe un `401`: el evento `storage` cierra la sesión también aquí, con «La sesión recordada se cerró en este dispositivo».
+- Con `enabled: false`: sin casilla y sin nada en el dispositivo.
+- Sin `remember` (el asistente anterior): la casilla de antes, «Recordar mi nombre, correo y teléfono en este dispositivo por 30 días (opcional)…», que guarda solo los datos de contacto y nunca el token (lo que dice la política anterior).
+
+**Retomar (`GET /api/chat/history`).** Con `reply` (la última respuesta, con la forma de un turno), sus opciones o su formulario se muestran en el último mensaje del asistente si es esa misma respuesta, o al final si no está en la conversación (el saludo de una sesión recién abierta: ya no se pide el menú con «inicio»). El borrador de la pestaña va encima, y un formulario enviado sin respuesta confirmada vuelve con lo enviado. Un formulario pendiente se muestra desde su comienzo. Con `next_before`, arriba aparece «Ver mensajes anteriores», que pide `?before=` y agrega esos mensajes arriba, sin opciones, sin mover la vista. Sin `reply`, como antes: las opciones del último mensaje.
+
+**Descargar mis datos (`GET /api/chat/session`).** Botón del pie junto a «Borrar esta conversación», con la sesión abierta y solo si el asistente trae `remember` en la configuración o `reply` en el historial (el asistente anterior responde `405` a esa ruta). Descarga `mis-datos-del-chat.json` (un `blob:` con el JSON tal como llega; funciona bajo la CSP del plugin). `409 busy`: avisa y ofrece «Reintentar». `404`/`405`: oculta el botón y explica que se pide como indica el aviso de privacidad. `401`: la puerta.
+
+**Rótulos fijos:** «Comenzar», «Borrar esta conversación», «Descargar mis datos», «Olvidar este dispositivo» (los mismos de la política del asistente).
+
+**Pruebas** (`tools/pruebas/widget.mjs`): el asistente simulado responde con el contrato nuevo (`remember`, `reply`, `next_before`, `GET /session`) y, con `S.antiguo`, como el anterior. Se reescribieron las que prohibían lo nuevo (lo que queda en la pestaña, la caja oculta con el formulario, «los cambios no se guardan», el token fuera de `localStorage`: la sección 24 ahora corre con el asistente anterior) y se agregaron las secciones 26 a 32: formulario con sección opcional, select y errores; borrador al recargar; pregunta escrita con el formulario abierto; recordar y olvidar (con el evento `storage` desde otro documento y las condiciones de la política); retomar con `reply` y páginas; descarga (también bajo la CSP del plugin, sección 22); y el asistente anterior.
+
+Validación local (26-11-2026): `node tools/pruebas/widget.mjs` 228 comprobaciones y `node tools/pruebas/integracion.mjs` 118, todas bien. Sin asistente real ni despliegue. Recursos con versión `20261125a`.
