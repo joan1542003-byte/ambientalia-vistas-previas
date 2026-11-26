@@ -59,7 +59,7 @@ function multipart(buf, tipo) {
 /* El sitio, como en GitHub Pages. Con `pagina.wp` la página principal sale procesada por el plugin (TA_API y CSP);
    con `pagina.espera`, la ventana del chat lleva data-agente-espera (segundos) */
 const pagina = { wp: null, espera: null };
-const TIPOS = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png' };
+const TIPOS = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.txt': 'text/plain; charset=utf-8' };
 const sitio = createServer((req, res) => {
   const ruta = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   const f = resolve(ROOT, `.${ruta}`);
@@ -79,15 +79,15 @@ const sitio = createServer((req, res) => {
    respuesta: `S.reply` o la última del asistente en `S.historial`) y GET /session con la copia de los datos. Con
    `S.antiguo`, como el asistente anterior: sin `remember` ni `reply`, y GET /session responde 405 */
 const llamadas = [];
-const S = { tokens: new Set(), n: 0, procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], subidas: new Map(), fotos: 0, cortarHasta: 0, reply: undefined, antiguo: false };
+const S = { tokens: new Set(), n: 0, procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], subidas: new Map(), fotos: 0, cortarHasta: 0, reply: undefined, antiguo: false, remember: undefined, anteriores: null };
 const USO = { max: 10, used: 1, remaining: 9, resets_at: null };
 const LIMITES_FOTOS = { max_per_session: 2, max_kilobytes: 5120, max_pixels: 50000000, mimes: ['jpg', 'jpeg', 'png', 'webp'] };
 S.limites = { ...LIMITES_FOTOS };
 const MENU = { text: 'Hola, soy el asistente. ¿En qué te ayudo?', options: [{ id: 'residuos', label: 'Retiro de residuos' }, { id: 'normativa', label: 'Normativa' }], sources: [], intent: 'main_menu', lead_status: null };
-/* «Recordar» del asistente nuevo (GET /config → remember) */
+/* «Recordar» del asistente nuevo (GET /config → remember, chatbot.remember de D-23); `S.remember` lo reemplaza */
 const RECORDAR = {
-  enabled: true, label: 'Recordar mi sesión y mis datos en este dispositivo (opcional)',
-  help: 'Retoma el chat en este navegador mientras la sesión siga vigente; tus datos de contacto se guardan 30 días. No lo uses en un equipo compartido.',
+  enabled: true, label: 'Recordar mi sesión y conversación (opcional)',
+  help: 'Guarda en este navegador el acceso a esta conversación mientras siga vigente y tus datos de contacto para un próximo registro. Úsalo solo en un navegador personal.',
   forget_label: 'Olvidar este dispositivo', contact_days: 30
 };
 /* El formulario de contacto en una sola pantalla (LeadForm::present): empresa obligatoria, lo opcional plegado y un select */
@@ -165,7 +165,7 @@ const asistente = createServer(async (req, res) => {
   const cors = { 'Access-Control-Allow-Origin': req.headers.origin || '*', 'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Accept, Content-Type, Authorization, X-Chat-Token' };
   if (req.method === 'OPTIONS') { res.writeHead(204, cors); res.end(); return; }
   const token = String(req.headers.authorization || '').replace(/^Bearer /, '');
-  llamadas.push({ metodo: req.method, ruta: url.pathname, token, origen: req.headers.origin || '', cuerpo, mp });
+  llamadas.push({ metodo: req.method, ruta: url.pathname, consulta: url.search, token, origen: req.headers.origin || '', cuerpo, mp });
   const json = (status, j) => { if (res.destroyed) return; res.writeHead(status, { ...cors, 'Content-Type': 'application/json' }); res.end(JSON.stringify(j)); };
   /* Un turno como el de ChatController::message: procesado → la misma respuesta; en curso → 409 busy */
   const turno = async () => {
@@ -207,7 +207,7 @@ const asistente = createServer(async (req, res) => {
     json(g.status, g.json || {});
     return;
   }
-  if (url.pathname === '/api/chat/config' && req.method === 'GET') { json(200, { attachments: S.limites, ...(S.antiguo ? {} : { remember: RECORDAR }) }); return; }
+  if (url.pathname === '/api/chat/config' && req.method === 'GET') { json(200, { attachments: S.limites, ...(S.antiguo ? {} : { remember: S.remember ?? RECORDAR }) }); return; }
   /* El formulario «Cotiza tu retiro» (POST /api/quotes): con el token de una sesión del chat queda ligada a ella y
      trae el mensaje que el chat muestra (D-17 del asistente); sin token, como desde el sitio */
   if (url.pathname === '/api/quotes' && req.method === 'POST') {
@@ -228,7 +228,9 @@ const asistente = createServer(async (req, res) => {
   if (url.pathname === '/api/chat/history' && req.method === 'GET') {
     const ultimaDelAsistente = [...S.historial].reverse().find((m) => m.role === 'assistant');
     const reply = S.reply !== undefined ? S.reply : ultimaDelAsistente ? (({ role, client_message_id, ...r }) => r)(ultimaDelAsistente) : null;
-    json(200, { messages: S.historial, usage: USO, photos: S.fotos, ...(S.antiguo ? {} : { reply, next_before: null }) });
+    /* De a 50: con `S.anteriores`, la primera página trae next_before y ?before= entrega esos mensajes */
+    if (!S.antiguo && url.searchParams.has('before')) { json(200, { messages: url.searchParams.get('before') === 'pagina-2' ? S.anteriores || [] : [], next_before: null, reply, usage: USO, photos: S.fotos }); return; }
+    json(200, { messages: S.historial, usage: USO, photos: S.fotos, ...(S.antiguo ? {} : { reply, next_before: S.anteriores ? 'pagina-2' : null }) });
     return;
   }
   if (url.pathname === '/api/chat/session' && req.method === 'GET') { json(200, COPIA); return; }
@@ -253,7 +255,7 @@ const API = `http://127.0.0.1:${asistente.address().port}`;
 const de = (ruta, metodo) => llamadas.filter((l) => l.ruta === `/api/chat${ruta}` && (!metodo || l.metodo === metodo));
 const reiniciarAsistente = () => {
   llamadas.length = 0;
-  Object.assign(S, { subidas: new Map(), procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0, limites: { ...LIMITES_FOTOS }, reply: undefined, antiguo: false });
+  Object.assign(S, { subidas: new Map(), procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0, limites: { ...LIMITES_FOTOS }, reply: undefined, antiguo: false, remember: undefined, anteriores: null });
 };
 
 /* ======================= Navegador ======================= */
@@ -389,6 +391,24 @@ const elegirFotos = (...tipos) => evaluar(`async () => {
   return true;
 }`);
 const fotosForm = () => evaluar(() => document.querySelectorAll('[data-adjuntos] .adjuntos-list .adjunto').length);
+/* El formulario de la última respuesta y la casilla «Recordar» de la puerta, ya con lo que dice el asistente */
+const ultimoFormulario = `() => [...document.querySelectorAll('[data-agente-charla] [data-edicion]')].pop()`;
+const formularioListo = () => hasta(() => !!document.querySelector('[data-agente-charla] [data-edicion] fieldset:not(:disabled)'), 'el formulario de la respuesta');
+const casillaLista = () => hasta(() => document.querySelector('.agente-puerta input[name="remember"]')?.disabled === false, 'la casilla «Recordar» lista');
+const charlaTexto = () => evaluar(() => document.querySelector('[data-agente-charla]').textContent);
+/* Otro documento del mismo sitio (un <iframe>, con el mismo localStorage): lo que cambia ahí llega a la página como un
+   evento storage, igual que desde otra pestaña */
+const desdeOtroDocumento = (codigo) => evaluar(`async () => {
+  const f = document.createElement('iframe');
+  f.src = '${SITIO}/robots.txt';
+  f.hidden = true;
+  const cargado = await new Promise((r) => { f.onload = () => r(true); setTimeout(() => r(false), 5000); document.body.append(f); });
+  if (!cargado) throw new Error('el documento de prueba no cargó');
+  (${codigo})(f.contentWindow);
+  await new Promise((r) => setTimeout(r, 50));
+  f.remove();
+  return true;
+}`);
 
 /* ======================= Pruebas ======================= */
 
@@ -601,10 +621,11 @@ try {
       const f = document.querySelector('[data-edicion]');
       f.elements.email.value = 'popito@example.test'; f.elements.name.value = 'Popito Zalas';
       f.elements.handoff_reason.value = 'Retirar madera';
-      f.elements.handoff_reason.dispatchEvent(new Event('input', { bubbles: true })); return true;
+      ['email', 'name', 'handoff_reason'].forEach((n) => f.elements[n].dispatchEvent(new Event('input', { bubbles: true }))); return true;
     });
     const enEdicion = JSON.parse(await guardado()).borrador;
-    ok(enEdicion?.id === 'edicion-1' && enEdicion.valores.name === 'Popito Zalas' && enEdicion.valores.handoff_reason === 'Retirar madera', 'mientras se escribe, lo escrito queda en la pestaña como borrador del draft_id del formulario');
+    ok(enEdicion?.id === 'edicion-1' && enEdicion.valores.name === 'Popito Zalas' && enEdicion.valores.handoff_reason === 'Retirar madera' && !('company_name' in enEdicion.valores),
+      'mientras se escribe, lo cambiado (solo eso) queda en la pestaña como borrador del draft_id del formulario');
     for (const [width, height] of [[1280, 900], [390, 844]]) {
       await cdp('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });
       ok(await evaluar(() => {
@@ -1276,6 +1297,387 @@ try {
     await hasta(() => /No pude preparar esa foto/.test(document.querySelector('[data-agente-charla]').textContent), 'peso de salida excedido');
     ok(de('/attachments', 'POST').length === 0, 'si la imagen reducida supera el peso publicado, no se envía');
     ok(!errores.length, 'los límites dinámicos no producen errores de JavaScript');
+  }
+
+  seccion('26. Formulario en pantalla: título, lo opcional plegado, select, errores y opciones principales');
+  {
+    reiniciarAsistente();
+    await navegar(local()); await abrir(); await entrar();
+    await escribir('especialista');
+    await formularioListo();
+    const v = await evaluar(`() => {
+      const f = (${ultimoFormulario})();
+      const det = f.querySelector('details');
+      const nombres = (raiz) => [...raiz.querySelectorAll(':scope > .agente-campo')].map((l) => l.querySelector('input, select, textarea').name);
+      return {
+        titulo: f.querySelector('legend').textContent, nota: f.querySelector('fieldset > .agente-nota')?.textContent, boton: f.querySelector('button[type="submit"]').textContent,
+        visibles: nombres(f.querySelector('fieldset')), plegados: det ? nombres(det) : [], abierto: det?.open, resumen: det?.querySelector('summary').textContent, pista: det?.querySelector('.agente-nota')?.textContent,
+        select: [...f.elements.contact_time.options].map((o) => o.value + ':' + o.textContent), placeholder: f.elements.company_name.placeholder, obligatoria: f.elements.company_name.required,
+        caja: !document.querySelector('[data-agente-form]').hidden, foco: document.activeElement?.name
+      };
+    }`);
+    ok(v.titulo === FORMULARIO.form.title && v.nota === FORMULARIO.form.description && v.boton === 'Revisar y enviar', 'título, descripción y botón vienen del asistente');
+    ok(v.visibles.join() === 'name,company_name,phone_number,email' && v.plegados.join() === 'contact_time,handoff_reason' && v.abierto === false && v.resumen === 'Agregar más detalles (opcional)' && v.pista === FORMULARIO.form.optional_section.hint,
+      'lo obligatorio a la vista y lo opcional plegado en su sección (título y pista del asistente), cerrada si no trae nada');
+    ok(v.select.join('|') === ':Cuando puedan|manana:En la mañana|tarde:En la tarde' && v.placeholder === 'Razón social o nombre de fantasía' && v.obligatoria, 'el select trae sus opciones (primero el texto del asistente) y la empresa, obligatoria, su placeholder');
+    ok(v.caja && v.foco === 'company_name', 'la caja de texto sigue a la vista y el foco va al primer dato que falta (la empresa)');
+    const antes = de('/messages', 'POST').length;
+    await evaluar(`() => { (${ultimoFormulario})().requestSubmit(); return true; }`);
+    await sleep(200);
+    ok(de('/messages', 'POST').length === antes, 'sin la empresa no se envía (lo valida el navegador antes que el asistente)');
+    await evaluar(`() => { const f = (${ultimoFormulario})(); f.querySelector('details').open = true; f.elements.contact_time.value = 'tarde'; f.elements.handoff_reason.value = 'Retiro de tambores'; f.elements.company_name.value = 'Empresa Chat SpA'; f.requestSubmit(); return true; }`);
+    await hasta(() => /Revisa: Persona Chat, Empresa Chat SpA/.test(document.querySelector('[data-agente-charla]').textContent), 'el resumen');
+    const env = de('/messages', 'POST').pop();
+    ok(env.cuerpo.option_id === 'guardar_datos' && Object.keys(env.cuerpo.form_values).join() === 'name,company_name,phone_number,email,contact_time,handoff_reason'
+      && env.cuerpo.form_values.contact_time === 'tarde' && env.cuerpo.form_values.handoff_reason === 'Retiro de tambores', 'envía todos los campos del asistente (también los plegados y el select) con option_id guardar_datos');
+    ok((await textos()).includes('> Revisar y enviar'), 'el mensaje propio es el rótulo del botón del asistente');
+    const opciones = () => evaluar(() => [...[...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].pop().querySelectorAll('[data-opcion]')].map((b) => `${b.textContent}${b.classList.contains('is-principal') ? '*' : ''}`).join('|'));
+    ok((await opciones()) === 'Sí, enviar*|Cancelar|Corregir', 'la opción primary va primero y destacada; las demás, en el orden del asistente');
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: { ...MENU, options: [{ id: 'a', label: 'Primera' }, { id: 'b', label: 'Segunda', primary: true }] }, usage: USO } });
+    await escribir('menú');
+    await hasta(() => /Primera/.test([...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].pop().textContent), 'el menú');
+    ok((await opciones()) === 'Primera|Segunda', 'en el menú principal (main_menu) se respeta el orden del asistente');
+    /* Un error del asistente en lo opcional: la sección se abre, el campo se marca y recibe el foco */
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: formularioCon({ company_name: 'Empresa Chat SpA', handoff_reason: 'Motivo largo' }, { handoff_reason: 'Cuéntanos el motivo en menos palabras.' }), usage: USO } });
+    await escribir('corregir');
+    await hasta(() => !!document.querySelector('[data-agente-charla] [data-edicion] fieldset:not(:disabled) [aria-invalid="true"]'), 'el error del asistente');
+    const e = await evaluar(`() => {
+      const f = (${ultimoFormulario})();
+      const el = f.elements.handoff_reason;
+      return { abierto: f.querySelector('details').open, aria: el.getAttribute('aria-invalid'), error: document.getElementById(el.getAttribute('aria-describedby'))?.textContent, foco: document.activeElement === el, empresa: f.elements.company_name.value };
+    }`);
+    ok(e.abierto && e.aria === 'true' && e.error === 'Cuéntanos el motivo en menos palabras.' && e.foco && e.empresa === 'Empresa Chat SpA',
+      'un error del asistente en lo opcional abre la sección, marca el campo (aria-invalid y aria-describedby con su explicación) y le da el foco');
+    /* Lo opcional también se abre si trae un valor; una pregunta escrita sin tocar nada deja lo que manda el asistente */
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: formularioCon({ contact_time: 'manana' }), usage: USO } });
+    await escribir('de nuevo');
+    await hasta(() => !document.querySelector('.is-espera') && document.querySelectorAll('[data-agente-charla] [data-edicion]').length >= 3, 'el formulario otra vez');
+    await formularioListo();
+    const o = await evaluar(`() => { const f = (${ultimoFormulario})(); return { abierto: f.querySelector('details').open, hora: f.elements.contact_time.value, motivo: f.elements.handoff_reason.value }; }`);
+    ok(o.abierto && o.hora === 'manana' && o.motivo === '', 'lo opcional se abre si trae un valor, y lo que la persona no tocó viene del asistente');
+    ok(!errores.length, `sin errores de JavaScript${errores.length ? `: ${errores.slice(0, 3).join(' | ')}` : ''}`);
+  }
+
+  seccion('27. Borrador del formulario en la pestaña (draft_id) y al recargar');
+  {
+    reiniciarAsistente();
+    await navegar(local()); await abrir(); await entrar();
+    await escribir('especialista');
+    await formularioListo();
+    await evaluar(`() => {
+      const f = (${ultimoFormulario})();
+      f.elements.company_name.value = 'Borrador SpA'; f.elements.company_name.dispatchEvent(new Event('input', { bubbles: true }));
+      f.elements.contact_time.value = 'manana'; f.elements.contact_time.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    }`);
+    const b = JSON.parse(await guardado()).borrador;
+    ok(b?.id === 'lead-7' && b.valores.company_name === 'Borrador SpA' && b.valores.contact_time === 'manana' && !('name' in b.valores), 'al escribir, la pestaña guarda lo cambiado con el draft_id del formulario (solo los campos tocados)');
+    ok(!(await evaluar(() => JSON.stringify(localStorage))).includes('Borrador SpA'), 'el borrador no sale de la pestaña (nada en localStorage)');
+    S.historial = [{ role: 'user', text: 'especialista' }, { role: 'assistant', ...FORMULARIO }];
+    const enviadosAntes = de('/messages', 'POST').length;
+    await navegar(local(), { limpiar: false }); await abrir();
+    await formularioListo();
+    const leerForm = () => evaluar(`() => { const f = (${ultimoFormulario})(); return { empresa: f.elements.company_name.value, hora: f.elements.contact_time.value, nombre: f.elements.name.value, abierto: f.querySelector('details').open, caja: !document.querySelector('[data-agente-form]').hidden }; }`);
+    let r = await leerForm();
+    ok(r.empresa === 'Borrador SpA' && r.hora === 'manana' && r.nombre === 'Persona Chat' && r.abierto, 'al recargar vuelve el formulario pendiente (reply de /history) con el borrador encima; lo opcional, abierto porque trae algo');
+    ok(de('/messages', 'POST').length === enviadosAntes && r.caja, 'retomar no envía nada y deja la caja de texto a la vista');
+    await evaluar(() => { const s = JSON.parse(sessionStorage.getItem('agente-chat')); s.borrador = { id: 'otro-formulario', valores: { company_name: 'Ajena SpA' } }; sessionStorage.setItem('agente-chat', JSON.stringify(s)); return true; });
+    await navegar(local(), { limpiar: false }); await abrir();
+    await formularioListo();
+    r = await leerForm();
+    ok(r.empresa === '' && !JSON.parse(await guardado()).borrador, 'el borrador de otro formulario (otro draft_id) no se usa y se borra');
+    await evaluar(`() => { const f = (${ultimoFormulario})(); f.elements.company_name.value = 'Se cancela SpA'; f.elements.company_name.dispatchEvent(new Event('input', { bubbles: true })); return true; }`);
+    ok(!!JSON.parse(await guardado()).borrador, 'antes de cancelar hay borrador');
+    await tocar('Cancelar');
+    await hasta(() => /Respuesta a «cancelar»/.test(document.querySelector('[data-agente-charla]').textContent), 'cancelado');
+    ok(!JSON.parse(await guardado()).borrador, 'una respuesta que ya no trae ese formulario borra el borrador');
+    await escribir('especialista');
+    await formularioListo();
+    await evaluar(`() => { const f = (${ultimoFormulario})(); f.elements.company_name.value = 'Enviada SpA'; f.elements.company_name.dispatchEvent(new Event('input', { bubbles: true })); f.requestSubmit(); return true; }`);
+    await hasta(() => /Revisa: Persona Chat, Enviada SpA/.test(document.querySelector('[data-agente-charla]').textContent), 'enviado');
+    const s27 = JSON.parse(await guardado());
+    ok(!s27.borrador && !s27.pendiente && !JSON.stringify(s27).includes('Enviada SpA'), 'al enviar el formulario se borra el borrador y, con la respuesta, nada de lo escrito queda en la pestaña');
+  }
+
+  seccion('28. Una pregunta escrita con el formulario abierto');
+  {
+    reiniciarAsistente();
+    await navegar(local()); await abrir(); await entrar();
+    await escribir('especialista');
+    await formularioListo();
+    await evaluar(`() => { const f = (${ultimoFormulario})(); f.elements.company_name.value = 'Mientras SpA'; f.elements.company_name.dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('[data-agente-form] input[name="q"]').focus(); return true; }`);
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: { ...FORMULARIO, text: 'Sí, retiramos aceite usado. Cuando quieras, sigue con tus datos.' }, usage: USO } });
+    await escribir('¿Retiran aceite usado?');
+    await hasta(() => /retiramos aceite usado/.test(document.querySelector('[data-agente-charla]').textContent), 'la respuesta');
+    await hasta(() => {
+      const m = [...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].find((x) => /retiramos aceite usado/.test(x.textContent));
+      const a = m.getBoundingClientRect();
+      const c = document.querySelector('[data-agente-charla]').getBoundingClientRect();
+      return a.top >= c.top - 1 && a.top < c.bottom - 40;
+    }, 'la respuesta a la vista');
+    ok(true, 'la respuesta a la pregunta queda a la vista, aunque el formulario vuelva debajo');
+    const t = de('/messages', 'POST').pop();
+    ok(t.cuerpo.text === '¿Retiran aceite usado?' && !t.cuerpo.form_values && !t.cuerpo.option_id, 'la pregunta va como texto, sin los datos del formulario');
+    const v = await evaluar(`() => ({ foco: document.activeElement?.name, empresa: (${ultimoFormulario})().elements.company_name.value,
+      formularios: document.querySelectorAll('[data-agente-charla] [data-edicion]').length, inactivos: document.querySelectorAll('[data-agente-charla] [data-edicion] fieldset:disabled').length })`);
+    ok(v.foco === 'q', 'el foco sigue en la caja de texto: la pregunta no se lo pasa al formulario');
+    ok(v.empresa === 'Mientras SpA' && v.formularios === 2 && v.inactivos === 1, 'el mismo formulario vuelve debajo de la respuesta con lo que se había escrito; el anterior queda inactivo');
+    /* Un asistente anterior (sin draft_id): lo escrito vuelve igual, desde la memoria de la página */
+    await tocar('Cancelar');
+    await hasta(() => /Respuesta a «cancelar»/.test(document.querySelector('[data-agente-charla]').textContent), 'cancelado');
+    const SIN_ID = { ...FORMULARIO, form: { ...FORMULARIO.form, draft_id: undefined } };
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: SIN_ID, usage: USO } });
+    await escribir('formulario sin borrador');
+    await formularioListo();
+    await evaluar(`() => { const f = (${ultimoFormulario})(); f.elements.company_name.value = 'Memoria SpA'; f.elements.company_name.dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('[data-agente-form] input[name="q"]').focus(); return true; }`);
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: { ...SIN_ID, text: 'También atendemos Lampa.' }, usage: USO } });
+    await escribir('¿Atienden Lampa?');
+    await hasta(() => /También atendemos Lampa/.test(document.querySelector('[data-agente-charla]').textContent), 'la respuesta sin draft_id');
+    await formularioListo();
+    const w = await evaluar(`() => ({ foco: document.activeElement?.name, empresa: (${ultimoFormulario})().elements.company_name.value })`);
+    ok(w.foco === 'q' && w.empresa === 'Memoria SpA' && !JSON.parse(await guardado()).borrador, 'sin draft_id (asistente anterior), lo escrito vuelve desde la memoria de la página, sin guardarse en la pestaña');
+  }
+
+  seccion('29. Recordar la sesión en este dispositivo (remember del asistente)');
+  {
+    const DIA = 86400000;
+    const enDispositivo = () => evaluar(() => localStorage.getItem('agente-chat-sesion'));
+    const datosEnDispositivo = () => evaluar(() => localStorage.getItem('agente-chat-datos'));
+    const entrarRecordando = async (marcar) => {
+      await hasta(() => !!document.querySelector('.agente-puerta'), 'la puerta');
+      await casillaLista();
+      await evaluar((x) => {
+        const f = document.querySelector('.agente-puerta');
+        f.elements.name.value = 'Persona Chat'; f.elements.email.value = 'chat@ejemplo.cl'; f.elements.phone.value = '+56 9 8765 4321';
+        f.elements.privacy_accepted.checked = true; f.elements.remember.checked = x; f.requestSubmit(); return true;
+      }, marcar);
+      await hasta(() => !document.querySelector('.agente-puerta') && !document.querySelector('[data-agente-form]').hidden, 'sesión abierta');
+    };
+    const pie = () => evaluar(() => ({
+      borrar: !document.querySelector('.agente-salir').hidden, descargar: !document.querySelector('[data-agente-descargar]').hidden,
+      olvidar: document.querySelector('[data-agente-olvidar]').hidden ? '' : document.querySelector('[data-agente-olvidar]').textContent
+    }));
+    const retomada = () => hasta(() => /¿En qué te ayudo\?/.test(document.querySelector('[data-agente-charla]').textContent) && !document.querySelector('.agente-puerta') && !document.querySelector('.is-espera'), 'conversación retomada');
+
+    reiniciarAsistente();
+    await navegar(local()); await abrir();
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'la puerta');
+    await casillaLista();
+    const c = await evaluar(() => { const x = document.querySelector('.agente-puerta input[name="remember"]'); return { marcada: x.checked, texto: x.closest('label').textContent, ayuda: document.getElementById(x.getAttribute('aria-describedby'))?.textContent }; });
+    ok(!c.marcada && c.texto.startsWith(RECORDAR.label) && c.ayuda === RECORDAR.help, 'la puerta ofrece «Recordar» sin marcar, con el rótulo y la ayuda del asistente (GET /config → remember)');
+    ok((await evaluar(() => document.querySelector('.agente-puerta button[type="submit"]').textContent)) === 'Comenzar', 'el botón de la puerta dice «Comenzar»');
+    await entrarRecordando(false);
+    ok(!(await enDispositivo()) && !(await datosEnDispositivo()) && !JSON.parse(await guardado()).recordada, 'sin marcar, ni la sesión ni los datos quedan en este dispositivo');
+    let p = await pie();
+    ok(p.borrar && p.descargar && !p.olvidar, 'con la sesión abierta, el pie ofrece «Borrar esta conversación» y «Descargar mis datos»; «Olvidar este dispositivo» no, porque no se recordó');
+
+    reiniciarAsistente();
+    await navegar(local()); await abrir();
+    await entrarRecordando(true);
+    const tab = JSON.parse(await guardado());
+    const dev = JSON.parse(await enDispositivo());
+    ok(Object.keys(dev).sort().join() === 'token,vence' && dev.token === tab.token && dev.vence === tab.vence && tab.recordada === true, 'marcada: el token y su vencimiento también quedan en localStorage, y nada más');
+    const dd = JSON.parse(await datosEnDispositivo());
+    ok(dd.name === 'Persona Chat' && dd.vence > Date.now() + 29 * DIA && dd.vence <= Date.now() + 30 * DIA, 'y los datos de contacto, por los días del asistente (contact_days)');
+    ok(!/Persona|chat@ejemplo/.test(await enDispositivo()) && de('/sessions', 'POST')[0].cuerpo.remember === undefined, 'la sesión recordada no lleva datos personales y la casilla no se envía al asistente');
+    ok((await pie()).olvidar === RECORDAR.forget_label, 'con la sesión recordada, el pie ofrece «Olvidar este dispositivo» (forget_label del asistente)');
+    ok((await evaluar(() => [document.querySelector('.agente-salir'), document.querySelector('[data-agente-descargar]'), document.querySelector('[data-agente-olvidar]')].map((b) => b.textContent).join('|'))) === 'Borrar esta conversación|Descargar mis datos|Olvidar este dispositivo',
+      'los rótulos del pie son exactamente «Borrar esta conversación», «Descargar mis datos» y «Olvidar este dispositivo»');
+    /* Punto 1 de la política: fuera de la pestaña, solo la sesión y los datos de contacto; el borrador y el pendiente, en la pestaña */
+    await escribir('especialista');
+    await formularioListo();
+    await evaluar(`() => { const f = (${ultimoFormulario})(); f.elements.company_name.value = 'Solo Pestaña SpA'; f.elements.company_name.dispatchEvent(new Event('input', { bubbles: true })); return true; }`);
+    S.retardos.push(1500);
+    await escribir('Pregunta que tarda');
+    await hasta(() => !!document.querySelector('[data-agente-charla] .is-espera'), 'el turno en curso');
+    const almacen = await evaluar(() => ({ claves: Object.keys(localStorage).filter((k) => k.startsWith('agente')).sort(), local: JSON.stringify(localStorage), pestana: sessionStorage.getItem('agente-chat') || '' }));
+    ok(almacen.claves.join() === 'agente-chat-datos,agente-chat-sesion' && !/Solo Pestaña|Pregunta que tarda/.test(almacen.local) && /Solo Pestaña/.test(almacen.pestana) && /Pregunta que tarda/.test(almacen.pestana),
+      'fuera de la pestaña quedan solo la sesión (token y vencimiento) y los datos de contacto; el borrador y el mensaje pendiente, solo en la pestaña');
+    await hasta(() => /Respuesta a «Pregunta que tarda»/.test(document.querySelector('[data-agente-charla]').textContent), 'la respuesta');
+
+    S.historial = [{ role: 'assistant', ...MENU }];
+    await evaluar(() => { sessionStorage.clear(); return true; });
+    await navegar(local(), { limpiar: false }); await abrir();
+    await retomada();
+    ok(de('/history', 'GET').pop()?.token === dev.token && de('/sessions', 'POST').length === 1, 'una pestaña nueva retoma la sesión recordada (GET /history con ese token) sin pedir los datos');
+    ok(JSON.parse(await guardado()).recordada === true && (await pie()).olvidar !== '', 'y la anota en la pestaña como recordada, con «Olvidar este dispositivo» a la vista');
+    ok(JSON.parse(await datosEnDispositivo()).vence === dd.vence && JSON.parse(await enDispositivo()).vence === dev.vence, 'retomar y conversar no renuevan nada: los datos se renuevan solo al abrir una sesión con la casilla marcada, y la sesión vence cuando dijo el asistente');
+
+    S.tokens.add('tok-pestana');
+    await evaluar(() => { sessionStorage.setItem('agente-chat', JSON.stringify({ token: 'tok-pestana', vence: new Date(Date.now() + 3600e3).toISOString(), fotos: 0 })); return true; });
+    await navegar(local(), { limpiar: false }); await abrir();
+    await retomada();
+    ok(de('/history', 'GET').pop()?.token === 'tok-pestana' && JSON.parse(await enDispositivo()).token === dev.token && !(await pie()).olvidar, 'al cargar manda la sesión de la pestaña; la recordada sigue guardada para las demás');
+
+    await evaluar(() => { sessionStorage.clear(); return true; });
+    await navegar(local(), { limpiar: false }); await abrir();
+    await retomada();
+    await desdeOtroDocumento(`(w) => w.localStorage.removeItem('agente-chat-sesion')`);
+    await hasta(() => !!document.querySelector('.agente-puerta') && /La sesión recordada se cerró/.test(document.querySelector('[data-agente-charla]').textContent), 'cerrada desde otro documento');
+    ok(!(await guardado()) && (await evaluar(() => document.querySelector('.agente-puerta').elements.name.value)) === 'Persona Chat', 'si otra pestaña quita la sesión recordada (evento storage), esta también la cierra y vuelve a la puerta, con los datos de contacto precargados');
+
+    const puertaPrecargada = await evaluar(() => { const f = document.querySelector('.agente-puerta'); return { privacidad: f.elements.privacy_accepted.checked, olvidar: f.querySelector('.agente-olvidar')?.textContent || '' }; });
+    ok(!puertaPrecargada.privacidad && !de('/sessions', 'POST').slice(1).length, 'los datos recordados solo precargan la puerta: no se envían ni se aceptan las condiciones hasta tocar «Comenzar»');
+    await casillaLista();
+    ok((await evaluar(() => document.querySelector('.agente-puerta .agente-olvidar').textContent)) === 'Olvidar este dispositivo', 'en la puerta precargada, el botón para quitarlos es «Olvidar este dispositivo»');
+    await evaluar(() => { document.querySelector('.agente-puerta .agente-olvidar').click(); return true; });
+    ok(!(await enDispositivo()) && !(await datosEnDispositivo()) && (await evaluar(() => document.querySelector('.agente-puerta').elements.name.value)) === '', 'y quita las dos cosas (sesión y datos recordados) y vacía la puerta');
+    await entrarRecordando(true);
+    ok(JSON.parse(await datosEnDispositivo()).vence > dd.vence, 'abrir una sesión con la casilla marcada vuelve a contar los días de los datos de contacto');
+    llamadas.length = 0;
+    await evaluar(() => { document.querySelector('[data-agente-olvidar]').click(); return true; });
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'la puerta tras olvidar');
+    ok(!(await enDispositivo()) && !(await datosEnDispositivo()) && !(await guardado()) && /ya no recordamos tu sesión ni tus datos/.test(await charlaTexto())
+      && (await evaluar(() => document.querySelector('.agente-puerta').elements.name.value)) === '', '«Olvidar este dispositivo» con la sesión abierta: quita la sesión y los datos recordados, cierra el chat aquí y la puerta vuelve vacía');
+    ok(!de('/session', 'DELETE').length && /no borra la conversación/.test(await charlaTexto()), 'y no borra nada en el asistente (lo dice)');
+
+    await entrarRecordando(true);
+    S.tokens.delete(JSON.parse(await guardado()).token);
+    await evaluar(() => { sessionStorage.clear(); return true; });
+    await navegar(local(), { limpiar: false }); await abrir();
+    await hasta(() => !!document.querySelector('.agente-puerta') && /Tu sesión terminó/.test(document.querySelector('[data-agente-charla]').textContent), 'el 401');
+    ok(!(await enDispositivo()) && !(await guardado()), 'una sesión recordada que el asistente ya no reconoce (401) se quita de este dispositivo');
+    ok(!!(await datosEnDispositivo()) && (await evaluar(() => document.querySelector('.agente-puerta').elements.name.value)) === 'Persona Chat', 'los datos de contacto siguen, para precargar la puerta');
+    await entrarRecordando(false);
+    ok(!(await enDispositivo()) && !(await datosEnDispositivo()), 'abrir otra sesión sin marcar la casilla quita lo recordado');
+    await evaluar(() => { document.querySelector('.agente-salir').click(); return true; });
+    await tocar('Sí, borrar');
+    await hasta(() => /Listo: borramos esta conversación/.test(document.querySelector('[data-agente-charla]').textContent) && !!document.querySelector('.agente-puerta'), 'borrada la que no se recordó');
+
+    await entrarRecordando(true);
+    ok(!!(await enDispositivo()) && !!(await datosEnDispositivo()), 'antes de borrar hay sesión y datos recordados');
+    await evaluar(() => { document.querySelector('.agente-salir').click(); return true; });
+    await tocar('Sí, borrar');
+    await hasta(() => /Listo: borramos esta conversación/.test(document.querySelector('[data-agente-charla]').textContent) && !!document.querySelector('.agente-puerta'), 'borrada');
+    ok(!(await enDispositivo()) && !(await datosEnDispositivo()), '«Borrar esta conversación» quita también la sesión y los datos recordados');
+
+    /* remember.enabled sin textos: los de respaldo, que son los de la política */
+    reiniciarAsistente();
+    S.remember = { enabled: true, label: '', help: '', forget_label: '', contact_days: 30 };
+    await navegar(local()); await abrir();
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'la puerta');
+    await casillaLista();
+    const r = await evaluar(() => { const x = document.querySelector('.agente-puerta input[name="remember"]'); return { rotulo: x.nextElementSibling.firstChild.textContent, ayuda: document.getElementById(x.getAttribute('aria-describedby')).textContent }; });
+    ok(r.rotulo === 'Recordar mi sesión y conversación (opcional)' && r.ayuda === 'Guarda en este navegador el acceso a esta conversación mientras siga vigente y tus datos de contacto para un próximo registro. Úsalo solo en un navegador personal.',
+      'sin label ni help del asistente, la casilla usa los textos de respaldo');
+    await entrarRecordando(true);
+    ok(!!(await enDispositivo()) && (await pie()).olvidar === 'Olvidar este dispositivo', 'y sin forget_label, el pie dice «Olvidar este dispositivo»');
+    ok(!errores.length, `sin errores de JavaScript${errores.length ? `: ${errores.slice(0, 3).join(' | ')}` : ''}`);
+  }
+
+  seccion('30. Retomar con la última respuesta (reply de /history)');
+  {
+    reiniciarAsistente();
+    await navegar(local()); await abrir(); await entrar();
+    S.historial = [
+      { role: 'assistant', text: 'Hola, soy el asistente.', options: [{ id: 'x', label: 'Vieja' }], sources: [] },
+      { role: 'user', text: 'Quiero cotizar' },
+      { role: 'assistant', text: 'Elige cómo seguimos.' }  // como la plantilla: los mensajes sin opciones ni formulario
+    ];
+    S.reply = { text: 'Elige cómo seguimos.', intent: 'quote', sources: [], options: [{ id: 'mas', label: 'Ver más' }, { id: 'cotizar', label: 'Cotizar retiro', primary: true }] };
+    await navegar(local(), { limpiar: false }); await abrir();
+    await hasta(() => /Elige cómo seguimos/.test(document.querySelector('[data-agente-charla]').textContent) && !document.querySelector('.is-espera'), 'retomada');
+    const v = await evaluar(() => ({
+      opciones: [...document.querySelectorAll('[data-agente-charla] [data-opcion]')].map((b) => b.textContent),
+      bot: document.querySelectorAll('[data-agente-charla] .msg.is-bot').length,
+      ultimo: [...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].pop().querySelectorAll('[data-opcion]').length
+    }));
+    ok(v.opciones.join('|') === 'Cotizar retiro|Ver más' && v.bot === 2 && v.ultimo === 2, 'las opciones salen de reply y van en su propio mensaje (la primary primero); las de mensajes anteriores no se muestran');
+    ok(!de('/messages', 'POST').length && !(await evaluar(() => document.querySelector('[data-agente-descargar]').hidden)), 'retomar no envía nada, y con reply (asistente nuevo) se ofrece «Descargar mis datos»');
+    S.historial = [];
+    S.reply = MENU;
+    await navegar(local(), { limpiar: false }); await abrir();
+    await hasta(() => /¿En qué te ayudo\?/.test(document.querySelector('[data-agente-charla]').textContent) && !document.querySelector('.is-espera'), 'el saludo');
+    ok(!de('/messages', 'POST').length && (await botones()).join('|') === 'Retiro de residuos|Normativa', 'sin mensajes pero con reply (el saludo de la apertura): lo muestra con sus opciones, sin pedir el menú con «inicio»');
+    /* De a 50: next_before trae «Ver mensajes anteriores», que pide ?before= y los agrega arriba, sin opciones */
+    S.historial = [{ role: 'user', text: 'Pregunta reciente' }, { role: 'assistant', text: 'Respuesta reciente.', options: [], sources: [] }];
+    S.reply = undefined;
+    S.anteriores = [{ role: 'user', text: 'Pregunta antigua' }, { role: 'assistant', text: 'Respuesta antigua.', options: [{ id: 'z', label: 'Opción antigua' }], sources: [] }];
+    await navegar(local(), { limpiar: false }); await abrir();
+    await hasta(() => /Respuesta reciente/.test(document.querySelector('[data-agente-charla]').textContent) && !document.querySelector('.is-espera'), 'la página reciente');
+    ok((await evaluar(() => document.querySelector('[data-agente-charla]').firstElementChild.textContent)) === 'Ver mensajes anteriores', 'con next_before, arriba aparece «Ver mensajes anteriores»');
+    await evaluar(() => { document.querySelector('[data-agente-charla] .agente-anteriores button').click(); return true; });
+    await hasta(() => /Pregunta antigua/.test(document.querySelector('[data-agente-charla]').textContent), 'la página anterior');
+    const pag = de('/history', 'GET').pop();
+    ok(pag.consulta === '?before=pagina-2' && pag.token === JSON.parse(await guardado()).token, 'pide la página anterior con ?before= y el token');
+    ok((await textos()).join('|') === '> Pregunta antigua|Respuesta antigua.|> Pregunta reciente|Respuesta reciente.' && !(await evaluar(() => !!document.querySelector('.agente-anteriores')))
+      && !(await evaluar(() => [...document.querySelectorAll('[data-opcion]')].some((b) => b.textContent === 'Opción antigua'))), 'los anteriores van arriba, en orden y sin opciones; sin más páginas, el botón se va');
+  }
+
+  seccion('31. Descargar mis datos (GET /api/chat/session)');
+  {
+    reiniciarAsistente();
+    await navegar(local()); await abrir(); await entrar();
+    await hasta(() => !document.querySelector('[data-agente-descargar]').hidden, 'el botón');
+    const antes = await evaluar(() => window.__descargas.length);
+    await evaluar(() => { document.querySelector('[data-agente-descargar]').click(); return true; });
+    await hasta((n) => window.__descargas.length === n + 1 && window.__descargas[n].texto !== null, 'la descarga', 8000, antes);
+    const d = await evaluar((n) => window.__descargas[n], antes);
+    const g = de('/session', 'GET');
+    ok(g.length === 1 && g[0].token === JSON.parse(await guardado()).token, '«Descargar mis datos» pide GET /api/chat/session con el token de la sesión');
+    ok(d.nombre === 'mis-datos-del-chat.json' && d.tipo === 'application/json' && d.conectado && JSON.stringify(JSON.parse(d.texto)) === JSON.stringify(COPIA), 'y descarga «mis-datos-del-chat.json» con la copia que entrega el asistente');
+    S.guion.push({ ruta: '/api/chat/session', metodo: 'GET', status: 409, json: { error: 'busy' } });
+    await evaluar(() => { document.querySelector('[data-agente-descargar]').click(); return true; });
+    await hasta(() => /Hay una respuesta en curso/.test([...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].pop().textContent), 'busy al descargar');
+    ok((await evaluar(() => window.__descargas.length)) === antes + 1 && (await botones()).includes('Reintentar'), '409 busy (un turno en curso): avisa y ofrece «Reintentar», sin descargar nada');
+    await tocar('Reintentar');
+    await hasta((n) => window.__descargas.length === n + 2, 'la descarga reintentada', 8000, antes);
+    ok(de('/session', 'GET').length === 3, '«Reintentar» la pide otra vez y descarga');
+    S.guion.push({ ruta: '/api/chat/session', metodo: 'GET', status: 404, json: { message: 'Not Found' } });
+    await evaluar(() => { document.querySelector('[data-agente-descargar]').click(); return true; });
+    await hasta(() => document.querySelector('[data-agente-descargar]').hidden, 'oculto tras el 404');
+    const aviso404 = await evaluar(() => { const m = [...document.querySelectorAll('[data-agente-charla] .msg.is-bot')].pop(); return { texto: m.textContent, enlace: m.querySelector('a')?.getAttribute('href') || '' }; });
+    ok(/todavía no se puede descargar/.test(aviso404.texto) && /legal\/politica-de-privacidad\.html$/.test(aviso404.enlace) && (await evaluar(() => window.__descargas.length)) === antes + 2,
+      'si el asistente no tiene la copia (404), el botón se oculta y se explica cómo pedirla, sin descargar nada');
+  }
+
+  seccion('32. Asistente anterior: sin remember, sin reply y sin GET /session');
+  {
+    reiniciarAsistente();
+    S.antiguo = true;
+    await navegar(local()); await abrir();
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'la puerta');
+    await casillaLista();
+    const rotulo = await evaluar(() => document.querySelector('.agente-puerta input[name="remember"]').closest('label').textContent);
+    ok(/^Recordar mi nombre, correo y teléfono en este dispositivo por 30 días/.test(rotulo), 'la casilla es la de antes, con su texto: solo los datos de contacto');
+    await evaluar(() => {
+      const f = document.querySelector('.agente-puerta');
+      f.elements.name.value = 'Persona Chat'; f.elements.email.value = 'chat@ejemplo.cl'; f.elements.phone.value = '+56 9 8765 4321';
+      f.elements.privacy_accepted.checked = true; f.elements.remember.checked = true; f.requestSubmit(); return true;
+    });
+    await hasta(() => !document.querySelector('.agente-puerta') && !document.querySelector('[data-agente-form]').hidden, 'sesión abierta');
+    ok(!(await evaluar(() => localStorage.getItem('agente-chat-sesion'))) && !!(await evaluar(() => localStorage.getItem('agente-chat-datos'))) && !JSON.parse(await guardado()).recordada,
+      'marcada, guarda solo los datos de contacto: la sesión no se recuerda');
+    ok(await evaluar(() => !document.querySelector('.agente-salir').hidden && document.querySelector('[data-agente-descargar]').hidden && document.querySelector('[data-agente-olvidar]').hidden),
+      'el pie ofrece solo «Borrar esta conversación»: sin la copia de los datos no hay «Descargar mis datos»');
+    const VIEJO = {
+      text: 'Revisa tus datos.', intent: 'lead_qualification', sources: [], options: [{ id: 'contacto:name', label: 'Nombre' }, { id: 'cancelar', label: 'Cancelar' }],
+      form: { action: 'guardar_datos', fields: [
+        { name: 'name', label: 'Nombre', type: 'text', value: 'Persona Chat', required: true, max_length: 150 },
+        { name: 'company_name', label: 'Empresa', type: 'text', value: '', required: true, max_length: 150 }
+      ] }
+    };
+    S.guion.push({ ruta: '/api/chat/messages', status: 200, json: { reply: VIEJO, usage: USO } });
+    await escribir('corregir');
+    await formularioListo();
+    const f = await evaluar(`() => { const f = (${ultimoFormulario})(); return { titulo: f.querySelector('legend').textContent, boton: f.querySelector('button[type="submit"]').textContent, detalles: !!f.querySelector('details'), caja: !document.querySelector('[data-agente-form]').hidden }; }`);
+    ok(f.titulo === 'Revisa tus datos' && f.boton === 'Guardar cambios' && !f.detalles && f.caja && (await botones()).join('|') === 'Cancelar',
+      'un formulario sin título ni rótulos usa los textos de respaldo, con la caja de texto a la vista y sin los botones de corregir dato por dato');
+    await evaluar(`() => { const f = (${ultimoFormulario})(); f.elements.company_name.value = 'Vieja SpA'; f.elements.company_name.dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('[data-agente-form] input[name="q"]').focus(); return true; }`);
+    ok(!JSON.parse(await guardado()).borrador, 'sin draft_id no se guarda borrador en la pestaña');
+    S.historial = [
+      { role: 'assistant', text: 'Hola.', options: [{ id: 'a', label: 'A' }], sources: [] },
+      { role: 'assistant', text: 'Último.', options: [{ id: 'b', label: 'B' }], sources: [] }
+    ];
+    await navegar(local(), { limpiar: false }); await abrir();
+    await hasta(() => /Último\./.test(document.querySelector('[data-agente-charla]').textContent) && !document.querySelector('.is-espera'), 'retomada sin reply');
+    ok((await botones()).join('|') === 'B' && (await evaluar(() => document.querySelector('[data-agente-descargar]').hidden)), 'sin reply retoma como antes: las opciones del último mensaje');
+    await evaluar(() => { sessionStorage.clear(); return true; });
+    await navegar(local(), { limpiar: false }); await abrir();
+    await hasta(() => !!document.querySelector('.agente-puerta'), 'la puerta en otra pestaña');
+    ok((await evaluar(() => document.querySelector('.agente-puerta').elements.name.value)) === 'Persona Chat', 'en una pestaña nueva vuelve la puerta (la sesión no se recordó), precargada con los datos de contacto');
+    ok(!de('/session', 'GET').length, 'con un asistente anterior nunca se llama GET /session');
+    ok(!errores.length, `sin errores de JavaScript${errores.length ? `: ${errores.slice(0, 3).join(' | ')}` : ''}`);
   }
 } catch (e) {
   ok(false, `las pruebas se interrumpieron: ${e.stack || e}`);
