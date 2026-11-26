@@ -1,6 +1,6 @@
 /* Agente conectado al asistente: assets/site/agente-chat.js. Va después de agente.css y solo suma lo propio de esta
    versión: la puerta con los datos, el texto en varias líneas, las fuentes con su enlace, las opciones que ya no
-   corresponden y el botón para adjuntar una foto. */
+   corresponden, el formulario de una respuesta, el pie (borrar, descargar, olvidar) y el botón para adjuntar una foto. */
 
 .agente .msg-texto { white-space: pre-line; overflow-wrap: anywhere; }
 .agente .msg-texto strong { color: var(--ink); font-weight: 800; }
@@ -22,6 +22,8 @@
 
 /* Opciones de una respuesta anterior (ya no corresponden) y botones mientras se espera la respuesta */
 .agente .chip:disabled { opacity: .5; cursor: default; pointer-events: none; }
+/* La opción que lleva a la solicitud (`primary`): primero y con el borde del sitio */
+.agente .chip.is-principal { border-color: var(--accent); color: var(--accent-strong); }
 
 /* La puerta: nombre, correo, teléfono y el aviso de privacidad */
 .agente-puerta { display: grid; gap: 10px; }
@@ -31,6 +33,9 @@
 .agente-campo input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
 .agente-acepto { display: flex; align-items: flex-start; gap: 8px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.45; }
 .agente-acepto input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); }
+.agente-acepto input:disabled { opacity: .5; }
+.agente-recuerdo-ayuda { display: block; margin-top: 2px; color: var(--muted); font-size: var(--fs-caption); }
+.agente-recuerdo-ayuda:empty { display: none; }
 /* «Olvidar mis datos en este dispositivo» (solo si hay datos recordados) y su confirmación */
 .agente-olvidar { justify-self: start; padding: 0; border: 0; background: none; color: var(--ink-2); font: 600 var(--fs-small)/1.45 var(--font); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .agente-olvidar:hover { color: var(--ink); }
@@ -50,14 +55,23 @@
 
 .agente-salir { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 .agente-salir:hover { color: var(--ink); }
+.agente-salir:disabled { opacity: .6; cursor: default; }
+/* Borrar, descargar y olvidar este dispositivo: en una línea, o en dos en el teléfono */
+.agente-pie { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 14px; }
 
 /* Correcciones del borrador antes de confirmar el envío. */
 .agente-edicion { width: 100%; }
 .agente-edicion fieldset { display: grid; gap: 12px; min-width: 0; margin: 0; padding: 14px; border: 1px solid #767b88; border-radius: 14px; background: #fff; }
 .agente-edicion legend { padding: 0 6px; color: var(--ink); font: 800 var(--fs-small)/1.4 var(--font); }
-.agente-edicion input, .agente-edicion textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid #767b88; border-radius: 10px; color: var(--ink); background: #fff; font: 600 1rem/1.4 var(--font); }
+.agente-edicion input, .agente-edicion textarea, .agente-edicion select { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid #767b88; border-radius: 10px; color: var(--ink); background: #fff; font: 600 1rem/1.4 var(--font); }
+.agente-edicion input::placeholder, .agente-edicion textarea::placeholder { color: var(--muted); font-weight: 500; }
 .agente-edicion textarea { min-height: 100px; resize: vertical; }
-.agente-edicion input:focus-visible, .agente-edicion textarea:focus-visible, .agente-edicion button:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 2px; }
+.agente-edicion input:focus-visible, .agente-edicion textarea:focus-visible, .agente-edicion select:focus-visible, .agente-edicion button:focus-visible, .agente-mas summary:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 2px; }
+.agente-edicion fieldset > .agente-nota { margin-top: -4px; }
+/* Lo opcional del formulario, plegado (se abre solo si trae algo o un error) */
+.agente-mas > summary { width: fit-content; color: var(--accent-strong); font: 800 var(--fs-small)/1.4 var(--font); cursor: pointer; }
+.agente-mas > .agente-nota { margin-top: 6px; }
+.agente-mas > .agente-campo { margin-top: 12px; }
 .agente-edicion [aria-invalid="true"] { border-color: #b42318; }
 .agente-edicion .btn { justify-self: start; min-height: 44px; }
 .agente-edicion fieldset:disabled { opacity: .65; }
