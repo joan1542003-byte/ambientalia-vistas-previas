@@ -74,13 +74,44 @@ const sitio = createServer((req, res) => {
 });
 
 /* El asistente: registra cada llamada y responde como Laravel. `guion` fuerza la respuesta de la próxima llamada a
-   una ruta ({ ruta, metodo?, status, json?, html?, retardo?, cortar?, procesar? }); `retardos`, cuánto tarda el modelo */
+   una ruta ({ ruta, metodo?, status, json?, html?, retardo?, cortar?, procesar? }); `retardos`, cuánto tarda el modelo.
+   Responde con el contrato nuevo (25-11-2026): GET /config con `remember`, GET /history con `reply` (la última
+   respuesta: `S.reply` o la última del asistente en `S.historial`) y GET /session con la copia de los datos. Con
+   `S.antiguo`, como el asistente anterior: sin `remember` ni `reply`, y GET /session responde 405 */
 const llamadas = [];
-const S = { tokens: new Set(), n: 0, procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], subidas: new Map(), fotos: 0, cortarHasta: 0 };
+const S = { tokens: new Set(), n: 0, procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], subidas: new Map(), fotos: 0, cortarHasta: 0, reply: undefined, antiguo: false };
 const USO = { max: 10, used: 1, remaining: 9, resets_at: null };
 const LIMITES_FOTOS = { max_per_session: 2, max_kilobytes: 5120, max_pixels: 50000000, mimes: ['jpg', 'jpeg', 'png', 'webp'] };
 S.limites = { ...LIMITES_FOTOS };
 const MENU = { text: 'Hola, soy el asistente. ¿En qué te ayudo?', options: [{ id: 'residuos', label: 'Retiro de residuos' }, { id: 'normativa', label: 'Normativa' }], sources: [], intent: 'main_menu', lead_status: null };
+/* «Recordar» del asistente nuevo (GET /config → remember) */
+const RECORDAR = {
+  enabled: true, label: 'Recordar mi sesión y mis datos en este dispositivo (opcional)',
+  help: 'Retoma el chat en este navegador mientras la sesión siga vigente; tus datos de contacto se guardan 30 días. No lo uses en un equipo compartido.',
+  forget_label: 'Olvidar este dispositivo', contact_days: 30
+};
+/* El formulario de contacto en una sola pantalla (LeadForm::present): empresa obligatoria, lo opcional plegado y un select */
+const FORMULARIO = {
+  text: 'Déjanos tus datos y un especialista te contacta.', intent: 'lead_form', sources: [], lead_status: 'collecting',
+  options: [{ id: 'cancelar', label: 'Cancelar' }],
+  form: {
+    action: 'guardar_datos', title: 'Tus datos de contacto', description: 'Revisa lo que ya sabemos y completa tu empresa.', submit_label: 'Revisar y enviar', draft_id: 'lead-7',
+    optional_section: { title: 'Agregar más detalles (opcional)', hint: 'Si nos cuentas el residuo, preparamos mejor la llamada.' },
+    fields: [
+      { name: 'name', label: 'Nombre', type: 'text', value: 'Persona Chat', required: true, max_length: 150, error: '' },
+      { name: 'company_name', label: 'Empresa', type: 'text', value: '', required: true, max_length: 150, error: '', placeholder: 'Razón social o nombre de fantasía' },
+      { name: 'phone_number', label: 'Teléfono', type: 'tel', value: '+56 9 8765 4321', required: true, max_length: 30, error: '' },
+      { name: 'email', label: 'Correo', type: 'email', value: 'chat@ejemplo.cl', required: true, max_length: 150, error: '' },
+      { name: 'contact_time', label: '¿Cuándo te llamamos?', type: 'select', value: '', required: false, max_length: 20, error: '', placeholder: 'Cuando puedan',
+        options: [{ value: 'manana', label: 'En la mañana' }, { value: 'tarde', label: 'En la tarde' }] },
+      { name: 'handoff_reason', label: 'Motivo', type: 'textarea', value: '', required: false, max_length: 2000, error: '', placeholder: 'Ej.: retiro de 3 tambores de aceite usado en Lampa' }
+    ]
+  }
+};
+/* El mismo formulario con valores y errores del servicio */
+const formularioCon = (valores = {}, errores = {}) => ({ ...FORMULARIO, form: { ...FORMULARIO.form, fields: FORMULARIO.form.fields.map((f) => ({ ...f, value: valores[f.name] ?? f.value, error: errores[f.name] || '' })) } });
+/* La copia de los datos (GET /api/chat/session) */
+const COPIA = { generado: '2026-11-25T12:00:00-03:00', registro: { nombre: 'Persona Chat', correo: 'chat@ejemplo.cl', telefono: '+56 9 8765 4321' }, mensajes: [{ rol: 'tú', texto: 'Hola' }] };
 const XSS = {
   text: 'Mira <img src=x onerror="window.__xss=1"> y <script>window.__xss=2</script> en https://evil.example/robar y javascript:window.__xss=3 & «comillas» "dobles" \'simples\' ñandú 10 < 20 > 5 **en negrita <b>no</b>**',
   sources: [
@@ -113,6 +144,13 @@ const respuestaPara = (c) => {
   if (c.text === 'xss') return XSS;
   if (c.text === 'fuentes') return FUENTES;
   if (c.option_id === 'residuos') return { text: 'Elegiste retiro de residuos.', options: [{ id: 'peligrosos', label: 'Peligrosos' }, { id: 'no-peligrosos', label: 'No peligrosos' }], sources: [] };
+  if (c.text === 'especialista') return FORMULARIO;
+  /* Guardar el formulario: sin empresa vuelve con el error; con ella, el resumen para confirmar (lo que lleva a enviar es `primary`) */
+  if (c.option_id === 'guardar_datos' && c.form_values && typeof c.form_values === 'object') {
+    if (!String(c.form_values.company_name || '').trim()) return formularioCon(c.form_values, { company_name: 'Escribe el nombre de tu empresa.' });
+    return { text: `Revisa: ${c.form_values.name}, ${c.form_values.company_name}. ¿Lo enviamos?`, intent: 'lead_confirm', sources: [],
+      options: [{ id: 'cancelar', label: 'Cancelar' }, { id: 'corregir', label: 'Corregir' }, { id: 'confirmar', label: 'Sí, enviar', primary: true }] };
+  }
   return { text: `Respuesta a «${c.text || c.option_id}».`, options: [{ id: 'otra', label: 'Otra consulta' }], sources: [] };
 };
 const asistente = createServer(async (req, res) => {
@@ -169,7 +207,7 @@ const asistente = createServer(async (req, res) => {
     json(g.status, g.json || {});
     return;
   }
-  if (url.pathname === '/api/chat/config' && req.method === 'GET') { json(200, { attachments: S.limites }); return; }
+  if (url.pathname === '/api/chat/config' && req.method === 'GET') { json(200, { attachments: S.limites, ...(S.antiguo ? {} : { remember: RECORDAR }) }); return; }
   /* El formulario «Cotiza tu retiro» (POST /api/quotes): con el token de una sesión del chat queda ligada a ella y
      trae el mensaje que el chat muestra (D-17 del asistente); sin token, como desde el sitio */
   if (url.pathname === '/api/quotes' && req.method === 'POST') {
@@ -183,9 +221,17 @@ const asistente = createServer(async (req, res) => {
     json(201, { token: t, expires_at: new Date(Date.now() + 3600e3).toISOString(), reply: MENU, usage: { ...USO, used: 0, remaining: 10 } });
     return;
   }
+  /* El asistente anterior solo tiene DELETE /session: Laravel responde 405 antes de mirar el token */
+  if (S.antiguo && url.pathname === '/api/chat/session' && req.method === 'GET') { json(405, { message: 'The GET method is not supported for route api/chat/session. Supported methods: DELETE.' }); return; }
   if (!S.tokens.has(token)) { json(401, { error: 'session_expired' }); return; }
   if (url.pathname === '/api/chat/messages' && req.method === 'POST') { const r = await turno(); json(r.status, r.json); return; }
-  if (url.pathname === '/api/chat/history' && req.method === 'GET') { json(200, { messages: S.historial, usage: USO, photos: S.fotos }); return; }
+  if (url.pathname === '/api/chat/history' && req.method === 'GET') {
+    const ultimaDelAsistente = [...S.historial].reverse().find((m) => m.role === 'assistant');
+    const reply = S.reply !== undefined ? S.reply : ultimaDelAsistente ? (({ role, client_message_id, ...r }) => r)(ultimaDelAsistente) : null;
+    json(200, { messages: S.historial, usage: USO, photos: S.fotos, ...(S.antiguo ? {} : { reply, next_before: null }) });
+    return;
+  }
+  if (url.pathname === '/api/chat/session' && req.method === 'GET') { json(200, COPIA); return; }
   if (url.pathname === '/api/chat/session' && req.method === 'DELETE') {
     if (cuerpo.confirm !== true) { json(422, { error: 'confirmation_required' }); return; }
     S.tokens.delete(token);
@@ -207,7 +253,7 @@ const API = `http://127.0.0.1:${asistente.address().port}`;
 const de = (ruta, metodo) => llamadas.filter((l) => l.ruta === `/api/chat${ruta}` && (!metodo || l.metodo === metodo));
 const reiniciarAsistente = () => {
   llamadas.length = 0;
-  Object.assign(S, { subidas: new Map(), procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0, limites: { ...LIMITES_FOTOS } });
+  Object.assign(S, { subidas: new Map(), procesados: new Map(), enCurso: new Set(), ejecuciones: 0, duplicados: 0, guion: [], retardos: [], historial: [], fotos: 0, cortarHasta: 0, limites: { ...LIMITES_FOTOS }, reply: undefined, antiguo: false });
 };
 
 /* ======================= Navegador ======================= */
@@ -254,8 +300,20 @@ await cdp('Runtime.enable');
 await cdp('Network.enable');
 await cdp('Network.setBlockedURLs', { urls: ['*fonts.googleapis.com*', '*fonts.gstatic.com*', '*jsdelivr.net*', '*unpkg.com*', '*openstreetmap.org*', '*challenges.cloudflare.com*', '*wa.me*', '*bcn.cl*', '*evil.example*', '*wordpress.ejemplo*'] });
 await cdp('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+/* Ventanas abiertas, violaciones de CSP y descargas: «Descargar mis datos» arma un blob: y hace clic en un enlace con
+   download; aquí se anota su nombre y su contenido y no se descarga nada */
 await cdp('Page.addScriptToEvaluateOnNewDocument', { source: `window.__abiertas = []; window.open = (...a) => { window.__abiertas.push(String(a[0])); return null; };
-  window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => window.__csp.push(e.violatedDirective + ' ' + e.blockedURI));` });
+  window.__csp = []; document.addEventListener('securitypolicyviolation', (e) => window.__csp.push(e.violatedDirective + ' ' + e.blockedURI));
+  window.__descargas = []; const __blobs = new Map(); const __crear = URL.createObjectURL.bind(URL);
+  URL.createObjectURL = (b) => { const u = __crear(b); __blobs.set(u, b); return u; };
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest && e.target.closest('a[download]');
+    if (!a) return;
+    e.preventDefault();
+    const d = { nombre: a.download, conectado: a.isConnected, tipo: __blobs.get(a.href)?.type || '', texto: null };
+    window.__descargas.push(d);
+    __blobs.get(a.href)?.text().then((t) => { d.texto = t; });
+  }, true);` });
 let wp = null;
 const conWordPress = async (config) => {
   if (wp) { await cdp('Page.removeScriptToEvaluateOnNewDocument', { identifier: wp }); wp = null; }
@@ -263,7 +321,7 @@ const conWordPress = async (config) => {
 };
 const pestanas = async () => (await (await fetch(`http://127.0.0.1:${puerto}/json/list`)).json()).filter((t) => t.type === 'page' && t.id !== objetivos[0].id);
 const navegar = async (url, { limpiar = true } = {}) => {
-  if (limpiar) await evaluar(() => { try { sessionStorage.clear(); localStorage.removeItem('agente-chat-datos'); } catch { /* about:blank */ } return true; });
+  if (limpiar) await evaluar(() => { try { sessionStorage.clear(); localStorage.removeItem('agente-chat-datos'); localStorage.removeItem('agente-chat-sesion'); } catch { /* about:blank */ } return true; });
   const cargada = new Promise((r) => { const f = (m) => { if (m.method === 'Page.loadEventFired') { oyentes.delete(f); r(); } }; oyentes.add(f); });
   await cdp('Page.navigate', { url });
   await cargada;
@@ -386,7 +444,8 @@ try {
     const s = de('/sessions', 'POST');
     ok(s.length === 1 && s[0].cuerpo.name === 'Persona Chat' && s[0].cuerpo.privacy_accepted === true && s[0].cuerpo.marketing_accepted === false && s[0].cuerpo.website === '' && s[0].origen === SITIO,
       'la puerta abre la sesión con POST /api/chat/sessions (datos, aviso aceptado, contacto comercial sin marcar, campo trampa vacío) desde el origen del sitio');
-    ok((await enCarpeta()) === 'fotos,token,vence' && !/chat@ejemplo|Persona/.test(await guardado()), 'en la pestaña queda solo el token, su vencimiento y el número de fotos: ni nombre ni correo');
+    ok((await enCarpeta()) === 'fotos,token,vence' && !/chat@ejemplo|Persona/.test(await guardado()), 'sin «Recordar» y sin formulario abierto, la pestaña guarda el token, su vencimiento y el número de fotos: ni nombre ni correo');
+    ok(!(await evaluar(() => localStorage.getItem('agente-chat-sesion') || localStorage.getItem('agente-chat-datos'))), 'con la casilla sin marcar, nada queda en este dispositivo (ni la sesión ni los datos)');
     ok((await botones()).join('|') === 'Retiro de residuos|Normativa', 'el saludo trae las opciones del asistente');
     await escribir('¿Qué es un residuo peligroso?');
     await hasta(() => /Respuesta a «¿Qué es un residuo peligroso\?»/.test(document.querySelector('[data-agente-charla]').textContent), 'respuesta');
@@ -510,7 +569,7 @@ try {
   {
     const editor = {
       text: 'Revisa y corrige tus datos. Guardar cambios no envía la solicitud.', intent: 'lead_qualification', sources: [],
-      form: { action: 'guardar_datos', submit_label: 'Guardar cambios', fields: [
+      form: { action: 'guardar_datos', submit_label: 'Guardar cambios', draft_id: 'edicion-1', fields: [
         { name: 'name', label: 'Nombre', type: 'text', value: 'Persona Chat', required: true, max_length: 150 },
         { name: 'company_name', label: 'Empresa', type: 'text', value: 'Empresa de prueba', required: true, max_length: 150 },
         { name: 'phone_number', label: 'Teléfono', type: 'tel', value: '+56 9 8765 4321', required: true, max_length: 30 },
@@ -528,8 +587,8 @@ try {
       const f = document.querySelector('[data-edicion]');
       return f.elements.name.value === 'Persona Chat' && f.elements.email.value === 'chat@ejemplo.cl'
         && f.elements.handoff_reason.tagName === 'TEXTAREA' && f.querySelectorAll('label').length === 5
-        && !f.querySelector('img') && !window.__xss && document.querySelector('[data-agente-form]').hidden;
-    }), 'los cinco campos se precargan con etiquetas y los valores se muestran como texto seguro');
+        && !f.querySelector('img') && !window.__xss && !document.querySelector('[data-agente-form]').hidden;
+    }), 'los cinco campos se precargan con etiquetas, los valores se muestran como texto seguro y la caja de texto sigue a la vista');
     ok((await botones()).join('|') === 'Cancelar', 'con inputs no se repiten los botones para corregir campo por campo');
     const antes = de('/messages', 'POST').length;
     await evaluar(() => {
@@ -541,8 +600,11 @@ try {
     await evaluar(() => {
       const f = document.querySelector('[data-edicion]');
       f.elements.email.value = 'popito@example.test'; f.elements.name.value = 'Popito Zalas';
-      f.elements.handoff_reason.value = 'Retirar madera'; return true;
+      f.elements.handoff_reason.value = 'Retirar madera';
+      f.elements.handoff_reason.dispatchEvent(new Event('input', { bubbles: true })); return true;
     });
+    const enEdicion = JSON.parse(await guardado()).borrador;
+    ok(enEdicion?.id === 'edicion-1' && enEdicion.valores.name === 'Popito Zalas' && enEdicion.valores.handoff_reason === 'Retirar madera', 'mientras se escribe, lo escrito queda en la pestaña como borrador del draft_id del formulario');
     for (const [width, height] of [[1280, 900], [390, 844]]) {
       await cdp('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });
       ok(await evaluar(() => {
@@ -562,7 +624,7 @@ try {
       && enviados[0].cuerpo.form_values.name === 'Popito Zalas' && enviados[0].cuerpo.form_values.handoff_reason === 'Retirar madera',
       'nombre y motivo se guardan juntos, estructurados y una sola vez, sin confirmar el envío');
     ok(await evaluar(() => document.querySelector('[data-edicion] fieldset').disabled && !document.querySelector('[data-agente-form]').hidden), 'el editor anterior queda inactivo tras guardar');
-    ok(!(await guardado()).includes('Popito') && !(await guardado()).includes('Retirar madera'), 'los cambios no se guardan en sessionStorage');
+    ok(!JSON.parse(await guardado()).borrador && !(await guardado()).includes('Popito') && !(await guardado()).includes('Retirar madera'), 'al guardar se borra el borrador: la respuesta ya no trae ese formulario y nada de lo escrito queda en la pestaña');
 
     S.historial = [{ role: 'assistant', ...editor }];
     await navegar(local(), { limpiar: false }); await abrir();
@@ -769,7 +831,7 @@ try {
     await navegar(local(), { limpiar: false });
     await abrir();
     await hasta(() => !!document.querySelector('.agente-puerta'), 'puerta con token vencido');
-    ok(llamadas.length === 0 && !(await guardado()), 'token vencido en la pestaña: va directo a la puerta, sin llamar al servicio');
+    ok(llamadas.every((l) => l.ruta === '/api/chat/config') && !(await guardado()), 'token vencido en la pestaña: va directo a la puerta, sin llamar al servicio con ese token (la puerta solo lee GET /config)');
 
     reiniciarAsistente();
     await entrar();
@@ -984,6 +1046,9 @@ try {
     ok(conexiones.includes("'self'") && conexiones.includes(API) && csp.api === API, 'la página del plugin trae window.TA_API.asistente y su CSP permite conectar con el asistente (connect-src)');
     ok(!csp.violaciones.length, `el chat funciona bajo la CSP del plugin sin violaciones${csp.violaciones.length ? `: ${csp.violaciones.join('; ')}` : ''}`);
     ok(!pedidos.some((u) => /wordpress\.ejemplo/.test(u)) && de('/sessions', 'POST')[0]?.origen === SITIO, 'el navegador llama directo al asistente; nada pasa por WordPress (sin proxy)');
+    await evaluar(() => { document.querySelector('[data-agente-descargar]').click(); return true; });
+    await hasta(() => window.__descargas.length === 1 && window.__descargas[0].texto !== null, 'descarga bajo la CSP');
+    ok(!(await evaluar(() => window.__csp)).length && de('/session', 'GET').length === 1, '«Descargar mis datos» funciona bajo la CSP del plugin, sin violaciones');
 
     reiniciarAsistente();
     pagina.wp = { asistente: API, turnstile: '0x4AAAAAAAprueba' };
@@ -993,7 +1058,7 @@ try {
     await evaluar(() => { const f = document.querySelector('.agente-puerta'); f.elements.name.value = 'Persona'; f.elements.email.value = 'p@ejemplo.cl'; f.elements.phone.value = '+56 9 1111 2222'; f.elements.privacy_accepted.checked = true; f.requestSubmit(); return true; });
     await hasta(() => /comprobando que eres una persona/.test(document.querySelector('.agente-error').textContent), 'Turnstile pendiente');
     const v = await evaluar(() => window.__csp);
-    ok(llamadas.length === 0 && !v.some((x) => /challenges\.cloudflare\.com/.test(x)), 'con la clave de Turnstile del plugin, la puerta espera el token (no abre sesión sin él) y la CSP admite su script');
+    ok(!de('/sessions', 'POST').length && llamadas.every((l) => l.ruta === '/api/chat/config') && !v.some((x) => /challenges\.cloudflare\.com/.test(x)), 'con la clave de Turnstile del plugin, la puerta espera el token (no abre sesión sin él) y la CSP admite su script');
     pagina.wp = { asistente: API };
     await navegar(pagUrl());
     await abrir();
@@ -1033,13 +1098,17 @@ try {
     ok(!errores.length, `sin errores de JavaScript en la página${errores.length ? `: ${errores.slice(0, 3).join(' | ')}` : ''}`);
   }
 
-  seccion('24. Recordar mis datos en este dispositivo (localStorage, 30 días)');
+  seccion('24. Asistente anterior (sin remember): recordar solo los datos de contacto (localStorage, 30 días)');
   {
+    /* Con el asistente de antes, la casilla es la del 23-10: nombre, correo y teléfono, nunca el token */
+    const antiguo = () => { reiniciarAsistente(); S.antiguo = true; };
     const CLAVE_DATOS = 'agente-chat-datos';
     const DIA = 86400000;
     const recuerdo = () => evaluar((k) => localStorage.getItem(k), CLAVE_DATOS);
-    /* Una pestaña nueva: sin sesión, pero con el mismo localStorage */
-    const pestanaNueva = async () => { await evaluar(() => { sessionStorage.clear(); return true; }); await navegar(local(), { limpiar: false }); await abrir(); await hasta(() => !!document.querySelector('.agente-puerta'), 'puerta'); };
+    /* Una pestaña nueva: sin sesión, pero con el mismo localStorage. La casilla se puede marcar cuando ya se sabe qué
+       ofrece el asistente (GET /config) */
+    const listaLaCasilla = () => hasta(() => document.querySelector('.agente-puerta input[name="remember"]')?.disabled === false, 'la casilla «Recordar» lista');
+    const pestanaNueva = async () => { await evaluar(() => { sessionStorage.clear(); return true; }); await navegar(local(), { limpiar: false }); await abrir(); await hasta(() => !!document.querySelector('.agente-puerta'), 'puerta'); await listaLaCasilla(); };
     const puertaAhora = () => evaluar(() => {
       const f = document.querySelector('.agente-puerta');
       return {
@@ -1061,10 +1130,11 @@ try {
     };
 
     /* Sin marcar: no se guarda nada */
-    reiniciarAsistente();
+    antiguo();
     await navegar(local());
     await abrir();
     await hasta(() => !!document.querySelector('.agente-puerta'), 'puerta');
+    await listaLaCasilla();
     let p = await puertaAhora();
     ok(p.remember === false && p.olvidar === false && p.name === '' && !(await recuerdo()), 'la puerta ofrece «Recordar mis datos» sin marcar y sin «Olvidar» cuando no hay nada guardado');
     ok(/30 días/.test(await evaluar(() => document.querySelector('.agente-puerta input[name="remember"]').closest('label').textContent)) && /equipo compartido/.test(await evaluar(() => document.querySelector('.agente-puerta input[name="remember"]').closest('label').textContent)), 'la casilla dice cuánto dura y advierte sobre los equipos compartidos');
@@ -1075,22 +1145,24 @@ try {
     ok(p.name === '' && p.email === '' && p.phone === '' && !p.remember, 'en una pestaña nueva la puerta sigue vacía');
 
     /* Marcada: quedan nombre, correo, teléfono y el vencimiento, y nada más */
-    reiniciarAsistente();
+    antiguo();
     const antes = Date.now();
     await entrarCon({ recordar: true, datos: { name: 'Persona Chat', email: 'chat@ejemplo.cl', phone: '+56 9 8765 4321' } });
     const g = JSON.parse(await recuerdo());
     ok(Object.keys(g).sort().join(',') === 'email,name,phone,vence' && g.name === 'Persona Chat' && g.email === 'chat@ejemplo.cl' && g.phone === '+56 9 8765 4321', 'con la casilla marcada se guarda solo nombre, correo y teléfono (más el vencimiento)');
     ok(g.vence >= antes + 30 * DIA - 60000 && g.vence <= Date.now() + 30 * DIA, 'el vencimiento es de 30 días');
     const token = JSON.parse(await guardado()).token;
-    ok(!(await evaluar((k, t) => localStorage.getItem(k).includes(t), CLAVE_DATOS, token)) && /privacy|marketing|accepted/i.test(await recuerdo()) === false, 'el token y las casillas de aceptación no van a localStorage: el token queda solo en la pestaña');
+    ok(!(await evaluar((t) => JSON.stringify(localStorage).includes(t), token)) && !(await evaluar(() => localStorage.getItem('agente-chat-sesion'))) && /privacy|marketing|accepted/i.test(await recuerdo()) === false && !JSON.parse(await guardado()).recordada,
+      'con un asistente que no ofrece remember, el token no va a localStorage aunque la casilla esté marcada (queda solo en la pestaña), ni las casillas de aceptación');
+    ok((await evaluar(() => document.querySelector('[data-agente-olvidar]').hidden && document.querySelector('[data-agente-descargar]').hidden)) && !de('/session', 'GET').length, 'sin sesión recordada no se ofrece «Olvidar este dispositivo», y sin la copia de los datos tampoco «Descargar mis datos»');
     ok(de('/sessions', 'POST')[0].cuerpo.remember === undefined, 'la casilla «Recordar» no se envía al asistente');
 
     /* Pestaña nueva con datos guardados: puerta precargada, aceptaciones sin marcar */
-    reiniciarAsistente();
+    antiguo();
     await pestanaNueva();
     p = await puertaAhora();
     ok(p.name === 'Persona Chat' && p.email === 'chat@ejemplo.cl' && p.phone === '+56 9 8765 4321' && p.remember && p.olvidar, 'pestaña nueva: la puerta trae los datos guardados, la casilla marcada y «Olvidar mis datos»');
-    ok(!p.privacy && !p.marketing && llamadas.length === 0, 'las casillas de condiciones y de contacto comercial siguen sin marcar y no se llama al asistente hasta que la persona toque «Comenzar»');
+    ok(!p.privacy && !p.marketing && llamadas.every((l) => l.ruta === '/api/chat/config' && l.metodo === 'GET'), 'las casillas de condiciones y de contacto comercial siguen sin marcar y, fuera de la configuración, no se llama al asistente hasta que la persona toque «Comenzar»');
     const v1 = JSON.parse(await recuerdo()).vence;
     await sleep(20);
     await entrarCon({ recordar: true });
@@ -1139,7 +1211,7 @@ try {
     ok(!(await recuerdo()), 'si la persona desmarca «Recordar» al entrar, se borra lo guardado');
 
     /* Una puerta rechazada no guarda nada */
-    reiniciarAsistente();
+    antiguo();
     await pestanaNueva();
     S.guion.push({ ruta: '/api/chat/sessions', status: 422, json: { errors: { email: ['Escribe un correo válido.'] } } });
     await evaluar(() => { const f = document.querySelector('.agente-puerta'); f.elements.name.value = 'Persona'; f.elements.email.value = 'malo'; f.elements.phone.value = '+56 9 1111 2222'; f.elements.privacy_accepted.checked = true; f.elements.remember.checked = true; f.requestSubmit(); return true; });
@@ -1147,7 +1219,7 @@ try {
     ok(!(await recuerdo()), 'si el asistente rechaza los datos (422), no se guardan');
 
     /* Borrar la conversación quita también lo recordado */
-    reiniciarAsistente();
+    antiguo();
     await pestanaNueva();
     await entrarCon({ recordar: true, datos: { name: 'Persona Chat', email: 'chat@ejemplo.cl', phone: '+56 9 8765 4321' } });
     ok(!!(await recuerdo()), 'antes de borrar hay datos recordados');
@@ -1165,6 +1237,7 @@ try {
     S.limites = { max_per_session: 1, max_kilobytes: 8, max_pixels: 100, mimes: ['png'] };
     await conWordPress(null);
     await navegar(local()); await abrir(); await entrar();
+    const configPuerta = de('/config', 'GET').length;  // la de la puerta (remember); las fotos consultan la suya
     await elegirFotos('png', 'exif');
     await hastaAca(async () => de('/attachments', 'POST').length === 1 && await sinEspera(), 'foto con topes dinámicos');
     const archivo = de('/attachments', 'POST')[0].mp.archivos[0];
@@ -1177,7 +1250,7 @@ try {
       return area;
     }, archivo.contenido.toString('base64'));
     ok(area <= 100, 'la imagen se reduce también al máximo de píxeles configurado');
-    ok(de('/config', 'GET').length === 1 && (await evaluar(() => document.querySelector('[data-agente-form] input[type="file"]').accept)) === 'image/png', 'se consulta una vez y el selector refleja los formatos permitidos');
+    ok(de('/config', 'GET').length - configPuerta === 1 && (await evaluar(() => document.querySelector('[data-agente-form] input[type="file"]').accept)) === 'image/png', 'se consulta una vez y el selector refleja los formatos permitidos');
     ok(de('/attachments', 'POST').length === 1 && JSON.parse(await guardado()).fotos === 1, 'el máximo dinámico de una foto impide subir la siguiente');
 
     for (const config of [
@@ -1187,13 +1260,14 @@ try {
     ]) {
       reiniciarAsistente();
       await navegar(local()); await abrir(); await entrar();
+      const enLaPuerta = de('/config', 'GET').length;
       S.guion.push({ ruta: '/api/chat/config', ...config });
       await elegirFotos('png');
       await hasta(() => /No pude comprobar los límites/.test(document.querySelector('[data-agente-charla]').textContent), 'configuración no disponible');
       ok(de('/attachments', 'POST').length === 0 && !!(await guardado()), 'sin límites válidos no se envía la imagen ni se pierde la sesión');
       await elegirFotos('png');
       await hastaAca(async () => de('/attachments', 'POST').length === 1 && await sinEspera(), 'recuperación de configuración');
-      ok(de('/config', 'GET').length === 2, 'la consulta fallida se puede repetir y la foto se sube al recuperarse');
+      ok(de('/config', 'GET').length - enLaPuerta === 2, 'la consulta fallida se puede repetir y la foto se sube al recuperarse');
     }
     reiniciarAsistente();
     S.limites = { ...LIMITES_FOTOS, max_kilobytes: 1 };
